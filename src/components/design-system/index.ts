@@ -22,10 +22,34 @@ export {
   CardTitle,
   CardDescription,
   CardContent,
-  BenefitCard,
   InvestmentCard,
   UserCard,
 } from "./ui/card";
+export {
+  VisualCard,
+  VisualCardGroup,
+} from "./ui/visual-card";
+export {
+  FeatureCard,
+  FeatureCardGrid,
+} from "./ui/feature-card";
+export {
+  ProgramCard,
+  BenefitItem,
+} from "./ui/program-card";
+export {
+  InfoCard,
+  InfoCardGroup,
+} from "./ui/info-card";
+export {
+  BenefitCard,
+  BenefitCardGroup,
+} from "./ui/benefit-card";
+export {
+  Heading,
+  HighlightHeading,
+  MultiStyleHeading,
+} from "./ui/heading";
 export {
   ProgressCircle,
   BarChart,

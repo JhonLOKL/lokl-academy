@@ -64,8 +64,9 @@ export default function DesignSystemPage() {
       <Navbar
         logo={<span className="text-xl font-bold">LOKL <span className="text-[#5352F6]">Design System</span></span>}
         items={[
-          { label: "Componentes", href: "#components", active: true },
-          { label: "Tipografía", href: "#typography" },
+          { label: "Componentes", href: "/design-system", active: true },
+          { label: "Tarjetas Visuales", href: "/design-system/visual-cards" },
+          { label: "Tipografía", href: "/design-system/typography" },
           { label: "Colores", href: "#colors" },
           { label: "Iconos", href: "#icons" },
           { label: "Layouts", href: "#layouts" },
