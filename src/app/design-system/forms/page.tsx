@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { 
   Navbar, 
   Footer, 
@@ -12,11 +12,33 @@ import {
   SelectContent, 
   SelectItem, 
   Textarea,
-  Button 
+  Button,
+  RadioGroup,
+  RadioItem,
+  Checkbox,
+  CheckboxItem,
+  Switch,
+  SwitchItem,
+  DatePicker,
+  DateRangePicker,
+  Slider,
+  RangeSlider
 } from "@/components/design-system";
-import { Mail, Search } from "lucide-react";
+import { Mail, Search, Building, Home, Hotel, Briefcase } from "lucide-react";
 
 export default function FormsPage() {
+  // Estados para los componentes interactivos
+  const [date, setDate] = useState<Date>();
+  const [dateRange, setDateRange] = useState<{
+    from: Date | undefined;
+    to: Date | undefined;
+  }>({
+    from: undefined,
+    to: undefined,
+  });
+  const [sliderValue, setSliderValue] = useState<number>(50);
+  const [rangeValue, setRangeValue] = useState<number[]>([25, 75]);
+
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
       <Navbar
@@ -76,37 +98,197 @@ export default function FormsPage() {
         </section>
 
         <section className="mb-16">
-          <h2 className="mb-6 text-2xl font-bold">Estados de Validación</h2>
+          <h2 className="mb-6 text-2xl font-bold">Radio Buttons</h2>
           <div className="rounded-lg border border-[#E5E5E5] bg-white p-8">
-            <div className="max-w-md space-y-6">
-              <FormField label="Campo Válido" htmlFor="valid-input" helperText="Este campo es válido">
-                <Input id="valid-input" placeholder="Campo válido" />
-              </FormField>
-
-              <FormField label="Campo con Error" htmlFor="error-input" error helperText="Este campo es obligatorio">
-                <Input id="error-input" placeholder="Campo con error" error />
-              </FormField>
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+              <div>
+                <h3 className="mb-4 text-lg font-semibold">Tipo de Inversión Preferida</h3>
+                <RadioGroup defaultValue="residential" className="space-y-4">
+                  <RadioItem 
+                    id="residential" 
+                    value="residential" 
+                    label="Residencial" 
+                    description="Apartamentos, casas y condominios para vivir"
+                  />
+                  <RadioItem 
+                    id="commercial" 
+                    value="commercial" 
+                    label="Comercial" 
+                    description="Oficinas, locales comerciales y centros empresariales"
+                  />
+                  <RadioItem 
+                    id="hospitality" 
+                    value="hospitality" 
+                    label="Hospitalario" 
+                    description="Hoteles, resorts y proyectos turísticos"
+                  />
+                  <RadioItem 
+                    id="mixed" 
+                    value="mixed" 
+                    label="Mixto" 
+                    description="Desarrollos que combinan múltiples usos"
+                  />
+                </RadioGroup>
+              </div>
               
-              <FormField label="Select con Error" htmlFor="error-select" error helperText="Debes seleccionar una opción">
-                <Select>
-                  <SelectTrigger id="error-select" error>
-                    <SelectValue placeholder="Selecciona una opción" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="option1">Opción 1</SelectItem>
-                    <SelectItem value="option2">Opción 2</SelectItem>
-                    <SelectItem value="option3">Opción 3</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormField>
-              
-              <FormField label="Textarea con Error" htmlFor="error-textarea" error helperText="Este campo no puede estar vacío">
-                <Textarea id="error-textarea" placeholder="Campo con error" error />
-              </FormField>
+              <div>
+                <h3 className="mb-4 text-lg font-semibold">Perfil de Riesgo</h3>
+                <RadioGroup defaultValue="moderate" className="space-y-4">
+                  <RadioItem 
+                    id="conservative" 
+                    value="conservative" 
+                    label="Conservador" 
+                    description="Rentabilidad estable con bajo riesgo (8-12% anual)"
+                  />
+                  <RadioItem 
+                    id="moderate" 
+                    value="moderate" 
+                    label="Moderado" 
+                    description="Balance entre rentabilidad y riesgo (12-16% anual)"
+                  />
+                  <RadioItem 
+                    id="aggressive" 
+                    value="aggressive" 
+                    label="Agresivo" 
+                    description="Alta rentabilidad con mayor riesgo (16-24% anual)"
+                  />
+                </RadioGroup>
+              </div>
             </div>
             <div className="mt-8">
               <p className="text-sm text-[#6D6C6C]">
-                Estados de validación para campos de formulario, mostrando mensajes de ayuda y errores.
+                Radio buttons para selección única entre múltiples opciones, con etiquetas y descripciones.
+              </p>
+            </div>
+          </div>
+        </section>
+        
+        <section className="mb-16">
+          <h2 className="mb-6 text-2xl font-bold">Checkboxes</h2>
+          <div className="rounded-lg border border-[#E5E5E5] bg-white p-8">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+              <div>
+                <h3 className="mb-4 text-lg font-semibold">Preferencias de Comunicación</h3>
+                <div className="space-y-4">
+                  <CheckboxItem 
+                    id="push-notifications" 
+                    label="Notificaciones Push" 
+                    description="Recibe alertas sobre nuevas oportunidades de inversión"
+                    defaultChecked
+                  />
+                  <CheckboxItem 
+                    id="email-updates" 
+                    label="Actualizaciones por Email" 
+                    description="Reportes mensuales y análisis de mercado"
+                    defaultChecked
+                  />
+                  <CheckboxItem 
+                    id="sms-alerts" 
+                    label="Alertas SMS" 
+                    description="Notificaciones urgentes por mensaje de texto"
+                    defaultChecked
+                  />
+                  <CheckboxItem 
+                    id="auto-invest" 
+                    label="Inversión Automática" 
+                    description="Invierte automáticamente según tus criterios preestablecidos"
+                  />
+                  <CheckboxItem 
+                    id="decentralized" 
+                    label="Opción Descentralizada" 
+                    description="Esta función estará disponible próximamente"
+                    disabled
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="mb-4 text-lg font-semibold">Documentos Requeridos</h3>
+                <div className="space-y-4">
+                  <CheckboxItem 
+                    id="id-document" 
+                    label="Documento de Identidad" 
+                    description="Cédula, pasaporte o documento equivalente"
+                    defaultChecked
+                  />
+                  <CheckboxItem 
+                    id="income-proof" 
+                    label="Comprobante de Ingresos" 
+                    description="Últimos 3 recibos de nómina o declaración de renta"
+                  />
+                  <CheckboxItem 
+                    id="bank-statements" 
+                    label="Estados de Cuenta" 
+                    description="Estados bancarios de los últimos 3 meses"
+                  />
+                  <CheckboxItem 
+                    id="terms-conditions" 
+                    label="Términos y Condiciones" 
+                    description="Acepto los términos y condiciones del servicio"
+                    defaultChecked
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="mt-8">
+              <p className="text-sm text-[#6D6C6C]">
+                Checkboxes para selección múltiple, con diferentes estados y descripciones detalladas.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="mb-16">
+          <h2 className="mb-6 text-2xl font-bold">Switches / Toggles</h2>
+          <div className="rounded-lg border border-[#E5E5E5] bg-white p-8">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+              <div className="space-y-6">
+                <SwitchItem 
+                  id="dark-mode" 
+                  label="Modo Oscuro" 
+                  description="Cambiar a tema oscuro para mejor visualización nocturna"
+                />
+                
+                <SwitchItem 
+                  id="two-factor" 
+                  label="Autenticación de Dos Factores" 
+                  description="Aumenta la seguridad de tu cuenta"
+                  defaultChecked
+                />
+                
+                <SwitchItem 
+                  id="auto-invest" 
+                  label="Inversión Automática" 
+                  description="Invierte automáticamente según tus criterios"
+                />
+              </div>
+              
+              <div className="space-y-6">
+                <SwitchItem 
+                  id="market-alerts" 
+                  label="Alertas de Mercado" 
+                  description="Recibe notificaciones sobre cambios importantes"
+                  defaultChecked
+                />
+                
+                <SwitchItem 
+                  id="premium" 
+                  label="Función Premium" 
+                  description="Disponible solo para usuarios premium"
+                  disabled
+                />
+                
+                <SwitchItem 
+                  id="notifications" 
+                  label="Notificaciones" 
+                  description="Recibe actualizaciones sobre tus inversiones"
+                  defaultChecked
+                />
+              </div>
+            </div>
+            <div className="mt-8">
+              <p className="text-sm text-[#6D6C6C]">
+                Switches para activar o desactivar funciones, con diseño moderno y estados visuales claros.
               </p>
             </div>
           </div>
@@ -162,6 +344,94 @@ export default function FormsPage() {
         </section>
         
         <section className="mb-16">
+          <h2 className="mb-6 text-2xl font-bold">Calendario / Date Picker</h2>
+          <div className="rounded-lg border border-[#E5E5E5] bg-white p-8">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+              <div>
+                <h3 className="mb-4 text-lg font-semibold">Fecha de Inicio de Inversión</h3>
+                <DatePicker 
+                  date={date} 
+                  setDate={setDate} 
+                  placeholder="Selecciona una fecha"
+                />
+              </div>
+              
+              <div>
+                <h3 className="mb-4 text-lg font-semibold">Rango de Fechas</h3>
+                <DateRangePicker 
+                  dateRange={dateRange} 
+                  setDateRange={setDateRange} 
+                  placeholder="Selecciona un rango de fechas"
+                />
+              </div>
+            </div>
+            <div className="mt-8">
+              <p className="text-sm text-[#6D6C6C]">
+                Selectores de fecha con calendario integrado, para fechas individuales o rangos.
+              </p>
+            </div>
+          </div>
+        </section>
+        
+        <section className="mb-16">
+          <h2 className="mb-6 text-2xl font-bold">Sliders / Controles Deslizantes</h2>
+          <div className="rounded-lg border border-[#E5E5E5] bg-white p-8">
+            <div className="space-y-12">
+              <div>
+                <RangeSlider
+                  label="Monto de Inversión"
+                  min={10000}
+                  max={500000}
+                  step={10000}
+                  defaultValue={[50000]}
+                  value={[sliderValue]}
+                  onValueChange={(value) => setSliderValue(value[0])}
+                  valuePrefix="$"
+                  valueSuffix=" COP"
+                  minLabel="$10.000 COP"
+                  maxLabel="$500.000 COP"
+                  className="max-w-xl"
+                />
+              </div>
+              
+              <div>
+                <RangeSlider
+                  label="Rango de Edad Objetivo"
+                  min={18}
+                  max={65}
+                  step={1}
+                  defaultValue={[25, 45]}
+                  value={rangeValue}
+                  onValueChange={setRangeValue}
+                  valueSuffix=" años"
+                  minLabel="18 años"
+                  maxLabel="65 años"
+                  className="max-w-xl"
+                />
+              </div>
+              
+              <div>
+                <RangeSlider
+                  label="Nivel de Riesgo"
+                  min={1}
+                  max={10}
+                  step={1}
+                  defaultValue={[5]}
+                  minLabel="Bajo"
+                  maxLabel="Alto"
+                  className="max-w-xl"
+                />
+              </div>
+            </div>
+            <div className="mt-8">
+              <p className="text-sm text-[#6D6C6C]">
+                Controles deslizantes para selección de valores numéricos o rangos, con etiquetas y valores mostrados.
+              </p>
+            </div>
+          </div>
+        </section>
+        
+        <section className="mb-16">
           <h2 className="mb-6 text-2xl font-bold">Áreas de Texto</h2>
           <div className="rounded-lg border border-[#E5E5E5] bg-white p-8">
             <div className="max-w-md space-y-6">
@@ -194,55 +464,132 @@ export default function FormsPage() {
         </section>
         
         <section className="mb-16">
-          <h2 className="mb-6 text-2xl font-bold">Formularios Completos</h2>
+          <h2 className="mb-6 text-2xl font-bold">Formulario Completo de Perfil de Inversión</h2>
           <div className="rounded-lg border border-[#E5E5E5] bg-white p-8">
-            <div className="max-w-md">
-              <h3 className="mb-6 text-xl font-semibold">Formulario de Registro</h3>
-              <form className="space-y-6">
-                <FormField label="Nombre completo" htmlFor="full-name" required>
-                  <Input id="full-name" placeholder="Ingresa tu nombre completo" />
-                </FormField>
+            <div className="max-w-2xl">
+              <h3 className="mb-6 text-xl font-semibold">Perfil de Inversión</h3>
+              <form className="space-y-8">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <FormField label="Nombre completo" htmlFor="full-name" required>
+                    <Input id="full-name" placeholder="Ingresa tu nombre completo" />
+                  </FormField>
+                  
+                  <FormField label="Email" htmlFor="register-email" required>
+                    <Input 
+                      id="register-email" 
+                      type="email" 
+                      placeholder="ejemplo@lokl.com" 
+                      icon={<Mail size={18} />} 
+                    />
+                  </FormField>
+                </div>
                 
-                <FormField label="Email" htmlFor="register-email" required>
-                  <Input 
-                    id="register-email" 
-                    type="email" 
-                    placeholder="ejemplo@lokl.com" 
-                    icon={<Mail size={18} />} 
+                <div>
+                  <h4 className="mb-3 text-base font-medium">Tipo de Inversión Preferida</h4>
+                  <RadioGroup defaultValue="residential" className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <RadioItem 
+                      id="residential-option" 
+                      value="residential" 
+                      label="Residencial" 
+                      description="Apartamentos, casas y condominios"
+                    />
+                    <RadioItem 
+                      id="commercial-option" 
+                      value="commercial" 
+                      label="Comercial" 
+                      description="Oficinas y locales comerciales"
+                    />
+                    <RadioItem 
+                      id="hospitality-option" 
+                      value="hospitality" 
+                      label="Hospitalario" 
+                      description="Hoteles y proyectos turísticos"
+                    />
+                    <RadioItem 
+                      id="mixed-option" 
+                      value="mixed" 
+                      label="Mixto" 
+                      description="Desarrollos de uso múltiple"
+                    />
+                  </RadioGroup>
+                </div>
+                
+                <div>
+                  <h4 className="mb-3 text-base font-medium">Preferencias de Comunicación</h4>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <CheckboxItem 
+                      id="push-notifications-option" 
+                      label="Notificaciones Push" 
+                      defaultChecked
+                    />
+                    <CheckboxItem 
+                      id="email-updates-option" 
+                      label="Actualizaciones por Email" 
+                      defaultChecked
+                    />
+                    <CheckboxItem 
+                      id="sms-alerts-option" 
+                      label="Alertas SMS" 
+                    />
+                    <CheckboxItem 
+                      id="auto-invest-option" 
+                      label="Inversión Automática" 
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="mb-3 text-base font-medium">Configuración</h4>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <SwitchItem 
+                      id="two-factor-option" 
+                      label="Autenticación de Dos Factores" 
+                      defaultChecked
+                    />
+                    <SwitchItem 
+                      id="market-alerts-option" 
+                      label="Alertas de Mercado" 
+                      defaultChecked
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="mb-3 text-base font-medium">Monto de Inversión</h4>
+                  <RangeSlider
+                    min={10000}
+                    max={500000}
+                    step={10000}
+                    defaultValue={[50000]}
+                    valuePrefix="$"
+                    valueSuffix=" COP"
+                    minLabel="$10.000 COP"
+                    maxLabel="$500.000 COP"
                   />
-                </FormField>
+                </div>
                 
-                <FormField label="Contraseña" htmlFor="register-password" required>
-                  <Input 
-                    id="register-password" 
-                    type="password" 
-                    placeholder="Mínimo 8 caracteres" 
+                <div>
+                  <h4 className="mb-3 text-base font-medium">Fecha de Inicio</h4>
+                  <DatePicker 
+                    date={date} 
+                    setDate={setDate} 
+                    placeholder="Selecciona una fecha de inicio"
                   />
-                </FormField>
+                </div>
                 
-                <FormField label="Tipo de inversionista" htmlFor="investor-type" required>
-                  <Select>
-                    <SelectTrigger id="investor-type">
-                      <SelectValue placeholder="Selecciona una opción" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="individual">Individual</SelectItem>
-                      <SelectItem value="company">Empresa</SelectItem>
-                      <SelectItem value="institutional">Institucional</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <FormField label="Objetivos de Inversión" htmlFor="investment-goals">
+                  <Textarea 
+                    id="investment-goals" 
+                    placeholder="Describe tus objetivos de inversión" 
+                    rows={3}
+                  />
                 </FormField>
                 
                 <div className="flex justify-end space-x-4 pt-4">
                   <Button variant="outline">Cancelar</Button>
-                  <Button>Registrarse</Button>
+                  <Button>Guardar Perfil</Button>
                 </div>
               </form>
-            </div>
-            <div className="mt-8">
-              <p className="text-sm text-[#6D6C6C]">
-                Ejemplo de formulario completo con múltiples tipos de campos y botones de acción.
-              </p>
             </div>
           </div>
         </section>
