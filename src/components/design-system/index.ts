@@ -86,6 +86,39 @@ export {
   RangeSlider,
 } from "./ui/slider";
 
+// Chart Components
+export {
+  BarChart as BarChartComponent,
+  SimpleBarChart,
+} from "./ui/charts/bar-chart";
+export {
+  LineChart,
+  SimpleLineChart,
+} from "./ui/charts/line-chart";
+export {
+  PieChart,
+  DonutChart,
+} from "./ui/charts/pie-chart";
+export {
+  AreaChart,
+  SimpleAreaChart,
+} from "./ui/charts/area-chart";
+export {
+  RadarChart,
+  SimpleRadarChart,
+} from "./ui/charts/radar-chart";
+
+// Data Components
+export {
+  DataTable,
+  Badge,
+} from "./ui/data-table";
+export {
+  MetricCard,
+  KpiCard,
+  StatCard,
+} from "./ui/metric-card";
+
 // Layout Components
 export { HeroSection } from "./layouts/hero-section";
 export { StepsSection, StepsContainer, StepItem } from "./layouts/steps-section";
