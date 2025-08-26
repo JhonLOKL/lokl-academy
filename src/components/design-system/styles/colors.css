@@ -1,0 +1,113 @@
+/* LOKL Design System - Colors */
+
+:root {
+  /* Primary Colors */
+  --lokl-purple: #5352F6;
+  --lokl-black: #000000;
+  --lokl-white: #FAFAFA;
+  
+  /* Gray Scale */
+  --lokl-gray-900: #0F0F0F;
+  --lokl-gray-700: #444444;
+  --lokl-gray-500: #6D6C6C;
+  --lokl-gray-300: #919090;
+  --lokl-gray-200: #D1D1D1;
+  --lokl-gray-100: #E5E5E5;
+  --lokl-gray-50: #F5F5F5;
+  
+  /* Semantic Colors */
+  --lokl-text-primary: var(--lokl-black);
+  --lokl-text-secondary: var(--lokl-gray-700);
+  --lokl-text-tertiary: var(--lokl-gray-500);
+  --lokl-background-light: var(--lokl-white);
+  --lokl-background-dark: var(--lokl-black);
+  --lokl-border: var(--lokl-gray-200);
+  --lokl-accent: var(--lokl-purple);
+  --lokl-cta: var(--lokl-purple);
+  
+  /* Status Colors */
+  --lokl-success: #34C759;
+  --lokl-warning: #FF9500;
+  --lokl-error: #FF3B30;
+  --lokl-info: #007AFF;
+  
+  /* Chart Colors */
+  --lokl-chart-1: var(--lokl-purple);
+  --lokl-chart-2: #7A79F9;
+  --lokl-chart-3: #A1A0FB;
+  --lokl-chart-4: #C8C7FD;
+  --lokl-chart-5: #EEEEFE;
+  
+  /* Opacity Variants */
+  --lokl-purple-90: rgba(83, 82, 246, 0.9);
+  --lokl-purple-80: rgba(83, 82, 246, 0.8);
+  --lokl-purple-60: rgba(83, 82, 246, 0.6);
+  --lokl-purple-40: rgba(83, 82, 246, 0.4);
+  --lokl-purple-20: rgba(83, 82, 246, 0.2);
+  --lokl-purple-10: rgba(83, 82, 246, 0.1);
+  
+  /* Shadows */
+  --lokl-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --lokl-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.05);
+  --lokl-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.05);
+  
+  /* Border Radius */
+  --lokl-radius-sm: 4px;
+  --lokl-radius-md: 8px;
+  --lokl-radius-lg: 12px;
+  --lokl-radius-xl: 16px;
+  --lokl-radius-full: 9999px;
+}
+
+/* Dark Mode Colors */
+.dark {
+  --lokl-text-primary: var(--lokl-white);
+  --lokl-text-secondary: var(--lokl-gray-300);
+  --lokl-text-tertiary: var(--lokl-gray-500);
+  --lokl-background-light: var(--lokl-gray-900);
+  --lokl-background-dark: var(--lokl-black);
+  --lokl-border: var(--lokl-gray-700);
+}
+
+/* Color utility classes */
+.lokl-text-primary {
+  color: var(--lokl-text-primary);
+}
+
+.lokl-text-secondary {
+  color: var(--lokl-text-secondary);
+}
+
+.lokl-text-tertiary {
+  color: var(--lokl-text-tertiary);
+}
+
+.lokl-text-purple {
+  color: var(--lokl-purple);
+}
+
+.lokl-text-white {
+  color: var(--lokl-white);
+}
+
+.lokl-bg-light {
+  background-color: var(--lokl-background-light);
+}
+
+.lokl-bg-dark {
+  background-color: var(--lokl-background-dark);
+  color: var(--lokl-white);
+}
+
+.lokl-bg-purple {
+  background-color: var(--lokl-purple);
+  color: var(--lokl-white);
+}
+
+.lokl-bg-gray {
+  background-color: var(--lokl-gray-50);
+}
+
+.lokl-border-color {
+  border-color: var(--lokl-border);
+}

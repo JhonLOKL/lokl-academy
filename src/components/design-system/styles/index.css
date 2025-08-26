@@ -1,0 +1,126 @@
+/* LOKL Design System - Main Stylesheet */
+
+@import "./typography.css";
+@import "./colors.css";
+@import "./spacing.css";
+
+/* Base styles */
+:root {
+  --lokl-transition-fast: 150ms;
+  --lokl-transition-normal: 250ms;
+  --lokl-transition-slow: 350ms;
+  --lokl-transition-ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset and base styles */
+.lokl-reset * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--font-lokl);
+}
+
+.lokl-reset body {
+  background-color: var(--lokl-background-light);
+  color: var(--lokl-text-primary);
+  line-height: var(--line-height-normal);
+}
+
+/* Focus styles */
+.lokl-focus-ring:focus-visible {
+  outline: 2px solid var(--lokl-purple);
+  outline-offset: 2px;
+}
+
+/* Utility classes */
+.lokl-text-center {
+  text-align: center;
+}
+
+.lokl-text-left {
+  text-align: left;
+}
+
+.lokl-text-right {
+  text-align: right;
+}
+
+.lokl-flex {
+  display: flex;
+}
+
+.lokl-flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.lokl-items-center {
+  align-items: center;
+}
+
+.lokl-justify-center {
+  justify-content: center;
+}
+
+.lokl-justify-between {
+  justify-content: space-between;
+}
+
+.lokl-gap-2 {
+  gap: var(--lokl-space-2);
+}
+
+.lokl-gap-4 {
+  gap: var(--lokl-space-4);
+}
+
+.lokl-gap-6 {
+  gap: var(--lokl-space-6);
+}
+
+.lokl-gap-8 {
+  gap: var(--lokl-space-8);
+}
+
+.lokl-w-full {
+  width: 100%;
+}
+
+.lokl-h-full {
+  height: 100%;
+}
+
+.lokl-rounded-sm {
+  border-radius: var(--lokl-radius-sm);
+}
+
+.lokl-rounded-md {
+  border-radius: var(--lokl-radius-md);
+}
+
+.lokl-rounded-lg {
+  border-radius: var(--lokl-radius-lg);
+}
+
+.lokl-rounded-full {
+  border-radius: var(--lokl-radius-full);
+}
+
+/* Responsive display utilities */
+@media (max-width: 640px) {
+  .lokl-hidden-sm {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .lokl-hidden-md {
+    display: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  .lokl-hidden-lg {
+    display: none;
+  }
+}

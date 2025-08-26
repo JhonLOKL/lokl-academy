@@ -1,0 +1,182 @@
+/* LOKL Design System - Typography */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --font-lokl: 'Inter', sans-serif;
+  --letter-spacing-tight: -0.038em;
+  --paragraph-spacing: -0.03em;
+  
+  /* Font weights */
+  --font-thin: 100;
+  --font-extralight: 200;
+  --font-light: 300;
+  --font-regular: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+  --font-black: 900;
+  
+  /* Font sizes based on 8px grid */
+  --font-size-2xs: 0.75rem;   /* 12px */
+  --font-size-xs: 0.875rem;   /* 14px */
+  --font-size-sm: 1rem;       /* 16px */
+  --font-size-md: 1.125rem;   /* 18px */
+  --font-size-lg: 1.25rem;    /* 20px */
+  --font-size-xl: 1.5rem;     /* 24px */
+  --font-size-2xl: 2rem;      /* 32px */
+  --font-size-3xl: 2.5rem;    /* 40px */
+  --font-size-4xl: 3rem;      /* 48px */
+  --font-size-5xl: 3.5rem;    /* 56px */
+  
+  /* Line heights */
+  --line-height-tight: 1.1;
+  --line-height-snug: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+}
+
+/* Typography classes */
+.lokl-h1 {
+  font-family: var(--font-lokl);
+  font-size: var(--font-size-5xl);
+  font-weight: var(--font-black);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.lokl-h2 {
+  font-family: var(--font-lokl);
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-extrabold);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.lokl-h3 {
+  font-family: var(--font-lokl);
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-bold);
+  line-height: var(--line-height-snug);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.lokl-h4 {
+  font-family: var(--font-lokl);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-semibold);
+  line-height: var(--line-height-snug);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.lokl-h5 {
+  font-family: var(--font-lokl);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-semibold);
+  line-height: var(--line-height-snug);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.lokl-h6 {
+  font-family: var(--font-lokl);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-semibold);
+  line-height: var(--line-height-snug);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.lokl-body-large {
+  font-family: var(--font-lokl);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-regular);
+  line-height: var(--line-height-normal);
+}
+
+.lokl-body {
+  font-family: var(--font-lokl);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-regular);
+  line-height: var(--line-height-normal);
+}
+
+.lokl-small {
+  font-family: var(--font-lokl);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-regular);
+  line-height: var(--line-height-normal);
+}
+
+.lokl-caption {
+  font-family: var(--font-lokl);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-regular);
+  line-height: var(--line-height-normal);
+}
+
+/* Font weight modifiers */
+.lokl-thin {
+  font-weight: var(--font-thin);
+}
+
+.lokl-extralight {
+  font-weight: var(--font-extralight);
+}
+
+.lokl-light {
+  font-weight: var(--font-light);
+}
+
+.lokl-regular {
+  font-weight: var(--font-regular);
+}
+
+.lokl-medium {
+  font-weight: var(--font-medium);
+}
+
+.lokl-semibold {
+  font-weight: var(--font-semibold);
+}
+
+.lokl-bold {
+  font-weight: var(--font-bold);
+}
+
+.lokl-extrabold {
+  font-weight: var(--font-extrabold);
+}
+
+.lokl-black {
+  font-weight: var(--font-black);
+}
+
+/* Italic variants */
+.lokl-italic {
+  font-style: italic;
+}
+
+/* Spacing helpers */
+.lokl-paragraph {
+  margin-bottom: 1rem;
+  letter-spacing: var(--paragraph-spacing);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .lokl-h1 {
+    font-size: var(--font-size-4xl);
+  }
+  
+  .lokl-h2 {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .lokl-h3 {
+    font-size: var(--font-size-2xl);
+  }
+  
+  .lokl-h4 {
+    font-size: var(--font-size-xl);
+  }
+}
