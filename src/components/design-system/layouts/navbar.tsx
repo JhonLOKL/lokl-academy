@@ -99,11 +99,13 @@ export function Navbar({
               </a>
             ))}
           </div>
-          <div className="border-t border-[#E5E5E5] pb-3 pt-4">
-            <div className="space-y-2">
-              {actions}
+          {actions && (
+            <div className="border-t border-[#E5E5E5] pb-3 pt-4">
+              <div className="space-y-2">
+                {actions}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
     </header>

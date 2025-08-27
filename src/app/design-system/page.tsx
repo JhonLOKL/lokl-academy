@@ -68,13 +68,27 @@ export default function DesignSystemPage() {
       <Navbar
         logo={<span className="text-xl font-bold">LOKL <span className="text-[#5352F6]">Design System</span></span>}
         items={[
-          { label: "Proyectos", href: "https://lokl.life/", external: true },
-          { label: "Contáctanos", href: "https://api.whatsapp.com/send/?phone=573017328112", external: true },
-          { label: "Nosotros", href: "https://lokl.life/aboutus", external: true },
-          { label: "Embajadores", href: "https://lokl.life/ambassadors", external: true },
-          { label: "Inicia sesión", href: "https://lokl.life/login?redirect_to=/", external: true },
-          { label: "Regístrate", href: "https://lokl.life/register?redirect_to=/", external: true },
+          { label: "Proyectos", href: "https://lokl.life/" },
+          { label: "Contáctanos", href: "https://api.whatsapp.com/send/?phone=573017328112" },
+          { label: "Nosotros", href: "https://lokl.life/aboutus" },
+          { label: "Embajadores", href: "https://lokl.life/ambassadors" },
         ]}
+        actions={
+          <div className="flex items-center space-x-4">
+            <a
+              href="https://lokl.life/login?redirect_to=/"
+              className="text-sm font-medium text-[#0F0F0F] transition-colors hover:text-[#5352F6]"
+            >
+              Inicia sesión
+            </a>
+            <a
+              href="https://lokl.life/register?redirect_to=/"
+              className="rounded-md bg-[#5352F6] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#4A4AE5]"
+            >
+              Regístrate
+            </a>
+          </div>
+        }
       />
 
       <div className="bg-[#F5F5F5] py-16">
