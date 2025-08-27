@@ -88,7 +88,6 @@ export default function LayoutsPage() {
               <h3 className="mb-4 text-lg font-semibold text-white">Navbar Oscuro</h3>
               <div className="overflow-hidden rounded-lg">
                 <Navbar
-                  variant="dark"
                   logo={<span className="text-xl font-bold text-white">LOKL <span className="text-[#5352F6]">Inversiones</span></span>}
                   items={[
                     { label: "Inicio", href: "#" },
@@ -247,25 +246,21 @@ export default function LayoutsPage() {
                     number={1}
                     title="Aprende"
                     description="Accede a recursos educativos gratuitos"
-                    theme="dark"
                   />
                   <StepItem
                     number={2}
                     title="Planifica"
                     description="Define tus objetivos financieros"
-                    theme="dark"
                   />
                   <StepItem
                     number={3}
                     title="Invierte"
                     description="Comienza con el monto que puedas"
-                    theme="dark"
                   />
                   <StepItem
                     number={4}
                     title="Crece"
                     description="Reinvierte y diversifica tu portafolio"
-                    theme="dark"
                   />
                 </StepsContainer>
               </StepsSection>
@@ -302,7 +297,7 @@ export default function LayoutsPage() {
             <div className="rounded-lg border border-[#E5E5E5] bg-white p-6">
               <h3 className="mb-4 text-lg font-semibold">Footer Minimalista</h3>
               <div className="overflow-hidden rounded-lg">
-                <Footer variant="minimal" />
+                <Footer variant="simple" />
               </div>
               <p className="mt-4 text-sm text-[#6D6C6C]">
                 Footer minimalista con solo copyright y enlaces legales esenciales.
