@@ -40,7 +40,7 @@ export function NotificationToaster() {
 
   return (
     <ToastProvider>
-      {toasts.map(function ({ id, title, description, action, icon, ...props }) {
+      {toasts.map(function ({ id, title, description, action, icon, variant, ...props }) {
         return (
           <Notification 
             key={id} 
@@ -48,6 +48,7 @@ export function NotificationToaster() {
             description={description} 
             action={action} 
             icon={icon}
+            variant={variant === null ? undefined : variant}
             {...props} 
           />
         );

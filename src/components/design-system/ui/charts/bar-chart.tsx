@@ -27,7 +27,7 @@ export interface BarChartProps {
   showYAxis?: boolean;
   xAxisDataKey?: string;
   yAxisWidth?: number;
-  tooltipFormatter?: (value: number | string) => string;
+  tooltipFormatter?: (value: any) => string;
   title?: string;
   subtitle?: string;
 }
@@ -37,7 +37,7 @@ const CustomTooltip = ({
   payload,
   label,
   formatter,
-}: TooltipProps<ValueType, NameType> & { formatter?: (value: number | string) => string }) => {
+}: TooltipProps<ValueType, NameType> & { formatter?: (value: any) => string }) => {
   if (active && payload && payload.length) {
     return (
       <div className="rounded-lg border border-[#E5E5E5] bg-white p-3 shadow-sm">
@@ -133,7 +133,7 @@ export function BarChart({
           {showLegend && (
             <Legend
               verticalAlign="top"
-              align="end"
+              align="right"
               iconType="circle"
               iconSize={8}
               wrapperStyle={{ fontSize: "12px", paddingBottom: "10px" }}
@@ -192,7 +192,8 @@ export function SimpleBarChart({
   // Asignar colores personalizados si se proporcionan
   data.forEach((item, index) => {
     if (item.color) {
-      transformedData[index].color = item.color;
+      // Añadir color como propiedad adicional
+      (transformedData[index] as any).color = item.color;
     }
   });
 

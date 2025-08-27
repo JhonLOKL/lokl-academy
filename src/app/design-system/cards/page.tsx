@@ -131,7 +131,7 @@ export default function CardsPage() {
                   icon={<ArrowRight size={24} />}
                   title="Proceso simplificado"
                   description="Invierte en pocos pasos desde la app"
-                  iconBackground="dark"
+                  iconBackground="purple"
                 />
               </BenefitCardGroup>
             </div>
@@ -245,15 +245,15 @@ export default function CardsPage() {
               hashtag="#ProgramaEmbajadores"
               title="Refiere y gana hasta $500.000"
               benefits={[
-                "Comisión del 5% por cada referido",
-                "Bonos adicionales por volumen",
-                "Acceso a eventos exclusivos"
+                { text: "Comisión del 5% por cada referido" },
+                { text: "Bonos adicionales por volumen" },
+                { text: "Acceso a eventos exclusivos" }
               ]}
               stats={[
                 { label: "Referidos", value: "10+" },
                 { label: "Ganancia", value: "$500K" }
               ]}
-              winMessage="¡Tú ganas, ellos ganan!"
+
               ctaText="Unirme al programa"
             />
           </div>

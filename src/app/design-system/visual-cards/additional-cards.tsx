@@ -5,15 +5,12 @@ import {
   FeatureCard,
   FeatureCardGrid,
   ProgramCard,
-  BenefitItem,
   InfoCard,
   InfoCardGroup,
   BenefitCard,
-  BenefitCardGroup,
-  Button,
+  BenefitCardGroup
 } from "@/components/design-system";
 import {
-  ChevronRight,
   Map,
   TrendingUp,
   Users,

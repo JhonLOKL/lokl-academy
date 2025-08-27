@@ -194,7 +194,6 @@ export default function ChartsPage() {
                     { label: "Acciones", value: 10, color: "#A1A0FB" },
                   ]}
                   height={220}
-                  showValues={true}
                 />
                 <p className="mt-4 text-sm text-[#6D6C6C]">
                   Distribución porcentual de una cartera de inversiones con valores mostrados.
@@ -211,7 +210,6 @@ export default function ChartsPage() {
                     { label: "2023", value: 82, color: "#FFFFFF" },
                   ]}
                   height={180}
-                  darkTheme={true}
                 />
                 <p className="mt-4 text-sm text-white opacity-80">
                   Gráfico de barras con tema oscuro para mostrar el rendimiento anual.

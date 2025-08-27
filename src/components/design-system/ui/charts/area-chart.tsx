@@ -29,7 +29,7 @@ export interface AreaChartProps {
   showYAxis?: boolean;
   xAxisDataKey?: string;
   yAxisWidth?: number;
-  tooltipFormatter?: (value: number | string) => string;
+  tooltipFormatter?: (value: any) => string;
   title?: string;
   subtitle?: string;
   stacked?: boolean;
@@ -40,7 +40,7 @@ const CustomTooltip = ({
   payload,
   label,
   formatter,
-}: TooltipProps<ValueType, NameType> & { formatter?: (value: number | string) => string }) => {
+}: TooltipProps<ValueType, NameType> & { formatter?: (value: any) => string }) => {
   if (active && payload && payload.length) {
     return (
       <div className="rounded-lg border border-[#E5E5E5] bg-white p-3 shadow-sm">
@@ -137,7 +137,7 @@ export function AreaChart({
           {showLegend && (
             <Legend
               verticalAlign="top"
-              align="end"
+              align="right"
               iconType="circle"
               iconSize={8}
               wrapperStyle={{ fontSize: "12px", paddingBottom: "10px" }}

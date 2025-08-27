@@ -20,7 +20,7 @@ export interface PieChartProps {
   outerRadius?: number;
   showTooltip?: boolean;
   showLabels?: boolean;
-  tooltipFormatter?: (value: number | string) => string;
+  tooltipFormatter?: (value: any) => string;
   colors?: string[];
   activeIndex?: number;
   onActiveIndexChange?: (index: number | undefined) => void;
@@ -35,7 +35,7 @@ const CustomTooltip = ({
   active,
   payload,
   formatter,
-}: TooltipProps<ValueType, NameType> & { formatter?: (value: number | string) => string }) => {
+}: TooltipProps<ValueType, NameType> & { formatter?: (value: any) => string }) => {
   if (active && payload && payload.length) {
     return (
       <div className="rounded-lg border border-[#E5E5E5] bg-white p-3 shadow-sm">
@@ -102,7 +102,7 @@ export function PieChart({
 }: PieChartProps) {
   const [activeIdx, setActiveIdx] = React.useState<number | undefined>(activeIndex);
 
-  const handleMouseEnter = (_, index: number) => {
+  const handleMouseEnter = (_: any, index: number) => {
     setActiveIdx(index);
     if (onActiveIndexChange) {
       onActiveIndexChange(index);
@@ -140,7 +140,7 @@ export function PieChart({
                 "h-3 w-3 rounded-full",
                 activeIdx === index && "ring-2 ring-offset-2"
               )}
-              style={{ backgroundColor: getColor(entry, index), ringColor: getColor(entry, index) }}
+              style={{ backgroundColor: getColor(entry, index) }}
             />
             <div className="flex items-baseline gap-1">
               <span className="text-xs font-medium">{entry.name}</span>

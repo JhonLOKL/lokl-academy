@@ -15,16 +15,13 @@ import {
   Button,
   RadioGroup,
   RadioItem,
-  Checkbox,
   CheckboxItem,
-  Switch,
   SwitchItem,
   DatePicker,
   DateRangePicker,
-  Slider,
   RangeSlider
 } from "@/components/design-system";
-import { Mail, Search, Building, Home, Hotel, Briefcase } from "lucide-react";
+import { Mail, Search } from "lucide-react";
 
 export default function FormsPage() {
   // Estados para los componentes interactivos

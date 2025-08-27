@@ -25,7 +25,7 @@ export interface RadarChartProps {
   showGrid?: boolean;
   showLegend?: boolean;
   showTooltip?: boolean;
-  tooltipFormatter?: (value: number | string) => string;
+  tooltipFormatter?: (value: any) => string;
   title?: string;
   subtitle?: string;
   maxValue?: number;
@@ -37,7 +37,7 @@ const CustomTooltip = ({
   active,
   payload,
   formatter,
-}: TooltipProps<ValueType, NameType> & { formatter?: (value: number | string) => string }) => {
+}: TooltipProps<ValueType, NameType> & { formatter?: (value: any) => string }) => {
   if (active && payload && payload.length) {
     return (
       <div className="rounded-lg border border-[#E5E5E5] bg-white p-3 shadow-sm">

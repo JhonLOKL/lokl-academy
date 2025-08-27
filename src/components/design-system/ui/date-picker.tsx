@@ -3,6 +3,7 @@
 import * as React from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import type { Locale } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -118,7 +119,14 @@ export function DateRangePicker({
               from: dateRange.from,
               to: dateRange.to,
             }}
-            onSelect={setDateRange}
+            onSelect={(range) => {
+              if (range) {
+                setDateRange({
+                  from: range.from,
+                  to: range.to || undefined
+                });
+              }
+            }}
             numberOfMonths={2}
             locale={locale}
           />

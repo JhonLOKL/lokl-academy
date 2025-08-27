@@ -175,7 +175,7 @@ const ConfirmDialog = ({
           <AlertDialogCancel>{cancelText}</AlertDialogCancel>
           <AlertDialogAction 
             className={cn(
-              confirmVariant === "destructive" && buttonVariants({ variant: "destructive" }),
+              confirmVariant === "destructive" && buttonVariants({ variant: "dark" }),
               confirmVariant === "outline" && buttonVariants({ variant: "outline" })
             )}
             onClick={onConfirm}

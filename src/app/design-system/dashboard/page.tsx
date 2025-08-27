@@ -17,12 +17,9 @@ import {
   StatCard,
 } from "@/components/design-system";
 import {
-  BarChart3,
   Building,
   Calendar,
-  CreditCard,
   LineChart,
-  PieChart as PieChartIcon,
   TrendingUp,
   Users,
   Wallet,
@@ -402,7 +399,6 @@ export default function DashboardPage() {
                     <div
                       className="absolute top-0 h-full w-full rounded-full border-4 border-[#22C55E]"
                       style={{
-                        clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 0)",
                         clipPath: `polygon(50% 50%, 50% 0, ${50 + 50 * Math.cos(Math.PI * 2 * 0.78)}% ${50 - 50 * Math.sin(Math.PI * 2 * 0.78)}%, 50% 50%)`,
                       }}
                     ></div>
