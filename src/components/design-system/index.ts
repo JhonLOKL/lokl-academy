@@ -50,6 +50,15 @@ export {
   HighlightHeading,
   MultiStyleHeading,
 } from "./ui/heading";
+
+// Typography Components
+export {
+  H1,
+  H2,
+  H3,
+  Paragraph,
+  Text,
+} from "./ui/typography";
 export {
   ProgressCircle,
   BarChart,

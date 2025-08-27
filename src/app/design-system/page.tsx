@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Navbar, Footer, Button, Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/design-system";
+import { Navbar, Footer, Button, Card, CardHeader, CardTitle, CardDescription, CardContent, H1, H2, H3, Paragraph } from "@/components/design-system";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
@@ -106,13 +106,13 @@ export default function DesignSystemPage() {
       <div className="bg-[#F5F5F5] py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl">
-            <h1 className="mb-6 text-5xl font-extrabold tracking-tight">
+            <H1 variant="hero" className="mb-6">
               LOKL <span className="text-[#5352F6]">Design System</span>
-            </h1>
-            <p className="mb-8 text-xl text-[#6D6C6C]">
+            </H1>
+            <Paragraph variant="lead" color="muted" className="mb-8">
               Un sistema de diseño moderno, minimalista y profesional para la plataforma LOKL, 
               con componentes reutilizables y coherentes para crear interfaces de alta calidad.
-            </p>
+            </Paragraph>
             <div className="flex flex-wrap gap-4">
               <Button size="lg">Explorar componentes</Button>
               <Button variant="secondary" size="lg">Ver documentación</Button>
@@ -122,7 +122,7 @@ export default function DesignSystemPage() {
       </div>
 
       <div className="container mx-auto px-4 py-16">
-        <h2 className="mb-12 text-3xl font-bold">Componentes del Design System</h2>
+        <H2 variant="section" className="mb-12">Componentes del Design System</H2>
         
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {sections.map((section, index) => (
@@ -146,43 +146,43 @@ export default function DesignSystemPage() {
       <div className="bg-[#F5F5F5] py-16">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="mb-6 text-3xl font-bold">Principios del Design System</h2>
-            <p className="mb-12 text-[#6D6C6C]">
+            <H2 variant="section" className="mb-6">Principios del Design System</H2>
+            <Paragraph variant="lead" color="muted" className="mb-12">
               Nuestro sistema de diseño se basa en principios fundamentales que aseguran coherencia, 
               usabilidad y escalabilidad en todas las interfaces de LOKL.
-            </p>
+            </Paragraph>
             
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
               <div className="rounded-lg bg-white p-6 text-left shadow-sm">
-                <h3 className="mb-3 text-xl font-semibold">Coherencia</h3>
-                <p className="text-[#6D6C6C]">
+                <H3 variant="feature" className="mb-3">Coherencia</H3>
+                <Paragraph color="muted">
                   Mantenemos un lenguaje visual consistente en toda la plataforma, 
                   facilitando el reconocimiento y la familiaridad para los usuarios.
-                </p>
+                </Paragraph>
               </div>
               
               <div className="rounded-lg bg-white p-6 text-left shadow-sm">
-                <h3 className="mb-3 text-xl font-semibold">Minimalismo</h3>
-                <p className="text-[#6D6C6C]">
+                <H3 variant="feature" className="mb-3">Minimalismo</H3>
+                <Paragraph color="muted">
                   Priorizamos la simplicidad y la claridad, eliminando elementos innecesarios 
                   para centrarnos en lo esencial de cada interacción.
-                </p>
+                </Paragraph>
               </div>
               
               <div className="rounded-lg bg-white p-6 text-left shadow-sm">
-                <h3 className="mb-3 text-xl font-semibold">Modularidad</h3>
-                <p className="text-[#6D6C6C]">
+                <H3 variant="feature" className="mb-3">Modularidad</H3>
+                <Paragraph color="muted">
                   Construimos componentes reutilizables que se pueden combinar de múltiples 
                   formas para crear interfaces complejas y coherentes.
-                </p>
+                </Paragraph>
               </div>
               
               <div className="rounded-lg bg-white p-6 text-left shadow-sm">
-                <h3 className="mb-3 text-xl font-semibold">Accesibilidad</h3>
-                <p className="text-[#6D6C6C]">
+                <H3 variant="feature" className="mb-3">Accesibilidad</H3>
+                <Paragraph color="muted">
                   Diseñamos para todos los usuarios, asegurando que nuestras interfaces 
                   sean inclusivas y fáciles de usar para personas con diferentes capacidades.
-                </p>
+                </Paragraph>
               </div>
             </div>
           </div>
