@@ -68,16 +68,12 @@ export default function DesignSystemPage() {
       <Navbar
         logo={<span className="text-xl font-bold">LOKL <span className="text-[#5352F6]">Design System</span></span>}
         items={[
-          { label: "Componentes", href: "/design-system", active: true },
-          { label: "Botones", href: "/design-system/buttons" },
-          { label: "Formularios", href: "/design-system/forms" },
-          { label: "Tarjetas", href: "/design-system/cards" },
-          { label: "Gráficos", href: "/design-system/charts" },
-          { label: "Layouts", href: "/design-system/layouts" },
-          { label: "Colores", href: "/design-system/colors" },
-          { label: "Iconos", href: "/design-system/icons" },
-          { label: "Tarjetas Visuales", href: "/design-system/visual-cards" },
-          { label: "Tipografía", href: "/design-system/typography" },
+          { label: "Proyectos", href: "https://lokl.life/", external: true },
+          { label: "Contáctanos", href: "https://api.whatsapp.com/send/?phone=573017328112", external: true },
+          { label: "Nosotros", href: "https://lokl.life/aboutus", external: true },
+          { label: "Embajadores", href: "https://lokl.life/ambassadors", external: true },
+          { label: "Inicia sesión", href: "https://lokl.life/login?redirect_to=/", external: true },
+          { label: "Regístrate", href: "https://lokl.life/register?redirect_to=/", external: true },
         ]}
       />
 

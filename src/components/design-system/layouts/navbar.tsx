@@ -10,6 +10,7 @@ export interface NavbarProps extends React.HTMLAttributes<HTMLElement> {
     label: string;
     href: string;
     active?: boolean;
+    external?: boolean;
   }[];
   actions?: React.ReactNode;
 }
@@ -48,6 +49,8 @@ export function Navbar({
                   <li key={index}>
                     <a
                       href={item.href}
+                      target={item.external ? "_blank" : undefined}
+                      rel={item.external ? "noopener noreferrer" : undefined}
                       className={cn(
                         "text-sm font-medium transition-colors hover:text-[#5352F6]",
                         item.active ? "text-[#5352F6]" : "text-[#0F0F0F]"
@@ -83,6 +86,8 @@ export function Navbar({
               <a
                 key={index}
                 href={item.href}
+                target={item.external ? "_blank" : undefined}
+                rel={item.external ? "noopener noreferrer" : undefined}
                 className={cn(
                   "block rounded-md px-3 py-2 text-base font-medium",
                   item.active
