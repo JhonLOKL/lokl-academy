@@ -60,7 +60,19 @@ export default function DesignSystemPage() {
       description: "Componentes tipográficos avanzados",
       href: "/design-system/typography",
       color: "bg-[#5352F6]"
-    }
+    },
+    {
+      title: "Dashboard",
+      description: "Componentes de graficas, indicadores y tablas",
+      href: "/design-system/dashboard",
+      color: "bg-[#0F0F0F]"
+    },
+    {
+      title: "Modales y pop-ups",
+      description: "Componentes de modales y pop-ups",
+      href: "/design-system/modals",
+      color: "bg-[#5352F6]"
+    },
   ];
 
   return (
