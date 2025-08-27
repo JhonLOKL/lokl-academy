@@ -9,8 +9,7 @@ import {
   ConfirmDialog,
   SideDrawer,
   useToast,
-  ToastProvider,
-  ToastViewport,
+  NotificationToaster,
   Tooltip,
   TooltipTrigger,
   TooltipContent,
@@ -96,9 +95,8 @@ export default function ModalsPage() {
   };
 
   return (
-    <ToastProvider>
-      <TooltipProvider>
-        <div className="min-h-screen bg-[#FAFAFA]">
+    <TooltipProvider>
+      <div className="min-h-screen bg-[#FAFAFA]">
         <Navbar
           logo={<span className="text-xl font-bold">LOKL <span className="text-[#5352F6]">Design System</span></span>}
           items={[
@@ -275,7 +273,7 @@ export default function ModalsPage() {
                   </p>
                 </CardContent>
                 <CardFooter>
-                  <Button variant="destructive" onClick={() => setDeleteDialogOpen(true)}>Eliminar Proyecto</Button>
+                  <Button variant="outline" className="border-[#ff5c5c] text-[#ff5c5c] hover:bg-red-50" onClick={() => setDeleteDialogOpen(true)}>Eliminar Proyecto</Button>
                 </CardFooter>
               </Card>
             </div>
@@ -629,12 +627,11 @@ export default function ModalsPage() {
         </main>
 
         <Footer variant="simple" />
-
-        {/* Viewport para las notificaciones toast */}
-        <ToastViewport />
       </div>
-      </TooltipProvider>
-    </ToastProvider>
+      
+      {/* Toaster para las notificaciones */}
+      <NotificationToaster />
+    </TooltipProvider>
   );
 }
 
