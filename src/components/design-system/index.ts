@@ -119,6 +119,66 @@ export {
   StatCard,
 } from "./ui/metric-card";
 
+// Modal & Popup Components
+export {
+  Dialog,
+  DialogPortal,
+  DialogOverlay,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+  Modal,
+} from "./ui/dialog";
+export {
+  AlertDialog,
+  AlertDialogPortal,
+  AlertDialogOverlay,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+  AlertDialogCancel,
+  ConfirmDialog,
+} from "./ui/alert-dialog";
+export {
+  Drawer,
+  DrawerPortal,
+  DrawerOverlay,
+  DrawerTrigger,
+  DrawerClose,
+  DrawerContent,
+  DrawerHeader,
+  DrawerFooter,
+  DrawerTitle,
+  DrawerDescription,
+  SideDrawer,
+} from "./ui/drawer";
+export {
+  ToastProvider,
+  ToastViewport,
+  Toast,
+  ToastTitle,
+  ToastDescription,
+  ToastClose,
+  ToastAction,
+  Notification,
+} from "./ui/toast";
+export { Toaster, NotificationToaster } from "./ui/toaster";
+export { useToast, toast } from "./ui/use-toast";
+export {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+  InfoTooltip,
+} from "./ui/tooltip";
+
 // Layout Components
 export { HeroSection } from "./layouts/hero-section";
 export { StepsSection, StepsContainer, StepItem } from "./layouts/steps-section";
