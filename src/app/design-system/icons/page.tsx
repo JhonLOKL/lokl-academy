@@ -14,7 +14,7 @@ import {
   Play, Pause, Square, SkipBack, SkipForward, Repeat,
   Shuffle, Download, Upload, ExternalLink, Link, Unlink,
   Map, MapPin, Navigation, Compass, Flag, Target,
-  Zap, Cloud, CloudRain, Sun, Moon, Wind
+  Zap, Cloud, CloudRain, Sun, Moon, Wind, Phone
 } from "lucide-react";
 
 export default function IconsPage() {
@@ -143,7 +143,7 @@ export default function IconsPage() {
   ];
 
   // Función para renderizar un icono con su nombre
-  const renderIcon = (IconComponent, name) => (
+  const renderIcon = (IconComponent: React.ComponentType<any>, name: string) => (
     <div key={name} className="flex flex-col items-center">
       <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#F5F5F5]">
         <IconComponent size={32} className="text-[#5352F6]" />
