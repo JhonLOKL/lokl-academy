@@ -12,8 +12,8 @@ interface BlogSectionProps {
 }
 
 const BlogSection: React.FC<BlogSectionProps> = ({ blogs }) => {
-  // Asegurarse de que hay al menos 3 blogs
-  const displayBlogs = blogs.slice(0, 3);
+  // Asegurarse de que hay al menos 6 blogs para mostrar 3 en pantallas grandes
+  const displayBlogs = blogs.slice(0, 6);
   
   return (
     <div className="container mx-auto px-4">
@@ -53,9 +53,9 @@ const BlogSection: React.FC<BlogSectionProps> = ({ blogs }) => {
             </motion.div>
           )}
           
-          {/* Resto de blogs en grid con más espacio */}
+          {/* Resto de blogs en grid responsive */}
           {displayBlogs.length > 1 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {displayBlogs.slice(1).map((blog, index) => (
                 <motion.div
                   key={blog.id}
