@@ -383,9 +383,9 @@ export const mockBlogPosts: BlogPost[] = [
         id: "cta-block",
         type: "cta",
         heading: "¿Listo para comenzar tu viaje de inversión inmobiliaria?",
-        content: "Únete a nuestro curso premium de Inversión Inmobiliaria y aprende directamente de expertos del sector.",
-        buttonText: "Inscríbete Ahora",
-        buttonUrl: "/cursos/inversion-inmobiliaria-avanzada",
+        content: "Comienza a invertir en bienes raíces con LOKL, revisa nuestros cursos y proyectos",
+        buttonText: "Ver nuestros proyectos",
+        buttonUrl: "https://lokl.life/#newprojects",
         buttonVariant: "primary",
         background: "#F7F7FB"
       }

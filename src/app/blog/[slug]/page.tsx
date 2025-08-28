@@ -11,6 +11,7 @@ import {
   BlogHeader, 
   BlogCover, 
   BlogTags, 
+  BlogCTA,
   AuthorProfile, 
   RelatedPosts 
 } from "@/components/lokl-academy/components";
@@ -357,26 +358,14 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
     
     case "cta":
       return (
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true }}
-          className={`mb-8 rounded-lg p-8 ${block.background || "bg-gradient-to-r from-[#5352F6]/10 to-[#F7F7FB]"} ${block.className || ""}`}
-        >
-          <h3 className="mb-4 text-xl font-bold md:text-2xl">{block.heading}</h3>
-          {block.content && <p className="mb-6">{block.content}</p>}
-          <a
-            href={block.buttonUrl}
-            className={`inline-block rounded-md px-6 py-3 font-medium transition-all duration-300 ${
-              block.buttonVariant === "secondary" ? "bg-[#0F0F0F] text-white hover:bg-[#333]" :
-              block.buttonVariant === "outline" ? "border border-[#5352F6] bg-transparent text-[#5352F6] hover:bg-[#5352F6]/5" :
-              "bg-[#5352F6] text-white hover:bg-[#4A4AE5]"
-            }`}
-          >
-            {block.buttonText}
-          </a>
-        </motion.div>
+        <BlogCTA
+          heading={block.heading}
+          content={block.content}
+          buttonText={block.buttonText}
+          buttonUrl={block.buttonUrl}
+          buttonVariant={block.buttonVariant as "primary" | "secondary" | "outline"}
+          className="mb-8"
+        />
       );
     
     case "faq":
