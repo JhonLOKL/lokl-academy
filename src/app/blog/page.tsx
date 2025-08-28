@@ -78,12 +78,20 @@ export default function BlogPage() {
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
               {filteredBlogs.map((blog, index) => (
-                <BlogCard
-                  key={blog.id}
-                  blog={blog}
-                  variant={index === 0 && filter === "all" ? "featured" : "default"}
-                  className={index === 0 && filter === "all" ? "md:col-span-2 lg:col-span-1" : ""}
-                />
+                index === 0 && filter === "all" ? (
+                  <div key={blog.id} className="col-span-1 md:col-span-2 lg:col-span-3">
+                    <BlogCard
+                      blog={blog}
+                      variant="featured"
+                    />
+                  </div>
+                ) : (
+                  <BlogCard
+                    key={blog.id}
+                    blog={blog}
+                    variant="default"
+                  />
+                )
               ))}
             </div>
 

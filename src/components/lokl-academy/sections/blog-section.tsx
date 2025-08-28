@@ -35,14 +35,16 @@ const BlogSection: React.FC<BlogSectionProps> = ({ blogs }) => {
       </div>
 
       {displayBlogs.length > 0 && (
-        <div className="grid grid-cols-1 gap-8 mb-12">
-          {/* Primer blog destacado */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          {/* Primer blog destacado a ancho completo */}
           {displayBlogs[0] && (
-            <BlogCard 
-              key={displayBlogs[0].id} 
-              blog={displayBlogs[0]} 
-              variant="featured"
-            />
+            <div className="col-span-1 md:col-span-2 lg:col-span-3">
+              <BlogCard 
+                key={displayBlogs[0].id} 
+                blog={displayBlogs[0]} 
+                variant="featured"
+              />
+            </div>
           )}
           
           {/* Resto de blogs en grid */}
