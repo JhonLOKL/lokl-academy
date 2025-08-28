@@ -616,6 +616,939 @@ export const mockBlogPosts: BlogPost[] = [
     views: 1890,
     likes: 112,
     commentsEnabled: true
+  },
+
+  // Cuarto blog post
+  {
+    id: "4",
+    slug: "tendencias-mercado-inmobiliario-proximos-5-anos",
+    publishedAt: "2024-06-01T11:00:00Z",
+    updatedAt: "2024-06-20T15:45:00Z",
+    status: "published",
+    featured: true,
+
+    seo: {
+      title: "Tendencias del Mercado Inmobiliario para los Próximos 5 Años | LOKL Academy",
+      description: "Descubre las tendencias que moldearán el mercado inmobiliario en los próximos 5 años. Análisis de expertos sobre tecnología, sostenibilidad y cambios demográficos.",
+      keywords: ["tendencias inmobiliarias", "mercado inmobiliario futuro", "propiedades sostenibles", "tecnología inmobiliaria", "demografía inmobiliaria"],
+      canonicalUrl: "https://loklacademy.com/blog/tendencias-mercado-inmobiliario-proximos-5-anos",
+      ogImage: {
+        url: "/images/digital-charts.jpg",
+        alt: "Tendencias del Mercado Inmobiliario 2024-2029",
+        width: 1200,
+        height: 630
+      },
+      ogType: "article",
+      twitterCard: "summary_large_image",
+      structuredData: {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Tendencias del Mercado Inmobiliario para los Próximos 5 Años",
+        "image": "/images/blog/tendencias-mercado-2024-2029.jpg",
+        "datePublished": "2024-06-01T11:00:00Z",
+        "dateModified": "2024-06-20T15:45:00Z",
+        "author": {
+          "@type": "Person",
+          "name": "Dr. Carlos Mendoza"
+        }
+      }
+    },
+
+    author: {
+      id: "author4",
+      name: "Dr. Carlos Mendoza",
+      role: "Director de Investigación Inmobiliaria",
+      avatar: "/images/modern-building.jpg",
+      bio: "Dr. Carlos Mendoza es director de investigación inmobiliaria con más de 20 años de experiencia analizando tendencias del mercado. Ha publicado más de 50 estudios sobre el sector inmobiliario y es consultor de grandes fondos de inversión.",
+      socialLinks: {
+        twitter: "https://twitter.com/carlosmendozainmobiliaria",
+        linkedin: "https://linkedin.com/in/carlosmendozainmobiliaria"
+      }
+    },
+
+    category: "Tendencias",
+    categoryFull: {
+      id: "cat2",
+      name: "Análisis de Mercado",
+      slug: "analisis-mercado"
+    },
+
+    tags: [
+      {
+        id: "tag7",
+        name: "Tendencias",
+        slug: "tendencias"
+      },
+      {
+        id: "tag8",
+        name: "Futuro",
+        slug: "futuro"
+      },
+      {
+        id: "tag9",
+        name: "Sostenibilidad",
+        slug: "sostenibilidad"
+      }
+    ],
+
+    title: "Tendencias del Mercado Inmobiliario para los Próximos 5 Años",
+    subtitle: "Cómo la tecnología, la sostenibilidad y los cambios demográficos transformarán el sector",
+    excerpt: "El mercado inmobiliario está en constante evolución. Analizamos las tendencias más importantes que definirán el sector en los próximos 5 años, desde la adopción de tecnología hasta la creciente demanda de propiedades sostenibles.",
+    estimatedReadTime: 15,
+
+    coverImage: {
+      src: "/images/digital-charts.jpg",
+      alt: "Gráficos de tendencias inmobiliarias futuras",
+      caption: "Las tendencias tecnológicas y sostenibles dominarán el mercado inmobiliario",
+      credit: "Análisis por LOKL Research"
+    },
+
+    content: [
+      {
+        id: "intro-heading",
+        type: "heading",
+        level: 1,
+        content: "Tendencias del Mercado Inmobiliario para los Próximos 5 Años",
+        anchor: "introduccion"
+      },
+      {
+        id: "intro-paragraph",
+        type: "paragraph",
+        content: "El sector inmobiliario se encuentra en un punto de inflexión. Los próximos cinco años traerán cambios transformadores impulsados por la tecnología, la sostenibilidad y los cambios demográficos. Como inversores, entender estas tendencias es crucial para tomar decisiones informadas y posicionarse estratégicamente en el mercado.",
+        dropCap: true
+      },
+      {
+        id: "tech-trends-heading",
+        type: "heading",
+        level: 2,
+        content: "1. Revolución Tecnológica en Propiedades",
+        anchor: "tecnologia"
+      },
+      {
+        id: "tech-trends-paragraph",
+        type: "paragraph",
+        content: "La tecnología está redefiniendo cómo vivimos y trabajamos, y las propiedades no son la excepción. Las smart homes, la automatización y la conectividad IoT se convertirán en estándares del mercado."
+      },
+      {
+        id: "tech-stats",
+        type: "statistic",
+        value: "85%",
+        label: "de las nuevas propiedades incluirán tecnología smart home para 2029",
+        trend: "up",
+        trendValue: "+40% desde 2024"
+      },
+      {
+        id: "sustainability-heading",
+        type: "heading",
+        level: 2,
+        content: "2. Sostenibilidad como Prioridad",
+        anchor: "sostenibilidad"
+      },
+      {
+        id: "sustainability-paragraph",
+        type: "paragraph",
+        content: "La conciencia ambiental y las regulaciones gubernamentales están impulsando una demanda sin precedentes por propiedades sostenibles y energéticamente eficientes."
+      },
+      {
+        id: "sustainability-quote",
+        type: "quote",
+        content: "Las propiedades sostenibles no solo son buenas para el planeta, sino que también ofrecen mejores retornos de inversión a largo plazo.",
+        author: "María González",
+        citation: "Directora de Sostenibilidad, Green Real Estate Fund",
+        style: "large"
+      },
+      {
+        id: "demographics-heading",
+        type: "heading",
+        level: 2,
+        content: "3. Cambios Demográficos y Nuevas Demandas",
+        anchor: "demografia"
+      },
+      {
+        id: "demographics-paragraph",
+        type: "paragraph",
+        content: "Los millennials y la Generación Z están cambiando las preferencias de vivienda, priorizando la flexibilidad, la experiencia y la conectividad sobre la propiedad tradicional."
+      },
+      {
+        id: "demographics-table",
+        type: "table",
+        headers: ["Generación", "Preferencia Principal", "Impacto en Mercado"],
+        rows: [
+          ["Millennials", "Flexibilidad y experiencia", "Aumento en co-living y espacios flexibles"],
+          ["Gen Z", "Tecnología integrada", "Demanda de smart homes"],
+          ["Baby Boomers", "Accesibilidad y servicios", "Crecimiento en senior living"]
+        ],
+        caption: "Preferencias por generación en el mercado inmobiliario",
+        responsive: true
+      },
+      {
+        id: "conclusion-heading",
+        type: "heading",
+        level: 2,
+        content: "Conclusión",
+        anchor: "conclusion"
+      },
+      {
+        id: "conclusion-paragraph",
+        type: "paragraph",
+        content: "Los próximos cinco años traerán oportunidades sin precedentes para inversores que se adapten a estas tendencias. La clave del éxito será mantenerse informado y ser flexible ante los cambios del mercado."
+      }
+    ],
+
+    relatedPosts: [
+      {
+        id: "1",
+        title: "Guía Completa de Inversión Inmobiliaria 2024",
+        slug: "guia-completa-inversion-inmobiliaria-2024",
+        coverImage: {
+          src: "/images/modern-building.jpg",
+          alt: "Guía de inversión inmobiliaria"
+        }
+      },
+      {
+        id: "5",
+        title: "Propiedades Sostenibles: El Futuro de la Inversión",
+        slug: "propiedades-sostenibles-futuro-inversion",
+        coverImage: {
+          src: "/images/buildings-bw.jpg",
+          alt: "Propiedades sostenibles"
+        }
+      }
+    ],
+
+    views: 4120,
+    likes: 245,
+    shares: 156,
+    commentsEnabled: true
+  },
+
+  // Quinto blog post
+  {
+    id: "5",
+    slug: "propiedades-sostenibles-futuro-inversion",
+    publishedAt: "2024-05-28T10:30:00Z",
+    status: "published",
+
+    seo: {
+      title: "Propiedades Sostenibles: El Futuro de la Inversión Inmobiliaria | LOKL Academy",
+      description: "Descubre por qué las propiedades sostenibles son la mejor opción de inversión para el futuro. Beneficios financieros, certificaciones y casos de éxito.",
+      keywords: ["propiedades sostenibles", "inversión verde", "certificaciones LEED", "energía renovable", "inversión responsable"],
+      ogImage: {
+        url: "/images/buildings-bw.jpg",
+        alt: "Propiedades Sostenibles - Futuro de la Inversión",
+        width: 1200,
+        height: 630
+      },
+      ogType: "article",
+      twitterCard: "summary_large_image"
+    },
+
+    author: {
+      id: "author5",
+      name: "Laura Fernández",
+      role: "Especialista en Propiedades Sostenibles",
+      avatar: "/images/couple-investing.jpg",
+      bio: "Laura Fernández es especialista en propiedades sostenibles con más de 12 años de experiencia en el sector. Ha asesorado en el desarrollo de más de 50 proyectos inmobiliarios con certificaciones LEED y BREEAM."
+    },
+
+    category: "Sostenibilidad",
+    categoryFull: {
+      id: "cat3",
+      name: "Propiedades Sostenibles",
+      slug: "propiedades-sostenibles"
+    },
+
+    tags: [
+      {
+        id: "tag9",
+        name: "Sostenibilidad",
+        slug: "sostenibilidad"
+      },
+      {
+        id: "tag10",
+        name: "Energía Renovable",
+        slug: "energia-renovable"
+      },
+      {
+        id: "tag11",
+        name: "Certificaciones",
+        slug: "certificaciones"
+      }
+    ],
+
+    title: "Propiedades Sostenibles: El Futuro de la Inversión Inmobiliaria",
+    subtitle: "Por qué invertir en verde es la decisión más inteligente",
+    excerpt: "Las propiedades sostenibles no solo benefician al medio ambiente, sino que también ofrecen mejores retornos financieros. Descubre cómo la inversión verde está transformando el mercado inmobiliario.",
+    estimatedReadTime: 12,
+
+    coverImage: {
+      src: "/images/buildings-bw.jpg",
+      alt: "Edificio sostenible con paneles solares",
+      caption: "Las propiedades sostenibles ofrecen mejores retornos y menor impacto ambiental"
+    },
+
+    content: [
+      {
+        id: "intro-heading",
+        type: "heading",
+        level: 1,
+        content: "Propiedades Sostenibles: El Futuro de la Inversión Inmobiliaria",
+        anchor: "introduccion"
+      },
+      {
+        id: "intro-paragraph",
+        type: "paragraph",
+        content: "La sostenibilidad ya no es una tendencia, es el futuro del mercado inmobiliario. Los inversores que reconozcan esta realidad y se posicionen tempranamente en propiedades sostenibles obtendrán ventajas significativas en los próximos años.",
+        dropCap: true
+      },
+      {
+        id: "benefits-heading",
+        type: "heading",
+        level: 2,
+        content: "Beneficios Financieros de las Propiedades Sostenibles",
+        anchor: "beneficios"
+      },
+      {
+        id: "benefits-paragraph",
+        type: "paragraph",
+        content: "Contrario a la creencia popular, las propiedades sostenibles no solo son buenas para el planeta, sino que también ofrecen ventajas financieras significativas."
+      },
+      {
+        id: "benefits-callout",
+        type: "callout",
+        content: "Las propiedades con certificaciones LEED pueden obtener hasta un 20% más de valor de alquiler y un 10% más de valor de venta comparado con propiedades convencionales.",
+        variant: "success",
+        icon: "trending-up"
+      },
+      {
+        id: "certifications-heading",
+        type: "heading",
+        level: 2,
+        content: "Certificaciones Importantes",
+        anchor: "certificaciones"
+      },
+      {
+        id: "certifications-paragraph",
+        type: "paragraph",
+        content: "Conocer las certificaciones de sostenibilidad es fundamental para evaluar el verdadero valor de una propiedad verde."
+      },
+      {
+        id: "certifications-list",
+        type: "list",
+        style: "checked",
+        items: [
+          {
+            content: "LEED (Leadership in Energy and Environmental Design)",
+            checked: true
+          },
+          {
+            content: "BREEAM (Building Research Establishment Environmental Assessment Method)",
+            checked: true
+          },
+          {
+            content: "WELL Building Standard",
+            checked: true
+          },
+          {
+            content: "ENERGY STAR",
+            checked: true
+          }
+        ]
+      }
+    ],
+
+    views: 2980,
+    likes: 178,
+    commentsEnabled: true
+  },
+
+  // Sexto blog post
+  {
+    id: "6",
+    slug: "house-hacking-estrategia-inversion-sin-dinero",
+    publishedAt: "2024-05-20T09:15:00Z",
+    updatedAt: "2024-06-10T16:20:00Z",
+    status: "published",
+
+    seo: {
+      title: "House Hacking: La Estrategia de Inversión Sin Dinero Inicial | LOKL Academy",
+      description: "Aprende cómo comenzar a invertir en bienes raíces sin dinero inicial usando la estrategia del house hacking. Guía paso a paso con casos reales.",
+      keywords: ["house hacking", "inversión sin dinero", "estrategias inmobiliarias", "alquiler por habitaciones", "inversión principiantes"],
+      ogImage: {
+        url: "/images/house-model.jpg",
+        alt: "House Hacking - Inversión Sin Dinero Inicial",
+        width: 1200,
+        height: 630
+      },
+      ogType: "article",
+      twitterCard: "summary_large_image"
+    },
+
+    author: {
+      id: "author6",
+      name: "Diego Ramírez",
+      role: "Experto en Estrategias de Inversión",
+      avatar: "/images/skyscraper-bw.jpg",
+      bio: "Diego Ramírez es experto en estrategias creativas de inversión inmobiliaria. Ha ayudado a más de 200 personas a comenzar su portafolio inmobiliario sin capital inicial."
+    },
+
+    category: "Estrategias",
+    categoryFull: {
+      id: "cat4",
+      name: "Estrategias de Inversión",
+      slug: "estrategias-inversion"
+    },
+
+    tags: [
+      {
+        id: "tag12",
+        name: "House Hacking",
+        slug: "house-hacking"
+      },
+      {
+        id: "tag13",
+        name: "Principiantes",
+        slug: "principiantes"
+      },
+      {
+        id: "tag14",
+        name: "Sin Capital",
+        slug: "sin-capital"
+      }
+    ],
+
+    title: "House Hacking: La Estrategia de Inversión Sin Dinero Inicial",
+    subtitle: "Cómo comenzar tu portafolio inmobiliario sin capital",
+    excerpt: "El house hacking es una de las estrategias más efectivas para comenzar a invertir en bienes raíces sin dinero inicial. Descubre cómo puedes vivir gratis mientras construyes tu patrimonio inmobiliario.",
+    estimatedReadTime: 14,
+
+    coverImage: {
+      src: "/images/house-model.jpg",
+      alt: "Casa con múltiples unidades de alquiler",
+      caption: "El house hacking te permite vivir gratis mientras construyes patrimonio"
+    },
+
+    content: [
+      {
+        id: "intro-heading",
+        type: "heading",
+        level: 1,
+        content: "House Hacking: La Estrategia de Inversión Sin Dinero Inicial",
+        anchor: "introduccion"
+      },
+      {
+        id: "intro-paragraph",
+        type: "paragraph",
+        content: "¿Te imaginas vivir gratis mientras construyes tu patrimonio inmobiliario? El house hacking hace esto posible. Esta estrategia revolucionaria ha permitido a miles de personas comenzar su viaje de inversión inmobiliaria sin capital inicial.",
+        dropCap: true
+      },
+      {
+        id: "what-is-heading",
+        type: "heading",
+        level: 2,
+        content: "¿Qué es el House Hacking?",
+        anchor: "que-es"
+      },
+      {
+        id: "what-is-paragraph",
+        type: "paragraph",
+        content: "El house hacking consiste en comprar una propiedad, vivir en una parte de ella y alquilar las demás unidades o habitaciones para cubrir todos o la mayoría de los gastos de la propiedad."
+      },
+      {
+        id: "benefits-heading",
+        type: "heading",
+        level: 2,
+        content: "Beneficios del House Hacking",
+        anchor: "beneficios"
+      },
+      {
+        id: "benefits-list",
+        type: "list",
+        style: "checked",
+        items: [
+          {
+            content: "Vivir con gastos mínimos o gratis",
+            checked: true
+          },
+          {
+            content: "Construir patrimonio sin capital adicional",
+            checked: true
+          },
+          {
+            content: "Aprender gestión de propiedades",
+            checked: true
+          },
+          {
+            content: "Calificar para mejores financiamientos",
+            checked: true
+          }
+        ]
+      },
+      {
+        id: "strategies-heading",
+        type: "heading",
+        level: 2,
+        content: "Estrategias de House Hacking",
+        anchor: "estrategias"
+      },
+      {
+        id: "strategies-columns",
+        type: "columns",
+        columns: [
+          {
+            width: "1/2",
+            blocks: [
+              {
+                id: "multi-family",
+                type: "heading",
+                level: 3,
+                content: "Propiedades Multifamiliares"
+              },
+              {
+                id: "multi-family-paragraph",
+                type: "paragraph",
+                content: "Comprar un edificio de 2-4 unidades, vivir en una y alquilar las demás. Esta es la estrategia más popular y efectiva."
+              }
+            ]
+          },
+          {
+            width: "1/2",
+            blocks: [
+              {
+                id: "single-family",
+                type: "heading",
+                level: 3,
+                content: "Alquiler por Habitaciones"
+              },
+              {
+                id: "single-family-paragraph",
+                type: "paragraph",
+                content: "Comprar una casa grande y alquilar habitaciones individuales a estudiantes o profesionales."
+              }
+            ]
+          }
+        ],
+        gap: "3rem",
+        stackBelow: "md"
+      },
+      {
+        id: "case-study-heading",
+        type: "heading",
+        level: 2,
+        content: "Caso de Estudio: María y su Primer House Hack",
+        anchor: "caso-estudio"
+      },
+      {
+        id: "case-study-paragraph",
+        type: "paragraph",
+        content: "María, una ingeniera de 28 años, compró un duplex por $350,000 con solo 3.5% de pago inicial usando un préstamo FHA. Vive en una unidad y alquila la otra por $2,200 mensuales."
+      },
+      {
+        id: "case-study-stats",
+        type: "statistic",
+        value: "$1,200",
+        label: "de ahorro mensual para María",
+        trend: "up",
+        trendValue: "después de cubrir todos los gastos"
+      },
+      {
+        id: "conclusion-heading",
+        type: "heading",
+        level: 2,
+        content: "Conclusión",
+        anchor: "conclusion"
+      },
+      {
+        id: "conclusion-paragraph",
+        type: "paragraph",
+        content: "El house hacking es una estrategia probada que puede acelerar significativamente tu camino hacia la libertad financiera. Con la planificación adecuada y la mentalidad correcta, puedes comenzar tu portafolio inmobiliario sin capital inicial."
+      }
+    ],
+
+    views: 3560,
+    likes: 223,
+    shares: 89,
+    commentsEnabled: true
+  },
+
+  // Séptimo blog post
+  {
+    id: "7",
+    slug: "reits-vs-inversion-directa-comparacion-completa",
+    publishedAt: "2024-05-15T14:30:00Z",
+    status: "published",
+
+    seo: {
+      title: "REITs vs Inversión Directa: Comparación Completa para Inversores | LOKL Academy",
+      description: "Compara REITs vs inversión directa en bienes raíces. Ventajas, desventajas, rentabilidad y cuál elegir según tu perfil de inversor.",
+      keywords: ["REITs", "inversión directa", "comparación inmobiliaria", "fondos inmobiliarios", "rentabilidad inmobiliaria"],
+      ogImage: {
+        url: "/images/digital-charts.jpg",
+        alt: "REITs vs Inversión Directa - Comparación",
+        width: 1200,
+        height: 630
+      },
+      ogType: "article",
+      twitterCard: "summary_large_image"
+    },
+
+    author: {
+      id: "author7",
+      name: "Patricia López",
+      role: "Analista de Fondos Inmobiliarios",
+      avatar: "/images/modern-building.jpg",
+      bio: "Patricia López es analista senior de fondos inmobiliarios con más de 15 años de experiencia en el sector. Ha asesorado a inversores institucionales y particulares en estrategias de inversión inmobiliaria."
+    },
+
+    category: "Inversión",
+    categoryFull: {
+      id: "cat5",
+      name: "Fondos Inmobiliarios",
+      slug: "fondos-inmobiliarios"
+    },
+
+    tags: [
+      {
+        id: "tag15",
+        name: "REITs",
+        slug: "reits"
+      },
+      {
+        id: "tag16",
+        name: "Fondos",
+        slug: "fondos"
+      },
+      {
+        id: "tag17",
+        name: "Comparación",
+        slug: "comparacion"
+      }
+    ],
+
+    title: "REITs vs Inversión Directa: Comparación Completa para Inversores",
+    subtitle: "¿Cuál es la mejor opción para tu portafolio?",
+    excerpt: "Los REITs y la inversión directa en bienes raíces ofrecen diferentes ventajas y desventajas. Esta comparación completa te ayudará a decidir cuál es la mejor opción para tu perfil de inversor.",
+    estimatedReadTime: 11,
+
+    coverImage: {
+      src: "/images/digital-charts.jpg",
+      alt: "Gráficos comparativos de REITs vs inversión directa",
+      caption: "Cada estrategia tiene sus ventajas según tu perfil de inversor"
+    },
+
+    content: [
+      {
+        id: "intro-heading",
+        type: "heading",
+        level: 1,
+        content: "REITs vs Inversión Directa: Comparación Completa para Inversores",
+        anchor: "introduccion"
+      },
+      {
+        id: "intro-paragraph",
+        type: "paragraph",
+        content: "Una de las decisiones más importantes que debe tomar un inversor inmobiliario es si invertir directamente en propiedades o a través de REITs (Real Estate Investment Trusts). Ambas opciones tienen sus ventajas y desventajas.",
+        dropCap: true
+      },
+      {
+        id: "reits-heading",
+        type: "heading",
+        level: 2,
+        content: "Ventajas de los REITs",
+        anchor: "reits"
+      },
+      {
+        id: "reits-paragraph",
+        type: "paragraph",
+        content: "Los REITs ofrecen una forma accesible y diversificada de invertir en bienes raíces sin la necesidad de gestionar propiedades directamente."
+      },
+      {
+        id: "reits-list",
+        type: "list",
+        style: "checked",
+        items: [
+          {
+            content: "Liquidez alta - puedes vender en cualquier momento",
+            checked: true
+          },
+          {
+            content: "Diversificación automática",
+            checked: true
+          },
+          {
+            content: "Gestión profesional",
+            checked: true
+          },
+          {
+            content: "Capital inicial bajo",
+            checked: true
+          }
+        ]
+      },
+      {
+        id: "direct-heading",
+        type: "heading",
+        level: 2,
+        content: "Ventajas de la Inversión Directa",
+        anchor: "directa"
+      },
+      {
+        id: "direct-paragraph",
+        type: "paragraph",
+        content: "La inversión directa te da control total sobre tus propiedades y puede ofrecer mayores retornos a largo plazo."
+      },
+      {
+        id: "direct-list",
+        type: "list",
+        style: "checked",
+        items: [
+          {
+            content: "Control total sobre las decisiones",
+            checked: true
+          },
+          {
+            content: "Mayor potencial de apreciación",
+            checked: true
+          },
+          {
+            content: "Beneficios fiscales directos",
+            checked: true
+          },
+          {
+            content: "Apalancamiento con deuda",
+            checked: true
+          }
+        ]
+      },
+      {
+        id: "comparison-table",
+        type: "table",
+        headers: ["Aspecto", "REITs", "Inversión Directa"],
+        rows: [
+          ["Capital inicial", "$100 - $10,000", "$50,000 - $500,000+"],
+          ["Liquidez", "Alta", "Baja"],
+          ["Control", "Ninguno", "Total"],
+          ["Gestión", "Profesional", "Personal"],
+          ["Diversificación", "Automática", "Manual"],
+          ["Retorno potencial", "6-10% anual", "8-15% anual"]
+        ],
+        caption: "Comparación detallada entre REITs e inversión directa",
+        responsive: true
+      },
+      {
+        id: "recommendation-heading",
+        type: "heading",
+        level: 2,
+        content: "¿Cuál Elegir?",
+        anchor: "recomendacion"
+      },
+      {
+        id: "recommendation-paragraph",
+        type: "paragraph",
+        content: "La elección entre REITs e inversión directa depende de tu perfil de inversor, capital disponible, tiempo disponible y objetivos financieros."
+      },
+      {
+        id: "recommendation-callout",
+        type: "callout",
+        content: "Recomendación: Combina ambas estrategias. Usa REITs para diversificación y liquidez, e inversión directa para mayor control y potencial de retorno.",
+        variant: "tip",
+        icon: "lightbulb"
+      }
+    ],
+
+    views: 2870,
+    likes: 156,
+    commentsEnabled: true
+  },
+
+  // Octavo blog post
+  {
+    id: "8",
+    slug: "gestion-propiedades-rentables-guia-completa",
+    publishedAt: "2024-05-10T12:00:00Z",
+    status: "published",
+
+    seo: {
+      title: "Gestión de Propiedades Rentables: Guía Completa para Inversores | LOKL Academy",
+      description: "Aprende a gestionar propiedades de manera rentable. Estrategias de marketing, selección de inquilinos, mantenimiento y maximización de ingresos.",
+      keywords: ["gestión de propiedades", "propiedades rentables", "selección de inquilinos", "mantenimiento inmobiliario", "marketing inmobiliario"],
+      ogImage: {
+        url: "/images/buildings-bw.jpg",
+        alt: "Gestión de Propiedades Rentables",
+        width: 1200,
+        height: 630
+      },
+      ogType: "article",
+      twitterCard: "summary_large_image"
+    },
+
+    author: {
+      id: "author8",
+      name: "Ricardo Vega",
+      role: "Gestor de Propiedades Profesional",
+      avatar: "/images/skyscraper-bw.jpg",
+      bio: "Ricardo Vega gestiona un portafolio de más de 200 propiedades residenciales y comerciales. Es experto en optimización de rentabilidad y gestión eficiente de propiedades."
+    },
+
+    category: "Gestión",
+    categoryFull: {
+      id: "cat6",
+      name: "Gestión de Propiedades",
+      slug: "gestion-propiedades"
+    },
+
+    tags: [
+      {
+        id: "tag18",
+        name: "Gestión",
+        slug: "gestion"
+      },
+      {
+        id: "tag19",
+        name: "Rentabilidad",
+        slug: "rentabilidad"
+      },
+      {
+        id: "tag20",
+        name: "Inquilinos",
+        slug: "inquilinos"
+      }
+    ],
+
+    title: "Gestión de Propiedades Rentables: Guía Completa para Inversores",
+    subtitle: "Maximiza tus ingresos con una gestión profesional",
+    excerpt: "La gestión eficiente de propiedades puede hacer la diferencia entre una inversión exitosa y una problemática. Descubre las mejores prácticas para maximizar la rentabilidad de tus propiedades.",
+    estimatedReadTime: 13,
+
+    coverImage: {
+      src: "/images/buildings-bw.jpg",
+      alt: "Edificio residencial bien gestionado",
+      caption: "Una gestión profesional maximiza la rentabilidad de tus inversiones"
+    },
+
+    content: [
+      {
+        id: "intro-heading",
+        type: "heading",
+        level: 1,
+        content: "Gestión de Propiedades Rentables: Guía Completa para Inversores",
+        anchor: "introduccion"
+      },
+      {
+        id: "intro-paragraph",
+        type: "paragraph",
+        content: "La gestión de propiedades es el factor determinante en el éxito de cualquier inversión inmobiliaria. Una gestión profesional puede aumentar significativamente tus ingresos y reducir los dolores de cabeza.",
+        dropCap: true
+      },
+      {
+        id: "marketing-heading",
+        type: "heading",
+        level: 2,
+        content: "Marketing y Atracción de Inquilinos",
+        anchor: "marketing"
+      },
+      {
+        id: "marketing-paragraph",
+        type: "paragraph",
+        content: "El marketing efectivo es crucial para mantener tus propiedades ocupadas con inquilinos de calidad que paguen a tiempo."
+      },
+      {
+        id: "marketing-tips",
+        type: "list",
+        style: "checked",
+        items: [
+          {
+            content: "Fotografías profesionales de alta calidad",
+            checked: true
+          },
+          {
+            content: "Descripciones detalladas y atractivas",
+            checked: true
+          },
+          {
+            content: "Presencia en múltiples plataformas",
+            checked: true
+          },
+          {
+            content: "Precios competitivos basados en el mercado",
+            checked: true
+          }
+        ]
+      },
+      {
+        id: "screening-heading",
+        type: "heading",
+        level: 2,
+        content: "Selección de Inquilinos",
+        anchor: "seleccion"
+      },
+      {
+        id: "screening-paragraph",
+        type: "paragraph",
+        content: "La selección cuidadosa de inquilinos puede prevenir problemas futuros y asegurar un flujo de caja estable."
+      },
+      {
+        id: "screening-quote",
+        type: "quote",
+        content: "Es mejor tener una propiedad vacía por un mes que un inquilino problemático por un año.",
+        author: "Ricardo Vega",
+        citation: "Gestor de Propiedades",
+        style: "default"
+      },
+      {
+        id: "maintenance-heading",
+        type: "heading",
+        level: 2,
+        content: "Mantenimiento Preventivo",
+        anchor: "mantenimiento"
+      },
+      {
+        id: "maintenance-paragraph",
+        type: "paragraph",
+        content: "El mantenimiento preventivo es más económico que las reparaciones de emergencia y mantiene el valor de tu propiedad."
+      },
+      {
+        id: "maintenance-schedule",
+        type: "table",
+        headers: ["Tarea", "Frecuencia", "Costo Estimado"],
+        rows: [
+          ["Inspección HVAC", "Anual", "$100-200"],
+          ["Limpieza de canaletas", "Semestral", "$150-300"],
+          ["Pintura exterior", "Cada 5-7 años", "$3,000-8,000"],
+          ["Revisión eléctrica", "Cada 3 años", "$200-500"]
+        ],
+        caption: "Programa de mantenimiento preventivo recomendado",
+        responsive: true
+      },
+      {
+        id: "technology-heading",
+        type: "heading",
+        level: 2,
+        content: "Tecnología en la Gestión",
+        anchor: "tecnologia"
+      },
+      {
+        id: "technology-paragraph",
+        type: "paragraph",
+        content: "La tecnología moderna puede automatizar muchos aspectos de la gestión de propiedades, ahorrando tiempo y dinero."
+      },
+      {
+        id: "tech-tools",
+        type: "list",
+        style: "unordered",
+        items: [
+          { content: "Software de gestión de propiedades" },
+          { content: "Sistemas de pago online" },
+          { content: "Aplicaciones de comunicación con inquilinos" },
+          { content: "Sistemas de monitoreo remoto" }
+        ]
+      }
+    ],
+
+    views: 3240,
+    likes: 198,
+    shares: 67,
+    commentsEnabled: true
   }
 ];
 

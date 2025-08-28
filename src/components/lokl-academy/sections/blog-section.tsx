@@ -26,43 +26,59 @@ const BlogSection: React.FC<BlogSectionProps> = ({ blogs }) => {
             Descubre nuestros artículos más recientes sobre inversión inmobiliaria y finanzas personales.
           </Paragraph>
         </div>
-        <Link
-          href="/blog"
-          className="rounded-md bg-white px-6 py-3 text-sm font-medium text-[#0F0F0F] shadow-sm transition-colors hover:bg-[#F7F7FB] hover:text-[#5352F6]"
-        >
-          Ver todos los artículos
+        <Link href="/blog">
+          <Button 
+            variant="secondary"
+          >
+            Ver todos los artículos
+          </Button>
         </Link>
       </div>
 
       {displayBlogs.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div className="space-y-10">
           {/* Primer blog destacado a ancho completo */}
           {displayBlogs[0] && (
-            <div className="col-span-1 md:col-span-2 lg:col-span-3">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              viewport={{ once: true }}
+            >
               <BlogCard 
                 key={displayBlogs[0].id} 
                 blog={displayBlogs[0]} 
                 variant="featured"
               />
-            </div>
+            </motion.div>
           )}
           
-          {/* Resto de blogs en grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {displayBlogs.slice(1).map((blog) => (
-              <BlogCard 
-                key={blog.id} 
-                blog={blog} 
-              />
-            ))}
-          </div>
+          {/* Resto de blogs en grid con más espacio */}
+          {displayBlogs.length > 1 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {displayBlogs.slice(1).map((blog, index) => (
+                <motion.div
+                  key={blog.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <BlogCard 
+                    blog={blog} 
+                    variant="default"
+                  />
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
+        transition={{ duration: 0.3, delay: 0.2 }}
         viewport={{ once: true }}
         className="mt-12 flex justify-center"
       >
