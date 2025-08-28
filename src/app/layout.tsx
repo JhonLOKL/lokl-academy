@@ -1,54 +1,54 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "LOKL Academy | Cursos de Inversiones Inmobiliarias y Bienes Raíces",
-  description: "Aprende a invertir en bienes raíces con cursos, blogs, podcasts y recursos premium. Domina el mundo de las inversiones inmobiliarias con LOKL Academy.",
-  keywords: "inversiones inmobiliarias, bienes raíces, cursos de inversión, podcasts inmobiliarios, blogs financieros, LOKL Academy",
+  title: {
+    default: "LOKL Academy | Plataforma de Inversión y Bienes Raíces",
+    template: "%s | LOKL Academy"
+  },
+  description: "LOKL Academy es una plataforma educativa especializada en inversión inmobiliaria, bienes raíces y finanzas personales. Ofrecemos cursos, blogs, podcasts y recursos para inversores de todos los niveles.",
+  keywords: ["inversión inmobiliaria", "bienes raíces", "finanzas personales", "educación financiera", "cursos de inversión", "LOKL Academy"],
   authors: [{ name: "LOKL Academy" }],
-  creator: "LOKL",
-  publisher: "LOKL",
+  creator: "LOKL Academy",
+  publisher: "LOKL Academy",
   formatDetection: {
     email: false,
-    telephone: false,
     address: false,
+    telephone: false,
   },
-  metadataBase: new URL("https://lokl.life"),
+  metadataBase: new URL("https://loklacademy.com"),
   alternates: {
     canonical: "/",
+    languages: {
+      "es-ES": "/es",
+    },
   },
   openGraph: {
-    title: "LOKL Academy | Plataforma de Aprendizaje en Inversiones Inmobiliarias",
-    description: "Cursos, blogs, podcasts y recursos premium para convertirte en un experto en inversiones inmobiliarias.",
-    url: "https://lokl.life",
+    title: "LOKL Academy | Plataforma de Inversión y Bienes Raíces",
+    description: "Aprende a invertir en bienes raíces y administrar tus finanzas personales con nuestros cursos, blogs y podcasts especializados.",
+    url: "https://loklacademy.com",
     siteName: "LOKL Academy",
-    locale: "es_ES",
-    type: "website",
     images: [
       {
-        url: "/images/buildings-bw.jpg",
+        url: "/images/lokl-academy-og.jpg",
         width: 1200,
         height: 630,
-        alt: "LOKL Academy - Inversiones Inmobiliarias",
-      }
+        alt: "LOKL Academy - Plataforma de Inversión y Bienes Raíces",
+      },
     ],
+    locale: "es_ES",
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "LOKL Academy | Aprende a Invertir en Bienes Raíces",
-    description: "Domina el mundo de las inversiones inmobiliarias con cursos, blogs y podcasts de expertos.",
-    images: ["/images/buildings-bw.jpg"],
+    title: "LOKL Academy | Plataforma de Inversión y Bienes Raíces",
+    description: "Aprende a invertir en bienes raíces y administrar tus finanzas personales con nuestros cursos, blogs y podcasts especializados.",
+    images: ["/images/lokl-academy-og.jpg"],
+    creator: "@loklacademy",
+    site: "@loklacademy",
   },
   robots: {
     index: true,
@@ -56,9 +56,19 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
+      "max-video-preview": -1,
       "max-image-preview": "large",
       "max-snippet": -1,
     },
+  },
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+  },
+  verification: {
+    google: "google-site-verification-code",
+    yandex: "yandex-verification-code",
   },
 };
 
@@ -69,11 +79,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }
