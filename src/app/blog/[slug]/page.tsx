@@ -13,7 +13,8 @@ import {
   BlogTags, 
   BlogCTA,
   AuthorProfile, 
-  RelatedPosts 
+  RelatedPosts,
+  LoklCTABanner
 } from "@/components/lokl-academy/components";
 
 // Componente para renderizar los diferentes tipos de bloques de contenido
@@ -506,6 +507,11 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
                 {/* Author bio */}
                 <div className="mb-12 mt-16">
                   <AuthorProfile author={blog.author} />
+                </div>
+                
+                {/* Banner CTA de LOKL */}
+                <div className="mb-12 mt-16">
+                  <LoklCTABanner />
                 </div>
               </div>
             </div>

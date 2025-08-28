@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import { Navbar, Footer, H1, Paragraph } from "@/components/design-system";
-import BlogCard from "@/components/lokl-academy/components/blog-card";
+import { BlogCard, LoklCTABanner } from "@/components/lokl-academy/components";
 import mockBlogPosts from "@/lib/blog/mock-data";
 
 export default function BlogPage() {
@@ -102,6 +103,11 @@ export default function BlogPage() {
                 </Paragraph>
               </div>
             )}
+            
+            {/* Banner CTA de LOKL */}
+            <div className="mt-16">
+              <LoklCTABanner />
+            </div>
           </div>
         </section>
       </main>

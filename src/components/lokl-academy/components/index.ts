@@ -5,3 +5,4 @@ export { default as BlogTags } from './blog-tags';
 export { default as BlogCTA } from './blog-cta';
 export { default as AuthorProfile } from './author-profile';
 export { default as RelatedPosts } from './related-posts';
+export { default as LoklCTABanner } from './lokl-cta-banner';

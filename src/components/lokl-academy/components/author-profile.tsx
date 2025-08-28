@@ -59,7 +59,7 @@ const AuthorProfile: React.FC<AuthorProfileProps> = ({
             src={author.avatar}
             alt={author.name}
             fill
-            className="object-cover grayscale hover:grayscale-0 transition-all duration-300"
+            className="object-cover transition-all duration-300"
           />
         </div>
         <div>
