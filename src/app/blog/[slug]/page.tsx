@@ -53,7 +53,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.3 }}
               viewport={{ once: true }}
               className="h-full w-full"
             >
@@ -91,7 +91,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                 key={index} 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
                 viewport={{ once: true }}
                 className="relative h-[200px]"
               >
@@ -162,7 +162,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
         <motion.blockquote 
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.3 }}
           viewport={{ once: true }}
           className={`mb-8 border-l-4 border-[#5352F6] bg-gradient-to-r from-[#F7F7FB] to-white p-6 ${
             block.style === "large" ? "text-xl" : "text-base"
@@ -296,7 +296,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.3 }}
           viewport={{ once: true }}
           className={`mb-8 rounded-lg border-l-4 p-4 ${calloutColors[block.variant]} ${block.className || ""}`}
         >
@@ -334,7 +334,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                 className={colSpan}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
                 {column.blocks.map((nestedBlock, blockIndex) => (
@@ -461,7 +461,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
+                transition={{ duration: 0.3, delay: 0.3 }}
                 className="mt-8 flex items-center justify-center"
               >
                 <AuthorProfile author={blog.author} variant="compact" />
@@ -488,7 +488,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
                     key={block.id || index}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: Math.min(index * 0.05, 1) }}
+                    transition={{ duration: 0.3, delay: Math.min(index * 0.05, 1) }}
                     viewport={{ once: true, margin: "-100px" }}
                   >
                     <ContentBlockRenderer block={block} />
