@@ -99,7 +99,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
               </div>
               
               <Link href={`/blog/${blog.slug}`}>
-                <Button variant="link" className="text-sm p-0">
+                <Button variant="link" className="text-sm p-0 cursor-pointer">
                   Leer artículo
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
                 </Button>
@@ -207,7 +207,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
           </div>
           
           <Link href={`/blog/${blog.slug}`}>
-            <Button variant="link" className="text-sm p-0">
+            <Button variant="link" className="text-sm p-0 cursor-pointer">
               Leer artículo
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
             </Button>
