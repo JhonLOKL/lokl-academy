@@ -51,9 +51,9 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
         <figure className={`mb-8 ${block.className || ""}`}>
           <div className="relative h-[300px] w-full md:h-[400px]">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
+              initial={{ opacity: 0, scale: 0.95, filter: "grayscale(1)" }}
+              whileInView={{ opacity: 1, scale: 1, filter: "grayscale(0)" }}
+              transition={{ duration: 0.8 }}
               viewport={{ once: true }}
               className="h-full w-full"
             >
@@ -61,7 +61,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                 src={block.src}
                 alt={block.alt}
                 fill
-                className="rounded-lg object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                className="rounded-lg object-cover grayscale hover:grayscale-0 hover:scale-105 transition-all duration-500"
                 loading={block.loading || "lazy"}
               />
             </motion.div>
@@ -89,9 +89,9 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
             {block.images.map((image, index) => (
               <motion.div 
                 key={index} 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
+                initial={{ opacity: 0, y: 20, filter: "grayscale(1)" }}
+                whileInView={{ opacity: 1, y: 0, filter: "grayscale(0)" }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
                 className="relative h-[200px]"
               >
@@ -100,7 +100,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                     src={image.src}
                     alt={image.alt}
                     fill
-                    className="rounded-lg object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                    className="rounded-lg object-cover grayscale hover:grayscale-0 hover:scale-105 transition-all duration-500"
                   />
                 </div>
                 {image.caption && (
