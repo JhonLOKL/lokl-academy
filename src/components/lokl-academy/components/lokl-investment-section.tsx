@@ -21,9 +21,9 @@ const LoklInvestmentSection: React.FC<LoklInvestmentSectionProps> = ({ className
         <div className="mb-10">
           <span className="text-sm font-medium text-[#5352F6] mb-3 block">#CreceConLokl</span>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            <span className="text-[#0F0F0F]">¿Quieres empezar a invertir en </span>
-            <span className="text-[#0F0F0F]">inmuebles, </span>
-            <span className="text-[#5352F6]">pero...?</span>
+            <span className="text-[#0F0F0F]">Descubre cómo LOKL te ayuda a </span>
+            <span className="text-[#5352F6]">crecer tu patrimonio </span>
+            <span className="text-[#0F0F0F]">con inversiones inmobiliarias</span>
           </h2>
           
           <Text 
