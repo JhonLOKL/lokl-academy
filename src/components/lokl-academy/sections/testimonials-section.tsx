@@ -61,7 +61,7 @@ const TestimonialsSection = () => {
               </svg>
             </div>
             <Paragraph className="mb-6 italic">
-              "{testimonial.quote}"
+              &ldquo;{testimonial.quote}&rdquo;
             </Paragraph>
             <div className="flex items-center">
               <div className="relative mr-4 h-12 w-12 overflow-hidden rounded-full">

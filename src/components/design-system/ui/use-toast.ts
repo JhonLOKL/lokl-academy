@@ -16,12 +16,16 @@ type ToasterToast = ToastProps & {
   icon?: React.ReactNode;
 };
 
-const actionTypes = {
-  ADD_TOAST: "ADD_TOAST",
-  UPDATE_TOAST: "UPDATE_TOAST",
-  DISMISS_TOAST: "DISMISS_TOAST",
-  REMOVE_TOAST: "REMOVE_TOAST",
-} as const;
+// Definimos como tipo para evitar la advertencia de "solo usado como tipo"
+type ActionTypesMap = {
+  ADD_TOAST: "ADD_TOAST";
+  UPDATE_TOAST: "UPDATE_TOAST";
+  DISMISS_TOAST: "DISMISS_TOAST";
+  REMOVE_TOAST: "REMOVE_TOAST";
+}
+
+// Usamos valores directamente en lugar de una constante
+// para evitar la advertencia de "asignado pero nunca usado"
 
 let count = 0;
 
@@ -30,7 +34,7 @@ function genId() {
   return count.toString();
 }
 
-type ActionType = typeof actionTypes;
+type ActionType = ActionTypesMap;
 
 type Action =
   | {
@@ -64,7 +68,7 @@ const addToRemoveQueue = (toastId: string) => {
   const timeout = setTimeout(() => {
     toastTimeouts.delete(toastId);
     dispatch({
-      type: "REMOVE_TOAST",
+      type: "REMOVE_TOAST" as const,
       toastId: toastId,
     });
   }, TOAST_REMOVE_DELAY);
@@ -145,13 +149,13 @@ function toast({ ...props }: Toast) {
 
   const update = (props: ToasterToast) =>
     dispatch({
-      type: "UPDATE_TOAST",
+      type: "UPDATE_TOAST" as const,
       toast: { ...props, id },
     });
-  const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id });
+  const dismiss = () => dispatch({ type: "DISMISS_TOAST" as const, toastId: id });
 
   dispatch({
-    type: "ADD_TOAST",
+          type: "ADD_TOAST" as const,
     toast: {
       ...props,
       id,
@@ -185,7 +189,7 @@ function useToast() {
   return {
     ...state,
     toast,
-    dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
+    dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST" as const, toastId }),
   };
 }
 

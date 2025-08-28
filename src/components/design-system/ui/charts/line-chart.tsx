@@ -21,7 +21,6 @@ export interface LineChartProps {
     activeDot?: boolean;
   }[];
   height?: number;
-  width?: number;
   className?: string;
   showGrid?: boolean;
   showLegend?: boolean;
@@ -30,7 +29,7 @@ export interface LineChartProps {
   showYAxis?: boolean;
   xAxisDataKey?: string;
   yAxisWidth?: number;
-  tooltipFormatter?: (value: any) => string;
+  tooltipFormatter?: (value: ValueType) => string;
   title?: string;
   subtitle?: string;
 }
@@ -40,7 +39,7 @@ const CustomTooltip = ({
   payload,
   label,
   formatter,
-}: TooltipProps<ValueType, NameType> & { formatter?: (value: any) => string }) => {
+}: TooltipProps<ValueType, NameType> & { formatter?: (value: ValueType) => string }) => {
   if (active && payload && payload.length) {
     return (
       <div className="rounded-lg border border-[#E5E5E5] bg-white p-3 shadow-sm">
@@ -55,7 +54,7 @@ const CustomTooltip = ({
               <p className="text-xs">
                 <span className="font-medium">{entry.name}: </span>
                 <span>
-                  {formatter ? formatter(entry.value as number | string) : entry.value}
+                  {formatter && entry.value !== undefined ? formatter(entry.value) : entry.value}
                 </span>
               </p>
             </div>
@@ -72,7 +71,6 @@ export function LineChart({
   data,
   series,
   height = 300,
-  width,
   className,
   showGrid = true,
   showLegend = true,
@@ -164,7 +162,6 @@ export function LineChart({
 export interface SimpleLineChartProps {
   data: { label: string; value: number }[];
   height?: number;
-  width?: number;
   className?: string;
   valuePrefix?: string;
   valueSuffix?: string;
@@ -176,7 +173,6 @@ export interface SimpleLineChartProps {
 export function SimpleLineChart({
   data,
   height = 300,
-  width,
   className,
   valuePrefix = "",
   valueSuffix = "",
@@ -196,7 +192,7 @@ export function SimpleLineChart({
     color: color
   }];
 
-  const formatter = (value: number | string) => {
+  const formatter = (value: ValueType) => {
     return `${valuePrefix}${value}${valueSuffix}`;
   };
 
@@ -205,7 +201,6 @@ export function SimpleLineChart({
       data={transformedData}
       series={series}
       height={height}
-      width={width}
       className={className}
       tooltipFormatter={formatter}
       title={title}

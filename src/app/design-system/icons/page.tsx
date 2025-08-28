@@ -143,7 +143,7 @@ export default function IconsPage() {
   ];
 
   // Función para renderizar un icono con su nombre
-  const renderIcon = (IconComponent: React.ComponentType<any>, name: string) => (
+  const renderIcon = (IconComponent: React.ComponentType<{ size?: number; className?: string }>, name: string) => (
     <div key={name} className="flex flex-col items-center">
       <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#F5F5F5]">
         <IconComponent size={32} className="text-[#5352F6]" />

@@ -20,24 +20,23 @@ export interface RadarChartProps {
     strokeWidth?: number;
   }[];
   height?: number;
-  width?: number;
   className?: string;
   showGrid?: boolean;
   showLegend?: boolean;
   showTooltip?: boolean;
-  tooltipFormatter?: (value: any) => string;
+  tooltipFormatter?: (value: ValueType) => string;
   title?: string;
   subtitle?: string;
   maxValue?: number;
-  angleAxisProps?: Record<string, any>;
-  radiusAxisProps?: Record<string, any>;
+  angleAxisProps?: Record<string, unknown>;
+  radiusAxisProps?: Record<string, unknown>;
 }
 
 const CustomTooltip = ({
   active,
   payload,
   formatter,
-}: TooltipProps<ValueType, NameType> & { formatter?: (value: any) => string }) => {
+}: TooltipProps<ValueType, NameType> & { formatter?: (value: ValueType) => string }) => {
   if (active && payload && payload.length) {
     return (
       <div className="rounded-lg border border-[#E5E5E5] bg-white p-3 shadow-sm">
@@ -52,7 +51,7 @@ const CustomTooltip = ({
               <p className="text-xs">
                 <span className="font-medium">{entry.name}: </span>
                 <span>
-                  {formatter ? formatter(entry.value as number | string) : entry.value}
+                  {formatter && entry.value !== undefined ? formatter(entry.value) : entry.value}
                 </span>
               </p>
             </div>
@@ -69,7 +68,6 @@ export function RadarChart({
   data,
   series,
   height = 300,
-  width,
   className,
   showGrid = true,
   showLegend = true,
@@ -136,7 +134,6 @@ export function RadarChart({
 export interface SimpleRadarChartProps {
   data: { category: string; value: number }[];
   height?: number;
-  width?: number;
   className?: string;
   valuePrefix?: string;
   valueSuffix?: string;
@@ -149,7 +146,6 @@ export interface SimpleRadarChartProps {
 export function SimpleRadarChart({
   data,
   height = 300,
-  width,
   className,
   valuePrefix = "",
   valueSuffix = "",
@@ -170,7 +166,7 @@ export function SimpleRadarChart({
     color: color
   }];
 
-  const formatter = (value: number | string) => {
+  const formatter = (value: ValueType) => {
     return `${valuePrefix}${value}${valueSuffix}`;
   };
 
@@ -179,7 +175,6 @@ export function SimpleRadarChart({
       data={transformedData}
       series={series}
       height={height}
-      width={width}
       className={className}
       tooltipFormatter={formatter}
       title={title}

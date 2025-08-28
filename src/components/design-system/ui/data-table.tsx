@@ -50,16 +50,18 @@ export function DataTable<T>({
     direction: "asc" | "desc";
   } | null>(null);
 
-  // Función para obtener el valor de una celda para ordenar
-  const getCellValue = (item: T, key: string): any => {
-    const keys = key.split(".");
-    return keys.reduce((obj, key) => {
-      return obj && obj[key as keyof typeof obj];
-    }, item as any);
-  };
-
   // Función para ordenar los datos
   const sortedData = React.useMemo(() => {
+    // Función para obtener el valor de una celda para ordenar
+    const getCellValue = (item: T, key: string): unknown => {
+      const keys = key.split(".");
+      return keys.reduce((obj: Record<string, unknown> | unknown, key: string) => {
+        if (obj && typeof obj === 'object') {
+          return (obj as Record<string, unknown>)[key];
+        }
+        return undefined;
+      }, item as Record<string, unknown>);
+    };
     if (!sortConfig) return data;
     return [...data].sort((a, b) => {
       const aValue = getCellValue(a, sortConfig.key);

@@ -14,13 +14,13 @@ export interface PieChartDataItem {
 export interface PieChartProps {
   data: PieChartDataItem[];
   height?: number;
-  width?: number;
+
   className?: string;
   innerRadius?: number;
   outerRadius?: number;
   showTooltip?: boolean;
   showLabels?: boolean;
-  tooltipFormatter?: (value: any) => string;
+  tooltipFormatter?: (value: ValueType) => string;
   colors?: string[];
   activeIndex?: number;
   onActiveIndexChange?: (index: number | undefined) => void;
@@ -35,13 +35,13 @@ const CustomTooltip = ({
   active,
   payload,
   formatter,
-}: TooltipProps<ValueType, NameType> & { formatter?: (value: any) => string }) => {
+}: TooltipProps<ValueType, NameType> & { formatter?: (value: ValueType) => string }) => {
   if (active && payload && payload.length) {
     return (
       <div className="rounded-lg border border-[#E5E5E5] bg-white p-3 shadow-sm">
         <p className="text-sm font-medium">{payload[0].name}</p>
         <p className="text-xs font-medium text-[#6D6C6C]">
-          {formatter ? formatter(payload[0].value as number | string) : payload[0].value}
+          {formatter && payload[0].value !== undefined ? formatter(payload[0].value) : payload[0].value}
         </p>
       </div>
     );
@@ -50,8 +50,23 @@ const CustomTooltip = ({
   return null;
 };
 
-const renderActiveShape = (props: any) => {
-  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent } = props;
+// Usamos unknown para el tipo de props ya que Recharts espera un tipo específico
+// que es difícil de definir completamente
+const renderActiveShape = (props: unknown) => {
+  // Hacemos una aserción de tipo para trabajar con las propiedades que necesitamos
+  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent } = props as {
+    cx: number;
+    cy: number;
+    innerRadius: number;
+    outerRadius: number;
+    startAngle: number;
+    endAngle: number;
+    fill: string;
+    payload: {
+      name: string;
+    };
+    percent: number;
+  };
 
   return (
     <g>
@@ -86,7 +101,6 @@ const renderActiveShape = (props: any) => {
 export function PieChart({
   data,
   height = 300,
-  width,
   className,
   innerRadius = 0,
   outerRadius = 100,
@@ -102,7 +116,7 @@ export function PieChart({
 }: PieChartProps) {
   const [activeIdx, setActiveIdx] = React.useState<number | undefined>(activeIndex);
 
-  const handleMouseEnter = (_: any, index: number) => {
+  const handleMouseEnter = (_: unknown, index: number) => {
     setActiveIdx(index);
     if (onActiveIndexChange) {
       onActiveIndexChange(index);

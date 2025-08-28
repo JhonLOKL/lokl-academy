@@ -30,7 +30,6 @@ import {
   HelpCircle,
   Info,
   MessageSquare,
-  PanelRight,
   Settings,
   X,
 } from "lucide-react";

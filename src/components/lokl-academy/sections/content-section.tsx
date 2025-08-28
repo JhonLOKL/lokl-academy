@@ -2,12 +2,13 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { H2, H3, Paragraph, Button, Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/design-system";
+import { H2, Paragraph, Button, Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/design-system";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
 
 const ContentSection = () => {
-  const [activeTab, setActiveTab] = useState("courses");
+  // Usamos solo setActiveTab ya que activeTab se maneja internamente por el componente Tabs
+  const [, setActiveTab] = useState("courses");
 
   const courses = [
     {
