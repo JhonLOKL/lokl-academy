@@ -20,6 +20,10 @@ export interface SEOMetadata {
   description: string;
   keywords: string[];
   canonicalUrl?: string;
+  author?: string;
+  language?: string; // Por ejemplo: "es-CO", "es-ES", etc.
+  
+  // Open Graph
   ogImage: {
     url: string;
     alt: string;
@@ -27,8 +31,44 @@ export interface SEOMetadata {
     height: number;
   };
   ogType: "article" | "website";
+  ogSiteName?: string;
+  ogLocale?: string; // Por ejemplo: "es_CO", "es_ES", etc.
+  
+  // Twitter Cards
   twitterCard: "summary" | "summary_large_image" | "app" | "player";
+  twitterSite?: string;
+  twitterCreator?: string;
+  
+  // Robots
+  robots?: {
+    index?: boolean;
+    follow?: boolean;
+    maxSnippet?: number;
+    maxImagePreview?: "none" | "standard" | "large";
+    maxVideoPreview?: number;
+  };
+  
+  // Colores de tema
+  themeColor?: string;
+  msTileColor?: string;
+  
+  // Recursos críticos para precargar
+  preloadResources?: Array<{
+    href: string;
+    as: "font" | "image" | "style" | "script";
+    type?: string;
+    crossOrigin?: "anonymous" | "use-credentials";
+  }>;
+  
+  // Datos estructurados (Schema.org)
   structuredData?: Record<string, unknown>;
+  
+  // Breadcrumbs para Schema.org
+  breadcrumbs?: Array<{
+    name: string;
+    url: string;
+    position: number;
+  }>;
 }
 
 export type ContentBlockType =
