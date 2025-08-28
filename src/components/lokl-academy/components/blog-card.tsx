@@ -35,11 +35,11 @@ const BlogCard: React.FC<BlogCardProps> = ({
   if (variant === "featured") {
     return (
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.2 }}
         viewport={{ once: true }}
-        className={`overflow-hidden rounded-xl bg-white transition-all duration-300 ${isHovered ? 'shadow-lg border border-[#5352F6]' : 'shadow-sm border border-transparent'} ${className}`}
+        className={`overflow-hidden rounded-xl bg-white transition-all duration-200 ${isHovered ? 'shadow-lg border border-[#5352F6]' : 'shadow-sm border border-transparent'} ${className}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -49,10 +49,10 @@ const BlogCard: React.FC<BlogCardProps> = ({
               src={blog.coverImage.src}
               alt={blog.coverImage.alt}
               fill
-              className={`object-cover transition-all duration-500 ${isHovered ? 'scale-105 grayscale-0' : 'grayscale'}`}
+              className={`object-cover transition-all duration-300 ${isHovered ? 'scale-105 grayscale-0' : 'grayscale'}`}
             />
             {blog.category && (
-              <div className="absolute left-4 top-4">
+              <div className="absolute left-4 top-4 z-10">
                 <Badge variant="default" className={blog.featured ? "bg-[#5352F6] text-white" : "bg-white/80 text-[#0F0F0F] border border-[#5352F6]"}>
                   {blog.category}
                 </Badge>
@@ -114,11 +114,11 @@ const BlogCard: React.FC<BlogCardProps> = ({
   if (variant === "compact") {
     return (
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.2 }}
         viewport={{ once: true }}
-        className={`flex items-center gap-4 p-2 rounded-lg transition-all duration-300 ${isHovered ? 'shadow-sm border border-[#5352F6]/30' : ''} ${className}`}
+        className={`flex items-center gap-4 p-2 rounded-lg transition-all duration-200 ${isHovered ? 'shadow-sm border border-[#5352F6]/30' : ''} ${className}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -127,7 +127,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
             src={blog.coverImage.src}
             alt={blog.coverImage.alt}
             fill
-            className={`object-cover transition-all duration-500 ${isHovered ? 'scale-105 grayscale-0' : 'grayscale'}`}
+            className={`object-cover transition-all duration-300 ${isHovered ? 'scale-105 grayscale-0' : 'grayscale'}`}
           />
         </div>
         <div>
@@ -149,11 +149,11 @@ const BlogCard: React.FC<BlogCardProps> = ({
   // Default variant
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.2 }}
       viewport={{ once: true }}
-      className={`overflow-hidden rounded-xl bg-white transition-all duration-300 ${isHovered ? 'shadow-lg border border-[#5352F6]' : 'shadow-sm border border-transparent'} ${className}`}
+      className={`overflow-hidden rounded-xl bg-white transition-all duration-200 ${isHovered ? 'shadow-lg border border-[#5352F6]' : 'shadow-sm border border-transparent'} ${className}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -162,10 +162,10 @@ const BlogCard: React.FC<BlogCardProps> = ({
           src={blog.coverImage.src}
           alt={blog.coverImage.alt}
           fill
-          className={`object-cover transition-all duration-500 ${isHovered ? 'scale-105 grayscale-0' : 'grayscale'}`}
+          className={`object-cover transition-all duration-300 ${isHovered ? 'scale-105 grayscale-0' : 'grayscale'}`}
         />
         {blog.category && (
-          <div className="absolute left-4 top-4">
+          <div className="absolute left-4 top-4 z-10">
             <Badge variant="default" className={blog.featured ? "bg-[#5352F6] text-white" : "bg-white/80 text-[#0F0F0F] border border-[#5352F6]"}>            
               {blog.category}
             </Badge>
