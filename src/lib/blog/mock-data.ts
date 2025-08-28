@@ -8,7 +8,7 @@ export const mockBlogPosts: BlogPost[] = [
     updatedAt: "2024-06-18T10:30:00Z",
     status: "published",
     featured: true,
-    
+
     seo: {
       title: "Guía Completa de Inversión Inmobiliaria 2024 | LOKL Academy",
       description: "Aprende las mejores estrategias de inversión inmobiliaria para 2024. Análisis de mercado, financiamiento, propiedades rentables y más.",
@@ -35,7 +35,7 @@ export const mockBlogPosts: BlogPost[] = [
         }
       }
     },
-    
+
     author: {
       id: "author1",
       name: "Ana Martínez",
@@ -47,14 +47,14 @@ export const mockBlogPosts: BlogPost[] = [
         linkedin: "https://linkedin.com/in/anamartinezinmobiliaria"
       }
     },
-    
+
     category: "Mercado",
     categoryFull: {
       id: "cat1",
       name: "Inversión Inmobiliaria",
       slug: "inversion-inmobiliaria"
     },
-    
+
     tags: [
       {
         id: "tag1",
@@ -72,19 +72,19 @@ export const mockBlogPosts: BlogPost[] = [
         slug: "finanzas-personales"
       }
     ],
-    
+
     title: "Guía Completa de Inversión Inmobiliaria 2024",
     subtitle: "Todo lo que necesitas saber para invertir con éxito en el mercado actual",
     excerpt: "Descubre las estrategias más efectivas para invertir en bienes raíces en 2024. Desde análisis de mercado hasta financiamiento y gestión de propiedades, esta guía cubre todo lo que necesitas para tomar decisiones informadas.",
     estimatedReadTime: 12,
-    
+
     coverImage: {
       src: "/images/modern-building.jpg",
       alt: "Edificio moderno con inversores analizando planos",
       caption: "El mercado inmobiliario ofrece oportunidades únicas para inversores en 2024",
       credit: "Foto por LOKL Media"
     },
-    
+
     content: [
       {
         id: "intro-heading",
@@ -130,15 +130,15 @@ export const mockBlogPosts: BlogPost[] = [
         type: "paragraph",
         content: "El mercado inmobiliario de 2024 presenta características únicas influenciadas por factores macroeconómicos como las tasas de interés, la inflación y las políticas gubernamentales. Entender estos factores es crucial antes de realizar cualquier inversión."
       },
-              {
-          id: "market-image",
-          type: "image",
-          src: "/images/digital-charts.jpg",
-          alt: "Gráficos de tendencias del mercado inmobiliario",
-          caption: "Tendencias de precios y tasas de interés en el mercado inmobiliario 2024",
-          width: 800,
-          height: 500
-        },
+      {
+        id: "market-image",
+        type: "image",
+        src: "/images/digital-charts.jpg",
+        alt: "Gráficos de tendencias del mercado inmobiliario",
+        caption: "Tendencias de precios y tasas de interés en el mercado inmobiliario 2024",
+        width: 800,
+        height: 500
+      },
       {
         id: "market-analysis-paragraph-2",
         type: "paragraph",
@@ -276,19 +276,19 @@ export const mockBlogPosts: BlogPost[] = [
         type: "list",
         style: "checked",
         items: [
-          { 
+          {
             content: "Contratar un administrador profesional de propiedades",
             checked: true
           },
-          { 
+          {
             content: "Implementar software de gestión inmobiliaria",
             checked: true
           },
-          { 
+          {
             content: "Establecer procesos claros para el mantenimiento",
             checked: true
           },
-          { 
+          {
             content: "Realizar inspecciones periódicas",
             checked: false,
             subItems: [
@@ -390,7 +390,7 @@ export const mockBlogPosts: BlogPost[] = [
         background: "#F7F7FB"
       }
     ],
-    
+
     relatedPosts: [
       {
         id: "2",
@@ -420,20 +420,20 @@ export const mockBlogPosts: BlogPost[] = [
         }
       }
     ],
-    
+
     views: 3450,
     likes: 187,
     shares: 92,
     commentsEnabled: true
   },
-  
+
   // Segundo blog post
   {
     id: "2",
     slug: "5-estrategias-financiamiento-inversores-inmobiliarios",
     publishedAt: "2024-06-10T09:30:00Z",
     status: "published",
-    
+
     seo: {
       title: "5 Estrategias de Financiamiento para Inversores Inmobiliarios | LOKL Academy",
       description: "Descubre las 5 mejores estrategias de financiamiento para inversores inmobiliarios en 2024. Opciones tradicionales y alternativas explicadas paso a paso.",
@@ -447,7 +447,7 @@ export const mockBlogPosts: BlogPost[] = [
       ogType: "article",
       twitterCard: "summary_large_image"
     },
-    
+
     author: {
       id: "author2",
       name: "Roberto Sánchez",
@@ -455,14 +455,14 @@ export const mockBlogPosts: BlogPost[] = [
       avatar: "/images/buildings-bw.jpg",
       bio: "Roberto Sánchez es asesor financiero especializado en el sector inmobiliario con más de 10 años de experiencia ayudando a inversores a optimizar sus estrategias de financiamiento."
     },
-    
+
     category: "Finanzas",
     categoryFull: {
       id: "cat1",
       name: "Inversión Inmobiliaria",
       slug: "inversion-inmobiliaria"
     },
-    
+
     tags: [
       {
         id: "tag2",
@@ -475,18 +475,18 @@ export const mockBlogPosts: BlogPost[] = [
         slug: "financiamiento"
       }
     ],
-    
+
     title: "5 Estrategias de Financiamiento para Inversores Inmobiliarios",
     subtitle: "Opciones tradicionales y alternativas para financiar tus inversiones",
     excerpt: "Explora las cinco estrategias de financiamiento más efectivas para inversores inmobiliarios en 2024. Desde préstamos convencionales hasta opciones creativas como el crowdfunding y el seller financing.",
     estimatedReadTime: 8,
-    
+
     coverImage: {
       src: "/images/house-model.jpg",
       alt: "Persona analizando opciones de financiamiento inmobiliario",
       caption: "El financiamiento adecuado es clave para el éxito en inversiones inmobiliarias"
     },
-    
+
     content: [
       {
         id: "intro-heading",
@@ -527,19 +527,19 @@ export const mockBlogPosts: BlogPost[] = [
       },
       // Contenido truncado para brevedad
     ],
-    
+
     views: 2180,
     likes: 134,
     commentsEnabled: true
   },
-  
+
   // Tercer blog post
   {
     id: "3",
     slug: "analizar-potencial-rentabilidad-propiedad",
     publishedAt: "2024-06-05T14:15:00Z",
     status: "published",
-    
+
     seo: {
       title: "Cómo Analizar el Potencial de Rentabilidad de una Propiedad | LOKL Academy",
       description: "Aprende a evaluar correctamente el potencial de rentabilidad de una propiedad inmobiliaria. Métodos de cálculo, indicadores clave y herramientas para inversores.",
@@ -553,7 +553,7 @@ export const mockBlogPosts: BlogPost[] = [
       ogType: "article",
       twitterCard: "summary_large_image"
     },
-    
+
     author: {
       id: "author3",
       name: "Elena Torres",
@@ -561,14 +561,14 @@ export const mockBlogPosts: BlogPost[] = [
       avatar: "/images/digital-charts.jpg",
       bio: "Elena Torres es analista de inversiones inmobiliarias con experiencia en evaluación de propiedades para fondos de inversión y particulares. Certificada en análisis financiero inmobiliario."
     },
-    
+
     category: "Análisis",
     categoryFull: {
       id: "cat1",
       name: "Inversión Inmobiliaria",
       slug: "inversion-inmobiliaria"
     },
-    
+
     tags: [
       {
         id: "tag2",
@@ -586,17 +586,17 @@ export const mockBlogPosts: BlogPost[] = [
         slug: "rentabilidad"
       }
     ],
-    
+
     title: "Cómo Analizar el Potencial de Rentabilidad de una Propiedad",
     excerpt: "Aprende a evaluar correctamente el potencial de rentabilidad de una propiedad inmobiliaria utilizando métricas clave como el ROI, Cash-on-Cash Return, Cap Rate y más.",
     estimatedReadTime: 10,
-    
+
     coverImage: {
       src: "/images/skyscraper-bw.jpg",
       alt: "Calculadora y documentos de análisis inmobiliario",
       caption: "El análisis detallado es fundamental antes de invertir en una propiedad"
     },
-    
+
     content: [
       {
         id: "intro-heading",
@@ -612,7 +612,7 @@ export const mockBlogPosts: BlogPost[] = [
       },
       // Contenido truncado para brevedad
     ],
-    
+
     views: 1890,
     likes: 112,
     commentsEnabled: true

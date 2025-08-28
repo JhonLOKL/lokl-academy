@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { H2 } from "@/components/design-system";
 import { BlogPost } from "@/lib/blog/schema";
 import BlogCard from "./blog-card";
+import LoklInvestmentSection from "./lokl-investment-section";
 
 interface RelatedPostsProps {
   posts: BlogPost[];
@@ -25,7 +26,7 @@ const RelatedPosts: React.FC<RelatedPostsProps> = ({ posts, className = "" }) =>
         <H2 variant="section">Artículos relacionados</H2>
       </div>
       
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 mb-12">
         {posts.map((post, index) => (
           <motion.div
             key={post.id}
@@ -38,6 +39,17 @@ const RelatedPosts: React.FC<RelatedPostsProps> = ({ posts, className = "" }) =>
           </motion.div>
         ))}
       </div>
+      
+      {/* Sección de inversión LOKL - Fuera de la cuadrícula, debajo de todos los artículos */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        viewport={{ once: true }}
+        className="mt-16"
+      >
+        <LoklInvestmentSection />
+      </motion.div>
     </motion.div>
   );
 };

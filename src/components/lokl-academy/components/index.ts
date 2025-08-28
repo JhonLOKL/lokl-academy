@@ -6,3 +6,5 @@ export { default as BlogCTA } from './blog-cta';
 export { default as AuthorProfile } from './author-profile';
 export { default as RelatedPosts } from './related-posts';
 export { default as LoklCTABanner } from './lokl-cta-banner';
+export { default as LoklInvestmentCard } from './lokl-investment-card';
+export { default as LoklInvestmentSection } from './lokl-investment-section';

@@ -31,7 +31,7 @@ const BlogCover: React.FC<BlogCoverProps> = ({
           src={src}
           alt={alt}
           fill
-          className="object-cover grayscale transition-all duration-700 hover:grayscale-0"
+          className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-60"></div>
