@@ -7,14 +7,14 @@ import { notFound } from "next/navigation";
 import { Navbar, Footer, H1, Paragraph } from "@/components/design-system";
 import { motion } from "framer-motion";
 import mockBlogPosts from "@/lib/blog/mock-data";
-import { BlogPost, ContentBlock } from "@/lib/blog/schema";
+import { ContentBlock } from "@/lib/blog/schema";
 import BlogCard from "@/components/lokl-academy/components/blog-card";
 
 // Componente para renderizar los diferentes tipos de bloques de contenido
 const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
   switch (block.type) {
     case "heading":
-      const HeadingTag = `h${block.level}` as keyof JSX.IntrinsicElements;
+      const HeadingTag = (`h${block.level}`) as React.ElementType;
       return (
         <HeadingTag 
           id={block.anchor} 
