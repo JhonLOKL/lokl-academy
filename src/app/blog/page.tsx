@@ -16,7 +16,7 @@ export default function BlogPage() {
 
   const filteredBlogs = filter === "all" 
     ? mockBlogPosts 
-    : mockBlogPosts.filter(blog => blog.category.slug === filter);
+    : mockBlogPosts.filter(blog => blog.categoryFull?.slug === filter);
 
   return (
     <>

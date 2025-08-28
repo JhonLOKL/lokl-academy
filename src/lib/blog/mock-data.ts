@@ -48,7 +48,8 @@ export const mockBlogPosts: BlogPost[] = [
       }
     },
     
-    category: {
+    category: "Mercado",
+    categoryFull: {
       id: "cat1",
       name: "Inversión Inmobiliaria",
       slug: "inversion-inmobiliaria"
@@ -455,7 +456,8 @@ export const mockBlogPosts: BlogPost[] = [
       bio: "Roberto Sánchez es asesor financiero especializado en el sector inmobiliario con más de 10 años de experiencia ayudando a inversores a optimizar sus estrategias de financiamiento."
     },
     
-    category: {
+    category: "Finanzas",
+    categoryFull: {
       id: "cat1",
       name: "Inversión Inmobiliaria",
       slug: "inversion-inmobiliaria"
@@ -560,7 +562,8 @@ export const mockBlogPosts: BlogPost[] = [
       bio: "Elena Torres es analista de inversiones inmobiliarias con experiencia en evaluación de propiedades para fondos de inversión y particulares. Certificada en análisis financiero inmobiliario."
     },
     
-    category: {
+    category: "Análisis",
+    categoryFull: {
       id: "cat1",
       name: "Inversión Inmobiliaria",
       slug: "inversion-inmobiliaria"

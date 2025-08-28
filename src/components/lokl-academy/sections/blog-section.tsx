@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { H2, Paragraph } from "@/components/design-system";
+import { Button, H2, Paragraph } from "@/components/design-system";
 import { motion } from "framer-motion";
 import BlogCard from "../components/blog-card";
 import { BlogPost } from "@/lib/blog/schema";
@@ -34,16 +34,28 @@ const BlogSection: React.FC<BlogSectionProps> = ({ blogs }) => {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {displayBlogs.map((blog, index) => (
-          <BlogCard 
-            key={blog.id} 
-            blog={blog} 
-            variant={index === 0 ? "featured" : "default"}
-            className={index === 0 ? "md:col-span-2 lg:col-span-1" : ""}
-          />
-        ))}
-      </div>
+      {displayBlogs.length > 0 && (
+        <div className="grid grid-cols-1 gap-8 mb-12">
+          {/* Primer blog destacado */}
+          {displayBlogs[0] && (
+            <BlogCard 
+              key={displayBlogs[0].id} 
+              blog={displayBlogs[0]} 
+              variant="featured"
+            />
+          )}
+          
+          {/* Resto de blogs en grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {displayBlogs.slice(1).map((blog) => (
+              <BlogCard 
+                key={blog.id} 
+                blog={blog} 
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -52,11 +64,10 @@ const BlogSection: React.FC<BlogSectionProps> = ({ blogs }) => {
         viewport={{ once: true }}
         className="mt-12 flex justify-center"
       >
-        <Link
-          href="/blog"
-          className="rounded-md border border-[#5352F6] bg-transparent px-6 py-3 text-sm font-medium text-[#5352F6] transition-colors hover:bg-[#5352F6] hover:text-white"
-        >
-          Explorar más artículos
+        <Link href="/blog">
+          <Button variant="secondary" size="lg">
+            Explorar más artículos
+          </Button>
         </Link>
       </motion.div>
     </div>
