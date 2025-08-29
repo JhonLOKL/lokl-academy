@@ -2,26 +2,33 @@
 
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Navbar, Footer, H1, Paragraph } from "@/components/design-system";
 import { motion } from "framer-motion";
+import { Navbar, Footer, Paragraph } from "@/components/design-system";
 import mockBlogPosts from "@/lib/blog/mock-data";
-import { BlogPost, ContentBlock } from "@/lib/blog/schema";
-import BlogCard from "@/components/lokl-academy/components/blog-card";
+import { ContentBlock } from "@/lib/blog/schema";
+import { 
+  BlogHeader, 
+  BlogCover, 
+  BlogTags, 
+  BlogCTA,
+  AuthorProfile, 
+  RelatedPosts,
+  LoklCTABanner
+} from "@/components/lokl-academy/components";
 
 // Componente para renderizar los diferentes tipos de bloques de contenido
 const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
   switch (block.type) {
     case "heading":
-      const HeadingTag = `h${block.level}` as keyof JSX.IntrinsicElements;
+      const HeadingTag = (`h${block.level}`) as React.ElementType;
       return (
         <HeadingTag 
           id={block.anchor} 
           className={`mb-4 mt-8 font-bold ${
-            block.level === 1 ? "text-3xl md:text-4xl" : 
-            block.level === 2 ? "text-2xl md:text-3xl" : 
-            block.level === 3 ? "text-xl md:text-2xl" : 
+            block.level === 1 ? "text-3xl md:text-4xl text-[#5352F6]" : 
+            block.level === 2 ? "text-2xl md:text-3xl border-b border-[#E5E5E5] pb-2" : 
+            block.level === 3 ? "text-xl md:text-2xl text-[#5352F6]/80" : 
             "text-lg md:text-xl"
           } ${block.className || ""}`}
         >
@@ -35,7 +42,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           block.size === "small" ? "text-sm" : 
           block.size === "large" ? "text-lg" : 
           "text-base"
-        } ${block.dropCap ? "first-letter:float-left first-letter:mr-3 first-letter:text-5xl first-letter:font-bold" : ""}`}>
+        } ${block.dropCap ? "first-letter:float-left first-letter:mr-3 first-letter:text-5xl first-letter:font-bold first-letter:text-[#5352F6]" : ""}`}>
           {block.content}
         </p>
       );
@@ -44,14 +51,21 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
       return (
         <figure className={`mb-8 ${block.className || ""}`}>
           <div className="relative h-[300px] w-full md:h-[400px]">
-            <Image
-              src={block.src}
-              alt={block.alt}
-              fill
-              className="rounded-lg object-cover"
-              sizes={block.sizes || "100vw"}
-              loading={block.loading || "lazy"}
-            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, filter: "grayscale(1)" }}
+              whileInView={{ opacity: 1, scale: 1, filter: "grayscale(0)" }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="h-full w-full"
+            >
+              <Image
+                src={block.src}
+                alt={block.alt}
+                fill
+                className="rounded-lg object-cover grayscale hover:grayscale-0 hover:scale-105 transition-all duration-500"
+                loading={block.loading || "lazy"}
+              />
+            </motion.div>
           </div>
           {(block.caption || block.credit) && (
             <figcaption className="mt-2 text-center text-sm text-[#6D6C6C]">
@@ -74,19 +88,28 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
             "grid-cols-1 md:grid-cols-3"
           }`}>
             {block.images.map((image, index) => (
-              <div key={index} className="relative h-[200px]">
-                <Image
-                  src={image.src}
-                  alt={image.alt}
-                  fill
-                  className="rounded-lg object-cover"
-                />
+              <motion.div 
+                key={index} 
+                initial={{ opacity: 0, y: 20, filter: "grayscale(1)" }}
+                whileInView={{ opacity: 1, y: 0, filter: "grayscale(0)" }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="relative h-[200px]"
+              >
+                <div className="relative h-full w-full">
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    fill
+                    className="rounded-lg object-cover grayscale hover:grayscale-0 hover:scale-105 transition-all duration-500"
+                  />
+                </div>
                 {image.caption && (
                   <div className="absolute bottom-0 w-full bg-black/50 p-2 text-center text-sm text-white">
                     {image.caption}
                   </div>
                 )}
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -137,18 +160,24 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
     
     case "quote":
       return (
-        <blockquote className={`mb-8 border-l-4 border-[#5352F6] bg-[#F7F7FB] p-6 ${
-          block.style === "large" ? "text-xl" : "text-base"
-        } ${block.className || ""}`}>
+        <motion.blockquote 
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3 }}
+          viewport={{ once: true }}
+          className={`mb-8 border-l-4 border-[#5352F6] bg-gradient-to-r from-[#F7F7FB] to-white p-6 ${
+            block.style === "large" ? "text-xl" : "text-base"
+          } ${block.className || ""}`}
+        >
           <p className="italic">{block.content}</p>
           {(block.author || block.citation) && (
             <footer className="mt-2 text-right text-sm">
-              {block.author && <strong>{block.author}</strong>}
+              {block.author && <strong className="text-[#5352F6]">{block.author}</strong>}
               {block.author && block.citation && ", "}
               {block.citation && <cite>{block.citation}</cite>}
             </footer>
           )}
-        </blockquote>
+        </motion.blockquote>
       );
     
     case "list":
@@ -156,7 +185,13 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
         return (
           <ol className={`mb-8 list-decimal space-y-2 pl-6 ${block.className || ""}`}>
             {block.items.map((item, index) => (
-              <li key={index}>
+              <motion.li 
+                key={index}
+                initial={{ opacity: 0, x: -10 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+                viewport={{ once: true }}
+              >
                 {item.content}
                 {item.subItems && item.subItems.length > 0 && (
                   <ol className="mt-2 list-decimal space-y-2 pl-6">
@@ -165,7 +200,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                     ))}
                   </ol>
                 )}
-              </li>
+              </motion.li>
             ))}
           </ol>
         );
@@ -173,7 +208,14 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
         return (
           <ul className={`mb-8 space-y-2 ${block.className || ""}`}>
             {block.items.map((item, index) => (
-              <li key={index} className="flex items-start">
+              <motion.li 
+                key={index} 
+                className="flex items-start"
+                initial={{ opacity: 0, x: -10 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+                viewport={{ once: true }}
+              >
                 <span className="mr-2 mt-1 text-[#5352F6]">
                   {item.checked ? (
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -186,7 +228,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                   )}
                 </span>
                 <span>{item.content}</span>
-              </li>
+              </motion.li>
             ))}
           </ul>
         );
@@ -194,7 +236,13 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
         return (
           <ul className={`mb-8 list-disc space-y-2 pl-6 ${block.className || ""}`}>
             {block.items.map((item, index) => (
-              <li key={index}>
+              <motion.li 
+                key={index}
+                initial={{ opacity: 0, x: -10 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+                viewport={{ once: true }}
+              >
                 {item.content}
                 {item.subItems && item.subItems.length > 0 && (
                   <ul className="mt-2 list-disc space-y-2 pl-6">
@@ -203,7 +251,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                     ))}
                   </ul>
                 )}
-              </li>
+              </motion.li>
             ))}
           </ul>
         );
@@ -211,18 +259,18 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
     
     case "table":
       return (
-        <div className={`mb-8 overflow-x-auto ${block.className || ""}`}>
+        <div className={`mb-8 overflow-x-auto rounded-lg border border-[#E5E5E5] ${block.className || ""}`}>
           <table className="w-full border-collapse">
             <thead>
-              <tr className="border-b-2 border-[#E5E5E5]">
+              <tr className="border-b-2 border-[#E5E5E5] bg-[#F7F7FB]">
                 {block.headers.map((header, index) => (
-                  <th key={index} className="p-3 text-left font-semibold">{header}</th>
+                  <th key={index} className="p-3 text-left font-semibold text-[#5352F6]">{header}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {block.rows.map((row, rowIndex) => (
-                <tr key={rowIndex} className="border-b border-[#E5E5E5]">
+                <tr key={rowIndex} className="border-b border-[#E5E5E5] hover:bg-[#F7F7FB]/50 transition-colors">
                   {row.map((cell, cellIndex) => (
                     <td key={cellIndex} className="p-3">{cell}</td>
                   ))}
@@ -230,7 +278,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
               ))}
             </tbody>
             {block.caption && (
-              <caption className="mt-2 text-sm text-[#6D6C6C]">{block.caption}</caption>
+              <caption className="mt-2 p-2 text-sm text-[#6D6C6C] caption-bottom">{block.caption}</caption>
             )}
           </table>
         </div>
@@ -242,18 +290,24 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
         warning: "bg-yellow-50 border-yellow-200 text-yellow-800",
         success: "bg-green-50 border-green-200 text-green-800",
         error: "bg-red-50 border-red-200 text-red-800",
-        tip: "bg-purple-50 border-purple-200 text-purple-800"
+        tip: "bg-[#F7F7FB] border-[#5352F6]/20 text-[#5352F6]"
       };
       
       return (
-        <div className={`mb-8 rounded-lg border-l-4 p-4 ${calloutColors[block.variant]} ${block.className || ""}`}>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          viewport={{ once: true }}
+          className={`mb-8 rounded-lg border-l-4 p-4 ${calloutColors[block.variant]} ${block.className || ""}`}
+        >
           {block.icon && (
             <div className="mb-2">
               {/* Aquí se podría agregar un icono según el tipo de callout */}
             </div>
           )}
           <p>{block.content}</p>
-        </div>
+        </motion.div>
       );
     
     case "columns":
@@ -276,11 +330,18 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
             }[column.width] || "md:col-span-6";
             
             return (
-              <div key={index} className={colSpan}>
+              <motion.div 
+                key={index} 
+                className={colSpan}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
                 {column.blocks.map((nestedBlock, blockIndex) => (
                   <ContentBlockRenderer key={blockIndex} block={nestedBlock} />
                 ))}
-              </div>
+              </motion.div>
             );
           })}
         </div>
@@ -298,20 +359,14 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
     
     case "cta":
       return (
-        <div className={`mb-8 rounded-lg p-8 ${block.background || "bg-[#F7F7FB]"} ${block.className || ""}`}>
-          <h3 className="mb-4 text-xl font-bold md:text-2xl">{block.heading}</h3>
-          {block.content && <p className="mb-6">{block.content}</p>}
-          <Link
-            href={block.buttonUrl}
-            className={`inline-block rounded-md px-6 py-3 font-medium ${
-              block.buttonVariant === "secondary" ? "bg-[#0F0F0F] text-white" :
-              block.buttonVariant === "outline" ? "border border-[#5352F6] bg-transparent text-[#5352F6]" :
-              "bg-[#5352F6] text-white"
-            }`}
-          >
-            {block.buttonText}
-          </Link>
-        </div>
+        <BlogCTA
+          heading={block.heading}
+          content={block.content}
+          buttonText={block.buttonText}
+          buttonUrl={block.buttonUrl}
+          buttonVariant={block.buttonVariant as "primary" | "secondary" | "outline"}
+          className="mb-8"
+        />
       );
     
     case "faq":
@@ -319,12 +374,21 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
         <div className={`mb-8 ${block.className || ""}`}>
           <div className="space-y-4">
             {block.items.map((item, index) => (
-              <details key={index} className="rounded-lg border border-[#E5E5E5]">
-                <summary className="cursor-pointer p-4 font-medium">{item.question}</summary>
-                <div className="border-t border-[#E5E5E5] p-4">
+              <motion.details 
+                key={index} 
+                className="rounded-lg border border-[#E5E5E5] overflow-hidden"
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <summary className="cursor-pointer p-4 font-medium bg-[#F7F7FB] hover:bg-[#F0F0FF] transition-colors">
+                  {item.question}
+                </summary>
+                <div className="border-t border-[#E5E5E5] p-4 bg-white">
                   <p>{item.answer}</p>
                 </div>
-              </details>
+              </motion.details>
             ))}
           </div>
         </div>
@@ -385,68 +449,35 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
       <main>
         <article>
           {/* Hero section */}
-          <section className="bg-[#F7F7FB] py-16">
+          <section className="bg-gradient-to-b from-[#F7F7FB] to-white py-16">
             <div className="container mx-auto px-4">
-              <div className="mx-auto max-w-3xl">
-                <div className="mb-6">
-                  <Link href="/blog" className="flex items-center text-sm font-medium text-[#5352F6]">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="mr-1">
-                      <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/>
-                    </svg>
-                    Volver al blog
-                  </Link>
-                </div>
-                
-                <div className="mb-4 flex items-center gap-2 text-sm text-[#6D6C6C]">
-                  <span>{formatDate(blog.publishedAt)}</span>
-                  <span>•</span>
-                  <span>{blog.estimatedReadTime} min de lectura</span>
-                </div>
-                
-                <H1 className="mb-4">{blog.title}</H1>
-                {blog.subtitle && (
-                  <Paragraph variant="lead" className="mb-6">
-                    {blog.subtitle}
-                  </Paragraph>
-                )}
-                
-                <div className="flex items-center">
-                  <div className="relative mr-4 h-12 w-12 overflow-hidden rounded-full">
-                    <Image
-                      src={blog.author.avatar}
-                      alt={blog.author.name}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div>
-                    <p className="font-semibold">{blog.author.name}</p>
-                    <p className="text-sm text-[#6D6C6C]">{blog.author.role}</p>
-                  </div>
-                </div>
-              </div>
+              <BlogHeader
+                title={blog.title}
+                subtitle={blog.subtitle}
+                category={blog.category}
+                publishDate={formatDate(blog.publishedAt)}
+                readTime={blog.estimatedReadTime}
+              />
+              
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.3 }}
+                className="mt-8 flex items-center justify-center"
+              >
+                <AuthorProfile author={blog.author} variant="compact" />
+              </motion.div>
             </div>
           </section>
           
           {/* Cover image */}
           <div className="container mx-auto -mt-8 px-4">
-            <div className="mx-auto max-w-4xl">
-              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg shadow-lg">
-                <Image
-                  src={blog.coverImage.src}
-                  alt={blog.coverImage.alt}
-                  fill
-                  className="object-cover"
-                  priority
-                />
-              </div>
-              {blog.coverImage.caption && (
-                <p className="mt-2 text-center text-sm text-[#6D6C6C]">
-                  {blog.coverImage.caption}
-                  {blog.coverImage.credit && ` - ${blog.coverImage.credit}`}
-                </p>
-              )}
-            </div>
+            <BlogCover
+              src={blog.coverImage.src}
+              alt={blog.coverImage.alt}
+              caption={blog.coverImage.caption}
+              credit={blog.coverImage.credit}
+            />
           </div>
           
           {/* Content */}
@@ -457,8 +488,9 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
                   <motion.div
                     key={block.id || index}
                     initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: Math.min(index * 0.05, 1) }}
+                    viewport={{ once: true, margin: "-100px" }}
                   >
                     <ContentBlockRenderer block={block} />
                   </motion.div>
@@ -467,63 +499,19 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
                 {/* Tags */}
                 {blog.tags && blog.tags.length > 0 && (
                   <div className="mb-8 mt-12">
-                    <p className="mb-2 font-semibold">Etiquetas:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {blog.tags.map(tag => (
-                        <Link
-                          key={tag.id}
-                          href={`/blog?tag=${tag.slug}`}
-                          className="rounded-full bg-[#F7F7FB] px-3 py-1 text-sm text-[#5352F6] hover:bg-[#EAEAFC]"
-                        >
-                          {tag.name}
-                        </Link>
-                      ))}
-                    </div>
+                    <Paragraph weight="semibold" className="mb-3">Etiquetas:</Paragraph>
+                    <BlogTags tags={blog.tags} />
                   </div>
                 )}
                 
                 {/* Author bio */}
-                <div className="mb-12 mt-12 rounded-lg bg-[#F7F7FB] p-6">
-                  <div className="flex items-center">
-                    <div className="relative mr-4 h-16 w-16 overflow-hidden rounded-full">
-                      <Image
-                        src={blog.author.avatar}
-                        alt={blog.author.name}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <div>
-                      <p className="text-lg font-semibold">{blog.author.name}</p>
-                      <p className="text-sm text-[#6D6C6C]">{blog.author.role}</p>
-                    </div>
-                  </div>
-                  <p className="mt-4">{blog.author.bio}</p>
-                  
-                  {blog.author.socialLinks && Object.keys(blog.author.socialLinks).length > 0 && (
-                    <div className="mt-4 flex gap-4">
-                      {blog.author.socialLinks.twitter && (
-                        <a href={blog.author.socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="text-[#5352F6]">
-                          Twitter
-                        </a>
-                      )}
-                      {blog.author.socialLinks.linkedin && (
-                        <a href={blog.author.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="text-[#5352F6]">
-                          LinkedIn
-                        </a>
-                      )}
-                      {blog.author.socialLinks.instagram && (
-                        <a href={blog.author.socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="text-[#5352F6]">
-                          Instagram
-                        </a>
-                      )}
-                      {blog.author.socialLinks.website && (
-                        <a href={blog.author.socialLinks.website} target="_blank" rel="noopener noreferrer" className="text-[#5352F6]">
-                          Sitio web
-                        </a>
-                      )}
-                    </div>
-                  )}
+                <div className="mb-12 mt-16">
+                  <AuthorProfile author={blog.author} />
+                </div>
+                
+                {/* Banner CTA de LOKL */}
+                <div className="mb-12 mt-16">
+                  <LoklCTABanner />
                 </div>
               </div>
             </div>
@@ -531,20 +519,18 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
           
           {/* Related posts */}
           {blog.relatedPosts && blog.relatedPosts.length > 0 && (
-            <section className="bg-[#F7F7FB] py-12">
+            <section className="bg-gradient-to-b from-white to-[#F7F7FB] py-16">
               <div className="container mx-auto px-4">
-                <div className="mx-auto max-w-6xl">
-                  <h2 className="mb-8 text-2xl font-bold md:text-3xl">Artículos relacionados</h2>
-                  
-                  <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                    {blog.relatedPosts.map(relatedPost => {
-                      const fullPost = mockBlogPosts.find(p => p.id === relatedPost.id);
-                      return fullPost ? (
-                        <BlogCard key={relatedPost.id} blog={fullPost} variant="default" />
-                      ) : null;
-                    })}
-                  </div>
-                </div>
+                {blog.relatedPosts.map(relatedPost => {
+                  const fullPost = mockBlogPosts.find(p => p.id === relatedPost.id);
+                  return fullPost;
+                }).filter(Boolean).length > 0 && (
+                  <RelatedPosts 
+                    posts={blog.relatedPosts
+                      .map(relatedPost => mockBlogPosts.find(p => p.id === relatedPost.id))
+                      .filter(Boolean) as typeof mockBlogPosts}
+                  />
+                )}
               </div>
             </section>
           )}

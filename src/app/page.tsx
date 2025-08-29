@@ -19,7 +19,7 @@ export default function LandingPage() {
     // Cargar los blogs más recientes al montar el componente
     const fetchBlogs = async () => {
       try {
-        const response = await fetch('/api/blogs?limit=3');
+        const response = await fetch('/api/blogs?limit=4');
         const data = await response.json();
         setBlogs(data.blogs);
       } catch (error) {

@@ -330,7 +330,8 @@ export interface BlogPost {
   author: Author;
   
   // Categorización
-  category: {
+  category?: string; // Categoría simplificada para el componente
+  categoryFull?: {
     id: string;
     name: string;
     slug: string;

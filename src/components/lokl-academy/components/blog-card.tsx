@@ -1,22 +1,27 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { BlogPost } from "@/lib/blog/schema";
+import { Badge, Button, Paragraph, Text } from "@/components/design-system";
 
 interface BlogCardProps {
   blog: BlogPost;
   variant?: "default" | "featured" | "compact";
   className?: string;
+  hovered?: boolean; // Para propósitos de demostración
 }
 
 const BlogCard: React.FC<BlogCardProps> = ({ 
   blog, 
   variant = "default",
-  className = "" 
+  className = "",
+  hovered: initialHovered = false
 }) => {
+  const [isHovered, setIsHovered] = useState(initialHovered);
+  
   // Formatear la fecha de publicación
   const formatDate = (dateString: string) => {
     const options: Intl.DateTimeFormatOptions = { 
@@ -30,55 +35,75 @@ const BlogCard: React.FC<BlogCardProps> = ({
   if (variant === "featured") {
     return (
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.2 }}
         viewport={{ once: true }}
-        className={`group overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg ${className}`}
+        className={`overflow-hidden rounded-xl bg-white transition-all duration-200 ${isHovered ? 'shadow-lg border border-[#5352F6]' : 'shadow-sm border border-transparent'} ${className}`}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         <div className="grid grid-cols-1 md:grid-cols-2">
-          <div className="relative h-64 w-full md:h-full">
+          <div className="relative h-64 w-full md:h-full overflow-hidden">
             <Image
               src={blog.coverImage.src}
               alt={blog.coverImage.alt}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              className={`object-cover transition-all duration-300 ${isHovered ? 'scale-105 grayscale-0' : 'grayscale'}`}
             />
-            {blog.featured && (
-              <div className="absolute left-4 top-4 rounded bg-[#5352F6] px-3 py-1 text-xs font-semibold text-white">
-                Destacado
+            {blog.category && (
+              <div className="absolute left-4 top-4 z-10">
+                <Badge variant="default" className={blog.featured ? "bg-[#5352F6] text-white" : "bg-white/80 text-[#0F0F0F] border border-[#5352F6]"}>
+                  {blog.category}
+                </Badge>
               </div>
             )}
           </div>
           <div className="flex flex-col justify-between p-6">
             <div>
-              <div className="mb-3 flex items-center gap-2 text-sm text-[#6D6C6C]">
-                <span>{formatDate(blog.publishedAt)}</span>
-                <span>•</span>
-                <span>{blog.estimatedReadTime} min de lectura</span>
+              <div className="mb-3 flex items-center gap-2">
+                <Text size="sm" color="muted">{formatDate(blog.publishedAt)}</Text>
+                <Text size="sm" color="muted">•</Text>
+                <Text size="sm" color="muted">{blog.estimatedReadTime} min de lectura</Text>
               </div>
-              <Link href={`/blog/${blog.slug}`} className="group-hover:text-[#5352F6]">
-                <h3 className="mb-3 text-xl font-bold transition-colors md:text-2xl">
-                  {blog.title}
-                </h3>
+              
+              <Link href={`/blog/${blog.slug}`} className="block mb-3">
+                <div className="mb-3">
+                  <span className="text-2xl font-extrabold text-[#0F0F0F]">{blog.title.split(' ')[0]} </span>
+                  <span className="text-2xl font-bold text-[#5352F6]">{blog.title.split(' ').slice(1).join(' ')}</span>
+                </div>
               </Link>
-              <p className="mb-4 text-[#6D6C6C]">
+              
+              <Paragraph 
+                variant="body" 
+                color="muted" 
+                className="mb-5 line-clamp-3">
                 {blog.excerpt}
-              </p>
+              </Paragraph>
             </div>
-            <div className="flex items-center">
-              <div className="relative mr-3 h-10 w-10 overflow-hidden rounded-full">
-                <Image
-                  src={blog.author.avatar}
-                  alt={blog.author.name}
-                  fill
-                  className="object-cover"
-                />
+            
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="relative mr-3 h-10 w-10 overflow-hidden rounded-full border border-gray-100">
+                  <Image
+                    src={blog.author.avatar}
+                    alt={blog.author.name}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div>
+                  <Text weight="medium">{blog.author.name}</Text>
+                  <Text size="sm" color="muted">{blog.author.role}</Text>
+                </div>
               </div>
-              <div>
-                <p className="font-medium">{blog.author.name}</p>
-                <p className="text-sm text-[#6D6C6C]">{blog.author.role}</p>
-              </div>
+              
+              <Link href={`/blog/${blog.slug}`}>
+                <Button variant="link" className="text-sm p-0 cursor-pointer">
+                  Leer artículo
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -89,29 +114,33 @@ const BlogCard: React.FC<BlogCardProps> = ({
   if (variant === "compact") {
     return (
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.2 }}
         viewport={{ once: true }}
-        className={`group flex items-center gap-4 ${className}`}
+        className={`flex items-center gap-4 p-2 rounded-lg transition-all duration-200 ${isHovered ? 'shadow-sm border border-[#5352F6]/30' : ''} ${className}`}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md">
           <Image
             src={blog.coverImage.src}
             alt={blog.coverImage.alt}
             fill
-            className="object-cover"
+            className={`object-cover transition-all duration-300 ${isHovered ? 'scale-105 grayscale-0' : 'grayscale'}`}
           />
         </div>
         <div>
-          <Link href={`/blog/${blog.slug}`} className="group-hover:text-[#5352F6]">
-            <h4 className="font-medium transition-colors">
-              {blog.title}
-            </h4>
+          <Link href={`/blog/${blog.slug}`}>
+            <div className="mb-1">
+              <Text weight="medium" className={`transition-colors ${isHovered ? 'text-[#5352F6]' : ''}`}>
+                {blog.title.length > 40 ? `${blog.title.substring(0, 40)}...` : blog.title}
+              </Text>
+            </div>
           </Link>
-          <p className="text-sm text-[#6D6C6C]">
+          <Text size="xs" color="muted">
             {formatDate(blog.publishedAt)}
-          </p>
+          </Text>
         </div>
       </motion.div>
     );
@@ -120,49 +149,69 @@ const BlogCard: React.FC<BlogCardProps> = ({
   // Default variant
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.2 }}
       viewport={{ once: true }}
-      className={`group overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg ${className}`}
+      className={`overflow-hidden rounded-xl bg-white transition-all duration-200 ${isHovered ? 'shadow-lg border border-[#5352F6]' : 'shadow-sm border border-transparent'} ${className}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative h-48 w-full">
+      <div className="relative h-52 w-full overflow-hidden">
         <Image
           src={blog.coverImage.src}
           alt={blog.coverImage.alt}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className={`object-cover transition-all duration-300 ${isHovered ? 'scale-105 grayscale-0' : 'grayscale'}`}
         />
-        {blog.featured && (
-          <div className="absolute left-4 top-4 rounded bg-[#5352F6] px-3 py-1 text-xs font-semibold text-white">
-            Destacado
+        {blog.category && (
+          <div className="absolute left-4 top-4 z-10">
+            <Badge variant="default" className={blog.featured ? "bg-[#5352F6] text-white" : "bg-white/80 text-[#0F0F0F] border border-[#5352F6]"}>            
+              {blog.category}
+            </Badge>
           </div>
         )}
       </div>
-      <div className="p-5">
-        <div className="mb-3 flex items-center gap-2 text-sm text-[#6D6C6C]">
-          <span>{formatDate(blog.publishedAt)}</span>
-          <span>•</span>
-          <span>{blog.estimatedReadTime} min de lectura</span>
+      <div className="p-6">
+        <div className="mb-3 flex items-center gap-2">
+          <Text size="sm" color="muted">{formatDate(blog.publishedAt)}</Text>
+          <Text size="sm" color="muted">•</Text>
+          <Text size="sm" color="muted">{blog.estimatedReadTime} min de lectura</Text>
         </div>
-        <Link href={`/blog/${blog.slug}`} className="group-hover:text-[#5352F6]">
-          <h3 className="mb-3 text-lg font-bold transition-colors">
-            {blog.title}
-          </h3>
-        </Link>
-        <p className="mb-4 line-clamp-2 text-sm text-[#6D6C6C]">
-          {blog.excerpt}
-        </p>
-        <div className="flex items-center">
-          <div className="relative mr-3 h-8 w-8 overflow-hidden rounded-full">
-            <Image
-              src={blog.author.avatar}
-              alt={blog.author.name}
-              fill
-              className="object-cover"
-            />
+        
+        <Link href={`/blog/${blog.slug}`} className="block mb-3">
+          <div className="mb-3">
+            <span className="text-xl font-extrabold text-[#0F0F0F]">{blog.title.split(' ')[0]} </span>
+            <span className="text-xl font-bold text-[#5352F6]">{blog.title.split(' ').slice(1).join(' ')}</span>
           </div>
-          <p className="text-sm font-medium">{blog.author.name}</p>
+        </Link>
+        
+        <Paragraph 
+          variant="small" 
+          color="muted" 
+          className="mb-5 line-clamp-2">
+          {blog.excerpt}
+        </Paragraph>
+        
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <div className="relative mr-3 h-8 w-8 overflow-hidden rounded-full border border-gray-100">
+              <Image
+                src={blog.author.avatar}
+                alt={blog.author.name}
+                fill
+                className="object-cover"
+              />
+            </div>
+            <Text size="sm" weight="medium">{blog.author.name}</Text>
+          </div>
+          
+          <Link href={`/blog/${blog.slug}`}>
+            <Button variant="link" className="text-sm p-0 cursor-pointer">
+              Leer artículo
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+            </Button>
+          </Link>
         </div>
       </div>
     </motion.div>

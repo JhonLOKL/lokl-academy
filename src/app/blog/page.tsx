@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Navbar, Footer, H1, Paragraph } from "@/components/design-system";
-import BlogCard from "@/components/lokl-academy/components/blog-card";
+import { BlogCard, LoklCTABanner } from "@/components/lokl-academy/components";
 import mockBlogPosts from "@/lib/blog/mock-data";
 
 export default function BlogPage() {
@@ -16,7 +16,7 @@ export default function BlogPage() {
 
   const filteredBlogs = filter === "all" 
     ? mockBlogPosts 
-    : mockBlogPosts.filter(blog => blog.category.slug === filter);
+    : mockBlogPosts.filter(blog => blog.categoryFull?.slug === filter);
 
   return (
     <>
@@ -78,12 +78,20 @@ export default function BlogPage() {
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
               {filteredBlogs.map((blog, index) => (
-                <BlogCard
-                  key={blog.id}
-                  blog={blog}
-                  variant={index === 0 && filter === "all" ? "featured" : "default"}
-                  className={index === 0 && filter === "all" ? "md:col-span-2 lg:col-span-1" : ""}
-                />
+                index === 0 && filter === "all" ? (
+                  <div key={blog.id} className="col-span-1 md:col-span-2 lg:col-span-3">
+                    <BlogCard
+                      blog={blog}
+                      variant="featured"
+                    />
+                  </div>
+                ) : (
+                  <BlogCard
+                    key={blog.id}
+                    blog={blog}
+                    variant="default"
+                  />
+                )
               ))}
             </div>
 
@@ -94,6 +102,11 @@ export default function BlogPage() {
                 </Paragraph>
               </div>
             )}
+            
+            {/* Banner CTA de LOKL */}
+            <div className="mt-16">
+              <LoklCTABanner />
+            </div>
           </div>
         </section>
       </main>
