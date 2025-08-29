@@ -1549,6 +1549,570 @@ export const mockBlogPosts: BlogPost[] = [
     likes: 198,
     shares: 67,
     commentsEnabled: true
+  },
+
+  // Noveno blog post
+  {
+    id: "9",
+    slug: "estrategias-ahorro-inversion-inmobiliaria",
+    publishedAt: "2024-05-18T09:15:00Z",
+    status: "published",
+
+    seo: {
+      title: "Estrategias de Ahorro para Inversión Inmobiliaria | LOKL Academy",
+      description: "Aprende a ahorrar eficientemente para tu primera inversión inmobiliaria. Métodos probados, presupuestos y consejos prácticos.",
+      keywords: ["ahorro", "inversión inmobiliaria", "presupuesto", "capital inicial", "finanzas personales"],
+      ogImage: {
+        url: "/images/couple-investing.jpg",
+        alt: "Estrategias de Ahorro para Inversión",
+        width: 1200,
+        height: 630
+      },
+      ogType: "article",
+      twitterCard: "summary_large_image"
+    },
+
+    author: {
+      id: "author9",
+      name: "Laura Fernández",
+      role: "Coach Financiero Personal",
+      avatar: "/images/buildings-bw.jpg",
+      bio: "Laura Fernández es coach financiero especializada en ayudar a personas a alcanzar sus metas de inversión inmobiliaria a través de estrategias de ahorro efectivas."
+    },
+
+    category: "Finanzas",
+    categoryFull: {
+      id: "cat6",
+      name: "Finanzas Personales",
+      slug: "finanzas-personales"
+    },
+
+    tags: [
+      {
+        id: "tag22",
+        name: "Ahorro",
+        slug: "ahorro"
+      },
+      {
+        id: "tag23",
+        name: "Presupuesto",
+        slug: "presupuesto"
+      },
+      {
+        id: "tag24",
+        name: "Capital",
+        slug: "capital"
+      }
+    ],
+
+    title: "Estrategias de Ahorro para Inversión Inmobiliaria",
+    subtitle: "Cómo construir el capital necesario para tu primera inversión",
+    excerpt: "El ahorro es el primer paso hacia la inversión inmobiliaria. Descubre estrategias probadas para acumular el capital necesario y comenzar tu viaje como inversor.",
+    estimatedReadTime: 12,
+
+    coverImage: {
+      src: "/images/couple-investing.jpg",
+      alt: "Pareja ahorrando para inversión inmobiliaria",
+      caption: "El ahorro sistemático es la base de cualquier estrategia de inversión exitosa"
+    },
+
+    content: [
+      {
+        id: "intro-heading",
+        type: "heading",
+        level: 1,
+        content: "Estrategias de Ahorro para Inversión Inmobiliaria",
+        anchor: "introduccion"
+      },
+      {
+        id: "intro-paragraph",
+        type: "paragraph",
+        content: "La inversión inmobiliaria requiere capital inicial, y la mayoría de las personas necesitan tiempo para acumularlo. Las estrategias de ahorro efectivas pueden acelerar significativamente este proceso.",
+        dropCap: true
+      },
+      {
+        id: "budget-heading",
+        type: "heading",
+        level: 2,
+        content: "1. Crear un Presupuesto Realista",
+        anchor: "presupuesto"
+      },
+      {
+        id: "budget-paragraph",
+        type: "paragraph",
+        content: "El primer paso es entender exactamente cuánto dinero entra y sale cada mes. Un presupuesto detallado te permitirá identificar oportunidades de ahorro."
+      },
+      {
+        id: "budget-callout",
+        type: "callout",
+        content: "Regla del 50/30/20: 50% para necesidades, 30% para deseos, 20% para ahorro e inversión.",
+        variant: "tip"
+      }
+    ],
+
+    views: 2760,
+    likes: 145,
+    shares: 78,
+    commentsEnabled: true
+  },
+
+  // Décimo blog post
+  {
+    id: "10",
+    slug: "analisis-mercado-local-inversion-inmobiliaria",
+    publishedAt: "2024-05-15T14:30:00Z",
+    status: "published",
+
+    seo: {
+      title: "Análisis de Mercado Local para Inversión Inmobiliaria | LOKL Academy",
+      description: "Aprende a analizar mercados locales para identificar las mejores oportunidades de inversión inmobiliaria en tu área.",
+      keywords: ["análisis de mercado", "mercado local", "investigación inmobiliaria", "oportunidades de inversión", "datos del mercado"],
+      ogImage: {
+        url: "/images/skyscraper-bw.jpg",
+        alt: "Análisis de Mercado Local",
+        width: 1200,
+        height: 630
+      },
+      ogType: "article",
+      twitterCard: "summary_large_image"
+    },
+
+    author: {
+      id: "author10",
+      name: "Miguel Ángel Ruiz",
+      role: "Analista de Mercado Inmobiliario",
+      avatar: "/images/digital-charts.jpg",
+      bio: "Miguel Ángel Ruiz es analista de mercado con más de 15 años de experiencia en investigación inmobiliaria local y regional."
+    },
+
+    category: "Análisis",
+    categoryFull: {
+      id: "cat7",
+      name: "Análisis de Mercado",
+      slug: "analisis-mercado"
+    },
+
+    tags: [
+      {
+        id: "tag25",
+        name: "Mercado Local",
+        slug: "mercado-local"
+      },
+      {
+        id: "tag26",
+        name: "Investigación",
+        slug: "investigacion"
+      },
+      {
+        id: "tag27",
+        name: "Oportunidades",
+        slug: "oportunidades"
+      }
+    ],
+
+    title: "Análisis de Mercado Local para Inversión Inmobiliaria",
+    subtitle: "Cómo identificar las mejores oportunidades en tu área",
+    excerpt: "El análisis de mercado local es fundamental para tomar decisiones de inversión informadas. Descubre las herramientas y métodos para evaluar mercados específicos.",
+    estimatedReadTime: 13,
+
+    coverImage: {
+      src: "/images/skyscraper-bw.jpg",
+      alt: "Análisis de mercado inmobiliario local",
+      caption: "Conocer tu mercado local es clave para el éxito en inversión inmobiliaria"
+    },
+
+    content: [
+      {
+        id: "intro-heading",
+        type: "heading",
+        level: 1,
+        content: "Análisis de Mercado Local para Inversión Inmobiliaria",
+        anchor: "introduccion"
+      },
+      {
+        id: "intro-paragraph",
+        type: "paragraph",
+        content: "Cada mercado inmobiliario es único, con sus propias dinámicas, tendencias y oportunidades. Un análisis profundo del mercado local puede marcar la diferencia entre una inversión exitosa y una mediocre.",
+        dropCap: true
+      },
+      {
+        id: "data-sources-heading",
+        type: "heading",
+        level: 2,
+        content: "Fuentes de Datos para el Análisis",
+        anchor: "fuentes-datos"
+      },
+      {
+        id: "data-sources-paragraph",
+        type: "paragraph",
+        content: "La calidad de tu análisis depende de la calidad de los datos que utilices. Es importante recopilar información de múltiples fuentes confiables."
+      },
+      {
+        id: "data-sources-list",
+        type: "list",
+        style: "unordered",
+        items: [
+          { content: "Oficinas de registro de la propiedad" },
+          { content: "Asociaciones de agentes inmobiliarios" },
+          { content: "Reportes de mercado de consultoras especializadas" },
+          { content: "Datos demográficos del censo" },
+          { content: "Información económica local" }
+        ]
+      }
+    ],
+
+    views: 2340,
+    likes: 167,
+    shares: 89,
+    commentsEnabled: true
+  },
+
+  // Undécimo blog post
+  {
+    id: "11",
+    slug: "crowdfunding-inmobiliario-oportunidades-riesgos",
+    publishedAt: "2024-05-12T11:45:00Z",
+    status: "published",
+
+    seo: {
+      title: "Crowdfunding Inmobiliario: Oportunidades y Riesgos | LOKL Academy",
+      description: "Explora el crowdfunding inmobiliario como alternativa de inversión. Ventajas, riesgos y cómo evaluar plataformas.",
+      keywords: ["crowdfunding inmobiliario", "inversión colectiva", "plataformas inmobiliarias", "financiamiento alternativo", "inversión digital"],
+      ogImage: {
+        url: "/images/modern-building.jpg",
+        alt: "Crowdfunding Inmobiliario",
+        width: 1200,
+        height: 630
+      },
+      ogType: "article",
+      twitterCard: "summary_large_image"
+    },
+
+    author: {
+      id: "author11",
+      name: "Carmen Silva",
+      role: "Especialista en Fintech Inmobiliario",
+      avatar: "/images/house-model.jpg",
+      bio: "Carmen Silva es especialista en tecnologías financieras aplicadas al sector inmobiliario, con experiencia en múltiples plataformas de crowdfunding."
+    },
+
+    category: "Finanzas",
+    categoryFull: {
+      id: "cat8",
+      name: "Financiamiento Alternativo",
+      slug: "financiamiento-alternativo"
+    },
+
+    tags: [
+      {
+        id: "tag28",
+        name: "Crowdfunding",
+        slug: "crowdfunding"
+      },
+      {
+        id: "tag29",
+        name: "Fintech",
+        slug: "fintech"
+      },
+      {
+        id: "tag30",
+        name: "Inversión Digital",
+        slug: "inversion-digital"
+      }
+    ],
+
+    title: "Crowdfunding Inmobiliario: Oportunidades y Riesgos",
+    subtitle: "Una guía completa para inversores digitales",
+    excerpt: "El crowdfunding inmobiliario democratiza el acceso a inversiones inmobiliarias. Conoce las oportunidades, riesgos y cómo evaluar plataformas.",
+    estimatedReadTime: 10,
+
+    coverImage: {
+      src: "/images/modern-building.jpg",
+      alt: "Plataforma de crowdfunding inmobiliario",
+      caption: "El crowdfunding permite invertir en proyectos inmobiliarios con capital mínimo"
+    },
+
+    content: [
+      {
+        id: "intro-heading",
+        type: "heading",
+        level: 1,
+        content: "Crowdfunding Inmobiliario: Oportunidades y Riesgos",
+        anchor: "introduccion"
+      },
+      {
+        id: "intro-paragraph",
+        type: "paragraph",
+        content: "El crowdfunding inmobiliario ha revolucionado la forma en que las personas pueden participar en inversiones inmobiliarias, permitiendo acceso con capital mínimo y mayor diversificación.",
+        dropCap: true
+      },
+      {
+        id: "advantages-heading",
+        type: "heading",
+        level: 2,
+        content: "Ventajas del Crowdfunding Inmobiliario",
+        anchor: "ventajas"
+      },
+      {
+        id: "advantages-list",
+        type: "list",
+        style: "checked",
+        items: [
+          { content: "Acceso con capital mínimo", checked: true },
+          { content: "Diversificación geográfica", checked: true },
+          { content: "Transparencia en los proyectos", checked: true },
+          { content: "Liquidez relativa", checked: true },
+          { content: "Gestión profesional", checked: true }
+        ]
+      }
+    ],
+
+    views: 1980,
+    likes: 134,
+    shares: 67,
+    commentsEnabled: true
+  },
+
+  // Duodécimo blog post
+  {
+    id: "12",
+    slug: "propiedades-sostenibles-inversion-futuro",
+    publishedAt: "2024-05-10T16:20:00Z",
+    status: "published",
+
+    seo: {
+      title: "Propiedades Sostenibles: La Inversión del Futuro | LOKL Academy",
+      description: "Descubre por qué las propiedades sostenibles son la inversión inmobiliaria del futuro. Beneficios, certificaciones y tendencias del mercado.",
+      keywords: ["propiedades sostenibles", "inversión verde", "certificaciones LEED", "energía renovable", "sostenibilidad inmobiliaria"],
+      ogImage: {
+        url: "/images/buildings-bw.jpg",
+        alt: "Propiedades Sostenibles",
+        width: 1200,
+        height: 630
+      },
+      ogType: "article",
+      twitterCard: "summary_large_image"
+    },
+
+    author: {
+      id: "author12",
+      name: "Dr. Isabel Moreno",
+      role: "Especialista en Sostenibilidad Inmobiliaria",
+      avatar: "/images/couple-investing.jpg",
+      bio: "Dr. Isabel Moreno es especialista en sostenibilidad inmobiliaria con más de 15 años de experiencia en certificaciones LEED y proyectos verdes."
+    },
+
+    category: "Sostenibilidad",
+    categoryFull: {
+      id: "cat9",
+      name: "Inversión Sostenible",
+      slug: "inversion-sostenible"
+    },
+
+    tags: [
+      {
+        id: "tag31",
+        name: "Sostenibilidad",
+        slug: "sostenibilidad"
+      },
+      {
+        id: "tag32",
+        name: "Propiedades Verdes",
+        slug: "propiedades-verdes"
+      },
+      {
+        id: "tag33",
+        name: "Certificaciones",
+        slug: "certificaciones"
+      }
+    ],
+
+    title: "Propiedades Sostenibles: La Inversión del Futuro",
+    subtitle: "Por qué las propiedades verdes dominarán el mercado",
+    excerpt: "Las propiedades sostenibles no solo son mejores para el planeta, sino que también ofrecen mejores retornos de inversión. Descubre por qué son la inversión del futuro.",
+    estimatedReadTime: 11,
+
+    coverImage: {
+      src: "/images/buildings-bw.jpg",
+      alt: "Edificio sostenible con paneles solares",
+      caption: "Las propiedades sostenibles combinan rentabilidad con responsabilidad ambiental"
+    },
+
+    content: [
+      {
+        id: "intro-heading",
+        type: "heading",
+        level: 1,
+        content: "Propiedades Sostenibles: La Inversión del Futuro",
+        anchor: "introduccion"
+      },
+      {
+        id: "intro-paragraph",
+        type: "paragraph",
+        content: "La sostenibilidad ya no es una tendencia, sino una realidad del mercado inmobiliario. Las propiedades verdes están demostrando ser no solo mejores para el medio ambiente, sino también más rentables para los inversores.",
+        dropCap: true
+      },
+      {
+        id: "benefits-heading",
+        type: "heading",
+        level: 2,
+        content: "Beneficios Financieros de las Propiedades Sostenibles",
+        anchor: "beneficios"
+      },
+      {
+        id: "benefits-paragraph",
+        type: "paragraph",
+        content: "Las propiedades sostenibles ofrecen múltiples ventajas financieras que las hacen atractivas para los inversores."
+      },
+      {
+        id: "benefits-table",
+        type: "table",
+        headers: ["Beneficio", "Impacto Financiero", "Plazo"],
+        rows: [
+          ["Menores costos operativos", "Ahorro 20-30% en servicios", "Inmediato"],
+          ["Mayor valor de reventa", "Premium del 5-15%", "Mediano plazo"],
+          ["Menor vacancia", "Estabilidad de ingresos", "Largo plazo"],
+          ["Incentivos fiscales", "Reducción de impuestos", "Anual"]
+        ],
+        caption: "Beneficios financieros de las propiedades sostenibles"
+      }
+    ],
+
+    views: 3120,
+    likes: 223,
+    shares: 145,
+    commentsEnabled: true
+  },
+
+  // Decimotercero blog post
+  {
+    id: "13",
+    slug: "estrategias-exito-inversion-inmobiliaria-largo-plazo",
+    publishedAt: "2024-05-08T13:10:00Z",
+    status: "published",
+    featured: true,
+
+    seo: {
+      title: "Estrategias de Éxito para Inversión Inmobiliaria a Largo Plazo | LOKL Academy",
+      description: "Descubre las estrategias probadas para construir un portafolio inmobiliario exitoso a largo plazo. Planificación, diversificación y gestión.",
+      keywords: ["inversión a largo plazo", "portafolio inmobiliario", "estrategias de éxito", "construcción de patrimonio", "planificación financiera"],
+      ogImage: {
+        url: "/images/digital-charts.jpg",
+        alt: "Estrategias de Éxito Inmobiliario",
+        width: 1200,
+        height: 630
+      },
+      ogType: "article",
+      twitterCard: "summary_large_image"
+    },
+
+    author: {
+      id: "author13",
+      name: "Roberto Jiménez",
+      role: "Estratega de Inversión Inmobiliaria",
+      avatar: "/images/modern-building.jpg",
+      bio: "Roberto Jiménez es estratega de inversión inmobiliaria con más de 25 años de experiencia construyendo portafolios exitosos para clientes institucionales y particulares."
+    },
+
+    category: "Estrategias",
+    categoryFull: {
+      id: "cat10",
+      name: "Estrategias de Largo Plazo",
+      slug: "estrategias-largo-plazo"
+    },
+
+    tags: [
+      {
+        id: "tag34",
+        name: "Largo Plazo",
+        slug: "largo-plazo"
+      },
+      {
+        id: "tag35",
+        name: "Portafolio",
+        slug: "portafolio"
+      },
+      {
+        id: "tag36",
+        name: "Patrimonio",
+        slug: "patrimonio"
+      }
+    ],
+
+    title: "Estrategias de Éxito para Inversión Inmobiliaria a Largo Plazo",
+    subtitle: "Cómo construir un portafolio inmobiliario que genere riqueza sostenible",
+    excerpt: "La inversión inmobiliaria a largo plazo requiere estrategias específicas y disciplina. Descubre cómo construir un portafolio que genere riqueza sostenible durante décadas.",
+    estimatedReadTime: 16,
+
+    coverImage: {
+      src: "/images/digital-charts.jpg",
+      alt: "Gráfico de crecimiento de portafolio inmobiliario",
+      caption: "La inversión a largo plazo requiere estrategias específicas y disciplina"
+    },
+
+    content: [
+      {
+        id: "intro-heading",
+        type: "heading",
+        level: 1,
+        content: "Estrategias de Éxito para Inversión Inmobiliaria a Largo Plazo",
+        anchor: "introduccion"
+      },
+      {
+        id: "intro-paragraph",
+        type: "paragraph",
+        content: "La inversión inmobiliaria a largo plazo es una de las estrategias más efectivas para construir patrimonio generacional. Sin embargo, requiere planificación, disciplina y estrategias específicas para maximizar el potencial de crecimiento.",
+        dropCap: true
+      },
+      {
+        id: "mindset-heading",
+        type: "heading",
+        level: 2,
+        content: "El Mindset del Inversor a Largo Plazo",
+        anchor: "mindset"
+      },
+      {
+        id: "mindset-paragraph",
+        type: "paragraph",
+        content: "El éxito en la inversión inmobiliaria a largo plazo comienza con el mindset correcto. Los inversores exitosos piensan en décadas, no en meses o años."
+      },
+      {
+        id: "mindset-quote",
+        type: "quote",
+        content: "La inversión inmobiliaria es un maratón, no un sprint. Los que tienen éxito son aquellos que mantienen la disciplina durante los altibajos del mercado.",
+        author: "Roberto Jiménez",
+        citation: "Estratega de Inversión Inmobiliaria",
+        style: "large"
+      },
+      {
+        id: "diversification-heading",
+        type: "heading",
+        level: 2,
+        content: "Diversificación Estratégica",
+        anchor: "diversificacion"
+      },
+      {
+        id: "diversification-paragraph",
+        type: "paragraph",
+        content: "La diversificación es fundamental para reducir riesgos y maximizar oportunidades de crecimiento a largo plazo."
+      },
+      {
+        id: "diversification-list",
+        type: "list",
+        style: "unordered",
+        items: [
+          { content: "Diversificación geográfica: diferentes ciudades y regiones" },
+          { content: "Diversificación por tipo de propiedad: residencial, comercial, industrial" },
+          { content: "Diversificación por estrategia: renta, flipping, desarrollo" },
+          { content: "Diversificación temporal: compras escalonadas en el tiempo" }
+        ]
+      }
+    ],
+
+    views: 4560,
+    likes: 312,
+    shares: 189,
+    commentsEnabled: true
   }
 ];
 

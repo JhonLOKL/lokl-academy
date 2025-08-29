@@ -1,14 +1,11 @@
+"use client";
+
 import React from "react";
-import { notFound } from "next/navigation";
-import { Navbar, Footer } from "@/components/design-system";
-import mockBlogPosts from "@/lib/blog/mock-data";
-import { 
-  BlogHeader, 
-  BlogCover, 
-  AuthorProfile, 
-  RelatedPosts,
-  BlogContentClient
-} from "@/components/lokl-academy/components";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { Paragraph } from "@/components/design-system";
+import { ContentBlock } from "@/lib/blog/schema";
+import { BlogTags, AuthorProfile, LoklCTABanner } from "./index";
 
 // Componente para renderizar los diferentes tipos de bloques de contenido
 const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
@@ -153,7 +150,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
     
     case "quote":
       return (
-        <motion.blockquote 
+        <motion.blockquote
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.3 }}
@@ -178,7 +175,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
         return (
           <ol className={`mb-8 list-decimal space-y-2 pl-6 ${block.className || ""}`}>
             {block.items.map((item, index) => (
-              <motion.li 
+              <motion.li
                 key={index}
                 initial={{ opacity: 0, x: -10 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -201,8 +198,8 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
         return (
           <ul className={`mb-8 space-y-2 ${block.className || ""}`}>
             {block.items.map((item, index) => (
-              <motion.li 
-                key={index} 
+              <motion.li
+                key={index}
                 className="flex items-start"
                 initial={{ opacity: 0, x: -10 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -229,7 +226,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
         return (
           <ul className={`mb-8 list-disc space-y-2 pl-6 ${block.className || ""}`}>
             {block.items.map((item, index) => (
-              <motion.li 
+              <motion.li
                 key={index}
                 initial={{ opacity: 0, x: -10 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -285,9 +282,9 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
         error: "bg-red-50 border-red-200 text-red-800",
         tip: "bg-[#F7F7FB] border-[#5352F6]/20 text-[#5352F6]"
       };
-      
+
       return (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
@@ -321,10 +318,10 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
               "3/4": "md:col-span-9",
               "full": "md:col-span-12"
             }[column.width] || "md:col-span-6";
-            
+
             return (
-              <motion.div 
-                key={index} 
+              <motion.div
+                key={index}
                 className={colSpan}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -352,14 +349,20 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
     
     case "cta":
       return (
-        <BlogCTA
-          heading={block.heading}
-          content={block.content}
-          buttonText={block.buttonText}
-          buttonUrl={block.buttonUrl}
-          buttonVariant={block.buttonVariant as "primary" | "secondary" | "outline"}
-          className="mb-8"
-        />
+        <div className={`mb-8 rounded-lg p-8 ${block.background || "bg-[#F7F7FB]"} ${block.className || ""}`}>
+          <h3 className="mb-4 text-xl font-bold md:text-2xl">{block.heading}</h3>
+          {block.content && <p className="mb-6">{block.content}</p>}
+          <a
+            href={block.buttonUrl}
+            className={`inline-block rounded-md px-6 py-3 font-medium ${
+              block.buttonVariant === "secondary" ? "bg-[#0F0F0F] text-white" :
+              block.buttonVariant === "outline" ? "border border-[#5352F6] bg-transparent text-[#5352F6]" :
+              "bg-[#5352F6] text-white"
+            }`}
+          >
+            {block.buttonText}
+          </a>
+        </div>
       );
     
     case "faq":
@@ -367,8 +370,8 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
         <div className={`mb-8 ${block.className || ""}`}>
           <div className="space-y-4">
             {block.items.map((item, index) => (
-              <motion.details 
-                key={index} 
+              <motion.details
+                key={index}
                 className="rounded-lg border border-[#E5E5E5] overflow-hidden"
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -387,151 +390,49 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
         </div>
       );
     
-    // Implementar otros tipos de bloques según sea necesario
-    
     default:
       return null;
   }
 };
 
-export default async function BlogPost({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const blog = mockBlogPosts.find(post => post.slug === slug);
-  
-  if (!blog) {
-    notFound();
-  }
-  
-  // Formatear la fecha de publicación
-  const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    };
-    return new Date(dateString).toLocaleDateString('es-ES', options);
-  };
-  
+interface BlogContentClientProps {
+  content: ContentBlock[];
+  tags?: any[];
+  author: any;
+}
+
+export default function BlogContentClient({ content, tags, author }: BlogContentClientProps) {
   return (
-    <>
-      <Navbar
-        logo={<span className="text-xl font-bold">LOKL <span className="text-[#5352F6]">Academy</span></span>}
-        items={[
-          { label: "Inicio", href: "/" },
-          { label: "Cursos", href: "#courses" },
-          { label: "Blogs", href: "/blog" },
-          { label: "Podcasts", href: "#podcasts" },
-        ]}
-        actions={
-          <div className="flex items-center space-x-4">
-            <a
-              href="#login"
-              className="text-sm font-medium text-[#0F0F0F] transition-colors hover:text-[#5352F6]"
-            >
-              Inicia sesión
-            </a>
-            <a
-              href="#register"
-              className="rounded-md bg-[#5352F6] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#4A4AE5]"
-            >
-              Regístrate
-            </a>
-          </div>
-        }
-      />
-
-      <main>
-        <article>
-          {/* Hero section */}
-          <section className="bg-gradient-to-b from-[#F7F7FB] to-white py-16">
-            <div className="container mx-auto px-4">
-              <BlogHeader
-                title={blog.title}
-                subtitle={blog.subtitle}
-                category={blog.category}
-                publishDate={formatDate(blog.publishedAt)}
-                readTime={blog.estimatedReadTime}
-              />
-              
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.3 }}
-                className="mt-8 flex items-center justify-center"
-              >
-                <AuthorProfile author={blog.author} variant="compact" />
-              </motion.div>
-            </div>
-          </section>
-          
-          {/* Cover image */}
-          <div className="container mx-auto -mt-8 px-4">
-            <BlogCover
-              src={blog.coverImage.src}
-              alt={blog.coverImage.alt}
-              caption={blog.coverImage.caption}
-              credit={blog.coverImage.credit}
-            />
-          </div>
-          
-          {/* Content */}
-          <section className="py-12">
-            <div className="container mx-auto px-4">
-              <div className="mx-auto max-w-3xl">
-                {blog.content.map((block, index) => (
-                  <motion.div
-                    key={block.id || index}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: Math.min(index * 0.05, 1) }}
-                    viewport={{ once: true, margin: "-100px" }}
-                  >
-                    <ContentBlockRenderer block={block} />
-                  </motion.div>
-                ))}
-                
-                {/* Tags */}
-                {blog.tags && blog.tags.length > 0 && (
-                  <div className="mb-8 mt-12">
-                    <Paragraph weight="semibold" className="mb-3">Etiquetas:</Paragraph>
-                    <BlogTags tags={blog.tags} />
-                  </div>
-                )}
-                
-                {/* Author bio */}
-                <div className="mb-12 mt-16">
-                  <AuthorProfile author={blog.author} />
-                </div>
-                
-                {/* Banner CTA de LOKL */}
-                <div className="mb-12 mt-16">
-                  <LoklCTABanner />
-                </div>
-              </div>
-            </div>
-          </section>
-          
-          {/* Related posts */}
-          {blog.relatedPosts && blog.relatedPosts.length > 0 && (
-            <section className="bg-gradient-to-b from-white to-[#F7F7FB] py-16">
-              <div className="container mx-auto px-4">
-                {blog.relatedPosts.map(relatedPost => {
-                  const fullPost = mockBlogPosts.find(p => p.id === relatedPost.id);
-                  return fullPost;
-                }).filter(Boolean).length > 0 && (
-                  <RelatedPosts 
-                    posts={blog.relatedPosts
-                      .map(relatedPost => mockBlogPosts.find(p => p.id === relatedPost.id))
-                      .filter(Boolean) as typeof mockBlogPosts}
-                  />
-                )}
-              </div>
-            </section>
-          )}
-        </article>
-      </main>
-
-      <Footer variant="default" />
-    </>
+    <div className="mx-auto max-w-3xl">
+      {content.map((block, index) => (
+        <motion.div
+          key={block.id || index}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: Math.min(index * 0.05, 1) }}
+          viewport={{ once: true, margin: "-100px" }}
+        >
+          <ContentBlockRenderer block={block} />
+        </motion.div>
+      ))}
+      
+      {/* Tags */}
+      {tags && tags.length > 0 && (
+        <div className="mb-8 mt-12">
+          <Paragraph weight="semibold" className="mb-3">Etiquetas:</Paragraph>
+          <BlogTags tags={tags} />
+        </div>
+      )}
+      
+      {/* Author bio */}
+      <div className="mb-12 mt-16">
+        <AuthorProfile author={author} />
+      </div>
+      
+      {/* Banner CTA de LOKL */}
+      <div className="mb-12 mt-16">
+        <LoklCTABanner />
+      </div>
+    </div>
   );
 }
