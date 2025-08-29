@@ -4,8 +4,14 @@ import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Paragraph } from "@/components/design-system";
-import { ContentBlock } from "@/lib/blog/schema";
+import { ContentBlock, Author } from "@/lib/blog/schema";
 import { BlogTags, AuthorProfile, LoklCTABanner } from "./index";
+
+interface Tag {
+  id: string;
+  name: string;
+  slug: string;
+}
 
 // Componente para renderizar los diferentes tipos de bloques de contenido
 const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
@@ -397,8 +403,8 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
 
 interface BlogContentClientProps {
   content: ContentBlock[];
-  tags?: any[];
-  author: any;
+  tags?: Tag[];
+  author: Author;
 }
 
 export default function BlogContentClient({ content, tags, author }: BlogContentClientProps) {

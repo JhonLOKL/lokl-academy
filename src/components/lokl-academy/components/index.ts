@@ -9,3 +9,4 @@ export { default as LoklCTABanner } from './lokl-cta-banner';
 export { default as LoklInvestmentCard } from './lokl-investment-card';
 export { default as LoklInvestmentSection } from './lokl-investment-section';
 export { default as BlogContentClient } from './blog-content-client';
+export { default as BlogHeaderClient } from './blog-header-client';
