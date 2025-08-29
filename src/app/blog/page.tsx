@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 import { Navbar, Footer, H1, Paragraph } from "@/components/design-system";
 import { BlogCard, LoklCTABanner } from "@/components/lokl-academy/components";
 import mockBlogPosts from "@/lib/blog/mock-data";

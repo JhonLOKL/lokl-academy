@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { Button, Badge, Text } from "@/components/design-system";
 
 interface LoklInvestmentCardProps {
@@ -47,7 +46,7 @@ const LoklInvestmentCard: React.FC<LoklInvestmentCardProps> = ({ className = "" 
           </h3>
           
           <Text 
-            size="md" 
+            size="base" 
             color="muted" 
             className="mb-6 max-w-2xl"
           >

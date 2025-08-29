@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import mockBlogPosts from '@/lib/blog/mock-data';
-import { BlogPost } from '@/lib/blog/schema';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -15,7 +14,12 @@ export async function GET(request: Request) {
   let filteredBlogs = [...mockBlogPosts];
   
   if (category) {
-    filteredBlogs = filteredBlogs.filter(blog => blog.category.slug === category);
+    filteredBlogs = filteredBlogs.filter(blog => {
+      if (typeof blog.category === 'string') {
+        return blog.category === category;
+      }
+      return blog.categoryFull?.slug === category;
+    });
   }
   
   if (tag) {
