@@ -10,11 +10,29 @@ const mockBlog = {
   title: "Tendencias del Mercado Inmobiliario 2025",
   slug: "tendencias-mercado-inmobiliario-2025",
   excerpt: "Análisis profundo de las tendencias emergentes en el sector inmobiliario. Exploramos las oportunidades de inversión más prometedoras para el próximo año y cómo aprovecharlas.",
-  content: "",
+  content: [],
   publishedAt: "2024-06-10T00:00:00.000Z",
   estimatedReadTime: 8,
   category: "Mercado",
   featured: true,
+  status: "published" as const,
+  seo: {
+    title: "Tendencias del Mercado Inmobiliario 2025",
+    description: "Análisis profundo de las tendencias emergentes en el sector inmobiliario",
+    keywords: ["mercado inmobiliario", "tendencias", "inversión"],
+    ogImage: {
+      url: "/images/digital-charts.jpg",
+      alt: "Análisis de mercado inmobiliario",
+      width: 1200,
+      height: 630
+    },
+    ogType: "article" as const,
+    twitterCard: "summary_large_image" as const
+  },
+  tags: [
+    { id: "1", name: "Mercado", slug: "mercado" },
+    { id: "2", name: "Tendencias", slug: "tendencias" }
+  ],
   coverImage: {
     src: "/images/digital-charts.jpg",
     alt: "Análisis de mercado inmobiliario",
@@ -24,6 +42,7 @@ const mockBlog = {
     name: "Carlos Rodríguez",
     role: "Analista de Mercado",
     avatar: "/images/authors/carlos-rodriguez.jpg",
+    bio: "Experto en análisis de mercado inmobiliario con más de 10 años de experiencia."
   },
 };
 
@@ -32,11 +51,29 @@ const mockBlog2 = {
   title: "Financiamiento Inteligente para Propiedades",
   slug: "financiamiento-inteligente-propiedades",
   excerpt: "Estrategias avanzadas de financiamiento que todo inversionista inmobiliario debe conocer. Aprende a optimizar tu apalancamiento financiero y maximizar el retorno de inversión.",
-  content: "",
+  content: [],
   publishedAt: "2024-06-05T00:00:00.000Z",
   estimatedReadTime: 15,
   category: "Finanzas",
   featured: false,
+  status: "published" as const,
+  seo: {
+    title: "Financiamiento Inteligente para Propiedades",
+    description: "Estrategias avanzadas de financiamiento que todo inversionista inmobiliario debe conocer",
+    keywords: ["financiamiento", "propiedades", "inversión"],
+    ogImage: {
+      url: "/images/skyscraper-bw.jpg",
+      alt: "Estrategias de financiamiento inmobiliario",
+      width: 1200,
+      height: 630
+    },
+    ogType: "article" as const,
+    twitterCard: "summary_large_image" as const
+  },
+  tags: [
+    { id: "3", name: "Finanzas", slug: "finanzas" },
+    { id: "4", name: "Financiamiento", slug: "financiamiento" }
+  ],
   coverImage: {
     src: "/images/skyscraper-bw.jpg",
     alt: "Estrategias de financiamiento inmobiliario",
@@ -46,6 +83,7 @@ const mockBlog2 = {
     name: "María González",
     role: "Asesora Financiera",
     avatar: "/images/authors/maria-gonzalez.jpg",
+    bio: "Especialista en financiamiento inmobiliario con amplia experiencia en estrategias de inversión."
   },
 };
 
