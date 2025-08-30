@@ -4,9 +4,9 @@
 export interface Author {
   id: string;
   name: string;
-  role: string;
-  avatar: string;
-  bio: string;
+  role?: string;
+  avatar?: string;
+  bio?: string;
   socialLinks?: {
     twitter?: string;
     linkedin?: string;
