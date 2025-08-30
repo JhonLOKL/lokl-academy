@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Navbar, Footer, H1, Paragraph } from "@/components/design-system";
+import { Footer, H1, Paragraph } from "@/components/design-system";
 import { BlogCard, LoklCTABanner } from "@/components/lokl-academy/components";
 import mockBlogPosts from "@/lib/blog/mock-data";
 
@@ -20,32 +20,6 @@ export default function BlogPage() {
 
   return (
     <>
-      <Navbar
-        logo={<span className="text-xl font-bold">LOKL <span className="text-[#5352F6]">Academy</span></span>}
-        items={[
-          { label: "Inicio", href: "/" },
-          { label: "Cursos", href: "#courses" },
-          { label: "Blogs", href: "/blog" },
-          { label: "Podcasts", href: "#podcasts" },
-        ]}
-        actions={
-          <div className="flex items-center space-x-4">
-            <a
-              href="#login"
-              className="text-sm font-medium text-[#0F0F0F] transition-colors hover:text-[#5352F6]"
-            >
-              Inicia sesión
-            </a>
-            <a
-              href="#register"
-              className="rounded-md bg-[#5352F6] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#4A4AE5]"
-            >
-              Regístrate
-            </a>
-          </div>
-        }
-      />
-
       <main>
         <section className="bg-[#F7F7FB] py-16">
           <div className="container mx-auto px-4">
