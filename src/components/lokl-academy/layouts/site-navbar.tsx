@@ -2,16 +2,21 @@
 
 import React from "react";
 import { Navbar } from "@/components/design-system";
+import Link from "next/link";
 
 export function SiteNavbar() {
   return (
     <Navbar
-      logo={<span className="text-xl font-bold">LOKL <span className="text-[#5352F6]">Academy</span></span>}
+      logo={
+        <Link href="/" className="text-xl font-bold hover:text-[#5352F6]">
+          LOKL <span className="text-[#5352F6]">Academy</span>
+        </Link>
+      }
       items={[
         { label: "Inicio", href: "/" },
-       /*  { label: "Cursos", href: "#courses" }, */
+        /*  { label: "Cursos", href: "#courses" }, */
         { label: "Blogs", href: "/blog" },
-   /*      { label: "Podcasts", href: "#podcasts" }, */
+        /*      { label: "Podcasts", href: "#podcasts" }, */
         { label: "FAQ", href: "#faq" },
       ]}
       actions={
