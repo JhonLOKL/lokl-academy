@@ -121,7 +121,7 @@ const LoklInvestmentSection: React.FC<LoklInvestmentSectionProps> = ({ className
         
         {/* Botones de acción */}
         <div className="flex flex-wrap gap-4 mt-10 justify-center">
-          <Link href="https://lokl.life/project/nido-de-agua" target="_blank" rel="noopener noreferrer">
+          <Link href="https://lokl.life/project/nido-de-agua?utmSource=lokl-academy&utmMedium=organic" target="_blank" rel="noopener noreferrer">
             <Button 
               variant="primary" 
               size="lg"

@@ -68,18 +68,14 @@ export default function LandingPage() {
           <BenefitsSection />
         </section>
 
-        <section id="content" className="w-full py-16">
-          <ContentSection />
-        </section>
-
-        <section id="testimonials" className="w-full py-16 bg-[#F7F7FB]">
-          <TestimonialsSection />
-        </section>
-        
         <section id="blogs" className="w-full py-16">
           <BlogSection blogs={blogs} />
         </section>
 
+        <section id="testimonials" className="w-full py-16 bg-[#F7F7FB]">
+          <TestimonialsSection />
+        </section>  
+  
         <article id="faq" className="w-full py-16">
           <FaqSection />
         </article>

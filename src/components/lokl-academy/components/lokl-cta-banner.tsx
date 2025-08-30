@@ -37,7 +37,7 @@ const LoklCTABanner: React.FC<LoklCTABannerProps> = ({ className = "" }) => {
         </div>
         
         <div className="flex flex-wrap gap-3">
-          <Link href="https://lokl.life/project/nido-de-agua" target="_blank" rel="noopener noreferrer">
+          <Link href="https://lokl.life/project/nido-de-agua?utmSource=lokl-academy&utmMedium=organic" target="_blank" rel="noopener noreferrer">
             <Button 
               variant="secondary" 
               className={`bg-white text-[#5352F6] hover:bg-gray-100 transition-all duration-300 ${isHovered ? 'shadow-md' : ''}`}

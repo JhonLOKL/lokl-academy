@@ -8,13 +8,13 @@ import { motion } from "framer-motion";
 const TestimonialsSection = () => {
   const testimonials = [
     {
-      quote: "LOKL Academy transformó mi manera de invertir en bienes raíces. Los cursos son prácticos y el contenido es de altísima calidad.",
+      quote: "LOKL transformó mi manera de invertir en bienes raíces. Los cursos son prácticos y el contenido es de altísima calidad.",
       name: "Carlos Mendoza",
       role: "Inversor Inmobiliario",
       avatar: "/images/couple-investing.jpg"
     },
     {
-      quote: "Gracias a los podcasts y cursos de LOKL Academy, logré adquirir mi primera propiedad de inversión con total confianza.",
+      quote: "Gracias a los podcasts y cursos de LOKL, logré adquirir mi primera propiedad de inversión con total confianza.",
       name: "María González",
       role: "Emprendedora",
       avatar: "/images/digital-charts.jpg"
@@ -28,7 +28,7 @@ const TestimonialsSection = () => {
   ];
 
   const stats = [
-    { value: "10,000+", label: "Estudiantes" },
+    { value: "1,000+", label: "Inversionistas" },
     { value: "50+", label: "Cursos" },
     { value: "200+", label: "Artículos" },
     { value: "95%", label: "Satisfacción" }
@@ -41,7 +41,7 @@ const TestimonialsSection = () => {
           Lo que dicen nuestros <span className="text-[#5352F6]">estudiantes</span>
         </H2>
         <Paragraph variant="lead" color="muted" className="mx-auto max-w-2xl">
-          Miles de inversores han transformado su enfoque gracias a nuestra plataforma.
+          Cientos de inversores han transformado su enfoque gracias a nuestra plataforma.
         </Paragraph>
       </div>
 

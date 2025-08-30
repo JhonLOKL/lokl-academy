@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { Button, H1, Paragraph } from "@/components/design-system";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 const HeroSection = () => {
   return (
@@ -29,7 +30,7 @@ const HeroSection = () => {
               transition={{ duration: 0.6 }}
             >
               <H1 variant="hero" color="white" className="mb-6">
-                Domina el mundo de las <span className="text-[#5352F6]">inversiones inmobiliarias</span> con LOKL Academy
+                Domina el mundo de las <span className="text-[#5352F6]">inversiones inmobiliarias</span> con LOKL
               </H1>
             </motion.div>
 
@@ -49,8 +50,10 @@ const HeroSection = () => {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="flex flex-wrap gap-4"
             >
-              <Button size="lg">Empieza ahora</Button>
-              <Button variant="secondary" size="lg">Explora nuestros cursos</Button>
+              <Button size="lg" onClick={() => window.open("https://www.lokl.life#projects?utmSource=lokl-academy&utmMedium=organic", "_blank")}>Ver todos nuestros proyectos</Button>
+              <Link href="/blog" rel="noopener noreferrer">
+                <Button variant="secondary" size="lg">Explora nuestros cursos</Button>
+              </Link>
             </motion.div>
           </div>
         </div>

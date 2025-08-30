@@ -74,7 +74,7 @@ const LoklInvestmentCard: React.FC<LoklInvestmentCardProps> = ({ className = "" 
           
           {/* Botones */}
           <div className="flex flex-wrap gap-4">
-            <Link href="https://lokl.life/project/nido-de-agua" target="_blank" rel="noopener noreferrer">
+            <Link href="https://lokl.life/project/nido-de-agua?utmSource=lokl-academy&utmMedium=organic" target="_blank" rel="noopener noreferrer">
               <Button 
                 variant="primary" 
                 size="lg"
