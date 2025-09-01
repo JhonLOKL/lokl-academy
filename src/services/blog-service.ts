@@ -1,8 +1,10 @@
-import { getApi } from "@/schemas/api-shema"
+import { getApi } from "@/schemas/api-schema"
+import { BlogFilterSchema } from "@/schemas/blog-schema"
 import { getBlogsServiceResponseSchema } from "@/schemas/service-schemas/blog-service-shema"
 import axios from "axios"
+import z from "zod"
 
-export const getBlogsService = async (body: { search?: string, tags?: string[], featured?: boolean, sortBy?: string, sortOrder?: string, includeAuthor?: boolean }): Promise<getBlogsServiceResponseSchema | undefined> => {
+export const getBlogsService = async (body: z.infer<typeof BlogFilterSchema>): Promise<getBlogsServiceResponseSchema | undefined> => {
     try {
         const params = new URLSearchParams()
 
