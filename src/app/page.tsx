@@ -5,7 +5,6 @@ import { Footer } from "@/components/design-system";
 import { 
   HeroSection,
   BenefitsSection,
-  ContentSection,
   TestimonialsSection,
   FaqSection,
   CtaSection,
