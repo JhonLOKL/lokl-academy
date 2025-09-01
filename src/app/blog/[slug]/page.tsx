@@ -1,7 +1,7 @@
 import React from "react";
 import { notFound } from "next/navigation";
 import { Footer } from "@/components/design-system";
-import mockBlogPosts from "@/lib/blog/mock-data";
+import { getBlogBySlugAction, getRelatedBlogsAction } from "@/actions/blog-action";
 import { 
   BlogHeader, 
   BlogCover, 
@@ -12,7 +12,8 @@ import {
 
 export default async function BlogPost({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const blog = mockBlogPosts.find(post => post.slug === slug);
+  const resp = await getBlogBySlugAction(slug);
+  const blog = resp?.blog;
   
   if (!blog) {
     notFound();
@@ -71,19 +72,15 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
           </section>
           
           {/* Related posts */}
-          {blog.relatedPosts && blog.relatedPosts.length > 0 && (
+          {blog.id && (
             <section className="bg-gradient-to-b from-white to-[#F7F7FB] py-16">
               <div className="container mx-auto px-4">
-                {blog.relatedPosts.map(relatedPost => {
-                  const fullPost = mockBlogPosts.find(p => p.id === relatedPost.id);
-                  return fullPost;
-                }).filter(Boolean).length > 0 && (
-                  <RelatedPosts 
-                    posts={blog.relatedPosts
-                      .map(relatedPost => mockBlogPosts.find(p => p.id === relatedPost.id))
-                      .filter(Boolean) as typeof mockBlogPosts}
-                  />
-                )}
+                {await (async () => {
+                  const { blogs: related } = await getRelatedBlogsAction(blog.id, 3);
+                  return related && related.length > 0 ? (
+                    <RelatedPosts posts={related} />
+                  ) : null;
+                })()}
               </div>
             </section>
           )}

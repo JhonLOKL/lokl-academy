@@ -5,10 +5,10 @@ import { BlogCard, LoklCTABanner } from "@/components/lokl-academy/components";
 import { getBlogsLiteAction } from "@/actions/blog-action";
 import type { BlogPost } from "@/lib/blog/schema";
 
-export default async function BlogPage() {
+export default async function BlogPageNumber({ params }: { params: { page: string } }) {
+  const currentPage = Number(params.page) || 1;
   const limit = 10;
-  const page = 1;
-  const resp = await getBlogsLiteAction({ page, limit, status: "published" });
+  const resp = await getBlogsLiteAction({ page: currentPage, limit, status: "published" });
   const blogs: BlogPost[] = resp?.blogs || [];
   const totalCount: number = resp?.totalCount || blogs.length;
   const totalPages = Math.max(1, Math.ceil(totalCount / limit));
@@ -21,7 +21,7 @@ export default async function BlogPage() {
             <div className="mb-8 text-center">
               <H1 className="mb-4">Blog LOKL Academy</H1>
               <Paragraph variant="lead" className="mx-auto max-w-2xl">
-                Artículos, guías y recursos sobre inversión inmobiliaria, finanzas personales y desarrollo profesional.
+                Página {currentPage} de {totalPages}
               </Paragraph>
             </div>
           </div>
@@ -30,14 +30,8 @@ export default async function BlogPage() {
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {blogs.map((blog, index) => (
-                index === 0 && page === 1 ? (
-                  <div key={blog.id || blog.slug} className="col-span-1 md:col-span-2 lg:col-span-3">
-                    <BlogCard blog={blog} variant="featured" />
-                  </div>
-                ) : (
-                  <BlogCard key={blog.id || blog.slug} blog={blog} variant="default" />
-                )
+              {blogs.map((blog) => (
+                <BlogCard key={blog.id || blog.slug} blog={blog} variant="default" />
               ))}
             </div>
 
@@ -47,13 +41,18 @@ export default async function BlogPage() {
               </div>
             )}
 
-            {page < totalPages && (
-              <div className="mt-12 flex justify-center">
-                <Link href={`/blog/page/${page + 1}`}>
-                  <Button>Mostrar más</Button>
+            <div className="mt-12 flex justify-center gap-4">
+              {currentPage > 1 && (
+                <Link href={currentPage === 2 ? `/blog` : `/blog/page/${currentPage - 1}`}>
+                  <Button variant="secondary">Anterior</Button>
                 </Link>
-              </div>
-            )}
+              )}
+              {currentPage < totalPages && (
+                <Link href={`/blog/page/${currentPage + 1}`}>
+                  <Button>Siguiente</Button>
+                </Link>
+              )}
+            </div>
 
             <div className="mt-16">
               <LoklCTABanner />
@@ -66,3 +65,12 @@ export default async function BlogPage() {
     </>
   );
 }
+
+export async function generateStaticParams() {
+  const limit = 10;
+  const resp = await getBlogsLiteAction({ page: 1, limit, status: "published" });
+  const totalCount: number = resp?.totalCount || 0;
+  const totalPages = Math.max(1, Math.ceil(totalCount / limit));
+  return Array.from({ length: totalPages - 1 }, (_, i) => ({ page: String(i + 2) }));
+}
+

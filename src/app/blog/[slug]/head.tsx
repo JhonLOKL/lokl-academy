@@ -1,13 +1,14 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import mockBlogPosts from '@/lib/blog/mock-data';
+import { getBlogBySlugAction } from '@/actions/blog-action';
 
 type Props = {
   params: { slug: string }
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const blog = mockBlogPosts.find(post => post.slug === params.slug);
+  const resp = await getBlogBySlugAction(params.slug);
+  const blog = resp?.blog;
   
   if (!blog) {
     notFound();
