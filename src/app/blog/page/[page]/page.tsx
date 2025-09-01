@@ -5,10 +5,13 @@ import { BlogCard, LoklCTABanner } from "@/components/lokl-academy/components";
 import { getBlogsLiteAction } from "@/actions/blog-action";
 import type { BlogPost } from "@/lib/blog/schema";
 
-export default async function BlogPageNumber({ params }: { params: { page: string } }) {
+export default async function BlogPageNumber({ params, searchParams }: { params: { page: string }, searchParams?: Record<string, string | string[] | undefined> }) {
   const currentPage = Number(params.page) || 1;
   const limit = 10;
-  const resp = await getBlogsLiteAction({ page: currentPage, limit, status: "published" });
+  const search = typeof searchParams?.search === 'string' ? searchParams?.search : undefined;
+  const tagsCsv = typeof searchParams?.tags === 'string' ? searchParams?.tags : undefined;
+  const tags = tagsCsv ? tagsCsv.split(',').map(t => t.trim()).filter(Boolean) : undefined;
+  const resp = await getBlogsLiteAction({ page: currentPage, limit, status: "published", sortBy: "createdAt", sortOrder: "DESC", search, tags });
   const blogs: BlogPost[] = resp?.blogs || [];
   const totalCount: number = resp?.totalCount || blogs.length;
   const totalPages = Math.max(1, Math.ceil(totalCount / limit));
@@ -43,12 +46,12 @@ export default async function BlogPageNumber({ params }: { params: { page: strin
 
             <div className="mt-12 flex justify-center gap-4">
               {currentPage > 1 && (
-                <Link href={currentPage === 2 ? `/blog` : `/blog/page/${currentPage - 1}`}>
+                <Link href={{ pathname: currentPage === 2 ? `/blog` : `/blog/page/${currentPage - 1}`, query: { search, tags: tagsCsv } }}>
                   <Button variant="secondary">Anterior</Button>
                 </Link>
               )}
               {currentPage < totalPages && (
-                <Link href={`/blog/page/${currentPage + 1}`}>
+                <Link href={{ pathname: `/blog/page/${currentPage + 1}`, query: { search, tags: tagsCsv } }}>
                   <Button>Siguiente</Button>
                 </Link>
               )}

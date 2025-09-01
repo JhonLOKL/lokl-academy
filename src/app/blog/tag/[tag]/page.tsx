@@ -9,7 +9,7 @@ export default async function BlogTagPage({ params, searchParams }: { params: { 
   const tag = decodeURIComponent(params.tag);
   const currentPage = Number(searchParams.page || 1);
   const limit = 10;
-  const resp = await getBlogsLiteAction({ page: currentPage, limit, status: "published", tags: [tag] });
+  const resp = await getBlogsLiteAction({ page: currentPage, limit, status: "published", tags: [tag], sortBy: "createdAt", sortOrder: "DESC" });
   const blogs: BlogPost[] = resp?.blogs || [];
   const totalCount: number = resp?.totalCount || blogs.length;
   const totalPages = Math.max(1, Math.ceil(totalCount / limit));

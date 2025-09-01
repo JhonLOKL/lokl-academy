@@ -4,11 +4,16 @@ import { Footer, H1, Paragraph, Button } from "@/components/design-system";
 import { BlogCard, LoklCTABanner } from "@/components/lokl-academy/components";
 import { getBlogsLiteAction } from "@/actions/blog-action";
 import type { BlogPost } from "@/lib/blog/schema";
+import BlogFiltersClient from "@/components/lokl-academy/components/blog-filters-client";
 
-export default async function BlogPage() {
+export default async function BlogPage({ searchParams }: { searchParams?: Record<string, string | string[] | undefined> }) {
   const limit = 10;
   const page = 1;
-  const resp = await getBlogsLiteAction({ page, limit, status: "published" });
+  const search = typeof searchParams?.search === 'string' ? searchParams?.search : undefined;
+  const tagsCsv = typeof searchParams?.tags === 'string' ? searchParams?.tags : undefined;
+  const tags = tagsCsv ? tagsCsv.split(',').map(t => t.trim()).filter(Boolean) : undefined;
+
+  const resp = await getBlogsLiteAction({ page, limit, status: "published", sortBy: "createdAt", sortOrder: "DESC", search, tags });
   const blogs: BlogPost[] = resp?.blogs || [];
   const totalCount: number = resp?.totalCount || blogs.length;
   const totalPages = Math.max(1, Math.ceil(totalCount / limit));
@@ -23,6 +28,9 @@ export default async function BlogPage() {
               <Paragraph variant="lead" className="mx-auto max-w-2xl">
                 Artículos, guías y recursos sobre inversión inmobiliaria, finanzas personales y desarrollo profesional.
               </Paragraph>
+            </div>
+            <div className="mt-6">
+              <BlogFiltersClient availableTags={["fintech", "innovacion", "blockchain", "proptech", "startups"]} />
             </div>
           </div>
         </section>
@@ -49,7 +57,7 @@ export default async function BlogPage() {
 
             {page < totalPages && (
               <div className="mt-12 flex justify-center">
-                <Link href={`/blog/page/${page + 1}`}>
+                <Link href={{ pathname: `/blog/page/${page + 1}`, query: { search, tags: tagsCsv } }}>
                   <Button>Mostrar más</Button>
                 </Link>
               </div>
