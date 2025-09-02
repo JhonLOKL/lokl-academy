@@ -36,9 +36,8 @@ const BlogCard: React.FC<BlogCardProps> = ({
     return (
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.2 }}
-        viewport={{ once: true }}
         className={`overflow-hidden rounded-xl bg-white transition-all duration-200 ${isHovered ? 'shadow-lg border border-[#5352F6]' : 'shadow-sm border border-transparent'} ${className}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -115,9 +114,8 @@ const BlogCard: React.FC<BlogCardProps> = ({
     return (
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.2 }}
-        viewport={{ once: true }}
         className={`flex items-center gap-4 p-2 rounded-lg transition-all duration-200 ${isHovered ? 'shadow-sm border border-[#5352F6]/30' : ''} ${className}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -150,9 +148,8 @@ const BlogCard: React.FC<BlogCardProps> = ({
   return (
     <motion.div 
       initial={{ opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
-      viewport={{ once: true }}
       className={`overflow-hidden rounded-xl bg-white transition-all duration-200 ${isHovered ? 'shadow-lg border border-[#5352F6]' : 'shadow-sm border border-transparent'} ${className}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

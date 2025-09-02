@@ -55,7 +55,15 @@ export default async function BlogPage({ searchParams }: { searchParams?: Promis
               </Paragraph>
             </div>
             <div className="mt-6">
-              <BlogFiltersClient availableTags={["fintech", "innovacion", "blockchain", "proptech", "startups"]} />
+              <BlogFiltersClient
+                availableTags={["fintech", "innovacion", "blockchain", "proptech", "startups"]}
+                availableCategories={[
+                  { slug: "Trading", label: "Trading" },
+                  { slug: "Tecnología", label: "Tecnología" },
+                  { slug: "Inversión", label: "Inversión" },
+                  { slug: "Finanzas", label: "Finanzas" },
+                ]}
+              />
             </div>
           </div>
         </section>
