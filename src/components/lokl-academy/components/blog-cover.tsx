@@ -19,6 +19,10 @@ const BlogCover: React.FC<BlogCoverProps> = ({
   credit,
   className = "",
 }) => {
+  const [imgSrc, setImgSrc] = React.useState<string>(src);
+  React.useEffect(() => {
+    setImgSrc(src);
+  }, [src]);
   return (
     <div className={`mx-auto max-w-4xl ${className}`}>
       <motion.div
@@ -28,11 +32,12 @@ const BlogCover: React.FC<BlogCoverProps> = ({
         className="relative aspect-[16/9] w-full overflow-hidden rounded-xl shadow-lg"
       >
         <Image
-          src={src}
+          src={imgSrc}
           alt={alt}
           fill
           className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
           priority
+          onError={() => setImgSrc("/images/modern-building.jpg")}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-60"></div>
       </motion.div>

@@ -26,6 +26,9 @@ export const metadata: Metadata = {
     languages: {
       "es-ES": "/es",
     },
+    types: {
+      "application/json": "/feed",
+    },
   },
   openGraph: {
     title: "LOKL Academy | Plataforma de Inversión y Bienes Raíces",

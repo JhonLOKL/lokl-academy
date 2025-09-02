@@ -43,6 +43,18 @@ export default async function BlogPage({ searchParams }: { searchParams?: Promis
   };
   const pageItems = buildPageItems(totalPages, currentPage);
 
+  // JSON-LD ItemList para listados
+  const itemListLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: blogs.map((b, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://academy.lokl.life'}/blog/${b.slug}`,
+      name: b.title,
+    })),
+  };
+
   return (
     <>
       <main>
@@ -70,6 +82,7 @@ export default async function BlogPage({ searchParams }: { searchParams?: Promis
 
         <section className="py-16">
           <div className="container mx-auto px-4">
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }} />
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
               {blogs.map((blog, index) => (
                 index === 0 && currentPage === 1 ? (
@@ -82,7 +95,7 @@ export default async function BlogPage({ searchParams }: { searchParams?: Promis
               ))}
             </div>
 
-            {blogs.length === 0 && (
+            {search && blogs.length === 0 && (
               <div className="my-16 text-center">
                 <Paragraph variant="lead">No se encontraron artículos.</Paragraph>
               </div>
