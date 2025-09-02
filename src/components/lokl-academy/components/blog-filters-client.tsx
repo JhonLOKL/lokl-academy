@@ -60,7 +60,7 @@ export default function BlogFiltersClient({ availableTags }: BlogFiltersClientPr
         </div>
       </div>
       <div className="mt-3">
-        <button onClick={apply} className="rounded-md bg-[#5352F6] px-4 py-2 text-white">Aplicar filtros</button>
+        <button onClick={apply} className="rounded-md bg-[#5352F6] px-4 py-2 text-white cursor-pointer hover:opacity-90">Aplicar filtros</button>
       </div>
     </div>
   );
