@@ -86,7 +86,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
               <div className="flex items-center">
                 <div className="relative mr-3 h-10 w-10 overflow-hidden rounded-full border border-gray-100">
                   <Image
-                    src={blog.author.avatar}
+                    src={blog.author.avatar ?? "/images/couple-investing.jpg"}
                     alt={blog.author.name}
                     fill
                     className="object-cover"
@@ -197,7 +197,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
           <div className="flex items-center">
             <div className="relative mr-3 h-8 w-8 overflow-hidden rounded-full border border-gray-100">
               <Image
-                src={blog.author.avatar}
+                src={blog.author.avatar ?? "/images/couple-investing.jpg"}
                 alt={blog.author.name}
                 fill
                 className="object-cover"
