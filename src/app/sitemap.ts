@@ -8,20 +8,24 @@ const PAGE_SIZE = 10;
 const CATEGORIES = ['Trading', 'Finanzas', 'Tecnología'];
 
 async function getTotalPages(category?: string) {
-  const params = new URLSearchParams({
-    page: '1',
-    limit: String(PAGE_SIZE),
-    status: 'published',
-    sortBy: 'createdAt',
-    sortOrder: 'DESC',
-  });
-  if (category) params.set('category', category);
+  try {
+    const params = new URLSearchParams({
+      page: '1',
+      limit: String(PAGE_SIZE),
+      status: 'published',
+      sortBy: 'createdAt',
+      sortOrder: 'DESC',
+    });
+    if (category) params.set('category', category);
 
-  const res = await fetch(`${SITE_URL}/api/academy/blog/lite?${params.toString()}`, {
-    next: { revalidate: 3600 },
-  });
-  const json = await res.json();
-  return json?.data?.pagination?.totalPages || 1;
+    const url = `${SITE_URL}/api/academy/blog/lite?${params.toString()}`;
+    const res = await fetch(url, { next: { revalidate: 3600 } });
+    if (!res.ok) return 1;
+    const json = await res.json().catch(() => null);
+    return json?.data?.pagination?.totalPages || 1;
+  } catch {
+    return 1;
+  }
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -57,7 +61,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     type ApiLitePagination = { hasNext?: boolean; totalPages?: number };
     let page = 1;
     let hasNext = true;
-    while (hasNext) {
+    let safety = 0;
+    while (hasNext && safety < 200) {
       const params = new URLSearchParams({
         page: String(page),
         limit: String(PAGE_SIZE),
@@ -66,7 +71,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         sortOrder: 'DESC',
       });
       const res = await fetch(`${SITE_URL}/api/academy/blog/lite?${params.toString()}`, { next: { revalidate: 3600 } });
-      const json = await res.json();
+      if (!res.ok) break;
+      const json = await res.json().catch(() => null);
       const data = json?.data as { posts?: ApiLitePostMin[]; pagination?: ApiLitePagination } | undefined;
       const posts: ApiLitePostMin[] = data?.posts || [];
       const pagination = data?.pagination;
@@ -83,7 +89,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }
       hasNext = Boolean(pagination?.hasNext) && page < (pagination?.totalPages || page);
       page += 1;
-      if (page > 200) break; // límite de seguridad
+      safety += 1;
     }
   } catch {
     // si falla, al menos devolvemos las entradas ya agregadas

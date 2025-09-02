@@ -62,6 +62,32 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  other: {
+    // Organization
+    'ld+json:organization': JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'LOKL Academy',
+      url: process.env.NEXT_PUBLIC_SITE_URL || 'https://academy.lokl.life',
+      logo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://academy.lokl.life'}/logo.png`,
+      sameAs: [
+        'https://www.linkedin.com/company/lokl/',
+        'https://twitter.com/loklacademy',
+      ],
+    }),
+    // WebSite + SearchAction
+    'ld+json:website': JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      url: process.env.NEXT_PUBLIC_SITE_URL || 'https://academy.lokl.life',
+      name: 'LOKL Academy',
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://academy.lokl.life'}/blog?search={search_term_string}`,
+        'query-input': 'required name=search_term_string',
+      },
+    }),
+  },
   viewport: {
     width: "device-width",
     initialScale: 1,
