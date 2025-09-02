@@ -5,11 +5,13 @@ import { BlogCard, LoklCTABanner } from "@/components/lokl-academy/components";
 import { getBlogsLiteAction } from "@/actions/blog-action";
 import type { BlogPost } from "@/lib/blog/schema";
 
-export default async function BlogPageNumber({ params, searchParams }: { params: { page: string }, searchParams?: Record<string, string | string[] | undefined> }) {
-  const currentPage = Number(params.page) || 1;
+export default async function BlogPageNumber({ params, searchParams }: { params: Promise<{ page: string }>, searchParams?: Promise<Record<string, string | string[] | undefined>> }) {
+  const { page } = await params;
+  const currentPage = Number(page) || 1;
   const limit = 10;
-  const search = typeof searchParams?.search === 'string' ? searchParams?.search : undefined;
-  const tagsCsv = typeof searchParams?.tags === 'string' ? searchParams?.tags : undefined;
+  const sp = (searchParams && await searchParams) || {};
+  const search = typeof sp.search === 'string' ? sp.search : undefined;
+  const tagsCsv = typeof sp.tags === 'string' ? sp.tags : undefined;
   const tags = tagsCsv ? tagsCsv.split(',').map(t => t.trim()).filter(Boolean) : undefined;
   const resp = await getBlogsLiteAction({ page: currentPage, limit, status: "published", sortBy: "createdAt", sortOrder: "DESC", search, tags });
   const blogs: BlogPost[] = resp?.blogs || [];

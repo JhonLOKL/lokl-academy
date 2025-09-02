@@ -6,11 +6,12 @@ import { getBlogsLiteAction } from "@/actions/blog-action";
 import type { BlogPost } from "@/lib/blog/schema";
 import BlogFiltersClient from "@/components/lokl-academy/components/blog-filters-client";
 
-export default async function BlogPage({ searchParams }: { searchParams?: Record<string, string | string[] | undefined> }) {
+export default async function BlogPage({ searchParams }: { searchParams?: Promise<Record<string, string | string[] | undefined>> }) {
   const limit = 10;
   const page = 1;
-  const search = typeof searchParams?.search === 'string' ? searchParams?.search : undefined;
-  const tagsCsv = typeof searchParams?.tags === 'string' ? searchParams?.tags : undefined;
+  const sp = (searchParams && await searchParams) || {};
+  const search = typeof sp.search === 'string' ? sp.search : undefined;
+  const tagsCsv = typeof sp.tags === 'string' ? sp.tags : undefined;
   const tags = tagsCsv ? tagsCsv.split(',').map(t => t.trim()).filter(Boolean) : undefined;
 
   const resp = await getBlogsLiteAction({ page, limit, status: "published", sortBy: "createdAt", sortOrder: "DESC", search, tags });
