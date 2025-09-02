@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { SiteNavbar } from "@/components/lokl-academy/layouts/site-navbar";
+import Script from "next/script";
+import GAListener from "@/components/analytics/ga-listener";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -111,6 +113,24 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={inter.className}>
+        {/* Google Analytics */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-88VH2CG9LP'}`}
+          strategy="afterInteractive"
+        />
+        <Script id="ga-config" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-88VH2CG9LP'}', {
+              cookie_domain: '.lokl.life',
+              linker: { domains: ['lokl.life', 'academy.lokl.life'] },
+              send_page_view: true
+            });
+          `}
+        </Script>
+        <GAListener />
         <SiteNavbar />
         {children}
       </body>
