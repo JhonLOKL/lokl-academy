@@ -51,5 +51,40 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
+  // Artículos individuales /blog/:slug — recorre paginado y agrega cada slug
+  try {
+    let page = 1;
+    let hasNext = true;
+    while (hasNext) {
+      const params = new URLSearchParams({
+        page: String(page),
+        limit: String(PAGE_SIZE),
+        status: 'published',
+        sortBy: 'createdAt',
+        sortOrder: 'DESC',
+      });
+      const res = await fetch(`${SITE_URL}/api/academy/blog/lite?${params.toString()}`, { next: { revalidate: 3600 } });
+      const json = await res.json();
+      const posts: any[] = json?.data?.posts || [];
+      const pagination = json?.data?.pagination;
+      for (const p of posts) {
+        const updated = p?.updatedAt || p?.publishedAt || new Date().toISOString();
+        if (p?.slug) {
+          entries.push({
+            url: `${SITE_URL}/blog/${encodeURIComponent(p.slug)}`,
+            lastModified: new Date(updated),
+            changeFrequency: 'weekly',
+            priority: 0.7,
+          });
+        }
+      }
+      hasNext = Boolean(pagination?.hasNext) && page < (pagination?.totalPages || page);
+      page += 1;
+      if (page > 200) break; // límite de seguridad
+    }
+  } catch {
+    // si falla, al menos devolvemos las entradas ya agregadas
+  }
+
   return entries;
 }
