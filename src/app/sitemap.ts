@@ -3,6 +3,8 @@ import type { MetadataRoute } from 'next';
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
   (process.env.NODE_ENV === 'production' ? 'https://academy.lokl.life' : 'http://localhost:3000');
+// Usa la base pública ya existente de tu app/API
+const API_BASE = process.env.NEXT_PUBLIC_BASE_PATH || SITE_URL;
 const PAGE_SIZE = 10;
 // Opcional: mantenemos una lista inicial; idealmente trae esto desde la API
 const CATEGORIES = ['Trading', 'Finanzas', 'Tecnología'];
@@ -18,9 +20,19 @@ async function getTotalPages(category?: string) {
     });
     if (category) params.set('category', category);
 
-    const url = `${SITE_URL}/api/academy/blog/lite?${params.toString()}`;
-    const res = await fetch(url, { next: { revalidate: 3600 } });
-    if (!res.ok) return 1;
+    const url = `${API_BASE}/api/academy/blog/lite?${params.toString()}`;
+    const res = await fetch(url, process.env.NODE_ENV === 'production' ? { next: { revalidate: 3600 } } : { cache: 'no-store' });
+    if (!res.ok) {
+      // Fallback local a /api/blogs (mock). Obtenemos todos para calcular páginas
+      const res2 = await fetch(
+        `${SITE_URL}/api/blogs${category ? `?category=${encodeURIComponent(category)}` : ''}`,
+        process.env.NODE_ENV === 'production' ? { next: { revalidate: 3600 } } : { cache: 'no-store' }
+      );
+      if (!res2.ok) return 1;
+      const j2 = await res2.json().catch(() => null);
+      const totalItems = Array.isArray(j2?.blogs) ? j2.blogs.length : 0;
+      return Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+    }
     const json = await res.json().catch(() => null);
     return json?.data?.pagination?.totalPages || 1;
   } catch {
@@ -59,6 +71,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     type ApiLitePostMin = { slug?: string; updatedAt?: string; publishedAt?: string };
     type ApiLitePagination = { hasNext?: boolean; totalPages?: number };
+    type FallbackBlog = { slug: string; updatedAt?: string; publishedAt?: string };
     let page = 1;
     let hasNext = true;
     let safety = 0;
@@ -70,8 +83,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         sortBy: 'createdAt',
         sortOrder: 'DESC',
       });
-      const res = await fetch(`${SITE_URL}/api/academy/blog/lite?${params.toString()}`, { next: { revalidate: 3600 } });
-      if (!res.ok) break;
+      const res = await fetch(`${API_BASE}/api/academy/blog/lite?${params.toString()}`, process.env.NODE_ENV === 'production' ? { next: { revalidate: 3600 } } : { cache: 'no-store' });
+      if (!res.ok) {
+        // Fallback local a /api/blogs para incluir slugs de mock
+        const res2 = await fetch(`${SITE_URL}/api/blogs?limit=1000`, process.env.NODE_ENV === 'production' ? { next: { revalidate: 3600 } } : { cache: 'no-store' });
+        if (res2.ok) {
+          const j2 = await res2.json().catch(() => null);
+          const blogs: FallbackBlog[] = (j2?.blogs as FallbackBlog[]) || [];
+          for (const b of blogs) {
+            if (b?.slug) {
+              const updated = b?.updatedAt || b?.publishedAt || new Date().toISOString();
+              entries.push({
+                url: `${SITE_URL}/blog/${encodeURIComponent(b.slug)}`,
+                lastModified: new Date(updated),
+                changeFrequency: 'weekly',
+                priority: 0.7,
+              });
+            }
+          }
+        }
+        break;
+      }
       const json = await res.json().catch(() => null);
       const data = json?.data as { posts?: ApiLitePostMin[]; pagination?: ApiLitePagination } | undefined;
       const posts: ApiLitePostMin[] = data?.posts || [];
