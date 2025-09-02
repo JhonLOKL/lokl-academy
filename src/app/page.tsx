@@ -1,6 +1,4 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Footer } from "@/components/design-system";
 import { 
   HeroSection,
@@ -10,24 +8,12 @@ import {
   CtaSection,
   BlogSection
 } from "@/components/lokl-academy/sections";
+import { getBlogsLiteAction } from "@/actions/blog-action";
 
-export default function LandingPage() {
-  const [blogs, setBlogs] = useState([]);
-
-  useEffect(() => {
-    // Cargar los blogs más recientes al montar el componente
-    const fetchBlogs = async () => {
-      try {
-        const response = await fetch('/api/blogs?limit=4');
-        const data = await response.json();
-        setBlogs(data.blogs);
-      } catch (error) {
-        console.error('Error al cargar los blogs:', error);
-      }
-    };
-
-    fetchBlogs();
-  }, []);
+export default async function LandingPage() {
+  // Cargar desde la API real (lite) con orden más reciente primero
+  const resp = await getBlogsLiteAction({ page: 1, limit: 4, status: "published", sortBy: "createdAt", sortOrder: "DESC" });
+  const blogs = resp?.blogs || [];
 
   return (
     <>
