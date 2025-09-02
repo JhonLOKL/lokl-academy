@@ -5,9 +5,11 @@ import { BlogCard } from "@/components/lokl-academy/components";
 import { getBlogsLiteAction } from "@/actions/blog-action";
 import type { BlogPost } from "@/lib/blog/schema";
 
-export default async function BlogTagPage({ params, searchParams }: { params: { tag: string }, searchParams: { page?: string } }) {
-  const tag = decodeURIComponent(params.tag);
-  const currentPage = Number(searchParams.page || 1);
+export default async function BlogTagPage({ params, searchParams }: { params: Promise<{ tag: string }>, searchParams?: Promise<Record<string, string | string[] | undefined>> }) {
+  const { tag: rawTag } = await params;
+  const sp = (searchParams && await searchParams) || {};
+  const tag = decodeURIComponent(rawTag);
+  const currentPage = Number(sp.page || 1);
   const limit = 10;
   const resp = await getBlogsLiteAction({ page: currentPage, limit, status: "published", tags: [tag], sortBy: "createdAt", sortOrder: "DESC" });
   const blogs: BlogPost[] = resp?.blogs || [];
