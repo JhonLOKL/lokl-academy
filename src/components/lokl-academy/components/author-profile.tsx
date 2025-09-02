@@ -56,7 +56,7 @@ const AuthorProfile: React.FC<AuthorProfileProps> = ({
       >
         <div className="relative mr-3 h-10 w-10 overflow-hidden rounded-full border border-gray-100">
           <Image
-            src={author.avatar}
+            src={author.avatar ?? "/images/couple-investing.jpg"}
             alt={author.name}
             fill
             className="object-cover transition-all duration-300"
@@ -80,7 +80,7 @@ const AuthorProfile: React.FC<AuthorProfileProps> = ({
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="relative h-20 w-20 overflow-hidden rounded-full border-2 border-[#5352F6]/20">
           <Image
-            src={author.avatar}
+            src={author.avatar ?? "/images/couple-investing.jpg"}
             alt={author.name}
             fill
             className="object-cover transition-all duration-300"
