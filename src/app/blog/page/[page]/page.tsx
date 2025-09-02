@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { Footer, H1, Paragraph, Button } from "@/components/design-system";
+import { Footer, H1, Paragraph } from "@/components/design-system";
 import { BlogCard, LoklCTABanner } from "@/components/lokl-academy/components";
 import { getBlogsLiteAction } from "@/actions/blog-action";
 import type { BlogPost } from "@/lib/blog/schema";
