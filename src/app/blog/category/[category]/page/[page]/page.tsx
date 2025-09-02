@@ -5,14 +5,11 @@ import { BlogCard } from "@/components/lokl-academy/components";
 import { getBlogsLiteAction } from "@/actions/blog-action";
 import type { BlogPost } from "@/lib/blog/schema";
 
-export default async function BlogCategoryPage({ params, searchParams }: { params: Promise<{ category: string }>, searchParams?: Promise<Record<string, string | string[] | undefined>> }) {
-  const { category: rawCategory } = await params;
+export default async function BlogCategoryPageNumber({ params, searchParams }: { params: Promise<{ category: string; page: string }>, searchParams?: Promise<Record<string, string | string[] | undefined>> }) {
+  const { category: rawCategory, page } = await params;
   const sp = (searchParams && await searchParams) || {};
   const category = decodeURIComponent(rawCategory);
-  const currentPageQuery = Number(sp.page || 1);
-  // Permitir la convención /blog/category/[category]/page/[page]
-  const pathPage = typeof (sp["__pathname_page"]) === 'string' ? Number(sp["__pathname_page"]) : undefined;
-  const currentPage = Math.max(1, pathPage || currentPageQuery);
+  const currentPage = Math.max(1, Number(page || 1));
   const search = typeof sp.search === 'string' ? sp.search : undefined;
   const tagsCsv = typeof sp.tags === 'string' ? sp.tags : undefined;
   const tags = tagsCsv ? tagsCsv.split(',').map(t => t.trim()).filter(Boolean) : undefined;
@@ -70,4 +67,5 @@ export default async function BlogCategoryPage({ params, searchParams }: { param
     </>
   );
 }
+
 
