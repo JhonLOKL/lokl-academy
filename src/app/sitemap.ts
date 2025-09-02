@@ -53,6 +53,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Artículos individuales /blog/:slug — recorre paginado y agrega cada slug
   try {
+    type ApiLitePostMin = { slug?: string; updatedAt?: string; publishedAt?: string };
+    type ApiLitePagination = { hasNext?: boolean; totalPages?: number };
     let page = 1;
     let hasNext = true;
     while (hasNext) {
@@ -65,8 +67,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       });
       const res = await fetch(`${SITE_URL}/api/academy/blog/lite?${params.toString()}`, { next: { revalidate: 3600 } });
       const json = await res.json();
-      const posts: any[] = json?.data?.posts || [];
-      const pagination = json?.data?.pagination;
+      const data = json?.data as { posts?: ApiLitePostMin[]; pagination?: ApiLitePagination } | undefined;
+      const posts: ApiLitePostMin[] = data?.posts || [];
+      const pagination = data?.pagination;
       for (const p of posts) {
         const updated = p?.updatedAt || p?.publishedAt || new Date().toISOString();
         if (p?.slug) {
