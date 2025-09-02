@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { SiteNavbar } from "@/components/lokl-academy/layouts/site-navbar";
 import Script from "next/script";
+import { Suspense } from "react";
 import GAListener from "@/components/analytics/ga-listener";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -130,7 +131,9 @@ export default function RootLayout({
             });
           `}
         </Script>
-        <GAListener />
+        <Suspense fallback={null}>
+          <GAListener />
+        </Suspense>
         <SiteNavbar />
         {children}
       </body>
