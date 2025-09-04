@@ -13,6 +13,7 @@ import PlanComparison from "@/components/course/plan-comparison";
 // import NewsletterCard from "@/components/course/newsletter-card";
 // import ToolCard from "@/components/course/tool-card";
 import TestimonialCard from "@/components/course/testimonial-card";
+import CourseSwiper from "@/components/course/course-swiper";
 import BlogSection from "@/components/lokl-academy/sections/blog-section";
 import { Clock, ExternalLink, Star } from "lucide-react";
 
@@ -115,9 +116,10 @@ export default async function CoursePage() {
               {/* Cursos en progreso */}
               <div className="w-full">
                 <h4 className="mb-4 text-lg font-semibold">Tus cursos actuales</h4>
-                <div className="flex overflow-x-auto pb-4 gap-4">
-                  {userCourseProgress ? (
-                    <div className="w-full max-w-lg flex-shrink-0">
+                <CourseSwiper>
+                  {/* Curso en progreso real */}
+                  {userCourseProgress && (
+                    <div>
                       <CourseCard 
                         course={mockCourses.find(course => course.id === userCourseProgress.courseId)!}
                         showProgress={true}
@@ -125,35 +127,69 @@ export default async function CoursePage() {
                         variant="horizontal"
                       />
                     </div>
-                  ) : (
-                    <div className="w-full max-w-lg flex-shrink-0 rounded-lg border border-dashed border-[#E5E5E5] bg-[#F9F9F9] p-6 text-center">
-                      <p className="mb-4 text-[#6D6C6C]">No has comenzado ningún curso</p>
-                      <Button variant="secondary" size="sm">Explorar cursos</Button>
-                    </div>
                   )}
                   
-                  {/* Aquí se pueden agregar más cursos en progreso */}
-                  {/* Ejemplo de otro curso en progreso (comentado) */}
-                  {/*
-                  <div className="w-full max-w-lg flex-shrink-0">
+                  {/* Cursos de ejemplo (placeholders) */}
+                  <div>
                     <CourseCard 
                       course={mockCourses[1]}
                       showProgress={true}
-                      progress={{ overallProgress: 25, completedLessons: 2, totalLessons: 8 }}
+                      progress={{
+                        userId: 'user-1',
+                        courseId: mockCourses[1].id,
+                        overallProgress: 35,
+                        completedLessons: 3,
+                        totalLessons: 8,
+                        moduleProgress: [],
+                        timeSpent: 120,
+                        startedAt: '2024-01-15T10:00:00Z',
+                        lastAccessedAt: '2024-01-20T14:30:00Z'
+                      }}
                       variant="horizontal"
                     />
                   </div>
-                  */}
-                </div>
+                  
+                  <div>
+                    <CourseCard 
+                      course={mockCourses[2]}
+                      showProgress={true}
+                      progress={{
+                        userId: 'user-1',
+                        courseId: mockCourses[2].id,
+                        overallProgress: 15,
+                        completedLessons: 1,
+                        totalLessons: 6,
+                        moduleProgress: [],
+                        timeSpent: 45,
+                        startedAt: '2024-01-25T16:00:00Z',
+                        lastAccessedAt: '2024-01-26T10:15:00Z'
+                      }}
+                      variant="horizontal"
+                    />
+                  </div>
+                  
+                  {/* Tarjeta para explorar más cursos */}
+                  <div className="flex flex-col justify-center items-center rounded-lg border border-dashed border-[#E5E5E5] bg-[#F9F9F9] p-6 text-center">
+                    <div className="mb-4 rounded-full bg-[#EEEEFE] p-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#5352F6]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                    </div>
+                    <h5 className="mb-2 font-medium">Descubre más cursos</h5>
+                    <p className="mb-4 text-sm text-[#6D6C6C]">Explora todos nuestros cursos disponibles</p>
+                    <Button variant="secondary" size="sm">Ver todos</Button>
+                  </div>
+                </CourseSwiper>
               </div>
               
               {/* Rutas en progreso */}
               <div className="w-full">
                 <h4 className="mb-4 text-lg font-semibold">Tus rutas actuales</h4>
-                <div className="flex overflow-x-auto pb-4 gap-4">
-                  {userPathProgress ? (
-                    <div className="w-full max-w-md flex-shrink-0">
-                      <div className="group relative overflow-hidden rounded-lg border border-[#E5E5E5] bg-white p-4 shadow-sm transition-all hover:shadow-md">
+                <CourseSwiper>
+                  {/* Ruta en progreso real */}
+                  {userPathProgress && (
+                    <div>
+                      <div className="group relative overflow-hidden rounded-lg border border-[#E5E5E5] bg-white p-4 shadow-sm transition-all hover:shadow-md h-full">
                         <div className="flex items-center justify-between">
                           {/* Información principal */}
                           <div className="flex-1">
@@ -217,23 +253,146 @@ export default async function CoursePage() {
                         </div>
                       </div>
                     </div>
-                  ) : (
-                    <div className="w-full max-w-md flex-shrink-0 rounded-lg border border-dashed border-[#E5E5E5] bg-[#F9F9F9] p-6 text-center">
-                      <p className="mb-4 text-[#6D6C6C]">No has comenzado ninguna ruta</p>
-                      <Button variant="secondary" size="sm">Explorar rutas</Button>
-                    </div>
                   )}
                   
-                  {/* Aquí se pueden agregar más rutas en progreso */}
-                  {/* Ejemplo de otra ruta en progreso (comentado) */}
-                  {/*
-                  <div className="w-full max-w-md flex-shrink-0">
-                    <div className="group relative overflow-hidden rounded-lg border border-[#E5E5E5] bg-white p-4 shadow-sm transition-all hover:shadow-md">
-                      ... contenido similar al anterior ...
+                  {/* Ruta de ejemplo 1 */}
+                  <div>
+                    <div className="group relative overflow-hidden rounded-lg border border-[#E5E5E5] bg-white p-4 shadow-sm transition-all hover:shadow-md h-full">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="mb-1 flex items-center gap-2">
+                            <Badge className="bg-[#EEEEFE] text-xs font-medium text-[#5352F6]">
+                              {mockLearningPaths[1].category.name}
+                            </Badge>
+                            <span className="text-xs text-[#6D6C6C]">
+                              {mockLearningPaths[1].structure.estimatedCompletionTime}
+                            </span>
+                          </div>
+                          
+                          <Link href={`/learning-path/${mockLearningPaths[1].slug}`}>
+                            <h4 className="mb-2 text-lg font-bold tracking-tight group-hover:text-[#5352F6]">
+                              {mockLearningPaths[1].title}
+                            </h4>
+                          </Link>
+                          
+                          <div className="flex items-center gap-4 text-xs text-[#6D6C6C]">
+                            <div className="flex items-center">
+                              <span>1 de {mockLearningPaths[1].courses.length} cursos completados</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full border border-[#EEEEFE] bg-white">
+                          <div className="relative flex h-14 w-14 items-center justify-center rounded-full">
+                            <svg className="absolute h-full w-full" viewBox="0 0 100 100">
+                              <circle 
+                                cx="50" cy="50" r="40" 
+                                fill="none" 
+                                stroke="#EEEEFE" 
+                                strokeWidth="8"
+                              />
+                              <circle 
+                                cx="50" cy="50" r="40" 
+                                fill="none" 
+                                stroke="#5352F6" 
+                                strokeWidth="8"
+                                strokeDasharray="251.2"
+                                strokeDashoffset={251.2 - (251.2 * 20 / 100)}
+                                transform="rotate(-90 50 50)"
+                                strokeLinecap="round"
+                              />
+                            </svg>
+                            <span className="text-sm font-bold text-[#5352F6]">20%</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-4">
+                        <Link 
+                          href={`/learning-path/${mockLearningPaths[1].slug}`} 
+                          className="block w-full"
+                        >
+                          <Button className="w-full">Continuar ruta</Button>
+                        </Link>
+                      </div>
                     </div>
                   </div>
-                  */}
-                </div>
+                  
+                  {/* Ruta de ejemplo 2 */}
+                  <div>
+                    <div className="group relative overflow-hidden rounded-lg border border-[#E5E5E5] bg-white p-4 shadow-sm transition-all hover:shadow-md h-full">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="mb-1 flex items-center gap-2">
+                            <Badge className="bg-[#EEEEFE] text-xs font-medium text-[#5352F6]">
+                              {mockLearningPaths[0].category.name}
+                            </Badge>
+                            <span className="text-xs text-[#6D6C6C]">
+                              {mockLearningPaths[0].structure.estimatedCompletionTime}
+                            </span>
+                          </div>
+                          
+                          <Link href={`/learning-path/${mockLearningPaths[0].slug}`}>
+                            <h4 className="mb-2 text-lg font-bold tracking-tight group-hover:text-[#5352F6]">
+                              {mockLearningPaths[0].title}
+                            </h4>
+                          </Link>
+                          
+                          <div className="flex items-center gap-4 text-xs text-[#6D6C6C]">
+                            <div className="flex items-center">
+                              <span>2 de {mockLearningPaths[0].courses.length} cursos completados</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full border border-[#EEEEFE] bg-white">
+                          <div className="relative flex h-14 w-14 items-center justify-center rounded-full">
+                            <svg className="absolute h-full w-full" viewBox="0 0 100 100">
+                              <circle 
+                                cx="50" cy="50" r="40" 
+                                fill="none" 
+                                stroke="#EEEEFE" 
+                                strokeWidth="8"
+                              />
+                              <circle 
+                                cx="50" cy="50" r="40" 
+                                fill="none" 
+                                stroke="#5352F6" 
+                                strokeWidth="8"
+                                strokeDasharray="251.2"
+                                strokeDashoffset={251.2 - (251.2 * 40 / 100)}
+                                transform="rotate(-90 50 50)"
+                                strokeLinecap="round"
+                              />
+                            </svg>
+                            <span className="text-sm font-bold text-[#5352F6]">40%</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-4">
+                        <Link 
+                          href={`/learning-path/${mockLearningPaths[0].slug}`} 
+                          className="block w-full"
+                        >
+                          <Button className="w-full">Continuar ruta</Button>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Tarjeta para explorar más rutas */}
+                  <div className="flex flex-col justify-center items-center rounded-lg border border-dashed border-[#E5E5E5] bg-[#F9F9F9] p-6 text-center">
+                    <div className="mb-4 rounded-full bg-[#EEEEFE] p-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#5352F6]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                      </svg>
+                    </div>
+                    <h5 className="mb-2 font-medium">Descubre más rutas</h5>
+                    <p className="mb-4 text-sm text-[#6D6C6C]">Explora todas nuestras rutas de aprendizaje</p>
+                    <Button variant="secondary" size="sm">Ver todas</Button>
+                  </div>
+                </CourseSwiper>
               </div>
               
               {/* Mensaje de no contenido eliminado ya que ahora mostramos mensajes separados */}
