@@ -753,7 +753,7 @@ import {
       },
     
       thumbnail: {
-        url: "https://www.munich-business-school.de/insights/wp-content/uploads/2018/03/MBS-investment-3-678x381.jpg",
+        url: "https://plus.unsplash.com/premium_photo-1661783001655-46a02e887842?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         alt: "Curso Gratis de Inversión Inmobiliaria",
       },
     

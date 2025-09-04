@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   images: {
     domains: [
       'images.unsplash.com', 
+      'plus.unsplash.com',
       'lokl-files-upload-bucket.s3.amazonaws.com',
       'img.freepik.com',
       'teranarq.com',
@@ -16,6 +17,11 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'plus.unsplash.com',
         pathname: '/**',
       },
       {
