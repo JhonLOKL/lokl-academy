@@ -305,7 +305,7 @@ export interface Course {
   
   // Pricing y acceso
   pricing: {
-    type: 'free' | 'premium' | 'exclusive';
+    type: 'free' | 'premium' | 'exclusive' | 'investor';
     price?: number;
     originalPrice?: number;
     currency?: string;

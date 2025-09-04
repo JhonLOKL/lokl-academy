@@ -295,11 +295,7 @@ import {
       instructor: mockInstructors[0],
   
       pricing: {
-        type: 'premium',
-        price: 197,
-        originalPrice: 297,
-        currency: 'USD',
-        discountPercentage: 34
+        type: 'free'
       },
   
       accessRequirements: {
@@ -420,15 +416,11 @@ import {
       instructor: mockInstructors[1],
   
       pricing: {
-        type: 'exclusive',
-        price: 497,
-        originalPrice: 697,
-        currency: 'USD'
+        type: 'free'
       },
   
       accessRequirements: {
-        plan: 'premium',
-        prerequisites: ['course-1']
+        plan: 'basic'
       },
   
       thumbnail: {
@@ -801,8 +793,7 @@ import {
       },
   
       accessRequirements: {
-        plan: 'premium',
-        prerequisites: ['path-1']
+        plan: 'any'
       },
   
       thumbnail: {

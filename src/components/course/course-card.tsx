@@ -33,19 +33,19 @@ const CourseCard: React.FC<CourseCardProps> = ({
 
   // Verificar si el curso es exclusivo para inversionistas
   const isInvestorExclusive = course.accessRequirements.plan === "investor";
-  
+
   // Formatear la duración
   const formatDuration = (minutes: number): string => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-    
+
     if (hours === 0) return `${mins} min`;
     if (mins === 0) return `${hours} h`;
     return `${hours} h ${mins} min`;
   };
 
   return (
-    <div 
+    <div
       className={`
         group relative overflow-hidden rounded-lg border border-[#E5E5E5] bg-white shadow-sm transition-all hover:shadow-md
         ${variant === "horizontal" ? "flex flex-col md:flex-row" : "flex flex-col"}
@@ -56,10 +56,10 @@ const CourseCard: React.FC<CourseCardProps> = ({
       {/* Etiqueta para cursos exclusivos */}
       {isInvestorExclusive && (
         <div className="absolute right-0 top-0 z-10 bg-[#5352F6] px-2 py-1 text-xs font-medium text-white">
-          Exclusivo
+          Inversionista
         </div>
       )}
-      
+
       {/* Imagen del curso */}
       <div className={`relative ${variant === "horizontal" ? "h-48 md:h-auto md:w-2/5" : "h-48"}`}>
         <Image
@@ -69,9 +69,9 @@ const CourseCard: React.FC<CourseCardProps> = ({
           className="object-cover grayscale"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
-        {course.pricing.type !== "free" && (
+        {course.accessRequirements.plan === "investor" && (
           <div className="absolute bottom-0 left-0 bg-black/70 px-3 py-1 text-sm font-medium text-white">
-            {course.pricing.type === "premium" ? "Premium" : "Exclusivo"}
+            Inversionista
           </div>
         )}
       </div>
@@ -107,8 +107,8 @@ const CourseCard: React.FC<CourseCardProps> = ({
         {showInstructor && (
           <div className="mb-3 flex items-center">
             <div className="relative mr-2 h-6 w-6 overflow-hidden rounded-full">
-              <Image 
-                src={course.instructor.avatar} 
+              <Image
+                src={course.instructor.avatar}
                 alt={course.instructor.name}
                 fill
                 className="object-cover"
@@ -148,27 +148,21 @@ const CourseCard: React.FC<CourseCardProps> = ({
           </div>
         )}
 
-        {/* Etiqueta de precio o gratuito */}
+        {/* Estado del curso: Gratis o Inversionista */}
         {!showProgress && (
           <div className="mt-auto pt-2">
-            {course.pricing.type === "free" ? (
-              <span className="text-sm font-medium text-green-600">Gratis</span>
+            {course.accessRequirements.plan === "basic" || course.accessRequirements.plan === "any" ? (
+              <span className="rounded-full bg-green-100 px-2 py-0.5 text-sm font-medium text-green-600">
+                Gratis
+              </span>
             ) : (
-              <div className="flex items-center">
-                {course.pricing.discountPercentage ? (
-                  <>
-                    <span className="mr-2 text-sm font-medium text-[#5352F6]">
-                      {course.pricing.price ? `$${course.pricing.price.toLocaleString('es-CO')}` : '$0'}
-                    </span>
-                    <span className="text-xs line-through text-[#6D6C6C]">
-                      {course.pricing.originalPrice ? `$${course.pricing.originalPrice.toLocaleString('es-CO')}` : '$0'}
-                    </span>
-                  </>
-                ) : (
-                  <span className="text-sm font-medium text-[#5352F6]">
-                    {course.pricing.price ? `$${course.pricing.price.toLocaleString('es-CO')}` : '$0'}
-                  </span>
-                )}
+              <div className="flex items-center gap-2">
+                <span className="rounded-full bg-[#5352F6]/10 px-2 py-0.5 text-sm font-medium text-[#5352F6]">
+                  Inversionista
+                </span>
+                <span className="text-xs text-[#6D6C6C]">
+                  Exclusivo para inversionistas
+                </span>
               </div>
             )}
           </div>
