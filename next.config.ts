@@ -8,7 +8,9 @@ const nextConfig: NextConfig = {
       'lokl-files-upload-bucket.s3.amazonaws.com',
       'img.freepik.com',
       'teranarq.com',
-      'realestatemarket.com.mx'
+      'realestatemarket.com.mx',
+      'www.munich-business-school.de',
+      'media.istockphoto.com'
     ],
     remotePatterns: [
       {
@@ -34,6 +36,16 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'realestatemarket.com.mx',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.munich-business-school.de',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'media.istockphoto.com',
         pathname: '/**',
       },
     ],
