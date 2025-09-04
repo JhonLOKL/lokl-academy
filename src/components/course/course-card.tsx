@@ -61,12 +61,12 @@ const CourseCard: React.FC<CourseCardProps> = ({
       )}
 
       {/* Imagen del curso */}
-      <div className={`relative ${variant === "horizontal" ? "h-48 md:h-auto md:w-2/5" : "h-48"}`}>
+      <div className={`relative overflow-hidden ${variant === "horizontal" ? "h-48 md:h-auto md:w-2/5" : "h-48"}`}>
         <Image
           src={course.thumbnail.url}
           alt={course.thumbnail.alt}
           fill
-          className="object-cover grayscale transition-all duration-300 group-hover:grayscale-0"
+          className="object-cover grayscale transition-all duration-500 group-hover:grayscale-0 group-hover:scale-110"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
         {course.accessRequirements.plan === "investor" && (
