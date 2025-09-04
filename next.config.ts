@@ -3,7 +3,13 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   images: {
-    domains: ['images.unsplash.com', 'lokl-files-upload-bucket.s3.amazonaws.com'],
+    domains: [
+      'images.unsplash.com', 
+      'lokl-files-upload-bucket.s3.amazonaws.com',
+      'img.freepik.com',
+      'teranarq.com',
+      'realestatemarket.com.mx'
+    ],
     remotePatterns: [
       {
         protocol: 'https',
@@ -13,6 +19,21 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'lokl-files-upload-bucket.s3.amazonaws.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'img.freepik.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'teranarq.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'realestatemarket.com.mx',
         pathname: '/**',
       },
     ],
