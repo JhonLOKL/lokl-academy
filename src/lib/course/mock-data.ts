@@ -1341,7 +1341,7 @@ import {
       category: 'simulator',
   
       thumbnail: {
-        url: 'https://img.freepik.com/fotos-premium/arquitectura-corporativa-moderna-puede-ver-edificios-oficinas-paisaje-urbano_410516-276.jpg?w=2000',
+        url: 'https://media.istockphoto.com/id/2198604875/photo/data-analytics-in-action-professional-utilizes-tablet-to-analyze-data-modern-analytics.jpg?s=2048x2048&w=is&k=20&c=yXxrvnBevWFEpU-cRJ87UhFQLZIl6cSVWHZrzO2Tzdo=',
         alt: 'Simulador de Inversiones LOKL'
       },
   
@@ -1363,7 +1363,7 @@ import {
       category: 'calculator',
   
       thumbnail: {
-        url: 'https://teranarq.com/wp-content/uploads/10-edificios-altos-panama.jpg',
+        url: 'https://media.istockphoto.com/id/2224932213/photo/happy-young-woman-saving-money-in-piggy-bank-at-home-kitchen.jpg?s=2048x2048&w=is&k=20&c=2u5l9KKGpI_nbvU3VB8-mDZNAu6WXyW_od4L4EWu09k=',
         alt: 'Simulador de Libertad Financiera'
       },
   
@@ -1385,7 +1385,7 @@ import {
       category: 'comparator',
   
       thumbnail: {
-        url: 'https://realestatemarket.com.mx/images/2019/05-Mayo/0605/rascacielos_grandes.jpg',
+        url: 'https://media.istockphoto.com/id/2213635605/photo/toronto-condominiums-in-a-trendy-middle-and-upper-class-district-near-yonge-and-eglinton.jpg?s=2048x2048&w=is&k=20&c=taFBRir1L4YBqzpxaQrxXbPhtOt2f3uOOVaWkCNx62A=',
         alt: 'Comparador de Proyectos'
       },
   
