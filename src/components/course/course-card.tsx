@@ -66,7 +66,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
           src={course.thumbnail.url}
           alt={course.thumbnail.alt}
           fill
-          className="object-cover grayscale"
+          className="object-cover grayscale transition-all duration-300 group-hover:grayscale-0"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
         {course.accessRequirements.plan === "investor" && (

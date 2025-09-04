@@ -1137,7 +1137,7 @@ import {
         keywords: ['inversionista intermedio', 'estrategias avanzadas', 'fintech inmobiliario', 'diversificación'],
         canonicalUrl: 'https://academy.lokl.life/perfiles/inversionista-aventurero',
         ogImage: {
-          url: 'https://teranarq.com/wp-content/uploads/10-edificios-altos-panama.jpg',
+          url: 'https://media.istockphoto.com/id/2164477556/photo/low-angle-view-of-woman-climbing-on-cliff.jpg?s=2048x2048&w=is&k=20&c=IN1bZyeoGxyJLtDDBwIF-wdW8u-uxRhXjNLQF3GAzU4=',
           alt: 'Perfil Inversionista Aventurero',
           width: 1200,
           height: 630
@@ -1183,7 +1183,7 @@ import {
       ],
   
       thumbnail: {
-        url: 'https://realestatemarket.com.mx/images/2019/05-Mayo/0605/rascacielos_grandes.jpg',
+        url: 'https://media.istockphoto.com/id/2148292077/photo/woman-exploring-ice-cave.jpg?s=2048x2048&w=is&k=20&c=_3xQGeaw2QVJ-nV_XTReVdPZMz5cnuKrdxjIIiAMAy0=',
         alt: 'Perfil Inversionista Héroe'
       },
   
@@ -1193,7 +1193,7 @@ import {
         keywords: ['inversionista experto', 'máster inmobiliario', 'estrategias institucionales', 'IA inmobiliaria'],
         canonicalUrl: 'https://academy.lokl.life/perfiles/inversionista-heroe',
         ogImage: {
-          url: 'https://realestatemarket.com.mx/images/2019/05-Mayo/0605/rascacielos_grandes.jpg',
+          url: 'https://media.istockphoto.com/id/2148292077/photo/woman-exploring-ice-cave.jpg?s=2048x2048&w=is&k=20&c=_3xQGeaw2QVJ-nV_XTReVdPZMz5cnuKrdxjIIiAMAy0=',
           alt: 'Perfil Inversionista Héroe',
           width: 1200,
           height: 630
