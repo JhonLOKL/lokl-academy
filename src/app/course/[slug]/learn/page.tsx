@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/design-system";
-import { Badge } from "@/components/ui/badge";
+// import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import QuizComponent from "@/components/course/quiz-component";
 import { 
   Clock, 
   CheckCircle, 
@@ -26,11 +27,10 @@ export default function CourseLearnPage({ params }: { params: { slug: string } }
   const searchParams = useSearchParams();
   const lessonId = searchParams.get("lesson");
   const moduleId = searchParams.get("module");
+  const isQuizMode = searchParams.get("quiz") === "true";
   
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showQuiz, setShowQuiz] = useState(false);
-  const [quizAnswers, setQuizAnswers] = useState<{[key: string]: string | string[]}>({});
-  const [quizSubmitted, setQuizSubmitted] = useState(false);
   
   // Encontrar el curso por slug
   const course = mockCourses.find((course) => course.slug === params.slug);
@@ -100,18 +100,46 @@ export default function CourseLearnPage({ params }: { params: { slug: string } }
   }
   
   
-  // Manejar el cambio en el quiz
-  const handleQuizChange = (questionId: string, answer: string | string[]) => {
-    setQuizAnswers({
-      ...quizAnswers,
-      [questionId]: answer
-    });
+  // Estado para controlar cuando el quiz ha sido completado
+  const [quizCompleted, setQuizCompleted] = useState(false);
+  // Estos estados podrían usarse para mostrar un resumen de resultados en el futuro
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [quizScore, setQuizScore] = useState<number | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [quizPassed, setQuizPassed] = useState<boolean | null>(null);
+  
+  // Manejar la finalización del quiz
+  const handleQuizComplete = (score: number, passed: boolean) => {
+    // Guardar resultados del quiz
+    setQuizScore(score);
+    setQuizPassed(passed);
+    setQuizCompleted(true);
+    
+    // No redirigimos automáticamente, dejamos que el usuario decida
+    // cuando quiere continuar usando los botones de navegación
   };
   
-  // Enviar el quiz
-  const handleQuizSubmit = () => {
-    setQuizSubmitted(true);
-    // Aquí iría la lógica para evaluar las respuestas
+  // Volver a la lección desde el quiz
+  const handleQuizBack = () => {
+    if (quizCompleted) {
+      // Si ya completó el quiz, permitimos volver a la lección
+      if (isQuizMode) {
+        // Usar Next.js Link para navegar sin recargar la página
+        window.location.href = `/course/${params.slug}/learn?module=${currentModule.id}&lesson=${currentModule.lessons[0].id}`;
+      } else {
+        // Si estamos en modo normal, solo ocultamos el quiz
+        setShowQuiz(false);
+      }
+    } else {
+      // Si no ha completado el quiz, mostrar confirmación
+      if (confirm("¿Seguro que deseas salir? Perderás tu progreso en el quiz.")) {
+        if (isQuizMode) {
+          window.location.href = `/course/${params.slug}/learn?module=${currentModule.id}&lesson=${currentModule.lessons[0].id}`;
+        } else {
+          setShowQuiz(false);
+        }
+      }
+    }
   };
   
   // Simular quiz del módulo actual
@@ -167,7 +195,12 @@ export default function CourseLearnPage({ params }: { params: { slug: string } }
             <ChevronLeft size={20} />
             <span className="ml-1 hidden md:inline">Volver al curso</span>
           </Link>
-          <h1 className="truncate text-lg font-medium">{course.title}</h1>
+          <h1 className="truncate text-lg font-medium">
+            {isQuizMode && currentModule.quiz 
+              ? `Quiz: ${currentModule.quiz.title}` 
+              : course.title
+            }
+          </h1>
         </div>
         <div className="flex items-center gap-4">
           <div className="hidden md:block">
@@ -270,7 +303,7 @@ export default function CourseLearnPage({ params }: { params: { slug: string } }
                     <Link
                       href={`/course/${course.slug}/learn?module=${module.id}&quiz=true`}
                       className={`flex items-center justify-between p-4 ${
-                        showQuiz && module.id === currentModule.id ? "bg-[#F5F5F5]" : ""
+                        isQuizMode && module.id === currentModule.id ? "bg-[#F5F5F5]" : ""
                       }`}
                     >
                       <div className="flex items-center">
@@ -296,7 +329,14 @@ export default function CourseLearnPage({ params }: { params: { slug: string } }
         
         {/* Contenido principal */}
         <main className="flex-1 overflow-y-auto bg-white">
-          {!showQuiz ? (
+          {/* Si estamos en modo quiz, mostrar solo el quiz */}
+          {isQuizMode && currentModule.quiz ? (
+            <QuizComponent 
+              quiz={currentQuiz!}
+              onComplete={handleQuizComplete}
+              onBack={handleQuizBack}
+            />
+          ) : !showQuiz ? (
             <>
               {/* Reproductor de video */}
               {currentLesson.type === 'video' && (
@@ -467,121 +507,12 @@ export default function CourseLearnPage({ params }: { params: { slug: string } }
               </div>
             </>
           ) : (
-            /* Quiz */
-            <div className="p-6">
-              <div className="mb-6">
-                <h2 className="mb-2 text-2xl font-bold">{currentQuiz?.title}</h2>
-                <p className="text-[#6D6C6C]">
-                  Completa este quiz para evaluar tu comprensión del módulo.
-                </p>
-              </div>
-              
-              {currentQuiz?.questions.map((question, index) => (
-                <div 
-                  key={question.id} 
-                  className="mb-8 rounded-lg border border-[#E5E5E5] bg-white p-6"
-                >
-                  <div className="mb-4 flex items-center justify-between">
-                    <h3 className="text-lg font-medium">Pregunta {index + 1}</h3>
-                    <Badge>{question.points} puntos</Badge>
-                  </div>
-                  
-                  <p className="mb-6">{question.question}</p>
-                  
-                  {question.type === 'multiple-choice' && (
-                    <div className="space-y-3">
-                      {question.options?.map((option, optionIndex) => {
-                        const isSelected = quizAnswers[question.id] === option;
-                        const isCorrect = quizSubmitted && option === question.correctAnswer;
-                        const isIncorrect = quizSubmitted && isSelected && option !== question.correctAnswer;
-                        
-                        return (
-                          <div 
-                            key={optionIndex}
-                            className={`flex cursor-pointer items-center rounded-md border p-3 ${
-                              isSelected ? 'border-[#5352F6] bg-[#EEEEFE]' : 'border-[#E5E5E5]'
-                            } ${
-                              isCorrect ? 'border-green-500 bg-green-50' : ''
-                            } ${
-                              isIncorrect ? 'border-red-500 bg-red-50' : ''
-                            }`}
-                            onClick={() => !quizSubmitted && handleQuizChange(question.id, option)}
-                          >
-                            <div 
-                              className={`mr-3 flex h-5 w-5 items-center justify-center rounded-full border ${
-                                isSelected ? 'border-[#5352F6] bg-[#5352F6] text-white' : 'border-[#6D6C6C]'
-                              } ${
-                                isCorrect ? 'border-green-500 bg-green-500 text-white' : ''
-                              } ${
-                                isIncorrect ? 'border-red-500 bg-red-500 text-white' : ''
-                              }`}
-                            >
-                              {isSelected && <CheckCircle size={12} />}
-                            </div>
-                            <span>{option}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                  
-                  {question.type === 'true-false' && (
-                    <div className="flex gap-4">
-                      {question.options?.map((option, optionIndex) => {
-                        const isSelected = quizAnswers[question.id] === option;
-                        const isCorrect = quizSubmitted && option === question.correctAnswer;
-                        const isIncorrect = quizSubmitted && isSelected && option !== question.correctAnswer;
-                        
-                        return (
-                          <div 
-                            key={optionIndex}
-                            className={`flex flex-1 cursor-pointer items-center justify-center rounded-md border p-3 ${
-                              isSelected ? 'border-[#5352F6] bg-[#EEEEFE]' : 'border-[#E5E5E5]'
-                            } ${
-                              isCorrect ? 'border-green-500 bg-green-50' : ''
-                            } ${
-                              isIncorrect ? 'border-red-500 bg-red-50' : ''
-                            }`}
-                            onClick={() => !quizSubmitted && handleQuizChange(question.id, option)}
-                          >
-                            <span>{option}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                  
-                  {quizSubmitted && (
-                    <div className="mt-4 rounded-md bg-[#F5F5F5] p-4">
-                      <div className="font-medium">Explicación:</div>
-                      <p className="text-sm text-[#6D6C6C]">{question.explanation}</p>
-                    </div>
-                  )}
-                </div>
-              ))}
-              
-              <div className="mt-8 flex justify-between">
-                <Button 
-                  variant="outline"
-                  onClick={() => setShowQuiz(false)}
-                >
-                  Volver a la lección
-                </Button>
-                
-                {!quizSubmitted ? (
-                  <Button 
-                    onClick={handleQuizSubmit}
-                    disabled={Object.keys(quizAnswers).length < (currentQuiz?.questions.length || 0)}
-                  >
-                    Enviar respuestas
-                  </Button>
-                ) : (
-                  <Button onClick={() => setShowQuiz(false)}>
-                    Continuar con el curso
-                  </Button>
-                )}
-              </div>
-            </div>
+            /* Quiz iniciado desde una lección */
+            <QuizComponent 
+              quiz={currentQuiz!}
+              onComplete={handleQuizComplete}
+              onBack={handleQuizBack}
+            />
           )}
         </main>
       </div>

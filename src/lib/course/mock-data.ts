@@ -576,8 +576,216 @@ import {
         showProgress: true,
         enforceOrder: false
       }
-    },
+    },{
+      id: "course-free-1",
+      slug: "inversion-inmobiliaria-completa-gratis",
+      title: "Curso Gratis de Inversión Inmobiliaria",
+      subtitle: "Aprende desde cero cómo invertir en bienes raíces",
+      description:
+        "Un curso gratuito y completo que te guía paso a paso en el mundo de la inversión inmobiliaria. Desde fundamentos básicos hasta estrategias de crecimiento.",
+      excerpt:
+        "Curso gratuito para principiantes en inversión inmobiliaria. ROI, Cap Rate, financiamiento, riesgos y estrategias prácticas.",
     
+      seo: {
+        title: "Curso Gratis de Inversión Inmobiliaria | LOKL Academy",
+        description:
+          "Aprende gratis inversión inmobiliaria con nuestro curso completo. ROI, análisis de propiedades, financiamiento, riesgos y más.",
+        keywords: [
+          "curso gratis inversión inmobiliaria",
+          "fundamentos bienes raíces",
+          "ROI Cap Rate",
+          "financiamiento inmobiliario",
+        ],
+        canonicalUrl:
+          "https://academy.lokl.life/cursos/inversion-inmobiliaria-completa-gratis",
+        ogImage: {
+          url: "https://img.freepik.com/fotos-premium/arquitectura-corporativa-moderna-puede-ver-edificios-oficinas-paisaje-urbano_410516-276.jpg?w=2000",
+          alt: "Curso Gratis de Inversión Inmobiliaria",
+          width: 1200,
+          height: 630,
+        },
+        ogType: "course",
+        twitterCard: "summary_large_image",
+      },
+    
+      content: {
+        modules: [
+          {
+            id: "mod-intro",
+            title: "Módulo 1: Fundamentos de la Inversión",
+            description: "Conoce qué es invertir en bienes raíces y por qué hacerlo.",
+            order: 1,
+            duration: 120,
+            lessons: [
+              {
+                id: "lesson-1",
+                title: "¿Qué es la inversión inmobiliaria?",
+                description: "Definición y contexto en el mercado actual.",
+                order: 1,
+                duration: 20,
+                type: "video",
+                videoUrl: "https://www.youtube.com/embed/tuGviQOfMQU?start=1",
+                isPreview: true,
+              },
+              {
+                id: "lesson-2",
+                title: "Ventajas y riesgos de invertir en bienes raíces",
+                description: "Beneficios de largo plazo y consideraciones clave.",
+                order: 2,
+                duration: 25,
+                type: "video",
+                videoUrl: "https://www.youtube.com/embed/tuGviQOfMQU?start=1",
+              },
+            ],
+          },
+          {
+            id: "mod-analisis",
+            title: "Módulo 2: Análisis de Propiedades",
+            description: "Aprende a calcular métricas clave y evaluar oportunidades.",
+            order: 2,
+            duration: 180,
+            lessons: [
+              {
+                id: "lesson-3",
+                title: "Métricas financieras básicas",
+                description: "ROI, Cap Rate y Cash Flow.",
+                order: 1,
+                duration: 30,
+                type: "video",
+                videoUrl: "https://www.youtube.com/embed/tuGviQOfMQU?start=1",
+              },
+              {
+                id: "lesson-4",
+                title: "Análisis de mercado local",
+                description: "Cómo identificar buenas zonas de inversión.",
+                order: 2,
+                duration: 40,
+                type: "video",
+                videoUrl: "https://www.youtube.com/embed/tuGviQOfMQU?start=1",
+              },
+              {
+                id: "lesson-5",
+                title: "Estudio de caso práctico",
+                description: "Ejemplo de análisis de una propiedad real.",
+                order: 3,
+                duration: 35,
+                type: "video",
+                videoUrl: "https://www.youtube.com/embed/tuGviQOfMQU?start=1",
+              },
+            ],
+          },
+          {
+            id: "mod-finanzas",
+            title: "Módulo 3: Financiamiento y Estrategias",
+            description:
+              "Conoce opciones de financiamiento y estrategias para crecer tu portafolio.",
+            order: 3,
+            duration: 160,
+            lessons: [
+              {
+                id: "lesson-6",
+                title: "Opciones de financiamiento",
+                description: "Hipotecas, préstamos y financiamiento alternativo.",
+                order: 1,
+                duration: 30,
+                type: "video",
+                videoUrl: "https://www.youtube.com/embed/tuGviQOfMQU?start=1",
+              },
+              {
+                id: "lesson-7",
+                title: "Estrategias de inversión",
+                description: "Buy & Hold, flipping, rentas a corto plazo.",
+                order: 2,
+                duration: 35,
+                type: "video",
+                videoUrl: "https://www.youtube.com/embed/tuGviQOfMQU?start=1",
+              },
+            ],
+          },
+        ],
+        totalLessons: 7,
+        totalDuration: 460,
+        difficulty: "principiante",
+        requirements: ["Conocimientos básicos de finanzas personales"],
+        learningObjectives: [
+          "Entender fundamentos de inversión inmobiliaria",
+          "Aplicar métricas financieras para evaluar propiedades",
+          "Identificar riesgos y oportunidades",
+          "Conocer estrategias y opciones de financiamiento",
+        ],
+        skillsYouWillLearn: [
+          "Análisis de propiedades",
+          "Cálculo de ROI y Cap Rate",
+          "Evaluación de mercados",
+          "Gestión de riesgos",
+        ],
+        targetAudience: [
+          "Nuevos inversores",
+          "Personas interesadas en bienes raíces",
+          "Profesionales buscando ingresos pasivos",
+        ],
+      },
+    
+      category: {
+        id: "cat-1",
+        name: "Inversión Inmobiliaria",
+        slug: "inversion-inmobiliaria",
+      },
+      tags: [
+        { id: "tag-1", name: "principiantes", slug: "principiantes" },
+        { id: "tag-2", name: "ROI", slug: "roi" },
+      ],
+      instructor: {
+        id: "inst-1",
+        name: "Laura Martínez",
+        slug: "laura-martinez",
+        bio: "Inversora con 10 años de experiencia en bienes raíces residenciales y comerciales.",
+        avatar: "/images/instructor-laura.jpg",
+        expertise: ["Inversión inmobiliaria", "Análisis financiero"],
+      },
+    
+      pricing: {
+        type: "free",
+      },
+    
+      accessRequirements: {
+        plan: "any",
+      },
+    
+      thumbnail: {
+        url: "/images/course-free-thumbnail.jpg",
+        alt: "Curso Gratis de Inversión Inmobiliaria",
+      },
+    
+      stats: {
+        enrolledCount: 0,
+        completedCount: 0,
+        completionRate: 0,
+        averageRating: 0,
+        reviewsCount: 0,
+        totalViews: 0,
+        averageTimeToComplete: 10,
+      },
+    
+      certificate: {
+        available: true,
+        criteria: {
+          completionRequired: true,
+        },
+      },
+    
+      publishedAt: "2025-01-01T10:00:00Z",
+      updatedAt: "2025-01-01T10:00:00Z",
+      status: "published",
+      featured: true,
+    
+      settings: {
+        allowDownloads: true,
+        allowDiscussions: true,
+        showProgress: true,
+        enforceOrder: true,
+      },
+    }    
   ];
   
   // ===================================================================
