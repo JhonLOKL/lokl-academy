@@ -126,12 +126,12 @@ export default function LearningPathDetailPage({ params }: { params: { slug: str
               </div>
             </div>
             
-            <div className="relative h-64 md:h-96 md:w-1/2">
+            <div className="group relative h-64 overflow-hidden md:h-96 md:w-1/2">
               <Image
                 src={path.thumbnail.url}
                 alt={path.thumbnail.alt}
                 fill
-                className="rounded-xl object-cover grayscale"
+                className="rounded-xl object-cover grayscale transition-all duration-500 group-hover:grayscale-0 group-hover:scale-110"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
               <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-black/80 via-black/50 to-black/20" />

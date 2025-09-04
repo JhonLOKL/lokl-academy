@@ -51,12 +51,12 @@ const PathCard: React.FC<PathCardProps> = ({
       )}
       
       {/* Imagen de la ruta */}
-      <div className="relative h-48">
+      <div className="relative h-48 overflow-hidden">
         <Image
           src={path.thumbnail.url}
           alt={path.thumbnail.alt}
           fill
-          className="object-cover grayscale"
+          className="object-cover grayscale transition-all duration-500 group-hover:grayscale-0 group-hover:scale-110"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
         {path.pricing.type !== "free" && (

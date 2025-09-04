@@ -263,12 +263,12 @@ export default function CoursePage() {
                   
                   <div className="flex flex-col md:flex-row">
                     {/* Imagen lateral solo visible en desktop */}
-                    <div className="relative hidden h-auto w-64 shrink-0 md:block">
+                    <div className="group relative hidden h-auto w-64 shrink-0 overflow-hidden md:block">
                       <Image
                         src={path.thumbnail.url}
                         alt={path.thumbnail.alt}
                         fill
-                        className="object-cover grayscale"
+                        className="object-cover grayscale transition-all duration-500 group-hover:grayscale-0 group-hover:scale-110"
                       />
                       <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent"></div>
                       
