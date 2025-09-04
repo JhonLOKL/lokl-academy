@@ -3,7 +3,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button, Card, CardContent, Input, H2, Paragraph } from "@/components/design-system";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import HeroSection from "@/components/course/hero-section";
 import BenefitsSection from "@/components/course/benefits-section";
@@ -15,7 +14,7 @@ import PlanComparison from "@/components/course/plan-comparison";
 // import ToolCard from "@/components/course/tool-card";
 import TestimonialCard from "@/components/course/testimonial-card";
 import BlogSection from "@/components/lokl-academy/sections/blog-section";
-import { Clock, ChevronDown, ExternalLink, Star } from "lucide-react";
+import { Clock, ExternalLink, Star } from "lucide-react";
 
 import { 
   mockCourses, 
@@ -112,116 +111,132 @@ export default async function CoursePage() {
           <TabsContent value="mi-progreso" className="mt-6">
             <h3 className="mb-6 text-xl font-bold tracking-tight">Continúa aprendiendo</h3>
             
-            <div className="grid gap-8 md:grid-cols-12">
-              {/* Curso en progreso */}
-              {userCourseProgress && (
-                <div className="md:col-span-7">
-                  <h4 className="mb-4 text-lg font-semibold">Tu curso actual</h4>
-                  <CourseCard 
-                    course={mockCourses.find(course => course.id === userCourseProgress.courseId)!}
-                    showProgress={true}
-                    progress={userCourseProgress}
-                    variant="horizontal"
-                  />
+            <div className="flex flex-col gap-6">
+              {/* Cursos en progreso */}
+              <div className="w-full">
+                <h4 className="mb-4 text-lg font-semibold">Tus cursos actuales</h4>
+                <div className="flex overflow-x-auto pb-4 gap-4">
+                  {userCourseProgress ? (
+                    <div className="w-full max-w-lg flex-shrink-0">
+                      <CourseCard 
+                        course={mockCourses.find(course => course.id === userCourseProgress.courseId)!}
+                        showProgress={true}
+                        progress={userCourseProgress}
+                        variant="horizontal"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-full max-w-lg flex-shrink-0 rounded-lg border border-dashed border-[#E5E5E5] bg-[#F9F9F9] p-6 text-center">
+                      <p className="mb-4 text-[#6D6C6C]">No has comenzado ningún curso</p>
+                      <Button variant="secondary" size="sm">Explorar cursos</Button>
+                    </div>
+                  )}
+                  
+                  {/* Aquí se pueden agregar más cursos en progreso */}
+                  {/* Ejemplo de otro curso en progreso (comentado) */}
+                  {/*
+                  <div className="w-full max-w-lg flex-shrink-0">
+                    <CourseCard 
+                      course={mockCourses[1]}
+                      showProgress={true}
+                      progress={{ overallProgress: 25, completedLessons: 2, totalLessons: 8 }}
+                      variant="horizontal"
+                    />
+                  </div>
+                  */}
                 </div>
-              )}
+              </div>
               
-              {/* Ruta en progreso */}
-              {userPathProgress && (
-                <div className="md:col-span-5">
-                  <h4 className="mb-4 text-lg font-semibold">Tu ruta actual</h4>
-                  <div className="group relative overflow-hidden rounded-lg border border-[#E5E5E5] bg-white transition-all hover:bg-[#FAFAFA]">
-                    {/* Barra lateral de color */}
-                    <div className="absolute left-0 top-0 h-full w-1.5 bg-[#5352F6]"></div>
-                    
-                    <div className="p-5 pl-8">
-                      {/* Encabezado con badge y tiempo estimado */}
-                      <div className="mb-4 flex items-center justify-between">
-                        <Badge className="bg-[#EEEEFE] text-xs font-medium text-[#5352F6]">
-                          {mockLearningPaths.find(path => path.id === userPathProgress.pathId)?.category.name}
-                        </Badge>
-                        <div className="flex items-center rounded-full bg-[#F5F5F5] px-3 py-1 text-xs text-[#6D6C6C]">
-                          <Clock size={14} className="mr-1 text-[#5352F6]" />
-                          {mockLearningPaths.find(path => path.id === userPathProgress.pathId)?.structure.estimatedCompletionTime}
-                        </div>
-                      </div>
-                      
-                      {/* Título con enlace */}
-                      <Link href={`/learning-path/${mockLearningPaths.find(path => path.id === userPathProgress.pathId)?.slug}`}>
-                        <h4 className="mb-2 text-lg font-bold tracking-tight group-hover:text-[#5352F6]">
-                          {mockLearningPaths.find(path => path.id === userPathProgress.pathId)?.title}
-                        </h4>
-                      </Link>
-                      
-                      {/* Métricas de progreso */}
-                      <div className="mb-4 flex flex-wrap items-center gap-4 text-xs text-[#6D6C6C]">
-                        <div className="flex items-center">
-                          <div className="mr-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#EEEEFE] text-[#5352F6]">
-                            {userPathProgress.moduleProgress.filter(m => m.progress === 100).length}
-                          </div>
-                          <span>de {mockLearningPaths.find(path => path.id === userPathProgress.pathId)?.courses.length} cursos completados</span>
-                        </div>
-                        <div className="flex items-center">
-                          <div className="mr-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#EEEEFE] text-[#5352F6]">
-                            {userPathProgress.overallProgress}%
-                          </div>
-                          <span>progreso total</span>
-                        </div>
-                      </div>
-                      
-                      {/* Barra de progreso */}
-                      <div className="mb-4">
-                        <Progress value={userPathProgress.overallProgress} className="h-2" />
-                      </div>
-                      
-                      {/* Cursos próximos */}
-                      <div className="mb-4">
-                        <h5 className="mb-2 text-xs font-semibold">Próximo curso a completar:</h5>
-                        <div className="space-y-2">
-                          {mockLearningPaths.find(path => path.id === userPathProgress.pathId)?.courses
-                            .filter(c => !userPathProgress.moduleProgress.some(m => m.moduleId === c.courseId && m.progress === 100))
-                            .slice(0, 1)
-                            .map((courseItem, index) => (
-                              <div key={courseItem.courseId} className="flex items-center rounded-md bg-[#F9F9F9] p-2">
-                                <div className="mr-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#5352F6]/10 text-xs text-[#5352F6]">
-                                  {index + 1}
-                                </div>
-                                <span className="flex-1 text-xs font-medium line-clamp-1">
-                                  {courseItem.course?.title || `Curso ${index + 1}`}
-                                </span>
-                                <div className="ml-2 rounded-full bg-[#5352F6]/10 px-2 py-0.5 text-xs text-[#5352F6]">
-                                  Siguiente
-                                </div>
+              {/* Rutas en progreso */}
+              <div className="w-full">
+                <h4 className="mb-4 text-lg font-semibold">Tus rutas actuales</h4>
+                <div className="flex overflow-x-auto pb-4 gap-4">
+                  {userPathProgress ? (
+                    <div className="w-full max-w-md flex-shrink-0">
+                      <div className="group relative overflow-hidden rounded-lg border border-[#E5E5E5] bg-white p-4 shadow-sm transition-all hover:shadow-md">
+                        <div className="flex items-center justify-between">
+                          {/* Información principal */}
+                          <div className="flex-1">
+                            <div className="mb-1 flex items-center gap-2">
+                              <Badge className="bg-[#EEEEFE] text-xs font-medium text-[#5352F6]">
+                                {mockLearningPaths.find(path => path.id === userPathProgress.pathId)?.category.name}
+                              </Badge>
+                              <span className="text-xs text-[#6D6C6C]">
+                                {mockLearningPaths.find(path => path.id === userPathProgress.pathId)?.structure.estimatedCompletionTime}
+                              </span>
+                            </div>
+                            
+                            {/* Título con enlace */}
+                            <Link href={`/learning-path/${mockLearningPaths.find(path => path.id === userPathProgress.pathId)?.slug}`}>
+                              <h4 className="mb-2 text-lg font-bold tracking-tight group-hover:text-[#5352F6]">
+                                {mockLearningPaths.find(path => path.id === userPathProgress.pathId)?.title}
+                              </h4>
+                            </Link>
+                            
+                            <div className="flex items-center gap-4 text-xs text-[#6D6C6C]">
+                              <div className="flex items-center">
+                                <span>{userPathProgress.moduleProgress.filter(m => m.progress === 100).length} de {mockLearningPaths.find(path => path.id === userPathProgress.pathId)?.courses.length} cursos completados</span>
                               </div>
-                            ))}
+                            </div>
+                          </div>
+                          
+                          {/* Círculo de progreso */}
+                          <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full border border-[#EEEEFE] bg-white">
+                            <div className="relative flex h-14 w-14 items-center justify-center rounded-full">
+                              <svg className="absolute h-full w-full" viewBox="0 0 100 100">
+                                <circle 
+                                  cx="50" cy="50" r="40" 
+                                  fill="none" 
+                                  stroke="#EEEEFE" 
+                                  strokeWidth="8"
+                                />
+                                <circle 
+                                  cx="50" cy="50" r="40" 
+                                  fill="none" 
+                                  stroke="#5352F6" 
+                                  strokeWidth="8"
+                                  strokeDasharray="251.2"
+                                  strokeDashoffset={251.2 - (251.2 * userPathProgress.overallProgress / 100)}
+                                  transform="rotate(-90 50 50)"
+                                  strokeLinecap="round"
+                                />
+                              </svg>
+                              <span className="text-sm font-bold text-[#5352F6]">{userPathProgress.overallProgress}%</span>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      
-                      {/* Botones de acción */}
-                      <div className="flex gap-2">
-                        <Link 
-                          href={`/learning-path/${mockLearningPaths.find(path => path.id === userPathProgress.pathId)?.slug}`} 
-                          className="block flex-1"
-                        >
-                          <Button className="w-full">Continuar</Button>
-                        </Link>
-                        <button 
-                          className="flex items-center justify-center rounded-md border border-[#E5E5E5] bg-white px-3 py-2 text-sm font-medium text-[#0F0F0F] transition-colors hover:bg-[#EEEEFE] hover:text-[#5352F6]"
-                        >
-                          <ChevronDown size={16} />
-                        </button>
+                        
+                        {/* Botón de acción */}
+                        <div className="mt-4">
+                          <Link 
+                            href={`/learning-path/${mockLearningPaths.find(path => path.id === userPathProgress.pathId)?.slug}`} 
+                            className="block w-full"
+                          >
+                            <Button className="w-full">Continuar ruta</Button>
+                          </Link>
+                        </div>
                       </div>
                     </div>
+                  ) : (
+                    <div className="w-full max-w-md flex-shrink-0 rounded-lg border border-dashed border-[#E5E5E5] bg-[#F9F9F9] p-6 text-center">
+                      <p className="mb-4 text-[#6D6C6C]">No has comenzado ninguna ruta</p>
+                      <Button variant="secondary" size="sm">Explorar rutas</Button>
+                    </div>
+                  )}
+                  
+                  {/* Aquí se pueden agregar más rutas en progreso */}
+                  {/* Ejemplo de otra ruta en progreso (comentado) */}
+                  {/*
+                  <div className="w-full max-w-md flex-shrink-0">
+                    <div className="group relative overflow-hidden rounded-lg border border-[#E5E5E5] bg-white p-4 shadow-sm transition-all hover:shadow-md">
+                      ... contenido similar al anterior ...
+                    </div>
                   </div>
+                  */}
                 </div>
-              )}
+              </div>
               
-              {!userCourseProgress && !userPathProgress && (
-                <div className="col-span-12 rounded-lg border border-dashed border-[#E5E5E5] bg-[#F9F9F9] p-8 text-center">
-                  <p className="mb-4 text-[#6D6C6C]">Aún no has comenzado ningún curso o ruta de aprendizaje</p>
-                  <Button variant="secondary">Explorar contenido</Button>
-                </div>
-              )}
+              {/* Mensaje de no contenido eliminado ya que ahora mostramos mensajes separados */}
             </div>
           </TabsContent>
 
