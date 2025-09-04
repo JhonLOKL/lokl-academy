@@ -1,20 +1,21 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/design-system";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import HeroSection from "@/components/course/hero-section";
 import BenefitsSection from "@/components/course/benefits-section";
 import CourseCard from "@/components/course/course-card";
-import PathCard from "@/components/course/path-card";
 import ProfileCard from "@/components/course/profile-card";
-import HorizontalScroll from "@/components/course/horizontal-scroll";
 import SubscriptionPlanCard from "@/components/course/subscription-plan-card";
 import NewsletterCard from "@/components/course/newsletter-card";
 import ToolCard from "@/components/course/tool-card";
 import TestimonialCard from "@/components/course/testimonial-card";
+import { Clock, ChevronDown } from "lucide-react";
 
 import { 
   mockCourses, 
@@ -24,21 +25,10 @@ import {
   mockExternalTools,
   mockNewsletterItems,
   mockPlatformReviews,
-  mockUserProgress,
-  mockUserProfile
+  mockUserProgress
 } from "@/lib/course/mock-data";
 
 export default function CoursePage() {
-  // Estado para controlar la carga de la página
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Simular carga de datos
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-  }, []);
-
   // Filtrar cursos por categorías
   const recommendedCourses = mockCourses.filter(course => course.featured);
   const latestCourses = [...mockCourses].sort((a, b) => 
@@ -52,9 +42,6 @@ export default function CoursePage() {
   const userCourseProgress = mockUserProgress.find(progress => progress.courseId);
   const userPathProgress = mockUserProgress.find(progress => progress.pathId);
 
-  // Obtener el plan actual del usuario
-  const currentUserPlan = mockSubscriptionPlans.find(plan => plan.slug === mockUserProfile.plan);
-
   return (
     <div className="bg-[#FAFAFA] min-h-screen">
       {/* Hero Section */}
@@ -63,72 +50,378 @@ export default function CoursePage() {
         subtitle="Aprende sobre inversiones inmobiliarias, IA, crowdfunding y más mientras recibes rentas de tus inversiones"
       />
 
-      {/* Sección de cursos en progreso */}
+
+      {/* Explorar contenido con tabs */}
       <section className="container mx-auto px-4 py-12">
         <h2 className="mb-6 text-2xl font-bold tracking-tight md:text-3xl">
-          Continúa aprendiendo
+          Explora contenido educativo
         </h2>
-        
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* Curso en progreso */}
-          {userCourseProgress && (
-            <div className="col-span-full lg:col-span-2">
-              <h3 className="mb-4 text-lg font-semibold">Tu curso actual</h3>
-              <CourseCard 
-                course={mockCourses.find(course => course.id === userCourseProgress.courseId)!}
-                showProgress={true}
-                progress={userCourseProgress}
-                variant="horizontal"
-              />
+
+        <Tabs defaultValue="mi-progreso" className="w-full">
+          <div className="mb-6 overflow-x-auto">
+            <TabsList className="w-full justify-start">
+              <TabsTrigger value="mi-progreso" className="flex items-center gap-2">
+                Mi progreso
+                <span className="rounded-full bg-[#EEEEFE] px-2 py-0.5 text-xs font-medium text-[#5352F6]">
+                  {userCourseProgress ? 1 : 0}
+                </span>
+              </TabsTrigger>
+              <TabsTrigger value="recomendados" className="flex items-center gap-2">
+                Recomendados
+                <span className="rounded-full bg-[#EEEEFE] px-2 py-0.5 text-xs font-medium text-[#5352F6]">
+                  {recommendedCourses.length}
+                </span>
+              </TabsTrigger>
+              <TabsTrigger value="ultimos" className="flex items-center gap-2">
+                Últimos cursos
+                <span className="rounded-full bg-[#EEEEFE] px-2 py-0.5 text-xs font-medium text-[#5352F6]">
+                  {latestCourses.length}
+                </span>
+              </TabsTrigger>
+              <TabsTrigger value="exclusivos" className="flex items-center gap-2">
+                Para inversionistas
+                <span className="rounded-full bg-[#EEEEFE] px-2 py-0.5 text-xs font-medium text-[#5352F6]">
+                  {exclusiveCourses.length}
+                </span>
+              </TabsTrigger>
+              <TabsTrigger value="todos" className="flex items-center gap-2">
+                Todos los cursos
+                <span className="rounded-full bg-[#EEEEFE] px-2 py-0.5 text-xs font-medium text-[#5352F6]">
+                  {mockCourses.length}
+                </span>
+              </TabsTrigger>
+              <TabsTrigger value="rutas" className="flex items-center gap-2">
+                Rutas de aprendizaje
+                <span className="rounded-full bg-[#EEEEFE] px-2 py-0.5 text-xs font-medium text-[#5352F6]">
+                  {mockLearningPaths.length}
+                </span>
+              </TabsTrigger>
+              <TabsTrigger value="perfiles" className="flex items-center gap-2">
+                Perfiles de aprendizaje
+                <span className="rounded-full bg-[#EEEEFE] px-2 py-0.5 text-xs font-medium text-[#5352F6]">
+                  {mockLearningProfiles.length}
+                </span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
+
+          {/* Contenido de las tabs */}
+          <TabsContent value="mi-progreso" className="mt-6">
+            <h3 className="mb-6 text-xl font-bold tracking-tight">Continúa aprendiendo</h3>
+            
+            <div className="grid gap-8 md:grid-cols-12">
+              {/* Curso en progreso */}
+              {userCourseProgress && (
+                <div className="md:col-span-7">
+                  <h4 className="mb-4 text-lg font-semibold">Tu curso actual</h4>
+                  <CourseCard 
+                    course={mockCourses.find(course => course.id === userCourseProgress.courseId)!}
+                    showProgress={true}
+                    progress={userCourseProgress}
+                    variant="horizontal"
+                  />
+                </div>
+              )}
+              
+              {/* Ruta en progreso */}
+              {userPathProgress && (
+                <div className="md:col-span-5">
+                  <h4 className="mb-4 text-lg font-semibold">Tu ruta actual</h4>
+                  <div className="group relative overflow-hidden rounded-lg border border-[#E5E5E5] bg-white transition-all hover:bg-[#FAFAFA]">
+                    {/* Barra lateral de color */}
+                    <div className="absolute left-0 top-0 h-full w-1.5 bg-[#5352F6]"></div>
+                    
+                    <div className="p-5 pl-8">
+                      {/* Encabezado con badge y tiempo estimado */}
+                      <div className="mb-4 flex items-center justify-between">
+                        <Badge className="bg-[#EEEEFE] text-xs font-medium text-[#5352F6]">
+                          {mockLearningPaths.find(path => path.id === userPathProgress.pathId)?.category.name}
+                        </Badge>
+                        <div className="flex items-center rounded-full bg-[#F5F5F5] px-3 py-1 text-xs text-[#6D6C6C]">
+                          <Clock size={14} className="mr-1 text-[#5352F6]" />
+                          {mockLearningPaths.find(path => path.id === userPathProgress.pathId)?.structure.estimatedCompletionTime}
+                        </div>
+                      </div>
+                      
+                      {/* Título con enlace */}
+                      <Link href={`/learning-path/${mockLearningPaths.find(path => path.id === userPathProgress.pathId)?.slug}`}>
+                        <h4 className="mb-2 text-lg font-bold tracking-tight group-hover:text-[#5352F6]">
+                          {mockLearningPaths.find(path => path.id === userPathProgress.pathId)?.title}
+                        </h4>
+                      </Link>
+                      
+                      {/* Métricas de progreso */}
+                      <div className="mb-4 flex flex-wrap items-center gap-4 text-xs text-[#6D6C6C]">
+                        <div className="flex items-center">
+                          <div className="mr-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#EEEEFE] text-[#5352F6]">
+                            {userPathProgress.moduleProgress.filter(m => m.progress === 100).length}
+                          </div>
+                          <span>de {mockLearningPaths.find(path => path.id === userPathProgress.pathId)?.courses.length} cursos completados</span>
+                        </div>
+                        <div className="flex items-center">
+                          <div className="mr-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#EEEEFE] text-[#5352F6]">
+                            {userPathProgress.overallProgress}%
+                          </div>
+                          <span>progreso total</span>
+                        </div>
+                      </div>
+                      
+                      {/* Barra de progreso */}
+                      <div className="mb-4">
+                        <Progress value={userPathProgress.overallProgress} className="h-2" />
+                      </div>
+                      
+                      {/* Cursos próximos */}
+                      <div className="mb-4">
+                        <h5 className="mb-2 text-xs font-semibold">Próximo curso a completar:</h5>
+                        <div className="space-y-2">
+                          {mockLearningPaths.find(path => path.id === userPathProgress.pathId)?.courses
+                            .filter(c => !userPathProgress.moduleProgress.some(m => m.moduleId === c.courseId && m.progress === 100))
+                            .slice(0, 1)
+                            .map((courseItem, index) => (
+                              <div key={courseItem.courseId} className="flex items-center rounded-md bg-[#F9F9F9] p-2">
+                                <div className="mr-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#5352F6]/10 text-xs text-[#5352F6]">
+                                  {index + 1}
+                                </div>
+                                <span className="flex-1 text-xs font-medium line-clamp-1">
+                                  {courseItem.course?.title || `Curso ${index + 1}`}
+                                </span>
+                                <div className="ml-2 rounded-full bg-[#5352F6]/10 px-2 py-0.5 text-xs text-[#5352F6]">
+                                  Siguiente
+                                </div>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                      
+                      {/* Botones de acción */}
+                      <div className="flex gap-2">
+                        <Link 
+                          href={`/learning-path/${mockLearningPaths.find(path => path.id === userPathProgress.pathId)?.slug}`} 
+                          className="block flex-1"
+                        >
+                          <Button className="w-full">Continuar</Button>
+                        </Link>
+                        <button 
+                          className="flex items-center justify-center rounded-md border border-[#E5E5E5] bg-white px-3 py-2 text-sm font-medium text-[#0F0F0F] transition-colors hover:bg-[#EEEEFE] hover:text-[#5352F6]"
+                        >
+                          <ChevronDown size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {!userCourseProgress && !userPathProgress && (
+                <div className="col-span-12 rounded-lg border border-dashed border-[#E5E5E5] bg-[#F9F9F9] p-8 text-center">
+                  <p className="mb-4 text-[#6D6C6C]">Aún no has comenzado ningún curso o ruta de aprendizaje</p>
+                  <Button variant="secondary">Explorar contenido</Button>
+                </div>
+              )}
             </div>
-          )}
-          
-          {/* Ruta en progreso */}
-          {userPathProgress && (
-            <div className="col-span-full lg:col-span-1">
-              <h3 className="mb-4 text-lg font-semibold">Tu ruta actual</h3>
-              <PathCard 
-                path={mockLearningPaths.find(path => path.id === userPathProgress.pathId)!}
-                userProgress={userPathProgress}
-                variant="detailed"
-              />
+          </TabsContent>
+
+          <TabsContent value="recomendados" className="mt-6">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {recommendedCourses.map((course) => (
+                <CourseCard key={course.id} course={course} />
+              ))}
             </div>
-          )}
-        </div>
+          </TabsContent>
+
+          <TabsContent value="ultimos" className="mt-6">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {latestCourses.map((course) => (
+                <CourseCard key={course.id} course={course} />
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="exclusivos" className="mt-6">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {exclusiveCourses.map((course) => (
+                <CourseCard key={course.id} course={course} />
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="todos" className="mt-6">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {mockCourses.map((course) => (
+                <CourseCard key={course.id} course={course} />
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="rutas" className="mt-6">
+            <div className="space-y-8">
+              {mockLearningPaths.map((path) => (
+                <div key={path.id} className="group relative overflow-hidden rounded-lg bg-white p-0 transition-all hover:bg-[#FAFAFA]">
+                  <div className="absolute left-0 top-0 h-full w-1.5 bg-[#5352F6]"></div>
+                  
+                  <div className="flex flex-col md:flex-row">
+                    {/* Imagen lateral solo visible en desktop */}
+                    <div className="relative hidden h-auto w-64 shrink-0 md:block">
+                      <Image
+                        src={path.thumbnail.url}
+                        alt={path.thumbnail.alt}
+                        fill
+                        className="object-cover grayscale"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent"></div>
+                      
+                      {/* Etiqueta de nivel */}
+                      <div className="absolute bottom-4 left-4 rounded-full bg-black/50 px-3 py-1 text-xs font-medium text-white">
+                        Nivel: {path.structure.difficulty}
+                      </div>
+                    </div>
+                    
+                    {/* Contenido principal */}
+                    <div className="flex flex-1 flex-col p-6 pl-8 md:pl-6">
+                      <div className="mb-4 flex flex-wrap items-center justify-between">
+                        <Badge className="bg-[#EEEEFE] px-3 py-1 text-xs font-medium text-[#5352F6]">
+                          {path.category.name}
+                        </Badge>
+                        
+                        {/* Etiqueta para rutas exclusivas */}
+                        {path.accessRequirements.plan !== "any" && (
+                          <div className="rounded-md bg-[#5352F6] px-3 py-1 text-xs font-medium text-white">
+                            {path.accessRequirements.plan === "premium" ? "Premium" : "Inversionista"}
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="flex flex-col md:flex-row md:gap-8">
+                        <div className="md:w-7/12">
+                          <Link href={`/learning-path/${path.slug}`}>
+                            <h3 className="mb-3 text-xl font-bold tracking-tight group-hover:text-[#5352F6]">
+                              {path.title}
+                            </h3>
+                          </Link>
+                          
+                          <p className="mb-4 text-sm text-[#6D6C6C]">
+                            {path.excerpt}
+                          </p>
+                          
+                          {/* Métricas */}
+                          <div className="mb-4 flex flex-wrap items-center gap-6 text-xs text-[#6D6C6C]">
+                            <div className="flex items-center">
+                              <div className="mr-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#EEEEFE] text-[#5352F6]">
+                                {path.courses.length}
+                              </div>
+                              <span>cursos</span>
+                            </div>
+                            <div className="flex items-center">
+                              <div className="mr-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#EEEEFE] text-[#5352F6]">
+                                {path.structure.totalLessons}
+                              </div>
+                              <span>lecciones</span>
+                            </div>
+                            <div className="flex items-center">
+                              <Clock size={14} className="mr-1 text-[#5352F6]" />
+                              <span>{path.structure.estimatedCompletionTime}</span>
+                            </div>
+                          </div>
+                          
+                          {/* Lista de habilidades */}
+                          <div className="mb-4">
+                            <h4 className="mb-2 text-xs font-semibold">Habilidades que desarrollarás:</h4>
+                            <div className="flex flex-wrap gap-2">
+                              {path.structure.skillsYouWillLearn.slice(0, 3).map((skill, index) => (
+                                <span 
+                                  key={index} 
+                                  className="rounded-full bg-[#F5F5F5] px-3 py-1 text-xs"
+                                >
+                                  {skill}
+                                </span>
+                              ))}
+                              {path.structure.skillsYouWillLearn.length > 3 && (
+                                <span className="rounded-full bg-[#F5F5F5] px-3 py-1 text-xs">
+                                  +{path.structure.skillsYouWillLearn.length - 3} más
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Sección de precios y progreso */}
+                        <div className="flex flex-col justify-between border-t pt-4 md:w-5/12 md:border-l md:border-t-0 md:pl-8 md:pt-0">
+                          {/* Cursos incluidos */}
+                          <div className="mb-4">
+                            <h4 className="mb-2 text-xs font-semibold">Cursos incluidos:</h4>
+                            <div className="space-y-2">
+                              {path.courses.slice(0, 2).map((courseItem, index) => (
+                                <div key={courseItem.courseId} className="flex items-center">
+                                  <div className="mr-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#F5F5F5] text-xs">
+                                    {index + 1}
+                                  </div>
+                                  <span className="text-xs line-clamp-1">
+                                    {courseItem.course?.title || `Curso ${index + 1}`}
+                                  </span>
+                                </div>
+                              ))}
+                              {path.courses.length > 2 && (
+                                <div className="flex items-center text-xs text-[#5352F6]">
+                                  <span className="ml-7">+{path.courses.length - 2} cursos más</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          
+                          {/* Precio y CTA */}
+                          <div>
+                            <div className="mb-3">
+                              {path.pricing.type === "free" ? (
+                                <span className="text-lg font-medium text-green-600">Gratis</span>
+                              ) : (
+                                <div className="flex items-end">
+                                  <span className="text-2xl font-bold text-[#5352F6]">
+                                    {path.pricing.price ? `$${path.pricing.price.toLocaleString('es-CO')}` : '$0'}
+                                  </span>
+                                  {path.pricing.individualCoursesPrice && (
+                                    <span className="ml-2 text-xs text-[#6D6C6C]">
+                                      Ahorro de {`$${path.pricing.savings?.toLocaleString('es-CO')}`}
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                            
+                            <Link href={`/learning-path/${path.slug}`} className="block w-full">
+                              <Button className="w-full">Ver ruta completa</Button>
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="perfiles" className="mt-6">
+            <div className="grid gap-6 md:grid-cols-3">
+              {mockLearningProfiles.map((profile) => (
+                <ProfileCard 
+                  key={profile.id} 
+                  profile={profile} 
+                  userProgress={
+                    profile.id === 'profile-1' ? 
+                    {
+                      completedCourses: 1,
+                      totalCourses: profile.aggregatedStats.totalCourses,
+                      overallProgress: 33
+                    } : undefined
+                  }
+                />
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
       </section>
 
-      {/* Cursos recomendados */}
-      <section className="container mx-auto px-4 py-8">
-        <HorizontalScroll title="Cursos recomendados para ti" subtitle="Seleccionados según tus intereses y nivel">
-          {recommendedCourses.map((course) => (
-            <div key={course.id} className="min-w-[300px] max-w-[350px] flex-shrink-0">
-              <CourseCard course={course} />
-            </div>
-          ))}
-        </HorizontalScroll>
-      </section>
-
-      {/* Últimos cursos */}
-      <section className="container mx-auto px-4 py-8">
-        <HorizontalScroll title="Últimos cursos" subtitle="Las novedades más recientes en nuestra plataforma">
-          {latestCourses.map((course) => (
-            <div key={course.id} className="min-w-[300px] max-w-[350px] flex-shrink-0">
-              <CourseCard course={course} />
-            </div>
-          ))}
-        </HorizontalScroll>
-      </section>
-
-      {/* Cursos exclusivos para inversionistas */}
-      <section className="container mx-auto px-4 py-8">
-        <HorizontalScroll title="Cursos exclusivos para inversionistas" subtitle="Contenido premium solo para miembros con plan Inversionista o Premium">
-          {exclusiveCourses.map((course) => (
-            <div key={course.id} className="min-w-[300px] max-w-[350px] flex-shrink-0">
-              <CourseCard course={course} />
-            </div>
-          ))}
-        </HorizontalScroll>
-      </section>
 
       {/* Sección de beneficios */}
       <BenefitsSection />
@@ -150,7 +443,7 @@ export default function CoursePage() {
               <SubscriptionPlanCard 
                 key={plan.id} 
                 plan={plan} 
-                isCurrentPlan={plan.slug === mockUserProfile.plan}
+                isCurrentPlan={plan.slug === "basic"}
               />
             ))}
           </div>
