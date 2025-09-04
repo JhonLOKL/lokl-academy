@@ -50,7 +50,14 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
     <div className="group relative flex h-full flex-col overflow-hidden rounded-xl border-2 border-[#E5E5E5] bg-white shadow-sm transition-all hover:shadow-lg hover:border-[#5352F6]/30">
       <div className="relative h-52">
         <Image
-          src={`/images/profiles/${profile.level}.${profile.level === 'hero' ? 'jpg' : 'png'}`}
+            /*       src={`/images/profiles/${profile.level}.${profile.level === 'hero' ? 'jpg' : 'png'}`} */
+          src={
+            profile.level === 'explorer' 
+              ? 'https://media.istockphoto.com/id/2194197289/photo/portrait-of-a-mid-adult-male-hiker.jpg?s=1024x1024&w=is&k=20&c=NmWmyTEFvdk4wfbZ42-tZ-CT3eJvqsdNmkRnRYhLnOc=' 
+              : profile.level === 'adventurer' 
+              ? 'https://media.istockphoto.com/id/2164477556/photo/low-angle-view-of-woman-climbing-on-cliff.jpg?s=2048x2048&w=is&k=20&c=IN1bZyeoGxyJLtDDBwIF-wdW8u-uxRhXjNLQF3GAzU4=' 
+              : 'https://media.istockphoto.com/id/2148292077/photo/woman-exploring-ice-cave.jpg?s=2048x2048&w=is&k=20&c=_3xQGeaw2QVJ-nV_XTReVdPZMz5cnuKrdxjIIiAMAy0='
+          }
           alt={profile.title}
           fill
           className="object-cover grayscale"

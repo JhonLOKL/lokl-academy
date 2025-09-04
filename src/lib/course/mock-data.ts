@@ -1070,7 +1070,7 @@ import {
       ],
   
       thumbnail: {
-        url: '/images/buildings-bw.jpg',
+        url: 'https://media.istockphoto.com/id/2194197289/photo/portrait-of-a-mid-adult-male-hiker.jpg?s=1024x1024&w=is&k=20&c=NmWmyTEFvdk4wfbZ42-tZ-CT3eJvqsdNmkRnRYhLnOc=',
         alt: 'Perfil Inversionista Explorador'
       },
   
@@ -1080,7 +1080,7 @@ import {
         keywords: ['inversionista principiante', 'perfil explorador', 'primeras inversiones', 'fundamentos inmobiliarios'],
         canonicalUrl: 'https://academy.lokl.life/perfiles/inversionista-explorador',
         ogImage: {
-          url: 'https://img.freepik.com/fotos-premium/arquitectura-corporativa-moderna-puede-ver-edificios-oficinas-paisaje-urbano_410516-276.jpg?w=2000',
+          url: 'https://media.istockphoto.com/id/2194197289/photo/portrait-of-a-mid-adult-male-hiker.jpg?s=1024x1024&w=is&k=20&c=NmWmyTEFvdk4wfbZ42-tZ-CT3eJvqsdNmkRnRYhLnOc=',
           alt: 'Perfil Inversionista Explorador',
           width: 1200,
           height: 630
@@ -1127,7 +1127,7 @@ import {
       ],
   
       thumbnail: {
-        url: 'https://teranarq.com/wp-content/uploads/10-edificios-altos-panama.jpg',
+        url: 'https://media.istockphoto.com/id/2164477556/photo/low-angle-view-of-woman-climbing-on-cliff.jpg?s=2048x2048&w=is&k=20&c=IN1bZyeoGxyJLtDDBwIF-wdW8u-uxRhXjNLQF3GAzU4=',
         alt: 'Perfil Inversionista Aventurero'
       },
   
