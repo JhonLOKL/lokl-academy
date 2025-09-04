@@ -197,7 +197,7 @@ import {
                 order: 1,
                 duration: 25,
                 type: 'video',
-                videoUrl: 'https://www.youtube.com/watch?v=tuGviQOfMQU&t=1s',
+                videoUrl: 'https://www.youtube.com/embed/tuGviQOfMQU?start=1',
                 thumbnail: {
                   url: 'https://img.freepik.com/fotos-premium/arquitectura-corporativa-moderna-puede-ver-edificios-oficinas-paisaje-urbano_410516-276.jpg?w=2000',
                   alt: 'Introducción a la inversión inmobiliaria'
@@ -250,7 +250,7 @@ import {
                 order: 1,
                 duration: 35,
                 type: 'video',
-                videoUrl: 'https://www.youtube.com/watch?v=tuGviQOfMQU&t=1s'
+                videoUrl: 'https://www.youtube.com/embed/tuGviQOfMQU?start=1'
               },
               {
                 id: 'lesson-2-2',
@@ -307,7 +307,7 @@ import {
         alt: 'Fundamentos de Inversión Inmobiliaria'
       },
       previewVideo: {
-        url: 'https://www.youtube.com/watch?v=tuGviQOfMQU&t=1s',
+        url: 'https://www.youtube.com/embed/tuGviQOfMQU?start=1',
         duration: 180,
         alt: 'Vista previa del curso'
       },
@@ -380,7 +380,7 @@ import {
                 order: 1,
                 duration: 30,
                 type: 'video',
-                videoUrl: 'https://www.youtube.com/watch?v=tuGviQOfMQU&t=1s'
+                videoUrl: 'https://www.youtube.com/embed/tuGviQOfMQU?start=1'
               }
             ]
           }
@@ -496,7 +496,7 @@ import {
                 order: 1,
                 duration: 25,
                 type: 'video',
-                videoUrl: 'https://www.youtube.com/watch?v=tuGviQOfMQU&t=1s',
+                videoUrl: 'https://www.youtube.com/embed/tuGviQOfMQU?start=1',
                 isPreview: true
               }
             ]
