@@ -122,7 +122,7 @@ export default function LearningPathsPage() {
                         </span>
                       ) : (
                         <span className="rounded-full bg-[#5352F6]/10 px-2 py-0.5 text-sm font-medium text-[#5352F6]">
-                          Exclusivo
+                          Inversionista
                         </span>
                       )}
                     </div>

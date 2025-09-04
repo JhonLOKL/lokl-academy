@@ -175,11 +175,20 @@ const PathCard: React.FC<PathCardProps> = ({
           </div>
         )}
 
-        {/* Etiqueta de precio o gratuito */}
+        {/* Etiqueta de acceso */}
         {variant !== "compact" && (
           <div className="mt-auto pt-2">
             {path.pricing.type === "free" ? (
               <span className="text-sm font-medium text-green-600">Gratis</span>
+            ) : path.accessRequirements.plan === "investor" ? (
+              <div className="flex items-center gap-2">
+                <span className="rounded-full bg-[#5352F6]/10 px-2 py-0.5 text-sm font-medium text-[#5352F6]">
+                  Inversionista
+                </span>
+                <span className="text-xs text-[#6D6C6C]">
+                  Exclusivo para inversionistas
+                </span>
+              </div>
             ) : (
               <div className="flex items-center">
                 {path.pricing.individualCoursesPrice ? (

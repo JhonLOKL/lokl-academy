@@ -1,9 +1,7 @@
-"use client";
-
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/design-system";
+import { Button, Card, CardContent, Input, H2, Paragraph } from "@/components/design-system";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -13,9 +11,10 @@ import CourseCard from "@/components/course/course-card";
 import ProfileCard from "@/components/course/profile-card";
 // import SubscriptionPlanCard from "@/components/course/subscription-plan-card";
 import PlanComparison from "@/components/course/plan-comparison";
-import NewsletterCard from "@/components/course/newsletter-card";
+// import NewsletterCard from "@/components/course/newsletter-card";
 import ToolCard from "@/components/course/tool-card";
 import TestimonialCard from "@/components/course/testimonial-card";
+import BlogSection from "@/components/lokl-academy/sections/blog-section";
 import { Clock, ChevronDown } from "lucide-react";
 
 import { 
@@ -24,12 +23,15 @@ import {
   mockLearningProfiles,
   // mockSubscriptionPlans,
   mockExternalTools,
-  mockNewsletterItems,
+  // mockNewsletterItems,
   mockPlatformReviews,
   mockUserProgress
 } from "@/lib/course/mock-data";
+import { getBlogsLiteAction } from "@/actions/blog-action";
 
-export default function CoursePage() {
+export default async function CoursePage() {
+  // Obtener blogs desde la API
+  const { blogs } = await getBlogsLiteAction({ limit: 4, featured: true });
   // Filtrar cursos por categorías
   const recommendedCourses = mockCourses.filter(course => course.featured);
   const latestCourses = [...mockCourses].sort((a, b) => 
@@ -505,35 +507,80 @@ export default function CoursePage() {
         </div>
       </section>
 
-      {/* Tendencias y Newsletter */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="mb-12">
-          <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
-            Tendencias actuales
-          </h2>
-          <p className="max-w-2xl text-[#6D6C6C]">
-            Mantente al día con las últimas novedades del sector inmobiliario y financiero
-          </p>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {mockNewsletterItems.map((item) => (
-            <NewsletterCard key={item.id} item={item} />
-          ))}
-          <div className="rounded-lg border border-[#E5E5E5] bg-white p-6 md:col-span-2 lg:col-span-1">
-            <h3 className="mb-4 text-xl font-bold">Suscríbete a nuestro newsletter</h3>
-            <p className="mb-4 text-[#6D6C6C]">
-              Recibe las últimas tendencias y oportunidades directamente en tu correo
+      {/* Blog Section */}
+      <section className="bg-[#F5F5F5] py-16">
+        <div className="container mx-auto px-4">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
+              Blog de LOKL Academy
+            </h2>
+            <p className="mx-auto max-w-2xl text-[#6D6C6C]">
+              Artículos y recursos sobre inversión inmobiliaria, finanzas personales y estrategias para inversionistas
             </p>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <input 
-                type="email" 
-                placeholder="Tu correo electrónico" 
-                className="flex-1 rounded-md border border-[#E5E5E5] px-4 py-2 focus:border-[#5352F6] focus:outline-none focus:ring-1 focus:ring-[#5352F6]"
-              />
-              <Button>Suscribirme</Button>
-            </div>
           </div>
+          <BlogSection blogs={blogs} />
+        </div>
+      </section>
+      
+      {/* Newsletter */}
+      <section className="bg-gradient-to-br bg-[#5352F6] py-16 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-full h-full bg-[url('/images/dot-pattern.png')] bg-repeat"></div>
+          <div className="absolute -bottom-16 -right-16 w-64 h-64 rounded-full bg-white/10 blur-3xl"></div>
+          <div className="absolute -top-16 -left-16 w-64 h-64 rounded-full bg-white/10 blur-3xl"></div>
+        </div>
+        
+        <div className="container relative mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center mb-8">
+            <H2 className="text-white mb-4">Mantente <span className="text-[#FFD447]">actualizado</span></H2>
+            <Paragraph className="text-white/90 text-lg">
+              Recibe contenido exclusivo sobre inversión inmobiliaria, estrategias financieras y oportunidades directamente en tu correo.
+            </Paragraph>
+          </div>
+          
+          <Card className="max-w-2xl mx-auto border-none shadow-xl overflow-hidden">
+            <CardContent className="p-8">
+              <div className="flex flex-col gap-6">
+                <div>
+                  <h4 className="font-bold text-xl mb-2 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2 text-[#5352F6]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    Newsletter LOKL Academy
+                  </h4>
+                  <p className="text-[#6D6C6C]">
+                    Únete a +3,500 inversionistas que ya reciben nuestro contenido exclusivo
+                  </p>
+                </div>
+                
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Input 
+                    type="email" 
+                    placeholder="Tu correo electrónico" 
+                    className="flex-1 border-[#E5E5E5] focus:border-[#5352F6]"
+                  />
+                  <Button size="lg" className="bg-[#5352F6] hover:bg-[#4241E0] transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-[#5352F6]/20">
+                    Suscribirme
+                  </Button>
+                </div>
+                
+                <div className="flex items-center justify-center gap-6 pt-2 text-sm text-[#6D6C6C]">
+                  <div className="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Contenido semanal
+                  </div>
+                  <div className="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Cancela cuando quieras
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
