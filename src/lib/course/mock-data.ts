@@ -576,7 +576,8 @@ import {
         showProgress: true,
         enforceOrder: false
       }
-    }
+    },
+    
   ];
   
   // ===================================================================
@@ -678,16 +679,16 @@ import {
       tags: [mockTags[0], mockTags[7]],
   
       pricing: {
-        type: 'bundle',
-        price: 397,
-        originalPrice: 641,
+        type: 'free',
+        price: 0,
+        originalPrice: 0,
         currency: 'USD',
-        individualCoursesPrice: 641,
-        savings: 244
+        individualCoursesPrice: 0,
+        savings: 0
       },
   
       accessRequirements: {
-        plan: 'investor'
+        plan: 'any'
       },
   
       thumbnail: {

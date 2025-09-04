@@ -227,11 +227,12 @@ export default function CourseDetailPage({ params }: { params: { slug: string } 
                         
                         <div className="border-t border-[#E5E5E5]">
                           {module.lessons.map((lesson, lessonIndex) => (
-                            <div 
+                            <Link 
+                              href={`/course/${params.slug}/learn?module=${module.id}&lesson=${lesson.id}`}
                               key={lesson.id} 
                               className={`flex items-center justify-between p-4 ${
                                 lessonIndex < module.lessons.length - 1 ? "border-b border-[#E5E5E5]" : ""
-                              }`}
+                              } hover:bg-[#F5F5F5] transition-colors cursor-pointer`}
                             >
                               <div className="flex items-center">
                                 {lesson.isPreview ? (
@@ -257,7 +258,7 @@ export default function CourseDetailPage({ params }: { params: { slug: string } 
                                 </span>
                               </div>
                               <span className="text-xs text-[#6D6C6C]">{formatDuration(lesson.duration)}</span>
-                            </div>
+                            </Link>
                           ))}
                         </div>
                       </div>

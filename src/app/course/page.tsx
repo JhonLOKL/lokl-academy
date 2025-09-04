@@ -11,7 +11,8 @@ import HeroSection from "@/components/course/hero-section";
 import BenefitsSection from "@/components/course/benefits-section";
 import CourseCard from "@/components/course/course-card";
 import ProfileCard from "@/components/course/profile-card";
-import SubscriptionPlanCard from "@/components/course/subscription-plan-card";
+// import SubscriptionPlanCard from "@/components/course/subscription-plan-card";
+import PlanComparison from "@/components/course/plan-comparison";
 import NewsletterCard from "@/components/course/newsletter-card";
 import ToolCard from "@/components/course/tool-card";
 import TestimonialCard from "@/components/course/testimonial-card";
@@ -21,7 +22,7 @@ import {
   mockCourses, 
   mockLearningPaths, 
   mockLearningProfiles,
-  mockSubscriptionPlans,
+  // mockSubscriptionPlans,
   mockExternalTools,
   mockNewsletterItems,
   mockPlatformReviews,
@@ -426,26 +427,22 @@ export default function CoursePage() {
       {/* Sección de beneficios */}
       <BenefitsSection />
 
-      {/* Planes de suscripción */}
+      {/* Comparación de planes */}
       <section className="bg-white py-16">
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
             <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
-              Planes de suscripción
+              Planes de acceso
             </h2>
             <p className="mx-auto max-w-2xl text-[#6D6C6C]">
-              Elige el plan que mejor se adapte a tus objetivos de inversión y aprendizaje
+              Descubre las ventajas de ser inversionista LOKL y accede a contenido exclusivo
             </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-3">
-            {mockSubscriptionPlans.map((plan) => (
-              <SubscriptionPlanCard 
-                key={plan.id} 
-                plan={plan} 
-                isCurrentPlan={plan.slug === "basic"}
-              />
-            ))}
+          <PlanComparison />
+          
+          <div className="mt-8 text-center">
+            <p className="text-[#6D6C6C]">¿Tienes dudas sobre nuestros planes? <a href="#" className="text-[#5352F6] hover:underline">Contáctanos</a></p>
           </div>
         </div>
       </section>
