@@ -115,7 +115,7 @@ export default async function CoursePage() {
             <div className="flex flex-col gap-6">
               {/* Cursos en progreso */}
               <div className="w-full">
-                <h4 className="mb-4 text-lg font-semibold">Tus cursos actuales</h4>
+                <h4 className="text-lg font-semibold">Tus cursos actuales</h4>
                 <CourseSwiper>
                   {/* Curso en progreso real */}
                   {userCourseProgress && (
@@ -184,7 +184,7 @@ export default async function CoursePage() {
               
               {/* Rutas en progreso */}
               <div className="w-full">
-                <h4 className="mb-4 text-lg font-semibold">Tus rutas actuales</h4>
+                <h4 className="text-lg font-semibold">Tus rutas actuales</h4>
                 <CourseSwiper>
                   {/* Ruta en progreso real */}
                   {userPathProgress && (

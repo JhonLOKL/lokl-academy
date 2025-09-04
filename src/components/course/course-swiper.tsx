@@ -31,11 +31,25 @@ export default function CourseSwiper({
 }: CourseSwiperProps) {
   return (
     <div className={`course-swiper-container ${className}`}>
+      <div className="flex items-center justify-between mb-4">
+        <div></div>
+        <div className="flex gap-2">
+          <button className="swiper-custom-prev flex items-center justify-center w-8 h-8 rounded-full bg-white border border-[#EEEEFE] text-[#5352F6] hover:bg-[#EEEEFE] transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+          <button className="swiper-custom-next flex items-center justify-center w-8 h-8 rounded-full bg-white border border-[#EEEEFE] text-[#5352F6] hover:bg-[#EEEEFE] transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+        </div>
+      </div>
       <Swiper
         modules={[Navigation, Pagination, A11y]}
         spaceBetween={spaceBetween}
         slidesPerView={slidesPerView}
-        navigation
         pagination={{ clickable: true, dynamicBullets: true }}
         className="course-swiper"
         breakpoints={breakpoints || {
@@ -53,6 +67,10 @@ export default function CourseSwiper({
           },
         }}
         wrapperClass="swiper-wrapper !items-stretch"
+        navigation={{
+          prevEl: '.swiper-custom-prev',
+          nextEl: '.swiper-custom-next',
+        }}
       >
         {children.map((child, index) => (
           <SwiperSlide key={index} className="h-auto flex">
@@ -76,30 +94,7 @@ export default function CourseSwiper({
         
         .course-swiper-container .swiper-button-next,
         .course-swiper-container .swiper-button-prev {
-          color: #5352F6;
-          transform: scale(0.7);
-          top: 35%;
-          background-color: rgba(255, 255, 255, 0.9);
-          border-radius: 50%;
-          width: 40px;
-          height: 40px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .course-swiper-container .swiper-button-next {
-          right: 10px;
-        }
-        
-        .course-swiper-container .swiper-button-prev {
-          left: 10px;
-        }
-        
-        .course-swiper-container .swiper-button-next:after,
-        .course-swiper-container .swiper-button-prev:after {
-          font-size: 18px;
+          display: none;
         }
         
         .course-swiper-container .swiper-pagination-bullet-active {
@@ -108,6 +103,12 @@ export default function CourseSwiper({
         
         .course-swiper-container .swiper-pagination {
           bottom: 0px;
+        }
+        
+        .swiper-custom-prev:disabled,
+        .swiper-custom-next:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
         }
       `}</style>
     </div>
