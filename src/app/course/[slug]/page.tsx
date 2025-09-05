@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import { Button } from "@/components/design-system";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -11,11 +11,12 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Clock, Users, Star, Calendar, CheckCircle, BookOpen, Award, Share2 } from "lucide-react";
 import { mockCourses, mockUserProgress } from "@/lib/course/mock-data";
 
-export default function CourseDetailPage({ params }: { params: { slug: string } }) {
+export default function CourseDetailPage() {
+  const { slug } = useParams<{ slug: string }>();
   const [, setActiveTab] = useState("contenido");
   
   // Encontrar el curso por slug
-  const course = mockCourses.find((course) => course.slug === params.slug);
+  const course = mockCourses.find((course) => course.slug === slug);
   
   // Si el curso no existe, mostrar 404
   if (!course) {
@@ -228,7 +229,7 @@ export default function CourseDetailPage({ params }: { params: { slug: string } 
                         <div className="border-t border-[#E5E5E5]">
                           {module.lessons.map((lesson, lessonIndex) => (
                             <Link 
-                              href={`/course/${params.slug}/learn?module=${module.id}&lesson=${lesson.id}`}
+                              href={`/course/${course.slug}/learn?module=${module.id}&lesson=${lesson.id}`}
                               key={lesson.id} 
                               className={`flex items-center justify-between p-4 ${
                                 lessonIndex < module.lessons.length - 1 ? "border-b border-[#E5E5E5]" : ""
