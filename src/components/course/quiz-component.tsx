@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/design-system";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, AlertCircle } from "lucide-react";
-import { Quiz, QuizQuestion } from "@/lib/course/schema";
+import { Quiz } from "@/lib/course/schema";
 
 interface QuizComponentProps {
   quiz: Quiz;

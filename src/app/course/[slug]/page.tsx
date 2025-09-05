@@ -12,7 +12,7 @@ import { Clock, Users, Star, Calendar, CheckCircle, BookOpen, Award, Share2 } fr
 import { mockCourses, mockUserProgress } from "@/lib/course/mock-data";
 
 export default function CourseDetailPage({ params }: { params: { slug: string } }) {
-  const [activeTab, setActiveTab] = useState("contenido");
+  const [, setActiveTab] = useState("contenido");
   
   // Encontrar el curso por slug
   const course = mockCourses.find((course) => course.slug === params.slug);

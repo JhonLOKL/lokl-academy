@@ -22,6 +22,7 @@ const NewsletterSection: React.FC = () => {
       setIsSuccess(true);
       setEmail("");
     } catch (err) {
+      console.error(err);
       setError("Ocurrió un error al suscribirte. Inténtalo de nuevo.");
     } finally {
       setIsSubmitting(false);

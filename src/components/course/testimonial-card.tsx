@@ -15,6 +15,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
   variant = "default",
 }) => {
   // Formatear fecha
+  const ratingValue = testimonial.rating ?? 0;
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat("es-CO", {
@@ -32,9 +33,9 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
     `}>
       {/* Comillas decorativas */}
       <div className="absolute -left-2 -top-4 text-6xl font-black text-[#F5F5F5] opacity-80">
-        "
+        &quot;
       </div>
-      
+
       {/* Contenido del testimonial */}
       <div className="relative">
         {/* Estrellas de calificación */}
@@ -44,17 +45,17 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
               <Star
                 key={i}
                 size={16}
-                className={i < testimonial.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}
+                className={i < ratingValue ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}
               />
             ))}
           </div>
         )}
-        
+
         {/* Texto del testimonial */}
         <p className={`mb-4 italic text-[#0F0F0F] ${variant === "compact" ? "line-clamp-3 text-sm" : ""}`}>
-          "{testimonial.content}"
+          &quot;{testimonial.content}&quot;
         </p>
-        
+
         {/* Información del usuario */}
         <div className="flex items-center">
           {testimonial.userAvatar && (
@@ -67,7 +68,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
               />
             </div>
           )}
-          
+
           <div>
             <p className="font-medium">{testimonial.userName}</p>
             {testimonial.userTitle && (
@@ -75,14 +76,14 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
             )}
           </div>
         </div>
-        
+
         {/* Fecha */}
         {variant !== "compact" && (
           <div className="mt-3 text-xs text-[#6D6C6C]">
             {formatDate(testimonial.createdAt)}
           </div>
         )}
-        
+
         {/* Etiqueta destacada */}
         {testimonial.featured && (
           <div className="absolute -right-2 -top-2 rounded-full bg-[#5352F6] px-3 py-1 text-xs font-medium text-white">

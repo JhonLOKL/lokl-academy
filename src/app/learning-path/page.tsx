@@ -5,19 +5,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/design-system";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import CourseCard from "@/components/course/course-card";
 import { Clock, ChevronRight, BookOpen, Award, BarChart4, CheckCircle } from "lucide-react";
 
 import { 
   mockLearningPaths,
-  mockCourses,
-  mockUserProgress
 } from "@/lib/course/mock-data";
 
 export default function LearningPathsPage() {
-  // Obtener progreso del usuario
-  const userPathProgress = mockUserProgress.find(progress => progress.pathId);
 
   return (
     <div className="bg-[#FAFAFA] min-h-screen">

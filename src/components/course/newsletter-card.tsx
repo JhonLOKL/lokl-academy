@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Calendar, Clock } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { NewsletterItem } from "@/lib/course/schema";
 
 interface NewsletterCardProps {
