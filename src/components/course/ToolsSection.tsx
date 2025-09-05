@@ -4,10 +4,10 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Clock, ExternalLink, Star } from "lucide-react";
-import { Tool } from "@/lib/course/schema";
+import { ExternalTool } from "@/lib/course/schema";
 
 interface ToolsSectionProps {
-  tools: Tool[];
+  tools: ExternalTool[];
 }
 
 const ToolsSection: React.FC<ToolsSectionProps> = ({ tools }) => {

@@ -2,10 +2,10 @@
 
 import React from "react";
 import TestimonialCard from "@/components/course/testimonial-card";
-import { Review } from "@/lib/course/schema";
+import { PlatformReview } from "@/lib/course/schema";
 
 interface TestimonialsSectionProps {
-  testimonials: Review[];
+  testimonials: PlatformReview[];
 }
 
 const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ testimonials }) => {
