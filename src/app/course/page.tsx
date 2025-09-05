@@ -433,7 +433,7 @@ export default async function CoursePage() {
         </h2>
         <div className="space-y-8">
           {mockLearningPaths.map((path) => (
-            <div key={path.id} className="group relative overflow-hidden rounded-lg bg-white p-0 transition-all hover:bg-[#FAFAFA]">
+            <div key={path.id} className="group relative overflow-hidden rounded-lg bg-white p-0 transition-all">
               <div className="absolute left-0 top-0 h-full w-1.5 bg-[#5352F6]"></div>
               <div className="flex flex-col md:flex-row">
                 {/* Imagen lateral solo visible en desktop */}
@@ -574,7 +574,32 @@ export default async function CoursePage() {
         <h2 className="mb-6 text-2xl font-bold tracking-tight md:text-3xl">
           Perfiles de aprendizaje
         </h2>
-        <div className="grid gap-6 md:grid-cols-3">
+        <CourseSwiper
+          slidesPerView={1}
+          spaceBetween={32}
+          breakpoints={{
+            320: {
+              slidesPerView: 1,
+              spaceBetween: 20,
+            },
+            768: {
+              slidesPerView: 1.05,
+              spaceBetween: 30,
+            },
+            1024: {
+              slidesPerView: 1.2,
+              spaceBetween: 40,
+            },
+            1440: {
+              slidesPerView: 1.5,
+              spaceBetween: 50,
+            },
+            1800: {
+              slidesPerView: 1.8,
+              spaceBetween: 60,
+            },
+          }}
+        >
           {mockLearningProfiles.map((profile) => (
             <ProfileCard 
               key={profile.id} 
@@ -589,7 +614,7 @@ export default async function CoursePage() {
               }
             />
           ))}
-        </div>
+        </CourseSwiper>
       </section>
 
 
