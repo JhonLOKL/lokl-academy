@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { Button } from "@/components/design-system";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -23,11 +24,12 @@ import {
   mockCourses
 } from "@/lib/course/mock-data";
 
-export default function LearningPathDetailPage({ params }: { params: { slug: string } }) {
+export default function LearningPathDetailPage() {
+  const { slug } = useParams<{ slug: string }>();
   const [, setActiveTab] = useState("contenido");
 
   // Encontrar la ruta por slug
-  const path = mockLearningPaths.find(path => path.slug === params.slug);
+  const path = mockLearningPaths.find(path => path.slug === slug);
 
   if (!path) {
     return (
