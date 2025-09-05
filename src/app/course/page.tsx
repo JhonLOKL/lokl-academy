@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button, Card, CardContent, Input, H2, Paragraph } from "@/components/design-system";
@@ -29,17 +31,40 @@ import {
 } from "@/lib/course/mock-data";
 import { getBlogsLiteAction } from "@/actions/blog-action";
 
-export default async function CoursePage() {
-  // Obtener blogs desde la API
-  const { blogs } = await getBlogsLiteAction({ limit: 4, featured: true });
-  // Filtrar cursos por categorías
-  const recommendedCourses = mockCourses.filter(course => course.featured);
-  const latestCourses = [...mockCourses].sort((a, b) => 
-    new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-  );
-  const exclusiveCourses = mockCourses.filter(course => 
-    course.accessRequirements.plan === "investor" || course.accessRequirements.plan === "premium"
-  );
+export default function CoursePage() {
+  // Estado para mostrar/ocultar filtros en móvil
+  const [showFilters, setShowFilters] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [blogs, setBlogs] = useState<any[]>([]);
+  
+  // Cargar blogs
+  useEffect(() => {
+    async function loadBlogs() {
+      try {
+        const result = await getBlogsLiteAction({ limit: 4, featured: true });
+        setBlogs(result.blogs || []);
+      } catch (error) {
+        console.error("Error loading blogs:", error);
+        setBlogs([]);
+      }
+    }
+    
+    loadBlogs();
+  }, []);
+  
+  // Preparar datos para los filtros
+  const coursesData = {
+    recommended: mockCourses.filter(course => course.featured),
+    latest: [...mockCourses].sort((a, b) => 
+      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+    ).slice(0, 10),
+    exclusive: mockCourses.filter(course => 
+      course.accessRequirements.plan === "investor" || course.accessRequirements.plan === "premium"
+    ),
+    free: mockCourses.filter(course =>
+      course.accessRequirements.plan === "basic" || course.accessRequirements.plan === "any"
+    )
+  };
 
   // Obtener progreso del usuario
   const userCourseProgress = mockUserProgress.find(progress => progress.courseId);
@@ -56,45 +81,159 @@ export default async function CoursePage() {
 
       {/* Explorar contenido con tabs */}
       <section className="container mx-auto px-4 py-12">
-        <h2 className="mb-6 text-2xl font-bold tracking-tight md:text-3xl">
-          Explora contenido educativo
-        </h2>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+          <h2 className="text-2xl font-bold tracking-tight md:text-3xl">
+            Explora contenido educativo
+          </h2>
+          
+          {/* Buscador de cursos */}
+          <div className="relative w-full md:w-auto md:min-w-[300px]">
+            <div className="flex items-center relative">
+              <input 
+                type="text" 
+                placeholder="Buscar cursos..." 
+                className="w-full pl-10 pr-4 py-2 rounded-lg border border-[#E5E5E5] focus:outline-none focus:ring-2 focus:ring-[#5352F6]/30 focus:border-[#5352F6]"
+              />
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 absolute left-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
 
-        <Tabs defaultValue="mi-progreso" className="w-full">
-          <div className="mb-6 overflow-x-auto">
-            <TabsList className="w-full justify-start">
-              <TabsTrigger value="mi-progreso" className="flex items-center gap-2">
-                Mi progreso
-                <span className="rounded-full bg-[#EEEEFE] px-2 py-0.5 text-xs font-medium text-[#5352F6]">
-                  {userCourseProgress ? 1 : 0}
-                </span>
-              </TabsTrigger>
-              <TabsTrigger value="recomendados" className="flex items-center gap-2">
-                Recomendados
-                <span className="rounded-full bg-[#EEEEFE] px-2 py-0.5 text-xs font-medium text-[#5352F6]">
-                  {recommendedCourses.length}
-                </span>
-              </TabsTrigger>
-              <TabsTrigger value="ultimos" className="flex items-center gap-2">
-                Últimos cursos
-                <span className="rounded-full bg-[#EEEEFE] px-2 py-0.5 text-xs font-medium text-[#5352F6]">
-                  {latestCourses.length}
-                </span>
-              </TabsTrigger>
-              <TabsTrigger value="exclusivos" className="flex items-center gap-2">
-                Para inversionistas
-                <span className="rounded-full bg-[#EEEEFE] px-2 py-0.5 text-xs font-medium text-[#5352F6]">
-                  {exclusiveCourses.length}
-                </span>
-              </TabsTrigger>
-              <TabsTrigger value="todos" className="flex items-center gap-2">
-                Todos los cursos
-                <span className="rounded-full bg-[#EEEEFE] px-2 py-0.5 text-xs font-medium text-[#5352F6]">
-                  {mockCourses.length}
-                </span>
-              </TabsTrigger>
+        <Tabs defaultValue="todos" className="w-full">
+          {/* Navbar y filtros */}
+          <div className="bg-white rounded-lg shadow-sm border border-[#E5E5E5] mb-8">
+            {/* Header con tabs */}
+            <div className="p-4 flex flex-col sm:flex-row sm:items-center gap-4">
+              {/* Buscador */}
+              <div className="relative flex-1 max-w-md">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <input 
+                  type="text" 
+                  placeholder="Buscar cursos..." 
+                  className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-[#E5E5E5] bg-white focus:outline-none focus:ring-1 focus:ring-[#5352F6]/30 focus:border-[#5352F6]"
+                />
+              </div>
               
-            </TabsList>
+              {/* Tabs */}
+              <TabsList className="flex gap-1 p-1 bg-[#F5F5F5] rounded-md">
+                <TabsTrigger value="todos" className="flex items-center gap-1.5 text-sm px-4 py-1.5 rounded-md">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                  </svg>
+                  Todos
+                  <span className="rounded-full bg-[#EEEEFE] px-1.5 py-0.5 text-xs font-medium text-[#5352F6]">
+                    {mockCourses.length}
+                  </span>
+                </TabsTrigger>
+                <TabsTrigger value="mi-progreso" className="flex items-center gap-1.5 text-sm px-4 py-1.5 rounded-md">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Mi progreso
+                  <span className="rounded-full bg-[#EEEEFE] px-1.5 py-0.5 text-xs font-medium text-[#5352F6]">
+                    {userCourseProgress ? 1 : 0}
+                  </span>
+                </TabsTrigger>
+              </TabsList>
+            </div>
+            
+            {/* Botón de filtros (visible en móvil) */}
+            <div className="p-4 border-t border-[#E5E5E5] flex justify-between items-center md:hidden">
+              <button 
+                onClick={() => setShowFilters(!showFilters)}
+                className="flex items-center gap-1.5 text-sm font-medium text-[#5352F6]"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
+                {showFilters ? 'Ocultar filtros' : 'Mostrar filtros'}
+                <span className="ml-1 rounded-full bg-[#EEEEFE] px-1.5 py-0.5 text-xs font-medium text-[#5352F6]">
+                  {coursesData.recommended.length + coursesData.latest.length + coursesData.exclusive.length + coursesData.free.length}
+                </span>
+              </button>
+              
+              {/* Indicador de filtros activos */}
+              <div className="flex items-center gap-1 text-xs text-[#6D6C6C]">
+                <span className="rounded-full h-2 w-2 bg-[#5352F6]"></span>
+                Filtros activos
+              </div>
+            </div>
+            
+            {/* Filtros (ocultos en móvil por defecto) */}
+            <div className={`border-t border-[#E5E5E5] ${showFilters ? 'block' : 'hidden'} md:block`}>
+              {/* Filtros tipo chip */}
+              <div className="p-4 flex flex-wrap items-center gap-3">
+                <button className="inline-flex items-center gap-1.5 rounded-full bg-[#5352F6] px-3 py-1 text-xs font-medium text-white hover:bg-[#4241E0] transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                  </svg>
+                  Recomendados
+                  <span className="ml-1 rounded-full bg-white/20 px-1 py-0.5 text-xs font-medium text-white">
+                    {coursesData.recommended.length}
+                  </span>
+                </button>
+                <button className="inline-flex items-center gap-1.5 rounded-full bg-[#F5F5F5] px-3 py-1 text-xs font-medium text-[#6D6C6C] hover:bg-[#EEEEFE] hover:text-[#5352F6] transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Últimos
+                  <span className="ml-1 rounded-full bg-white px-1 py-0.5 text-xs font-medium text-[#6D6C6C]">
+                    {coursesData.latest.length}
+                  </span>
+                </button>
+                <button className="inline-flex items-center gap-1.5 rounded-full bg-[#F5F5F5] px-3 py-1 text-xs font-medium text-[#6D6C6C] hover:bg-[#EEEEFE] hover:text-[#5352F6] transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  Inversionistas
+                  <span className="ml-1 rounded-full bg-white px-1 py-0.5 text-xs font-medium text-[#6D6C6C]">
+                    {coursesData.exclusive.length}
+                  </span>
+                </button>
+                <button className="inline-flex items-center gap-1.5 rounded-full bg-[#F5F5F5] px-3 py-1 text-xs font-medium text-[#6D6C6C] hover:bg-[#EEEEFE] hover:text-[#5352F6] transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Gratis
+                  <span className="ml-1 rounded-full bg-white px-1 py-0.5 text-xs font-medium text-[#6D6C6C]">
+                    {coursesData.free.length}
+                  </span>
+                </button>
+                
+                <div className="mt-3 md:mt-0 md:ml-auto flex flex-wrap gap-2 w-full md:w-auto">
+                  {/* Filtro por nivel */}
+                  <select className="text-xs border border-[#E5E5E5] rounded-md px-2 py-1 bg-white focus:outline-none focus:ring-1 focus:ring-[#5352F6]/20 focus:border-[#5352F6] appearance-none">
+                    <option value="">Nivel: Todos</option>
+                    <option value="principiante">Principiante</option>
+                    <option value="intermedio">Intermedio</option>
+                    <option value="avanzado">Avanzado</option>
+                  </select>
+                  
+                  {/* Filtro por categoría */}
+                  <select className="text-xs border border-[#E5E5E5] rounded-md px-2 py-1 bg-white focus:outline-none focus:ring-1 focus:ring-[#5352F6]/20 focus:border-[#5352F6] appearance-none">
+                    <option value="">Categoría: Todas</option>
+                    <option value="inmobiliaria">Inversión Inmobiliaria</option>
+                    <option value="finanzas">Finanzas Personales</option>
+                    <option value="crowdfunding">Crowdfunding</option>
+                    <option value="ia">Inteligencia Artificial</option>
+                  </select>
+                  
+                  {/* Filtro por duración */}
+                  <select className="text-xs border border-[#E5E5E5] rounded-md px-2 py-1 bg-white focus:outline-none focus:ring-1 focus:ring-[#5352F6]/20 focus:border-[#5352F6] appearance-none">
+                    <option value="">Duración: Cualquiera</option>
+                    <option value="short">Corta (menos de 1h)</option>
+                    <option value="medium">Media (1-3h)</option>
+                    <option value="long">Larga (más de 3h)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Contenido de las tabs */}
@@ -388,31 +527,13 @@ export default async function CoursePage() {
             </div>
           </TabsContent>
 
-          <TabsContent value="recomendados" className="mt-6">
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {recommendedCourses.map((course) => (
-                <CourseCard key={course.id} course={course} />
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="ultimos" className="mt-6">
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {latestCourses.map((course) => (
-                <CourseCard key={course.id} course={course} />
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="exclusivos" className="mt-6">
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {exclusiveCourses.map((course) => (
-                <CourseCard key={course.id} course={course} />
-              ))}
-            </div>
-          </TabsContent>
-
           <TabsContent value="todos" className="mt-6">
+            <div className="mb-6 flex items-center justify-between">
+              <h3 className="text-xl font-bold tracking-tight">Todos los cursos</h3>
+              <div className="text-sm text-[#6D6C6C]">
+                Mostrando <span className="font-medium">{mockCourses.length}</span> cursos
+              </div>
+            </div>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {mockCourses.map((course) => (
                 <CourseCard key={course.id} course={course} />
