@@ -3,16 +3,6 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   images: {
-    domains: [
-      'images.unsplash.com', 
-      'plus.unsplash.com',
-      'lokl-files-upload-bucket.s3.amazonaws.com',
-      'img.freepik.com',
-      'teranarq.com',
-      'realestatemarket.com.mx',
-      'www.munich-business-school.de',
-      'media.istockphoto.com'
-    ],
     remotePatterns: [
       {
         protocol: 'https',
@@ -52,6 +42,26 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'media.istockphoto.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lokl-academy.s3.amazonaws.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lokl-academy.s3.us-east-1.amazonaws.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lokl-assets.s3.amazonaws.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lokl-assets.s3.us-east-1.amazonaws.com',
         pathname: '/**',
       },
     ],
