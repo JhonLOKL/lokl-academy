@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/design-system";
 // import { Badge } from "@/components/ui/badge";
@@ -23,7 +23,8 @@ import {
 } from "lucide-react";
 import { mockCourses, mockUserProgress } from "@/lib/course/mock-data";
 
-export default function CourseLearnPage({ params }: { params: { slug: string } }) {
+export default function CourseLearnPage() {
+  const { slug } = useParams<{ slug: string }>();
   const searchParams = useSearchParams();
   const lessonId = searchParams.get("lesson");
   const moduleId = searchParams.get("module");
@@ -33,7 +34,7 @@ export default function CourseLearnPage({ params }: { params: { slug: string } }
   const [showQuiz, setShowQuiz] = useState(false);
   
   // Encontrar el curso por slug
-  const course = mockCourses.find((course) => course.slug === params.slug);
+  const course = mockCourses.find((course) => course.slug === slug);
   
   // Si el curso no existe, mostrar 404
   if (!course) {
@@ -125,7 +126,7 @@ export default function CourseLearnPage({ params }: { params: { slug: string } }
       // Si ya completó el quiz, permitimos volver a la lección
       if (isQuizMode) {
         // Usar Next.js Link para navegar sin recargar la página
-        window.location.href = `/course/${params.slug}/learn?module=${currentModule.id}&lesson=${currentModule.lessons[0].id}`;
+        window.location.href = `/course/${slug}/learn?module=${currentModule.id}&lesson=${currentModule.lessons[0].id}`;
       } else {
         // Si estamos en modo normal, solo ocultamos el quiz
         setShowQuiz(false);
@@ -134,7 +135,7 @@ export default function CourseLearnPage({ params }: { params: { slug: string } }
       // Si no ha completado el quiz, mostrar confirmación
       if (confirm("¿Seguro que deseas salir? Perderás tu progreso en el quiz.")) {
         if (isQuizMode) {
-          window.location.href = `/course/${params.slug}/learn?module=${currentModule.id}&lesson=${currentModule.lessons[0].id}`;
+          window.location.href = `/course/${slug}/learn?module=${currentModule.id}&lesson=${currentModule.lessons[0].id}`;
         } else {
           setShowQuiz(false);
         }
