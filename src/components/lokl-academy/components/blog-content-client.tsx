@@ -1027,6 +1027,132 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
         </div>
       );
 
+    case "embed":
+      {
+        const { url, title, width, height, responsive = true, provider = "other" } = block;
+        
+        // Determinar el tipo de embed basado en la URL o el provider especificado
+        const getEmbedType = () => {
+          if (provider !== "other") return provider;
+          
+          if (url.includes("twitter.com") || url.includes("x.com")) return "twitter";
+          if (url.includes("instagram.com")) return "instagram";
+          if (url.includes("tiktok.com")) return "tiktok";
+          if (url.includes("youtube.com") || url.includes("youtu.be")) return "youtube";
+          if (url.includes("vimeo.com")) return "vimeo";
+          if (url.includes("spotify.com")) return "spotify";
+          if (url.includes("codepen.io")) return "codepen";
+          if (url.includes("maps.google.com") || url.includes("google.com/maps")) return "google-maps";
+          
+          return "other";
+        };
+        
+        const embedType = getEmbedType();
+        
+        // Función para sanitizar y transformar URLs a formato embed cuando sea necesario
+        const getEmbedUrl = () => {
+          try {
+            // Validar URL
+            new URL(url);
+            
+            // Twitter/X
+            if (embedType === "twitter") {
+              // Convertir URL normal de tweet a formato embed
+              const tweetMatch = url.match(/twitter\.com\/[^\/]+\/status\/(\d+)/);
+              const xMatch = url.match(/x\.com\/[^\/]+\/status\/(\d+)/);
+              const tweetId = tweetMatch?.[1] || xMatch?.[1];
+              
+              if (tweetId) {
+                return `https://platform.twitter.com/embed/Tweet.html?id=${tweetId}`;
+              }
+            }
+            
+            // Instagram
+            if (embedType === "instagram" && !url.includes("embed")) {
+              // Convertir URL normal de Instagram a formato embed
+              const postMatch = url.match(/instagram\.com\/p\/([^\/]+)/);
+              const postId = postMatch?.[1];
+              
+              if (postId) {
+                return `https://www.instagram.com/p/${postId}/embed`;
+              }
+            }
+            
+            // YouTube
+            if (embedType === "youtube") {
+              // Convertir URL normal de YouTube a formato embed
+              const videoIdMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\?]+)/);
+              const videoId = videoIdMatch?.[1];
+              
+              if (videoId) {
+                return `https://www.youtube.com/embed/${videoId}`;
+              }
+            }
+            
+            // Vimeo
+            if (embedType === "vimeo") {
+              // Convertir URL normal de Vimeo a formato embed
+              const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+              const vimeoId = vimeoMatch?.[1];
+              
+              if (vimeoId) {
+                return `https://player.vimeo.com/video/${vimeoId}`;
+              }
+            }
+            
+            // Spotify
+            if (embedType === "spotify") {
+              // Convertir URL normal de Spotify a formato embed
+              const spotifyMatch = url.match(/spotify\.com\/(track|playlist|album|episode|show)\/([^\/\?]+)/);
+              if (spotifyMatch) {
+                const [, type, id] = spotifyMatch;
+                return `https://open.spotify.com/embed/${type}/${id}`;
+              }
+            }
+            
+            // Para otros tipos, devolver la URL original
+            return url;
+          } catch {
+            return url; // Si hay algún error, devolver la URL original
+          }
+        };
+        
+        const embedUrl = getEmbedUrl();
+        const aspectRatio = height && width ? (height / width) * 100 : 56.25; // Default a 16:9 si no se especifica
+        
+        return (
+          <div className={`mb-8 ${block.className || ""}`}>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              viewport={{ once: true }}
+              className="overflow-hidden rounded-lg border border-[#E5E5E5] bg-white shadow-sm"
+            >
+              {title && (
+                <div className="border-b border-[#E5E5E5] bg-[#F7F7FB] p-3">
+                  <h3 className="text-sm font-medium text-[#0F0F0F]">{title}</h3>
+                </div>
+              )}
+              
+              <div className={responsive ? "relative w-full" : ""} 
+                style={responsive ? { paddingBottom: `${aspectRatio}%` } : {}}>
+                <iframe
+                  src={embedUrl}
+                  title={title || "Contenido embebido"}
+                  width={responsive ? "100%" : width || 600}
+                  height={responsive ? "100%" : height || 400}
+                  className={responsive ? "absolute left-0 top-0 h-full w-full border-0" : "border-0"}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  referrerPolicy="strict-origin-when-cross-origin"
+                />
+              </div>
+            </motion.div>
+          </div>
+        );
+      }
+      
     case "testimonial":
       return (
         <motion.div
@@ -1061,7 +1187,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
               </div>
             )}
           </div>
-          <p className="italic text-[#0F0F0F]">“{block.quote}”</p>
+          <p className="italic text-[#0F0F0F]">&ldquo;{block.quote}&rdquo;</p>
         </motion.div>
       );
 
