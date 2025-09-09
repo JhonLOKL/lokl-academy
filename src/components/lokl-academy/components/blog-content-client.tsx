@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Paragraph } from "@/components/design-system";
@@ -11,12 +11,73 @@ import { Navigation, Pagination, A11y, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Copy, Check } from "lucide-react";
 
 interface Tag {
   id: string;
   name: string;
   slug: string;
+}
+
+function CodeBlockView({
+  code,
+  caption,
+  highlight,
+  showLineNumbers,
+  className,
+}: {
+  code: string;
+  caption?: string;
+  highlight?: number[];
+  showLineNumbers?: boolean;
+  className?: string;
+}) {
+  const lines = (code || "").split("\n");
+  const highlighted = new Set<number>(highlight || []);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code || "");
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // no-op
+    }
+  };
+
+  return (
+    <div className={`mb-8 ${className || ""}`}>
+      <div className="mb-2 flex items-center justify-between">
+        {caption ? <div className="text-sm text-[#6D6C6C]">{caption}</div> : <div />}
+        <button
+          type="button"
+          onClick={handleCopy}
+          className="inline-flex items-center gap-1 rounded-md border border-[#E5E5E5] bg-white px-2 py-1 text-xs text-[#0F0F0F] hover:bg-[#F7F7FB]"
+          aria-label={copied ? "Copiado" : "Copiar código"}
+        >
+          {copied ? <Check size={14} className="text-green-600" /> : <Copy size={14} className="text-[#6D6C6C]" />}
+          <span>{copied ? "Copiado" : "Copiar"}</span>
+        </button>
+      </div>
+      <div className="overflow-x-auto rounded-lg border border-[#E5E5E5] bg-white">
+        <pre className="m-0 p-4 text-sm leading-6 text-[#0F0F0F] font-mono">
+          {lines.map((line, idx) => {
+            const lineNo = idx + 1;
+            const isHL = highlighted.has(lineNo);
+            return (
+              <div key={idx} className={`flex ${isHL ? "bg-[#EEEEFE]" : ""}`}>
+                {showLineNumbers && (
+                  <span className="mr-4 select-none pr-3 text-[#6D6C6C]">{lineNo}</span>
+                )}
+                <code className="whitespace-pre">{line.length ? line : "\u00A0"}</code>
+              </div>
+            );
+          })}
+        </pre>
+      </div>
+    </div>
+  );
 }
 
 function GalleryCarousel({
@@ -469,6 +530,17 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
             )}
           </table>
         </div>
+      );
+    
+    case "code":
+      return (
+        <CodeBlockView
+          code={block.code}
+          caption={block.caption}
+          highlight={block.highlight as number[] | undefined}
+          showLineNumbers={block.showLineNumbers}
+          className={block.className}
+        />
       );
     
     case "callout":
