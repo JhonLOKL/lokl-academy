@@ -12,7 +12,6 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { ChevronLeft, ChevronRight, Copy, Check, Star, ChevronUp, ChevronDown } from "lucide-react";
-import { MetricCard } from "@/components/design-system/ui/metric-card";
 import { LineChart } from "@/components/design-system/ui/charts/line-chart";
 import { BarChart } from "@/components/design-system/ui/charts/bar-chart";
 import { AreaChart } from "@/components/design-system/ui/charts/area-chart";
@@ -603,7 +602,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
 
     case "chart":
       {
-        const height = (block.height as number) || 300;
+        const height = (block.height as number) || 350; // Altura aumentada por defecto
         const options = (block.options as Record<string, unknown>) || {};
         const chartType = block.chartType as string;
 
@@ -612,10 +611,24 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
         const rawUnknown = block.data as unknown;
         const isDatasetFormat = !!(rawUnknown as ChartDatasetShape)?.labels && !!(rawUnknown as ChartDatasetShape)?.datasets;
 
-        const defaultColors = ["#5352F6", "#7A79F9", "#A1A0FB", "#0F0F0F", "#6D6C6C", "#919090"]; // LOKL palette
+        // Paleta LOKL mejorada con tonos más variados
+        const defaultColors = [
+          "#5352F6", // Azul LOKL principal
+          "#7A79F9", // Azul LOKL secundario
+          "#A1A0FB", // Azul LOKL claro
+          "#3B3A9D", // Azul LOKL oscuro
+          "#FF6B6B", // Rojo complementario
+          "#4ECDC4", // Verde-azulado complementario
+          "#FFD166", // Amarillo complementario
+          "#0F0F0F", // Negro
+          "#6D6C6C", // Gris oscuro
+          "#919090"  // Gris claro
+        ];
 
         let chart: React.ReactNode = null;
+        const metricTitle = (options as { title?: string }).title || "";
 
+        // Preparar datos para gráficos
         if (chartType === "pie") {
           let pieData: { name: string; value: number; color?: string }[] = [];
           if (isDatasetFormat) {
@@ -673,11 +686,34 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           chart = <RadarChart data={data} series={[{ key: "value", name: radarSeriesName, color: defaultColors[0] }]} height={height} />;
         }
 
-        const metricTitle = (options as { title?: string }).title || "";
+        // Renderizar gráfico con diseño mejorado
         return chart ? (
-          <div className={`mb-8 ${block.className || ""}`}>
-            <MetricCard title={metricTitle} value="" chart={chart} variant="bordered" />
-          </div>
+          <motion.div 
+            className={`mb-10 ${block.className || ""}`}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+          >
+            <div className="overflow-hidden rounded-lg border border-[#E5E5E5] bg-white shadow-md">
+              {/* Encabezado del gráfico (solo si hay título personalizado) */}
+              {metricTitle && (
+                <div className="border-b border-[#E5E5E5] bg-[#F7F7FB] p-4">
+                  <h3 className="text-lg font-bold text-[#0F0F0F]">
+                    {metricTitle}
+                  </h3>
+                </div>
+              )}
+              
+              {/* Contenedor del gráfico con padding */}
+              <div className="p-5">
+                {chart}
+              </div>
+              
+              {/* Borde inferior decorativo */}
+              <div className="h-1 w-full bg-gradient-to-r from-[#5352F6] to-[#7A79F9]"></div>
+            </div>
+          </motion.div>
         ) : null;
       }
 
