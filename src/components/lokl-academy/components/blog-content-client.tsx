@@ -11,7 +11,7 @@ import { Navigation, Pagination, A11y, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { ChevronLeft, ChevronRight, Copy, Check, Star } from "lucide-react";
+import { ChevronLeft, ChevronRight, Copy, Check, Star, ChevronUp, ChevronDown } from "lucide-react";
 import { MetricCard } from "@/components/design-system/ui/metric-card";
 import { LineChart } from "@/components/design-system/ui/charts/line-chart";
 import { BarChart } from "@/components/design-system/ui/charts/bar-chart";
@@ -411,14 +411,61 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
     case "statistic":
       return (
         <div className={`mb-8 ${block.className || ""}`}>
-          <MetricCard
-            title={block.label}
-            subtitle={block.prefix || block.suffix ? `${block.prefix || ""}${block.suffix ? ` · ${block.suffix}` : ""}` : undefined}
-            value={`${block.prefix || ""}${block.value}${block.suffix || ""}`}
-            trend={block.trendValue ? parseFloat(String(block.trendValue).replace("%", "")) : undefined}
-            trendLabel={block.trend === "up" ? "al alza" : block.trend === "down" ? "a la baja" : "estable"}
-            variant="bordered"
-          />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            viewport={{ once: true }}
+            className="relative overflow-hidden rounded-lg bg-gradient-to-br from-[#5352F6] to-[#7A79F9] p-6 shadow-md"
+          >
+            <div className="flex flex-col items-center justify-center text-center">
+              {/* Valor principal con prefijo/sufijo */}
+              <div className="mb-3 flex items-center justify-center">
+                {block.prefix && (
+                  <span className="mr-1 text-4xl md:text-5xl font-medium text-white/80">{block.prefix}</span>
+                )}
+                <span className="text-4xl font-bold text-white md:text-5xl">
+                  {block.value}
+                </span>
+                {block.suffix && (
+                  <span className="ml-2 text-xl font-medium text-white/80">{block.suffix}</span>
+                )}
+              </div>
+              
+              {/* Etiqueta/título */}
+              <h3 className="mb-4 text-lg font-bold text-white md:text-xl">{block.label}</h3>
+              
+              {/* Tendencia (si existe) */}
+              {block.trendValue && (
+                <div className="mt-2 flex items-center justify-center gap-2">
+                  <div 
+                    className={`flex items-center rounded-full px-3 py-1 text-sm font-medium ${
+                      block.trend === "up" 
+                        ? "bg-white/20 text-white border border-white/30" 
+                        : block.trend === "down" 
+                        ? "bg-white/10 text-white/90 border border-white/20" 
+                        : "bg-white/30 text-white border border-white/40"
+                    }`}
+                  >
+                    {block.trend === "up" && <ChevronUp className="mr-1 h-4 w-4" />}
+                    {block.trend === "down" && <ChevronDown className="mr-1 h-4 w-4" />}
+                    {block.trendValue}
+                  </div>
+                </div>
+              )}
+              
+              {/* Icono (si existe) */}
+              {block.icon && (
+                <div className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+                  <span className="text-white">{block.icon}</span>
+                </div>
+              )}
+            </div>
+            
+            {/* Decoración de fondo */}
+            <div className="absolute -bottom-6 -right-6 h-32 w-32 rounded-full bg-white/5"></div>
+            <div className="absolute -top-10 -left-10 h-40 w-40 rounded-full bg-white/5"></div>
+          </motion.div>
         </div>
       );
 
