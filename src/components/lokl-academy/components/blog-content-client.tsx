@@ -333,7 +333,29 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                     </svg>
                   )}
                 </span>
-                <span>{item.content}</span>
+                <div>
+                  <span>{item.content}</span>
+                  {item.subItems && item.subItems.length > 0 && (
+                    <ul className="mt-2 space-y-1 pl-6">
+                      {item.subItems.map((subItem, subIndex) => (
+                        <li key={subIndex} className="flex items-start text-sm">
+                          <span className="mr-2 mt-0.5 text-[#5352F6]">
+                            {subItem.checked ? (
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor"/>
+                              </svg>
+                            ) : (
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c-1.1 0-2-.9-2-2z" fill="currentColor"/>
+                              </svg>
+                            )}
+                          </span>
+                          <span>{subItem.content}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </motion.li>
             ))}
           </ul>
