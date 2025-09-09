@@ -605,6 +605,15 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
         const height = (block.height as number) || 350; // Altura aumentada por defecto
         const options = (block.options as Record<string, unknown>) || {};
         const chartType = block.chartType as string;
+        
+        // Procesar opciones comunes para gráficos
+        const showLegend = options.legend !== false;
+        const legendPosition = options.legendPosition as "right" | "bottom" || "bottom";
+        const showGrid = options.grid !== false;
+        const showTooltip = options.tooltip !== false;
+        const showLabels = options.labels === true;
+        const innerRadius = options.innerRadius as number || 0;
+        const outerRadius = options.outerRadius as number || 100;
 
         type Dataset = { data: number[]; label?: string; color?: string; colors?: string[] };
         type ChartDatasetShape = { labels: string[]; datasets: Dataset[] };
@@ -642,7 +651,15 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           } else if (Array.isArray(rawUnknown)) {
             pieData = (rawUnknown as Array<{ name: string; value: number; color?: string }>);
           }
-          chart = <PieChart data={pieData} height={height} />;
+          chart = <PieChart 
+            data={pieData} 
+            height={height}
+            showTooltip={showTooltip}
+            showLabels={showLabels}
+            innerRadius={chartType === "pie" ? innerRadius : 70}
+            outerRadius={outerRadius}
+            legendPosition={legendPosition}
+          />;
         } else if (chartType === "line" || chartType === "bar" || chartType === "area") {
           let data: Array<Record<string, number | string>> = [];
           let series: Array<{ key: string; name: string; color: string }> = [];
@@ -666,11 +683,32 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
             series = (options as { series?: Array<{ key: string; name: string; color: string }> })?.series || [];
           }
           if (chartType === "line") {
-            chart = <LineChart data={data as Array<{ name: string;[k: string]: number | string }>} series={series} height={height} />;
+            chart = <LineChart 
+              data={data as Array<{ name: string;[k: string]: number | string }>} 
+              series={series} 
+              height={height}
+              showGrid={showGrid}
+              showLegend={showLegend}
+              showTooltip={showTooltip}
+            />;
           } else if (chartType === "bar") {
-            chart = <BarChart data={data as Array<{ name: string;[k: string]: number | string }>} series={series} height={height} />;
+            chart = <BarChart 
+              data={data as Array<{ name: string;[k: string]: number | string }>} 
+              series={series} 
+              height={height}
+              showGrid={showGrid}
+              showLegend={showLegend}
+              showTooltip={showTooltip}
+            />;
           } else {
-            chart = <AreaChart data={data as Array<{ name: string;[k: string]: number | string }>} series={series} height={height} />;
+            chart = <AreaChart 
+              data={data as Array<{ name: string;[k: string]: number | string }>} 
+              series={series} 
+              height={height}
+              showGrid={showGrid}
+              showLegend={showLegend}
+              showTooltip={showTooltip}
+            />;
           }
         } else if (chartType === "radar") {
           // Expect labels + single dataset
@@ -683,7 +721,13 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
             data = (rawUnknown as Array<{ subject: string; value: number }>);
           }
           const radarSeriesName = (isDatasetFormat ? ((rawUnknown as ChartDatasetShape).datasets?.[0]?.label) : undefined) || "Serie";
-          chart = <RadarChart data={data} series={[{ key: "value", name: radarSeriesName, color: defaultColors[0] }]} height={height} />;
+          chart = <RadarChart 
+            data={data} 
+            series={[{ key: "value", name: radarSeriesName, color: defaultColors[0] }]} 
+            height={height}
+            showLegend={showLegend}
+            showTooltip={showTooltip}
+          />;
         }
 
         // Renderizar gráfico con diseño mejorado
