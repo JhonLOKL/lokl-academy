@@ -6,11 +6,86 @@ import { motion } from "framer-motion";
 import { Paragraph } from "@/components/design-system";
 import { ContentBlock, Author } from "@/lib/blog/schema";
 import { BlogTags, AuthorProfile, LoklCTABanner } from "./index";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, A11y, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Tag {
   id: string;
   name: string;
   slug: string;
+}
+
+function GalleryCarousel({
+  images,
+  className,
+}: {
+  images: Array<{ src: string; alt: string; caption?: string; width?: number; height?: number }>;
+  className?: string;
+}) {
+  return (
+    <div className={`mb-8 ${className || ""}`}>
+      <div className="mb-3 flex justify-end gap-2">
+        <button
+          className="blog-gallery-prev inline-flex items-center justify-center rounded-full border border-[#E5E5E5] bg-white p-2 text-[#0F0F0F] shadow-sm hover:bg-[#F7F7FB]"
+          type="button"
+          aria-label="Anterior"
+        >
+          <ChevronLeft size={18} />
+        </button>
+        <button
+          className="blog-gallery-next inline-flex items-center justify-center rounded-full border border-[#E5E5E5] bg-white p-2 text-[#0F0F0F] shadow-sm hover:bg-[#F7F7FB]"
+          type="button"
+          aria-label="Siguiente"
+        >
+          <ChevronRight size={18} />
+        </button>
+      </div>
+      <Swiper
+        modules={[Navigation, Pagination, A11y, Autoplay]}
+        spaceBetween={16}
+        slidesPerView={1}
+        navigation={{ prevEl: ".blog-gallery-prev", nextEl: ".blog-gallery-next" }}
+        pagination={{ el: ".blog-gallery-pagination", clickable: true }}
+        autoplay={{ delay: 4000, disableOnInteraction: false }}
+        breakpoints={{
+          768: { slidesPerView: 2 },
+          1024: { slidesPerView: 3 },
+        }}
+      >
+        {images.map((image, index) => (
+          <SwiperSlide key={index}>
+            <motion.div 
+              initial={{ opacity: 0, y: 20, filter: "grayscale(1)" }}
+              whileInView={{ opacity: 1, y: 0, filter: "grayscale(0)" }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              className="relative h-[220px] md:h-[280px]"
+            >
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="rounded-lg object-cover grayscale transition-all duration-500 hover:grayscale-0 hover:scale-105"
+              />
+              {image.caption && (
+                <div className="absolute bottom-0 w-full bg-black/50 p-2 text-center text-sm text-white">
+                  {image.caption}
+                </div>
+              )}
+            </motion.div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+      <div className="mt-3 flex justify-center">
+        <div className="blog-gallery-pagination"></div>
+      </div>
+    </div>
+  );
 }
 
 // Componente para renderizar los diferentes tipos de bloques de contenido
@@ -74,10 +149,45 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
       );
     
     case "gallery":
+      if (block.layout === "carousel") {
+        return <GalleryCarousel images={block.images} className={block.className} />;
+      }
+      if (block.layout === "masonry") {
+        return (
+          <div className={`mb-8 ${block.className || ""}`}>
+            <div className="columns-1 sm:columns-2 lg:columns-3 [column-gap:1rem]">
+              {block.images.map((image, index) => (
+                <motion.figure
+                  key={index}
+                  initial={{ opacity: 0, y: 20, filter: "grayscale(1)" }}
+                  whileInView={{ opacity: 1, y: 0, filter: "grayscale(0)" }}
+                  transition={{ duration: 0.5, delay: index * 0.05 }}
+                  viewport={{ once: true }}
+                  className="mb-4 overflow-hidden rounded-lg"
+                  style={{ breakInside: "avoid" }}
+                >
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    width={image.width || 1200}
+                    height={image.height || 800}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="h-auto w-full object-cover grayscale transition-all duration-500 hover:grayscale-0 hover:scale-[1.02]"
+                  />
+                  {image.caption && (
+                    <figcaption className="mt-2 text-center text-sm text-[#6D6C6C]">
+                      {image.caption}
+                    </figcaption>
+                  )}
+                </motion.figure>
+              ))}
+            </div>
+          </div>
+        );
+      }
       return (
         <div className={`mb-8 ${block.className || ""}`}>
           <div className={`grid gap-4 ${
-            block.layout === "carousel" ? "flex overflow-x-auto" :
             block.columns === 2 ? "grid-cols-1 md:grid-cols-2" :
             block.columns === 3 ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" :
             block.columns === 4 ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-4" :
