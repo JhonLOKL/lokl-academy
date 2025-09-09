@@ -535,14 +535,29 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
       );
     
     case "divider":
-      return (
-        <hr className={`my-8 border-0 border-t ${
+      {
+        const styleClass = (
           block.style === "dashed" ? "border-dashed" :
           block.style === "dotted" ? "border-dotted" :
           block.style === "double" ? "border-double border-t-2" :
           "border-solid"
-        } ${block.color || "border-[#E5E5E5]"} ${block.width || "w-full"} ${block.className || ""}`} />
-      );
+        );
+
+        const isTailwindBorderColor = typeof block.color === "string" && block.color.startsWith("border-");
+        const borderColorClass = isTailwindBorderColor ? String(block.color) : "border-[#E5E5E5]";
+        const borderColorStyle = !isTailwindBorderColor && block.color ? { borderColor: block.color as string } : undefined;
+
+        const isTailwindWidth = typeof block.width === "string" && block.width.startsWith("w-");
+        const widthClass = isTailwindWidth ? String(block.width) : "w-full";
+        const widthStyle = !isTailwindWidth && block.width ? { width: block.width as string } : undefined;
+
+        return (
+          <hr
+            className={`my-8 border-0 border-t ${styleClass} ${borderColorClass} ${widthClass} ${block.className || ""}`}
+            style={{ ...(borderColorStyle || {}), ...(widthStyle || {}) }}
+          />
+        );
+      }
     
     case "cta":
       return (
