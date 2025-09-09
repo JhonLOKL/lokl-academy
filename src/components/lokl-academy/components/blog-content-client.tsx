@@ -471,86 +471,131 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
 
     case "timeline":
       return (
-        <div className={`mb-8 ${block.className || ""}`}>
-          <div className="mb-3 flex items-center justify-end">
-            <div className="hidden md:flex items-center gap-2">
-              <button
-                className="blog-timeline-prev inline-flex items-center justify-center rounded-full border border-[#E5E5E5] bg-white p-2 text-[#0F0F0F] shadow-sm hover:bg-[#F7F7FB]"
-                type="button"
-                aria-label="Anterior"
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <button
-                className="blog-timeline-next inline-flex items-center justify-center rounded-full border border-[#E5E5E5] bg-white p-2 text-[#0F0F0F] shadow-sm hover:bg-[#F7F7FB]"
-                type="button"
-                aria-label="Siguiente"
-              >
-                <ChevronRight size={18} />
-              </button>
+        <div className={`mb-12 ${block.className || ""}`}>
+          {/* Timeline moderno con estilo LOKL */}
+          <div className="relative">
+            {/* Controles de navegación para desktop */}
+            <div className="mb-6 flex items-center justify-between">
+              <h3 className="text-xl font-bold text-[#0F0F0F] md:text-2xl">
+                <span className="bg-gradient-to-r from-[#5352F6] to-[#7A79F9] bg-clip-text text-transparent">
+                  Cronología
+                </span>
+              </h3>
+              <div className="flex items-center gap-2">
+                <button
+                  className="blog-timeline-prev inline-flex items-center justify-center rounded-full border border-[#E5E5E5] bg-white p-2 text-[#0F0F0F] shadow-sm transition-colors hover:border-[#5352F6] hover:text-[#5352F6]"
+                  type="button"
+                  aria-label="Anterior"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <button
+                  className="blog-timeline-next inline-flex items-center justify-center rounded-full border border-[#E5E5E5] bg-white p-2 text-[#0F0F0F] shadow-sm transition-colors hover:border-[#5352F6] hover:text-[#5352F6]"
+                  type="button"
+                  aria-label="Siguiente"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </div>
             </div>
-          </div>
 
-          {/* Mobile: vertical timeline */}
-          <div className="relative md:hidden">
-            <div className="absolute left-4 top-0 h-full w-px bg-gradient-to-b from-[#5352F6]/20 via-[#E5E5E5] to-[#5352F6]/20" />
-            <div className="space-y-6 pl-4">
-              {block.items.map((i, idx) => (
-                <div key={idx} className="relative grid grid-cols-1 gap-2 rounded-lg border border-[#E5E5E5] bg-white p-4 pl-12 shadow-sm transition-all hover:border-[#5352F6]/30">
-                  <div className="absolute -left-4 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-[#5352F6] text-white shadow-md">
-                    <span className="text-xs font-bold">{idx + 1}</span>
-                  </div>
-                  <div className="text-xs font-medium uppercase tracking-wider text-[#5352F6]">{i.date}</div>
-                  <div className="text-base font-bold text-[#0F0F0F]">{i.title}</div>
-                  <div className="text-sm font-normal text-[#6D6C6C]">{i.content}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Desktop: horizontal, swiper timeline */}
-          <div className="relative hidden md:block">
-            <div className="pointer-events-none absolute left-0 right-0 top-[72px] h-1 bg-gradient-to-r from-[#5352F6]/10 via-[#E5E5E5] to-[#5352F6]/10" />
-            <Swiper
-              modules={[Navigation, A11y, Pagination]}
-              spaceBetween={16}
-              slidesPerView={1}
-              navigation={{
-                prevEl: ".blog-timeline-prev",
-                nextEl: ".blog-timeline-next"
-              }}
-              pagination={{
-                el: ".blog-timeline-pagination",
-                clickable: true
-              }}
-              breakpoints={{
-                768: { slidesPerView: 2 },
-                1024: { slidesPerView: 3 },
-              }}
-            >
-              {block.items.map((i, idx) => (
-                <SwiperSlide key={idx} className="pt-6">
-                  <div className="relative flex min-h-[240px] h-full flex-col items-center justify-center rounded-lg border border-[#E5E5E5] bg-white p-6 pt-16 shadow-sm transition-all hover:border-[#5352F6]/30">
-
-                    <div className="absolute left-1/2 top-10 -translate-x-1/2 z-10">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#5352F6] text-white shadow-md">
-                        <span className="text-sm font-bold">{idx + 1}</span>
+            {/* Mobile: Timeline vertical con tarjetas modernas */}
+            <div className="md:hidden">
+              <div className="relative space-y-10 pb-10">
+                {block.items.map((item, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: idx * 0.1 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    className="relative"
+                  >
+                    {/* Línea conectora */}
+                    {idx < block.items.length - 1 && (
+                      <div className="absolute bottom-0 left-4 top-0 w-0.5 translate-x-1/2 bg-gradient-to-b from-[#5352F6] to-[#E5E5E5]"></div>
+                    )}
+                    
+                    {/* Tarjeta con contenido */}
+                    <div className="relative ml-12">
+                      {/* Marcador de fecha con número */}
+                      <div className="absolute -left-12 top-0 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#5352F6] to-[#7A79F9] text-white shadow-md">
+                        <span className="text-xs font-bold">{idx + 1}</span>
+                      </div>
+                      
+                      {/* Contenido de la tarjeta */}
+                      <div className="overflow-hidden rounded-lg bg-white shadow-md transition-all hover:shadow-lg">
+                        <div className="border-b border-[#E5E5E5] bg-[#F7F7FB] px-4 py-2">
+                          <div className="text-sm font-medium text-[#5352F6]">{item.date}</div>
+                        </div>
+                        <div className="p-4">
+                          <h4 className="mb-2 text-lg font-bold text-[#0F0F0F]">{item.title}</h4>
+                          <p className="text-sm text-[#6D6C6C]">{item.content}</p>
+                        </div>
                       </div>
                     </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
 
-                    <div className="flex flex-col items-center text-center gap-y-2">
-                      <div className="text-sm font-medium uppercase tracking-wider text-[#5352F6]">{i.date}</div>
-                      <div className="text-lg font-bold text-[#0F0F0F]">{i.title}</div>
-                      <div className="text-sm font-normal text-[#6D6C6C]">{i.content}</div>
-                    </div>
-
-                  </div>
-                </SwiperSlide>
-
-              ))}
-            </Swiper>
-            <div className="mt-4 flex justify-center">
-              <div className="blog-timeline-pagination"></div>
+            {/* Desktop: Timeline horizontal con tarjetas modernas */}
+            <div className="relative hidden md:block">
+              <Swiper
+                modules={[Navigation, A11y, Pagination]}
+                spaceBetween={24}
+                slidesPerView={1}
+                navigation={{
+                  prevEl: ".blog-timeline-prev",
+                  nextEl: ".blog-timeline-next"
+                }}
+                pagination={{
+                  el: ".blog-timeline-pagination",
+                  clickable: true
+                }}
+                breakpoints={{
+                  768: { slidesPerView: 2 },
+                  1024: { slidesPerView: 3 },
+                }}
+                className="timeline-swiper"
+              >
+                {block.items.map((item, idx) => (
+                  <SwiperSlide key={idx}>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: idx * 0.05 }}
+                      viewport={{ once: true }}
+                      className="h-full"
+                    >
+                      {/* Tarjeta con contenido */}
+                      <div className="group relative flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-md transition-all hover:shadow-lg">
+                        {/* Barra superior con fecha y número */}
+                        <div className="flex items-center justify-between border-b border-[#E5E5E5] bg-[#F7F7FB] px-4 py-3">
+                          <div className="text-sm font-medium text-[#5352F6]">{item.date}</div>
+                          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#5352F6] text-white group-hover:bg-[#7A79F9]">
+                            <span className="text-xs font-bold">{idx + 1}</span>
+                          </div>
+                        </div>
+                        
+                        {/* Contenido principal */}
+                        <div className="flex flex-1 flex-col p-5">
+                          <h4 className="mb-3 text-lg font-bold text-[#0F0F0F]">{item.title}</h4>
+                          <p className="text-sm text-[#6D6C6C]">{item.content}</p>
+                        </div>
+                        
+                        {/* Borde inferior decorativo */}
+                        <div className="h-1 w-full bg-gradient-to-r from-[#5352F6] to-[#7A79F9]"></div>
+                      </div>
+                    </motion.div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+              
+              {/* Paginación */}
+              <div className="mt-6 flex justify-center">
+                <div className="blog-timeline-pagination"></div>
+              </div>
             </div>
           </div>
         </div>
