@@ -11,7 +11,13 @@ import { Navigation, Pagination, A11y, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { ChevronLeft, ChevronRight, Copy, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight, Copy, Check, Star } from "lucide-react";
+import { MetricCard } from "@/components/design-system/ui/metric-card";
+import { LineChart } from "@/components/design-system/ui/charts/line-chart";
+import { BarChart } from "@/components/design-system/ui/charts/bar-chart";
+import { AreaChart } from "@/components/design-system/ui/charts/area-chart";
+import { PieChart } from "@/components/design-system/ui/charts/pie-chart";
+import { RadarChart } from "@/components/design-system/ui/charts/radar-chart";
 
 interface Tag {
   id: string;
@@ -119,7 +125,7 @@ function GalleryCarousel({
       >
         {images.map((image, index) => (
           <SwiperSlide key={index}>
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20, filter: "grayscale(1)" }}
               whileInView={{ opacity: 1, y: 0, filter: "grayscale(0)" }}
               transition={{ duration: 0.5 }}
@@ -155,30 +161,28 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
     case "heading":
       const HeadingTag = (`h${block.level}`) as React.ElementType;
       return (
-        <HeadingTag 
-          id={block.anchor} 
-          className={`mb-4 mt-8 font-bold ${
-            block.level === 1 ? "text-3xl md:text-4xl text-[#5352F6]" : 
-            block.level === 2 ? "text-2xl md:text-3xl border-b border-[#E5E5E5] pb-2" : 
-            block.level === 3 ? "text-xl md:text-2xl text-[#5352F6]/80" : 
-            "text-lg md:text-xl"
-          } ${block.className || ""}`}
+        <HeadingTag
+          id={block.anchor}
+          className={`mb-4 mt-8 font-bold ${block.level === 1 ? "text-3xl md:text-4xl text-[#5352F6]" :
+              block.level === 2 ? "text-2xl md:text-3xl border-b border-[#E5E5E5] pb-2" :
+                block.level === 3 ? "text-xl md:text-2xl text-[#5352F6]/80" :
+                  "text-lg md:text-xl"
+            } ${block.className || ""}`}
         >
           {block.content}
         </HeadingTag>
       );
-    
+
     case "paragraph":
       return (
-        <p className={`mb-6 leading-relaxed ${block.className || ""} ${
-          block.size === "small" ? "text-sm" : 
-          block.size === "large" ? "text-lg" : 
-          "text-base"
-        } ${block.dropCap ? "first-letter:float-left first-letter:mr-3 first-letter:text-5xl first-letter:font-bold first-letter:text-[#5352F6]" : ""}`}>
+        <p className={`mb-6 leading-relaxed ${block.className || ""} ${block.size === "small" ? "text-sm" :
+            block.size === "large" ? "text-lg" :
+              "text-base"
+          } ${block.dropCap ? "first-letter:float-left first-letter:mr-3 first-letter:text-5xl first-letter:font-bold first-letter:text-[#5352F6]" : ""}`}>
           {block.content}
         </p>
       );
-    
+
     case "image":
       return (
         <figure className={`mb-8 ${block.className || ""}`}>
@@ -208,7 +212,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           )}
         </figure>
       );
-    
+
     case "gallery":
       if (block.layout === "carousel") {
         return <GalleryCarousel images={block.images} className={block.className} />;
@@ -248,15 +252,14 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
       }
       return (
         <div className={`mb-8 ${block.className || ""}`}>
-          <div className={`grid gap-4 ${
-            block.columns === 2 ? "grid-cols-1 md:grid-cols-2" :
-            block.columns === 3 ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" :
-            block.columns === 4 ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-4" :
-            "grid-cols-1 md:grid-cols-3"
-          }`}>
+          <div className={`grid gap-4 ${block.columns === 2 ? "grid-cols-1 md:grid-cols-2" :
+              block.columns === 3 ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" :
+                block.columns === 4 ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-4" :
+                  "grid-cols-1 md:grid-cols-3"
+            }`}>
             {block.images.map((image, index) => (
-              <motion.div 
-                key={index} 
+              <motion.div
+                key={index}
                 initial={{ opacity: 0, y: 20, filter: "grayscale(1)" }}
                 whileInView={{ opacity: 1, y: 0, filter: "grayscale(0)" }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -281,7 +284,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           </div>
         </div>
       );
-    
+
     case "video":
       {
         const toYouTubeEmbed = (url: string): string | null => {
@@ -298,7 +301,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
               const id = u.pathname.replace("/", "");
               if (id) return `https://www.youtube.com/embed/${id}`;
             }
-          } catch {}
+          } catch { }
           return null;
         };
 
@@ -311,7 +314,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
               if (match?.[1]) return `https://player.vimeo.com/video/${match[1]}`;
               if (u.hostname === "player.vimeo.com" && u.pathname.startsWith("/video/")) return url;
             }
-          } catch {}
+          } catch { }
           return null;
         };
 
@@ -383,7 +386,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           </div>
         );
       }
-    
+
     case "quote":
       return (
         <motion.blockquote
@@ -391,9 +394,8 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.3 }}
           viewport={{ once: true }}
-          className={`mb-8 border-l-4 border-[#5352F6] bg-gradient-to-r from-[#F7F7FB] to-white p-6 ${
-            block.style === "large" ? "text-xl" : "text-base"
-          } ${block.className || ""}`}
+          className={`mb-8 border-l-4 border-[#5352F6] bg-gradient-to-r from-[#F7F7FB] to-white p-6 ${block.style === "large" ? "text-xl" : "text-base"
+            } ${block.className || ""}`}
         >
           <p className="italic">{block.content}</p>
           {(block.author || block.citation) && (
@@ -405,7 +407,188 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           )}
         </motion.blockquote>
       );
-    
+
+    case "statistic":
+      return (
+        <div className={`mb-8 ${block.className || ""}`}>
+          <MetricCard
+            title={block.label}
+            subtitle={block.prefix || block.suffix ? `${block.prefix || ""}${block.suffix ? ` · ${block.suffix}` : ""}` : undefined}
+            value={`${block.prefix || ""}${block.value}${block.suffix || ""}`}
+            trend={block.trendValue ? parseFloat(String(block.trendValue).replace("%", "")) : undefined}
+            trendLabel={block.trend === "up" ? "al alza" : block.trend === "down" ? "a la baja" : "estable"}
+            variant="bordered"
+          />
+        </div>
+      );
+
+    case "timeline":
+      return (
+        <div className={`mb-8 ${block.className || ""}`}>
+          <div className="mb-3 flex items-center justify-end">
+            <div className="hidden md:flex items-center gap-2">
+              <button
+                className="blog-timeline-prev inline-flex items-center justify-center rounded-full border border-[#E5E5E5] bg-white p-2 text-[#0F0F0F] shadow-sm hover:bg-[#F7F7FB]"
+                type="button"
+                aria-label="Anterior"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <button
+                className="blog-timeline-next inline-flex items-center justify-center rounded-full border border-[#E5E5E5] bg-white p-2 text-[#0F0F0F] shadow-sm hover:bg-[#F7F7FB]"
+                type="button"
+                aria-label="Siguiente"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile: vertical timeline */}
+          <div className="relative md:hidden">
+            <div className="absolute left-4 top-0 h-full w-px bg-gradient-to-b from-[#5352F6]/20 via-[#E5E5E5] to-[#5352F6]/20" />
+            <div className="space-y-6 pl-4">
+              {block.items.map((i, idx) => (
+                <div key={idx} className="relative grid grid-cols-1 gap-2 rounded-lg border border-[#E5E5E5] bg-white p-4 pl-12 shadow-sm transition-all hover:border-[#5352F6]/30">
+                  <div className="absolute -left-4 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-[#5352F6] text-white shadow-md">
+                    <span className="text-xs font-bold">{idx + 1}</span>
+                  </div>
+                  <div className="text-xs font-medium uppercase tracking-wider text-[#5352F6]">{i.date}</div>
+                  <div className="text-base font-bold text-[#0F0F0F]">{i.title}</div>
+                  <div className="text-sm font-normal text-[#6D6C6C]">{i.content}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop: horizontal, swiper timeline */}
+          <div className="relative hidden md:block">
+            <div className="pointer-events-none absolute left-0 right-0 top-[72px] h-1 bg-gradient-to-r from-[#5352F6]/10 via-[#E5E5E5] to-[#5352F6]/10" />
+            <Swiper
+              modules={[Navigation, A11y, Pagination]}
+              spaceBetween={16}
+              slidesPerView={1}
+              navigation={{
+                prevEl: ".blog-timeline-prev",
+                nextEl: ".blog-timeline-next"
+              }}
+              pagination={{
+                el: ".blog-timeline-pagination",
+                clickable: true
+              }}
+              breakpoints={{
+                768: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 },
+              }}
+            >
+              {block.items.map((i, idx) => (
+                <SwiperSlide key={idx} className="pt-6">
+                  <div className="relative flex min-h-[240px] h-full flex-col items-center justify-center rounded-lg border border-[#E5E5E5] bg-white p-6 pt-16 shadow-sm transition-all hover:border-[#5352F6]/30">
+
+                    <div className="absolute left-1/2 top-10 -translate-x-1/2 z-10">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#5352F6] text-white shadow-md">
+                        <span className="text-sm font-bold">{idx + 1}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col items-center text-center gap-y-2">
+                      <div className="text-sm font-medium uppercase tracking-wider text-[#5352F6]">{i.date}</div>
+                      <div className="text-lg font-bold text-[#0F0F0F]">{i.title}</div>
+                      <div className="text-sm font-normal text-[#6D6C6C]">{i.content}</div>
+                    </div>
+
+                  </div>
+                </SwiperSlide>
+
+              ))}
+            </Swiper>
+            <div className="mt-4 flex justify-center">
+              <div className="blog-timeline-pagination"></div>
+            </div>
+          </div>
+        </div>
+      );
+
+    case "chart":
+      {
+        const height = (block.height as number) || 300;
+        const options = (block.options as Record<string, unknown>) || {};
+        const chartType = block.chartType as string;
+
+        type Dataset = { data: number[]; label?: string; color?: string; colors?: string[] };
+        type ChartDatasetShape = { labels: string[]; datasets: Dataset[] };
+        const rawUnknown = block.data as unknown;
+        const isDatasetFormat = !!(rawUnknown as ChartDatasetShape)?.labels && !!(rawUnknown as ChartDatasetShape)?.datasets;
+
+        const defaultColors = ["#5352F6", "#7A79F9", "#A1A0FB", "#0F0F0F", "#6D6C6C", "#919090"]; // LOKL palette
+
+        let chart: React.ReactNode = null;
+
+        if (chartType === "pie") {
+          let pieData: { name: string; value: number; color?: string }[] = [];
+          if (isDatasetFormat) {
+            const { labels, datasets } = rawUnknown as ChartDatasetShape;
+            const dataset = datasets[0] || { data: [] };
+            pieData = labels.map((label: string, idx: number) => ({
+              name: label,
+              value: Number(dataset.data[idx] ?? 0),
+              color: dataset.colors?.[idx] || defaultColors[idx % defaultColors.length],
+            }));
+          } else if (Array.isArray(rawUnknown)) {
+            pieData = (rawUnknown as Array<{ name: string; value: number; color?: string }>);
+          }
+          chart = <PieChart data={pieData} height={height} />;
+        } else if (chartType === "line" || chartType === "bar" || chartType === "area") {
+          let data: Array<Record<string, number | string>> = [];
+          let series: Array<{ key: string; name: string; color: string }> = [];
+          if (isDatasetFormat) {
+            const { labels, datasets } = rawUnknown as ChartDatasetShape;
+            // Build keys s0, s1, ...
+            series = datasets.map((ds, sIdx) => ({
+              key: `s${sIdx}`,
+              name: ds.label || `Serie ${sIdx + 1}`,
+              color: ds.color || defaultColors[sIdx % defaultColors.length],
+            }));
+            data = labels.map((label: string, i: number) => {
+              const row: Record<string, number | string> = { name: label };
+              datasets.forEach((ds, sIdx) => {
+                row[`s${sIdx}`] = Number(ds.data[i] ?? 0);
+              });
+              return row;
+            });
+          } else if (Array.isArray(rawUnknown)) {
+            data = (rawUnknown as Array<Record<string, number | string>>);
+            series = (options as { series?: Array<{ key: string; name: string; color: string }> })?.series || [];
+          }
+          if (chartType === "line") {
+            chart = <LineChart data={data as Array<{ name: string;[k: string]: number | string }>} series={series} height={height} />;
+          } else if (chartType === "bar") {
+            chart = <BarChart data={data as Array<{ name: string;[k: string]: number | string }>} series={series} height={height} />;
+          } else {
+            chart = <AreaChart data={data as Array<{ name: string;[k: string]: number | string }>} series={series} height={height} />;
+          }
+        } else if (chartType === "radar") {
+          // Expect labels + single dataset
+          let data: Array<{ subject: string; value: number }> = [];
+          if (isDatasetFormat) {
+            const { labels, datasets } = rawUnknown as ChartDatasetShape;
+            const dataset = datasets[0] || { data: [] };
+            data = labels.map((label: string, i: number) => ({ subject: label, value: Number(dataset.data[i] ?? 0) }));
+          } else if (Array.isArray(rawUnknown)) {
+            data = (rawUnknown as Array<{ subject: string; value: number }>);
+          }
+          const radarSeriesName = (isDatasetFormat ? ((rawUnknown as ChartDatasetShape).datasets?.[0]?.label) : undefined) || "Serie";
+          chart = <RadarChart data={data} series={[{ key: "value", name: radarSeriesName, color: defaultColors[0] }]} height={height} />;
+        }
+
+        const metricTitle = (options as { title?: string }).title || "";
+        return chart ? (
+          <div className={`mb-8 ${block.className || ""}`}>
+            <MetricCard title={metricTitle} value="" chart={chart} variant="bordered" />
+          </div>
+        ) : null;
+      }
+
     case "list":
       if (block.style === "ordered") {
         return (
@@ -445,11 +628,11 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                 <span className="mr-2 mt-1 text-[#5352F6]">
                   {item.checked ? (
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor"/>
+                      <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor" />
                     </svg>
                   ) : (
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" fill="currentColor"/>
+                      <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" fill="currentColor" />
                     </svg>
                   )}
                 </span>
@@ -462,11 +645,11 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                           <span className="mr-2 mt-0.5 text-[#5352F6]">
                             {subItem.checked ? (
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor"/>
+                                <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor" />
                               </svg>
                             ) : (
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c-1.1 0-2-.9-2-2z" fill="currentColor"/>
+                                <path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c-1.1 0-2-.9-2-2z" fill="currentColor" />
                               </svg>
                             )}
                           </span>
@@ -504,7 +687,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           </ul>
         );
       }
-    
+
     case "table":
       return (
         <div className={`mb-8 overflow-x-auto rounded-lg border border-[#E5E5E5] ${block.className || ""}`}>
@@ -531,7 +714,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           </table>
         </div>
       );
-    
+
     case "code":
       return (
         <CodeBlockView
@@ -542,7 +725,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           className={block.className}
         />
       );
-    
+
     case "callout":
       const calloutColors = {
         info: "bg-blue-50 border-blue-200 text-blue-800",
@@ -568,16 +751,15 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           <p>{block.content}</p>
         </motion.div>
       );
-    
+
     case "columns":
       return (
-        <div className={`mb-8 grid gap-6 ${
-          block.stackBelow === "sm" ? "grid-cols-1 sm:grid-cols-12" :
-          block.stackBelow === "md" ? "grid-cols-1 md:grid-cols-12" :
-          block.stackBelow === "lg" ? "grid-cols-1 lg:grid-cols-12" :
-          block.stackBelow === "xl" ? "grid-cols-1 xl:grid-cols-12" :
-          "grid-cols-1 md:grid-cols-12"
-        } ${block.className || ""}`}>
+        <div className={`mb-8 grid gap-6 ${block.stackBelow === "sm" ? "grid-cols-1 sm:grid-cols-12" :
+            block.stackBelow === "md" ? "grid-cols-1 md:grid-cols-12" :
+              block.stackBelow === "lg" ? "grid-cols-1 lg:grid-cols-12" :
+                block.stackBelow === "xl" ? "grid-cols-1 xl:grid-cols-12" :
+                  "grid-cols-1 md:grid-cols-12"
+          } ${block.className || ""}`}>
           {block.columns.map((column, index) => {
             const colSpan = {
               "1/2": "md:col-span-6",
@@ -605,14 +787,14 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           })}
         </div>
       );
-    
+
     case "divider":
       {
         const styleClass = (
           block.style === "dashed" ? "border-dashed" :
-          block.style === "dotted" ? "border-dotted" :
-          block.style === "double" ? "border-double border-t-2" :
-          "border-solid"
+            block.style === "dotted" ? "border-dotted" :
+              block.style === "double" ? "border-double border-t-2" :
+                "border-solid"
         );
 
         const isTailwindBorderColor = typeof block.color === "string" && block.color.startsWith("border-");
@@ -630,7 +812,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           />
         );
       }
-    
+
     case "cta":
       return (
         <div className={`mb-8 rounded-lg p-8 ${block.background || "bg-[#F7F7FB]"} ${block.className || ""}`}>
@@ -638,17 +820,16 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           {block.content && <p className="mb-6">{block.content}</p>}
           <a
             href={block.buttonUrl}
-            className={`inline-block rounded-md px-6 py-3 font-medium ${
-              block.buttonVariant === "secondary" ? "bg-[#0F0F0F] text-white" :
-              block.buttonVariant === "outline" ? "border border-[#5352F6] bg-transparent text-[#5352F6]" :
-              "bg-[#5352F6] text-white"
-            }`}
+            className={`inline-block rounded-md px-6 py-3 font-medium ${block.buttonVariant === "secondary" ? "bg-[#0F0F0F] text-white" :
+                block.buttonVariant === "outline" ? "border border-[#5352F6] bg-transparent text-[#5352F6]" :
+                  "bg-[#5352F6] text-white"
+              }`}
           >
             {block.buttonText}
           </a>
         </div>
       );
-    
+
     case "faq":
       return (
         <div className={`mb-8 ${block.className || ""}`}>
@@ -673,7 +854,45 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           </div>
         </div>
       );
-    
+
+    case "testimonial":
+      return (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          viewport={{ once: true }}
+          className={`mb-8 rounded-lg border border-[#E5E5E5] bg-white p-6 shadow-sm ${block.className || ""}`}
+        >
+          <div className="mb-3 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {block.avatar && (
+                <div className="relative h-10 w-10 overflow-hidden rounded-full">
+                  <Image src={block.avatar} alt={block.author} fill className="object-cover" />
+                </div>
+              )}
+              <div>
+                <div className="font-medium text-[#0F0F0F]">{block.author}</div>
+                {block.role && <div className="text-xs text-[#6D6C6C]">{block.role}</div>}
+              </div>
+            </div>
+            {typeof block.rating === "number" && (
+              <div className="flex items-center">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    size={16}
+                    className={i < (block.rating as number) ? "text-yellow-400" : "text-gray-300"}
+                    fill={i < (block.rating as number) ? "currentColor" : "none"}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+          <p className="italic text-[#0F0F0F]">“{block.quote}”</p>
+        </motion.div>
+      );
+
     default:
       return null;
   }
@@ -699,7 +918,7 @@ export default function BlogContentClient({ content, tags, author }: BlogContent
           <ContentBlockRenderer block={block} />
         </motion.div>
       ))}
-      
+
       {/* Tags */}
       {tags && tags.length > 0 && (
         <div className="mb-8 mt-12">
@@ -707,12 +926,12 @@ export default function BlogContentClient({ content, tags, author }: BlogContent
           <BlogTags tags={tags} />
         </div>
       )}
-      
+
       {/* Author bio */}
       <div className="mb-12 mt-16">
         <AuthorProfile author={author} />
       </div>
-      
+
       {/* Banner CTA de LOKL */}
       <div className="mb-12 mt-16">
         <LoklCTABanner />
