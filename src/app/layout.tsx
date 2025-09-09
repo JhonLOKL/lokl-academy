@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://loklacademy.com"),
+  metadataBase: new URL("https://lokl.academy.com"),
   alternates: {
     canonical: "/",
     languages: {
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "LOKL Academy | Plataforma de Inversión y Bienes Raíces",
     description: "Aprende a invertir en bienes raíces y administrar tus finanzas personales con nuestros cursos, blogs y podcasts especializados.",
-    url: "https://loklacademy.com",
+    url: "https://lokl.academy.com",
     siteName: "LOKL Academy",
     images: [
       {
