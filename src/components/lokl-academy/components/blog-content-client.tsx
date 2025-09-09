@@ -222,30 +222,89 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
       );
     
     case "video":
-      if (block.provider === "youtube") {
-        return (
-          <div className={`mb-8 ${block.className || ""}`}>
-            <div className="relative aspect-video w-full overflow-hidden rounded-lg">
-              <iframe
-                src={block.src}
-                title={block.caption || "Video"}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="absolute left-0 top-0 h-full w-full border-0"
-              />
+      {
+        const toYouTubeEmbed = (url: string): string | null => {
+          try {
+            const u = new URL(url);
+            if (u.hostname.includes("youtube.com")) {
+              // https://www.youtube.com/watch?v=VIDEO_ID → /embed/VIDEO_ID
+              const id = u.searchParams.get("v");
+              if (id) return `https://www.youtube.com/embed/${id}`;
+              // already /embed/
+              if (u.pathname.startsWith("/embed/")) return url;
+            }
+            if (u.hostname === "youtu.be") {
+              const id = u.pathname.replace("/", "");
+              if (id) return `https://www.youtube.com/embed/${id}`;
+            }
+          } catch {}
+          return null;
+        };
+
+        const toVimeoEmbed = (url: string): string | null => {
+          try {
+            const u = new URL(url);
+            if (u.hostname.includes("vimeo.com")) {
+              // https://vimeo.com/VIDEO_ID → https://player.vimeo.com/video/VIDEO_ID
+              const match = u.pathname.match(/\/(\d+)/);
+              if (match?.[1]) return `https://player.vimeo.com/video/${match[1]}`;
+              if (u.hostname === "player.vimeo.com" && u.pathname.startsWith("/video/")) return url;
+            }
+          } catch {}
+          return null;
+        };
+
+        const provider = block.provider || (toYouTubeEmbed(block.src) ? "youtube" : toVimeoEmbed(block.src) ? "vimeo" : "self-hosted");
+
+        if (provider === "youtube") {
+          const embedUrl = toYouTubeEmbed(block.src) || block.src;
+          return (
+            <div className={`mb-8 ${block.className || ""}`}>
+              <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+                <iframe
+                  src={embedUrl}
+                  title={block.caption || "Video"}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  className="absolute left-0 top-0 h-full w-full border-0"
+                />
+              </div>
+              {block.caption && (
+                <p className="mt-2 text-center text-sm text-[#6D6C6C]">{block.caption}</p>
+              )}
+              {block.transcript && (
+                <details className="mt-4 rounded-lg border border-[#E5E5E5] p-4">
+                  <summary className="cursor-pointer font-medium">Transcripción</summary>
+                  <div className="mt-2 text-sm">{block.transcript}</div>
+                </details>
+              )}
             </div>
-            {block.caption && (
-              <p className="mt-2 text-center text-sm text-[#6D6C6C]">{block.caption}</p>
-            )}
-            {block.transcript && (
-              <details className="mt-4 rounded-lg border border-[#E5E5E5] p-4">
-                <summary className="cursor-pointer font-medium">Transcripción</summary>
-                <div className="mt-2 text-sm">{block.transcript}</div>
-              </details>
-            )}
-          </div>
-        );
-      } else {
+          );
+        }
+
+        if (provider === "vimeo") {
+          const embedUrl = toVimeoEmbed(block.src) || block.src;
+          return (
+            <div className={`mb-8 ${block.className || ""}`}>
+              <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+                <iframe
+                  src={embedUrl}
+                  title={block.caption || "Video"}
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  className="absolute left-0 top-0 h-full w-full border-0"
+                />
+              </div>
+              {block.caption && (
+                <p className="mt-2 text-center text-sm text-[#6D6C6C]">{block.caption}</p>
+              )}
+            </div>
+          );
+        }
+
+        // Self-hosted or other providers
         return (
           <div className={`mb-8 ${block.className || ""}`}>
             <video
