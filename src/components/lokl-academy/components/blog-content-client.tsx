@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
+import SafeImage from "@/components/ui/safe-image";
 import { motion } from "framer-motion";
 import { Paragraph } from "@/components/design-system";
 import { ContentBlock, Author } from "@/lib/blog/schema";
@@ -131,12 +131,13 @@ function GalleryCarousel({
               viewport={{ once: true }}
               className="relative h-[220px] md:h-[280px]"
             >
-              <Image
+              <SafeImage
                 src={image.src}
                 alt={image.alt}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="rounded-lg object-cover grayscale transition-all duration-500 hover:grayscale-0 hover:scale-105"
+                fallbackSrc="/images/modern-building.jpg"
               />
               {image.caption && (
                 <div className="absolute bottom-0 w-full bg-black/50 p-2 text-center text-sm text-white">
@@ -193,12 +194,13 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
               viewport={{ once: true }}
               className="h-full w-full"
             >
-              <Image
+              <SafeImage
                 src={block.src}
                 alt={block.alt}
                 fill
                 className="rounded-lg object-cover grayscale hover:grayscale-0 hover:scale-105 transition-all duration-500"
                 loading={block.loading || "lazy"}
+                fallbackSrc="/images/modern-building.jpg"
               />
             </motion.div>
           </div>
@@ -230,13 +232,14 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                   className="mb-4 overflow-hidden rounded-lg"
                   style={{ breakInside: "avoid" }}
                 >
-                  <Image
+                  <SafeImage
                     src={image.src}
                     alt={image.alt}
                     width={image.width || 1200}
                     height={image.height || 800}
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="h-auto w-full object-cover grayscale transition-all duration-500 hover:grayscale-0 hover:scale-[1.02]"
+                    fallbackSrc="/images/modern-building.jpg"
                   />
                   {image.caption && (
                     <figcaption className="mt-2 text-center text-sm text-[#6D6C6C]">
@@ -266,11 +269,12 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                 className="relative h-[200px]"
               >
                 <div className="relative h-full w-full">
-                  <Image
+                  <SafeImage
                     src={image.src}
                     alt={image.alt}
                     fill
                     className="rounded-lg object-cover grayscale hover:grayscale-0 hover:scale-105 transition-all duration-500"
+                    fallbackSrc="/images/modern-building.jpg"
                   />
                 </div>
                 {image.caption && (
@@ -1166,7 +1170,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
             <div className="flex items-center gap-3">
               {block.avatar && (
                 <div className="relative h-10 w-10 overflow-hidden rounded-full">
-                  <Image src={block.avatar} alt={block.author} fill className="object-cover" />
+                  <SafeImage src={block.avatar} alt={block.author} fill className="object-cover" fallbackSrc="/images/modern-building.jpg" />
                 </div>
               )}
               <div>

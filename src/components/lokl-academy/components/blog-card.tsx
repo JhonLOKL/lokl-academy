@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
+import SafeImage from "@/components/ui/safe-image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { BlogPost } from "@/lib/blog/schema";
@@ -44,7 +44,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
       >
         <div className="grid grid-cols-1 md:grid-cols-2">
           <div className="relative h-64 w-full md:h-full overflow-hidden">
-            <Image
+            <SafeImage
               src={blog.coverImage.src}
               alt={blog.coverImage.alt}
               fill
@@ -84,7 +84,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <div className="relative mr-3 h-10 w-10 overflow-hidden rounded-full border border-gray-100">
-                  <Image
+                  <SafeImage
                     src={blog.author.avatar ?? "/images/couple-investing.jpg"}
                     alt={blog.author.name}
                     fill
@@ -121,7 +121,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
         onMouseLeave={() => setIsHovered(false)}
       >
         <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-md">
-          <Image
+          <SafeImage
             src={blog.coverImage.src}
             alt={blog.coverImage.alt}
             fill
@@ -155,11 +155,12 @@ const BlogCard: React.FC<BlogCardProps> = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative h-52 w-full overflow-hidden">
-        <Image
+        <SafeImage
           src={blog.coverImage.src}
           alt={blog.coverImage.alt}
           fill
           className={`object-cover transition-all duration-300 ${isHovered ? 'scale-105 grayscale-0' : 'grayscale'}`}
+          fallbackSrc="/images/modern-building.jpg"
         />
         {blog.category && (
           <div className="absolute left-4 top-4 z-10">
@@ -193,7 +194,7 @@ const BlogCard: React.FC<BlogCardProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <div className="relative mr-3 h-8 w-8 overflow-hidden rounded-full border border-gray-100">
-              <Image
+              <SafeImage
                 src={blog.author.avatar ?? "/images/couple-investing.jpg"}
                 alt={blog.author.name}
                 fill

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
+import SafeImage from "@/components/ui/safe-image";
 import { motion } from "framer-motion";
 
 interface BlogCoverProps {
@@ -31,12 +31,13 @@ const BlogCover: React.FC<BlogCoverProps> = ({
         transition={{ duration: 0.7 }}
         className="relative aspect-[16/9] w-full overflow-hidden rounded-xl shadow-lg"
       >
-        <Image
+        <SafeImage
           src={imgSrc}
           alt={alt}
           fill
           className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
           priority
+          fallbackSrc="/images/modern-building.jpg"
           onError={() => setImgSrc("/images/modern-building.jpg")}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-60"></div>
