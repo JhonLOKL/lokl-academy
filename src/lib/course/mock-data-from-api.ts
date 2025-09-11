@@ -12,17 +12,110 @@ import {
     UserProfile,
     UserProgress,
     LearningProfile,
-    SubscriptionPlan,
     PlatformReview,
     ExternalTool,
-    NewsletterItem,
-    CourseReview
   } from './schema';
   
   // ===================================================================
   // CATEGORÍAS BASE
   // ===================================================================
   
+export const getCoursesCards = {
+  success: true,
+  message: 'Cursos encontrados',
+  data: {
+    courses: [
+      {
+        id: 'course-1',
+        slug: 'curso-1',
+        title: 'Curso 1',
+        subtitle: 'Subtítulo del curso 1',
+        description: 'Descripción del curso 1',
+        excerpt: 'Excerpt del curso 1',
+        seo: {
+          title: 'Curso 1',
+          description: 'Descripción del curso 1',
+          canonicalUrl: 'https://academy.lokl.life/cursos/curso-1',
+          author: 'LOKL Academy',
+          language: 'es',
+          ogImageUrl: 'https://lokl-academy.s3.us-east-1.amazonaws.com/blog-cover/IMAGE1757455046.webp',
+          ogimageAlt: 'Curso 1',
+          ogType: 'course',
+          ogLocale: 'es',
+          twitterCard: 'summary_large_image',
+          twitterSite: 'https://academy.lokl.life',
+          twitterCreator: 'LOKL Academy',
+          keywords: ['curso 1', 'curso 1', 'curso 1'],
+          robots: {
+            index: true,
+            follow: true,
+            maxSnippet: 100,
+            maxImagePreview: 'standard',
+            maxVideoPreview: 100,
+          },
+          structuredData: {
+            name: 'Curso 1',
+            description: 'Descripción del curso 1',
+            image: 'https://lokl-academy.s3.us-east-1.amazonaws.com/blog-cover/IMAGE1757455046.webp',
+          },
+          breadcrumbs: [{ name: 'Curso 1', url: 'https://academy.lokl.life/cursos/curso-1', position: 1 }],
+        },
+        instructor: {
+          id: 'instructor-1',
+          name: 'Instructor 1',
+          slug: 'instructor-1',
+          bio: 'Bio del instructor 1',
+          avatar: 'https://via.placeholder.com/150',
+        },
+        category: {
+          id: 'category-1',
+          name: 'Categoría 1',
+          slug: 'categoria-1',
+          description: 'Descripción de la categoría 1',
+        },
+        tags: ['tag-1', 'tag-2', 'tag-3'],
+        pricing: {
+          type: 'free',
+          price: 0,
+          originalPrice: 0,
+          currency: 'USD',
+        },
+        accessRequirements: {
+          plan: 'free',
+        },
+        thumbnail: {
+          url: 'https://lokl-academy.s3.us-east-1.amazonaws.com/blog-cover/IMAGE1757455046.webp',
+          alt: 'Curso 1',
+        }
+      }
+    ]
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   export const mockCategories: Category[] = [
     {
       id: 'cat-1',

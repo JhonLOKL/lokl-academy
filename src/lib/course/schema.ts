@@ -233,7 +233,7 @@ export interface Lesson {
   
   // Contenido
   videoUrl?: string;
-  textContent?: string;
+  textContent?: string; // contenido escrito de la clase
   interactiveContent?: Record<string, unknown>;
   
   // Recursos
@@ -313,6 +313,14 @@ export interface Course {
     discountEndsAt?: string;
   };
   
+  /*
+  Opción B: Investor incluye Premium
+  basic → solo free
+  premium → free, premium
+  investor → free, premium, investor
+  exclusive → nunca incluido
+  */
+ 
   // Requisitos de acceso
   accessRequirements: {
     plan: 'basic' | 'investor' | 'premium' | 'any';
@@ -700,6 +708,7 @@ export interface NewsletterItem {
 // TIPOS PARA API Y RESPONSES
 // ===================================================================
 
+// Its not used
 export interface PaginationData {
   currentPage: number;
   totalPages: number;
@@ -709,6 +718,7 @@ export interface PaginationData {
   hasPrev: boolean;
 }
 
+// Its not used
 export interface ApiResponse<T> {
   data: T;
   pagination?: PaginationData;
@@ -725,6 +735,7 @@ export interface ApiResponse<T> {
   errors?: string[];
 }
 
+// Its not used
 export interface SearchFilters {
   query?: string;
   categories?: string[];
@@ -741,6 +752,7 @@ export interface SearchFilters {
   featured?: boolean;
 }
 
+// Its not used
 export interface SortOptions {
   field: 'title' | 'publishedAt' | 'rating' | 'enrolledCount' | 'duration' | 'price';
   order: 'asc' | 'desc';
@@ -750,12 +762,14 @@ export interface SortOptions {
 // TIPOS PARA COMPONENTES DE UI
 // ===================================================================
 
+// Its not used
 export interface BreadcrumbItem {
   name: string;
   href: string;
   current?: boolean;
 }
 
+// Its very used
 export interface CourseCardProps {
   course: Course;
   variant?: 'default' | 'compact' | 'featured' | 'horizontal';
@@ -766,6 +780,7 @@ export interface CourseCardProps {
   showStats?: boolean;
 }
 
+// Its not used
 export interface LearningPathCardProps {
   path: LearningPath;
   userProgress?: UserProgress;
@@ -773,6 +788,7 @@ export interface LearningPathCardProps {
   onClick?: (path: LearningPath) => void;
 }
 
+// Its not used
 export interface CourseGridProps {
   courses: Course[];
   loading?: boolean;
