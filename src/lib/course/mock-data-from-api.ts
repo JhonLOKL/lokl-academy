@@ -11,7 +11,7 @@ export const getCoursesCards: CoursesCardsResponse = {
         title: 'Curso 1',
         subtitle: 'Subtítulo del curso 1',
         description: 'Descripción del curso 1',
-        excerpt: 'Excerpt del curso 1',
+        excerpt: 'Excerpt del curso 1 hola como estas me gustasn los animlaes esta es una descripcion del curso 1, bueno un resumen',
         seo: {
           title: 'Curso 1',
           description: 'Descripción del curso 1',
@@ -49,7 +49,7 @@ export const getCoursesCards: CoursesCardsResponse = {
           name: 'Instructor 1',
           slug: 'instructor-1',
           bio: 'Bio del instructor 1',
-          avatar: 'https://via.placeholder.com/150',
+          avatar: 'https://lokl-assets.s3.us-east-1.amazonaws.com/about-us/maria-jose.png',
         },
         category: {
           id: 'category-1',
@@ -57,7 +57,11 @@ export const getCoursesCards: CoursesCardsResponse = {
           slug: 'categoria-1',
           description: 'Descripción de la categoría 1',
         },
-        tags: [
+        // Métricas resumidas
+       /*  rating: 5, */
+        /* studentsCount: 1247, */
+        durationMinutes: 480,
+      tags: [
           {
             id: 'tag-1',
             name: 'Tag 1',
@@ -69,20 +73,33 @@ export const getCoursesCards: CoursesCardsResponse = {
             slug: 'tag-2'
           }
         ],
-        pricing: {
-          type: 'free',
-          price: 0,
-          originalPrice: 0,
+      pricing: {
+        type: 'free',
+        price: 0,
+        originalPrice: 0,
           currency: 'COP',
-        },
-        accessRequirements: {
+      },
+      accessRequirements: {
           plan: 'any',
-        },
-        thumbnail: {
+      },
+      thumbnail: {
           url: 'https://lokl-academy.s3.us-east-1.amazonaws.com/blog-cover/IMAGE1757455046.webp',
           alt: 'Curso 1',
+        },
+        progress: {
+          overallProgress: 0,
+          completedLessons: 0,
+          totalLessons: 8
         }
       }
-    ]
+    ],
+    pagination: {
+      currentPage: 1,
+      totalPages: 1,
+      totalItems: 1,
+      itemsPerPage: 10,
+      hasNext: false,
+      hasPrev: false,
+    }
   }
 }

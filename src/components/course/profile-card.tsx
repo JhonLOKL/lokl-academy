@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/design-system";
@@ -25,12 +24,12 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   userProgress,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  
+
   // Calcular el progreso
   const progressPercentage = userProgress?.overallProgress || 0;
   const completedCourses = userProgress?.completedCourses || 0;
   const totalCourses = profile.aggregatedStats.totalCourses;
-  
+
   // Obtener el nivel en español
   const getLevelInSpanish = (level: string): string => {
     switch (level) {
@@ -40,7 +39,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       default: return level;
     }
   };
-  
+
   // Formatear la duración (función disponible para uso futuro)
   // const formatDuration = (hours: number): string => {
   //   if (hours < 1) return "Menos de 1 hora";
@@ -53,11 +52,11 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       <div className="absolute inset-0 w-full h-full">
         <Image
           src={
-            profile.level === 'explorer' 
-              ? 'https://media.istockphoto.com/id/2194197289/photo/portrait-of-a-mid-adult-male-hiker.jpg?s=1024x1024&w=is&k=20&c=NmWmyTEFvdk4wfbZ42-tZ-CT3eJvqsdNmkRnRYhLnOc=' 
-              : profile.level === 'adventurer' 
-              ? 'https://media.istockphoto.com/id/2164477556/photo/low-angle-view-of-woman-climbing-on-cliff.jpg?s=2048x2048&w=is&k=20&c=IN1bZyeoGxyJLtDDBwIF-wdW8u-uxRhXjNLQF3GAzU4=' 
-              : 'https://media.istockphoto.com/id/2148292077/photo/woman-exploring-ice-cave.jpg?s=2048x2048&w=is&k=20&c=_3xQGeaw2QVJ-nV_XTReVdPZMz5cnuKrdxjIIiAMAy0='
+            profile.level === 'explorer'
+              ? 'https://media.istockphoto.com/id/2194197289/photo/portrait-of-a-mid-adult-male-hiker.jpg?s=1024x1024&w=is&k=20&c=NmWmyTEFvdk4wfbZ42-tZ-CT3eJvqsdNmkRnRYhLnOc='
+              : profile.level === 'adventurer'
+                ? 'https://media.istockphoto.com/id/2164477556/photo/low-angle-view-of-woman-climbing-on-cliff.jpg?s=2048x2048&w=is&k=20&c=IN1bZyeoGxyJLtDDBwIF-wdW8u-uxRhXjNLQF3GAzU4='
+                : 'https://media.istockphoto.com/id/2148292077/photo/woman-exploring-ice-cave.jpg?s=2048x2048&w=is&k=20&c=_3xQGeaw2QVJ-nV_XTReVdPZMz5cnuKrdxjIIiAMAy0='
           }
           alt={profile.title}
           fill
@@ -77,28 +76,26 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 p-1.5">
               <Award className={cn(
                 "h-6 w-6",
-                profile.level === "explorer" ? "text-blue-500" : 
-                profile.level === "adventurer" ? "text-orange-500" : 
-                "text-[#5352F6]"
+                profile.level === "explorer" ? "text-blue-500" :
+                  profile.level === "adventurer" ? "text-orange-500" :
+                    "text-[#5352F6]"
               )} />
             </div>
             <Badge className="bg-white/90 px-3 py-1 text-sm font-medium text-[#0F0F0F]">
               {getLevelInSpanish(profile.level)}
             </Badge>
           </div>
-          
+
           {/* Título del perfil */}
           <div>
-            <Link href={`/learning-profile/${profile.slug}`}>
-              <h3 className="mb-4 text-2xl md:text-3xl font-bold tracking-tight text-white group-hover:text-[#5352F6]/90">
-                {profile.title}
-              </h3>
-            </Link>
+            <h3 className="mb-4 text-2xl md:text-3xl font-bold tracking-tight text-white">
+              {profile.title}
+            </h3>
 
             <p className="mb-6 text-white/80 text-sm md:text-base">
               {profile.description}
             </p>
-            
+
             {/* Estadísticas simplificadas */}
             <div className="flex items-center gap-6 mb-6">
               <div className="flex items-center gap-2">
@@ -117,7 +114,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               </div>
             </div>
           </div>
-          
+
           {/* Barra de progreso si existe */}
           {userProgress && (
             <div className="mb-6">
@@ -128,7 +125,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               <Progress value={progressPercentage} className="h-2 bg-white/20" />
             </div>
           )}
-          
+
           {/* Badge con imagen si existe */}
           {profile.badge && (
             <div className="absolute top-8 right-8 h-16 w-16 md:h-20 md:w-20 overflow-hidden rounded-full border-4 border-white bg-white shadow-md">
@@ -140,14 +137,12 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               />
             </div>
           )}
-          
+
           {/* Botones para móvil */}
           <div className="mt-6 md:hidden">
-            <Link href={`/learning-profile/${profile.slug}`}>
-              <Button className="w-full py-2.5">
-                Explorar perfil completo
-              </Button>
-            </Link>
+            <Button className="w-full py-2.5" disabled>
+              Proximamente
+            </Button>
           </div>
         </div>
 
@@ -189,11 +184,11 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               ))}
             </ul>
           </div>
-          
+
           {/* Contenedor de botones en la parte inferior */}
           <div className="mt-auto space-y-4">
             {/* Botón para abrir el modal de rutas */}
-            {profile.paths.length > 0 && (
+            {/*             {profile.paths.length > 0 && (
               <button 
                 onClick={() => setIsExpanded(true)}
                 className="flex w-full items-center justify-center rounded-md border border-[#E5E5E5] bg-[#F9F9F9] px-4 py-2.5 text-sm font-medium text-[#0F0F0F] transition-colors hover:bg-[#EEEEFE] hover:text-[#5352F6] hover:border-[#5352F6]/30"
@@ -201,23 +196,23 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                 <ChevronDown size={16} className="mr-2" />
                 Ver rutas de aprendizaje ({profile.paths.length})
               </button>
-            )}
-            
+            )} */}
+
             {/* Modal de rutas de aprendizaje con AnimatePresence para animaciones suaves */}
             <AnimatePresence>
               {isExpanded && (
                 <>
                   {/* Overlay con efecto de desvanecimiento */}
-                  <motion.div 
+                  <motion.div
                     className="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     onClick={() => setIsExpanded(false)}
                   />
-                  
+
                   {/* Modal con efecto de deslizamiento */}
-                  <motion.div 
+                  <motion.div
                     className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-xl shadow-lg max-h-[80vh] overflow-hidden"
                     initial={{ y: "100%" }}
                     animate={{ y: 0 }}
@@ -226,26 +221,25 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                   >
                     <div className="flex items-center justify-between p-4 border-b">
                       <h3 className="text-lg font-semibold">Rutas de aprendizaje</h3>
-                      <button 
+                      <button
                         onClick={() => setIsExpanded(false)}
                         className="rounded-full p-1 hover:bg-gray-100"
                       >
                         <X size={20} />
                       </button>
                     </div>
-                    
+
                     <div className="p-4 overflow-y-auto max-h-[calc(80vh-60px)] custom-scrollbar">
                       <div className="space-y-4">
                         {profile.paths.map((pathItem, index) => (
-                          <div 
-                            key={pathItem.pathId} 
+                          <div
+                            key={pathItem.pathId}
                             className="group/path flex items-start overflow-hidden rounded-md border border-[#E5E5E5] bg-white p-4 transition-all hover:border-[#5352F6]/30 hover:shadow-md"
                           >
-                            <div className={`mr-4 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-medium ${
-                              pathItem.isCore 
-                                ? "bg-[#EEEEFE] text-[#5352F6]" 
+                            <div className={`mr-4 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-medium ${pathItem.isCore
+                                ? "bg-[#EEEEFE] text-[#5352F6]"
                                 : "bg-gray-100 text-gray-700"
-                            }`}>
+                              }`}>
                               {index + 1}
                             </div>
                             <div className="flex-1">
@@ -260,7 +254,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                                 )}
                               </div>
                               <p className="mt-1 text-sm text-[#6D6C6C]">{pathItem.description}</p>
-                              <div className="mt-3 flex justify-end">
+                              {/* <div className="mt-3 flex justify-end">
                                 <Link 
                                   href={`/learning-path/${pathItem.path?.slug || '#'}`}
                                   className="text-sm text-[#5352F6] hover:underline flex items-center"
@@ -268,7 +262,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                                   Ver ruta
                                   <ChevronDown size={16} className="ml-1 rotate-[-90deg]" />
                                 </Link>
-                              </div>
+                              </div> */}
                             </div>
                           </div>
                         ))}
@@ -278,7 +272,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
                 </>
               )}
             </AnimatePresence>
-            
+
             <style jsx global>{`
               .custom-scrollbar::-webkit-scrollbar {
                 width: 4px;
@@ -300,11 +294,9 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             `}</style>
 
             {/* Botón de acción */}
-            <Link href={`/learning-profile/${profile.slug}`}>
-              <Button className="w-full py-2.5">
-                Explorar perfil completo
-              </Button>
-            </Link>
+            <Button className="w-full py-2.5" disabled>
+              Proximamente
+            </Button>
           </div>
         </div>
       </div>

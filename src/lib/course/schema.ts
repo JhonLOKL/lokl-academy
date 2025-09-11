@@ -774,6 +774,10 @@ export interface CourseCardLite {
   instructor: InstructorLite;
   category: Category;
   tags: Tag[];
+  // Métricas resumidas para la tarjeta
+  rating?: number | null; // 0-5
+  studentsCount?: number | null; // número de estudiantes
+  durationMinutes?: number | null; // duración total del curso en minutos
   pricing: {
     type: PricingType;
     price: number;
@@ -784,6 +788,12 @@ export interface CourseCardLite {
     plan: AccessPlan;
   };
   thumbnail: MediaAsset;
+  // Progreso simplificado para la tarjeta
+  progress?: {
+    overallProgress: number; // 0-100
+    completedLessons: number;
+    totalLessons: number;
+  };
 }
 
 export interface CoursesCardsResponse {
@@ -791,6 +801,7 @@ export interface CoursesCardsResponse {
   message?: string;
   data: {
     courses: CourseCardLite[];
+    pagination: PaginationData;
   };
 }
 

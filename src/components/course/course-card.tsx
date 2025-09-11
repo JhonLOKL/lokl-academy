@@ -83,10 +83,12 @@ const CourseCard: React.FC<CourseCardProps> = ({
           <Badge variant="outline" className="bg-[#F5F5F5] text-xs font-medium text-[#5352F6]">
             {course.category.name}
           </Badge>
-          <div className="flex items-center text-xs text-[#6D6C6C]">
-            <Clock size={14} className="mr-1" />
-            {formatDuration(course.content.totalDuration)}
-          </div>
+          {course.content.totalDuration > 0 && (
+            <div className="flex items-center text-xs text-[#6D6C6C]">
+              <Clock size={14} className="mr-1" />
+              {formatDuration(course.content.totalDuration)}
+            </div>
+          )}
         </div>
 
         {/* Título del curso */}
@@ -119,16 +121,20 @@ const CourseCard: React.FC<CourseCardProps> = ({
         )}
 
         {/* Estadísticas */}
-        {showStats && variant !== "compact" && (
+        {showStats && variant !== "compact" && (course.stats.enrolledCount > 0 || course.stats.averageRating > 0) && (
           <div className="mb-3 flex items-center space-x-4 text-xs text-[#6D6C6C]">
-            <div className="flex items-center">
-              <Users size={14} className="mr-1" />
-              {course.stats.enrolledCount} estudiantes
-            </div>
-            <div className="flex items-center">
-              <Star size={14} className="mr-1 text-yellow-400" />
-              {course.stats.averageRating.toFixed(1)}
-            </div>
+            {course.stats.enrolledCount > 0 && (
+              <div className="flex items-center">
+                <Users size={14} className="mr-1" />
+                {course.stats.enrolledCount} estudiantes
+              </div>
+            )}
+            {course.stats.averageRating > 0 && (
+              <div className="flex items-center">
+                <Star size={14} className="mr-1 text-yellow-400" />
+                {course.stats.averageRating.toFixed(1)}
+              </div>
+            )}
           </div>
         )}
 

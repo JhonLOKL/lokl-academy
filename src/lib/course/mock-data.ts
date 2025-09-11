@@ -160,8 +160,8 @@ import {
   export const mockCourses: Course[] = [
     {
       id: 'course-1',
-      slug: 'fundamentos-inversion-inmobiliaria-2024',
-      title: 'Fundamentos de Inversión Inmobiliaria 2024',
+      slug: 'fundamentos-inversion-inmobiliaria-2026',
+      title: 'Fundamentos de Inversión Inmobiliaria 2026',
       subtitle: 'Tu primera inversión inmobiliaria paso a paso',
       description: 'Aprende los fundamentos esenciales para invertir en bienes raíces de manera exitosa. Este curso te guiará desde cero hasta tu primera inversión rentable.',
       excerpt: 'Domina los conceptos básicos de inversión inmobiliaria, análisis de propiedades, financiamiento y gestión de rentas en este curso completo para principiantes.',
