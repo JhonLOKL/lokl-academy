@@ -7,6 +7,26 @@
 // TIPOS BASE Y COMUNES
 // ===================================================================
 
+// Constantes para tipos de pricing
+export const PRICING_TYPES = {
+  FREE: 'free',
+  PREMIUM: 'premium',
+  EXCLUSIVE: 'exclusive',
+  INVESTOR: 'investor'
+} as const;
+
+export type PricingType = typeof PRICING_TYPES[keyof typeof PRICING_TYPES];
+
+// Constantes para planes de acceso
+export const ACCESS_PLANS = {
+  BASIC: 'basic',
+  INVESTOR: 'investor',
+  PREMIUM: 'premium',
+  ANY: 'any'
+} as const;
+
+export type AccessPlan = typeof ACCESS_PLANS[keyof typeof ACCESS_PLANS];
+
 export interface SEOMetadata {
   title: string;
   description: string;
@@ -305,7 +325,7 @@ export interface Course {
   
   // Pricing y acceso
   pricing: {
-    type: 'free' | 'premium' | 'exclusive' | 'investor';
+    type: PricingType;
     price?: number;
     originalPrice?: number;
     currency?: string;
@@ -323,7 +343,7 @@ export interface Course {
  
   // Requisitos de acceso
   accessRequirements: {
-    plan: 'basic' | 'investor' | 'premium' | 'any';
+    plan: AccessPlan;
     prerequisites?: string[]; // Course IDs requeridos
     minimumLevel?: string;
   };
@@ -458,7 +478,7 @@ export interface LearningPath {
   
   // Pricing
   pricing: {
-    type: 'free' | 'premium' | 'exclusive' | 'bundle';
+    type: PricingType | 'bundle';
     price?: number;
     originalPrice?: number;
     currency?: string;
@@ -468,7 +488,7 @@ export interface LearningPath {
   
   // Acceso
   accessRequirements: {
-    plan: 'basic' | 'investor' | 'premium' | 'any';
+    plan: AccessPlan;
     prerequisites?: string[]; // Path IDs requeridos
   };
   
@@ -733,6 +753,45 @@ export interface ApiResponse<T> {
   success: boolean;
   message?: string;
   errors?: string[];
+}
+
+export interface InstructorLite {
+  id: string;
+  name: string;
+  slug: string;
+  bio: string;
+  avatar: string;
+}
+
+export interface CourseCardLite {
+  id: string;
+  slug: string;
+  title: string;
+  subtitle?: string;
+  description: string;
+  excerpt: string;
+  seo: SEOMetadata;
+  instructor: InstructorLite;
+  category: Category;
+  tags: Tag[];
+  pricing: {
+    type: PricingType;
+    price: number;
+    originalPrice: number;
+    currency: string;
+  };
+  accessRequirements: {
+    plan: AccessPlan;
+  };
+  thumbnail: MediaAsset;
+}
+
+export interface CoursesCardsResponse {
+  success: boolean;
+  message?: string;
+  data: {
+    courses: CourseCardLite[];
+  };
 }
 
 // Its not used
