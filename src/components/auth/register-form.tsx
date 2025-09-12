@@ -167,7 +167,7 @@ export default function RegisterForm() {
       email,
       password,
       phone,
-      countryPhoneCode: countryCode,
+      countryPhoneCode: countryCode.replace("+", ""),
       howDidYouHearAboutUs,
       referralCode,
       termsAccepted,
