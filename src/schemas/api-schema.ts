@@ -1,16 +1,51 @@
 import { urls } from "@/config/urls";
 import axios from "axios";
+import jwt from "jsonwebtoken";
+import { useAuthStore } from "@/store/auth-store";
+
+// Función para validar si el token está activo y no expirado
+export const validateToken = (): boolean => {
+  const token = useAuthStore.getState().token;
+  const logout = useAuthStore.getState().logout;
+  
+  if (!token) return false;
+  
+  try {
+    const payload = jwt.decode(token) as { exp: number } | null;
+    
+    if (!payload || !payload.exp) {
+      console.error('Token inválido o sin fecha de expiración');
+      logout();
+      return false;
+    }
+    
+    const isExpired = Date.now() >= payload.exp * 1000;
+    
+    if (isExpired) {
+      console.log('Token expirado, cerrando sesión');
+      logout();
+      return false;
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Error al decodificar el token:', error);
+    logout();
+    return false;
+  }
+};
 
 // ⚡ función para armar headers dinámicos
 const getHeaders = (isNeedToken: boolean) => {
-  const token = "useAuthStore.getState().token;" // TODO: Bring token
-
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
 
-  if (isNeedToken && token) {
-    headers.Authorization = `Bearer ${token}`;
+  if (isNeedToken) {
+    const token = useAuthStore.getState().token;
+    if (token && validateToken()) {
+      headers.Authorization = `Bearer ${token}`;
+    }
   }
 
   return headers;
@@ -26,8 +61,8 @@ export const getApi = async (siteUrl: string, isNeedToken = false) => {
     });
     return response.data;
   } catch (error: unknown) {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-      /* removeToken(); */
+    if (axios.isAxiosError(error) && (error.response?.status === 401 || error.response?.status === 403)) {
+      useAuthStore.getState().logout();
     }
     throw error;
   }
@@ -48,8 +83,8 @@ export const postApi = async (
     });
     return response.data;
   } catch (error: unknown) {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-      /* removeToken(); */
+    if (axios.isAxiosError(error) && (error.response?.status === 401 || error.response?.status === 403)) {
+      useAuthStore.getState().logout();
     }
     throw error;
   }
@@ -70,8 +105,8 @@ export const putApi = async (
     });
     return response.data;
   } catch (error: unknown) {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-      /* removeToken(); */
+    if (axios.isAxiosError(error) && (error.response?.status === 401 || error.response?.status === 403)) {
+      useAuthStore.getState().logout();
     }
     throw error;
   }
@@ -92,8 +127,8 @@ export const patchApi = async (
     });
     return response.data;
   } catch (error: unknown) {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
-      /* removeToken(); */
+    if (axios.isAxiosError(error) && (error.response?.status === 401 || error.response?.status === 403)) {
+      useAuthStore.getState().logout();
     }
     throw error;
   }

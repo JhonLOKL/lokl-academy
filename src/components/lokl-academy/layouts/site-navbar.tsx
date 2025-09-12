@@ -3,8 +3,18 @@
 import React from "react";
 import { Navbar } from "@/components/design-system";
 import Link from "next/link";
+import { useAuthStore } from "@/store/auth-store";
+import dynamic from "next/dynamic";
+
+// Importar dinámicamente para evitar errores de hidratación
+const UserProfileWidget = dynamic(
+  () => import("@/components/auth/auth-nav"),
+  { ssr: false }
+);
 
 export function SiteNavbar() {
+  const { token } = useAuthStore();
+  
   return (
     <Navbar
       logo={
@@ -20,20 +30,24 @@ export function SiteNavbar() {
         { label: "FAQ", href: "#faq" },
       ]}
       actions={
-        <div className="flex items-center space-x-4">
-          <a
-            href="https://www.lokl.life/login?redirect_to=/?utmSource=lokl-academy&utmMedium=organic"
-            className="text-sm font-medium text-[#0F0F0F] transition-colors hover:text-[#5352F6]"
-          >
-            Inicia sesión
-          </a>
-          <a
-            href="https://www.lokl.life/register?redirect_to=/?utmSource=lokl-academy&utmMedium=organic"
-            className="rounded-md bg-[#5352F6] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#4A4AE5]"
-          >
-            Regístrate
-          </a>
-        </div>
+        token ? (
+          <UserProfileWidget />
+        ) : (
+          <div className="flex items-center space-x-4">
+            <Link
+              href="/login"
+              className="text-sm font-medium text-[#0F0F0F] transition-colors hover:text-[#5352F6]"
+            >
+              Inicia sesión
+            </Link>
+            <Link
+              href="/register"
+              className="rounded-md bg-[#5352F6] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#4A4AE5]"
+            >
+              Regístrate
+            </Link>
+          </div>
+        )
       }
     />
   );
