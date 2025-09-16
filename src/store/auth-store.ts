@@ -38,6 +38,7 @@ interface UserProfile {
   inArrears?: boolean;
   inArrearsAmount?: number;
   pendingAmount?: number;
+  planType: string;
 }
 
 // Alias para compatibilidad con código existente

@@ -61,11 +61,18 @@ export default function DashboardPage() {
                   <Paragraph color="white" className="opacity-90">
                     {user?.email}
                   </Paragraph>
-                  {user?.uniqueCode && (
-                    <Badge className="mt-2 bg-white/20 text-white">
-                      Código de referido: {user.uniqueCode}
-                    </Badge>
-                  )}
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {user?.planType && (
+                      <Badge className="bg-white/30 text-white">
+                        Plan {user.planType === "investor" ? "Inversionista" : user.planType === "basic" ? "Básico" : user.planType}
+                      </Badge>
+                    )}
+                    {user?.uniqueCode && (
+                      <Badge className="bg-white/20 text-white">
+                        Código de referido: {user.uniqueCode}
+                      </Badge>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -178,6 +185,24 @@ export default function DashboardPage() {
                       <div>
                         <Text size="sm" color="muted">Ciudad/Estado</Text>
                         <Text weight="medium">{[user.city, user.state].filter(Boolean).join(", ")}</Text>
+                      </div>
+                    )}
+                    
+                    {user?.planType && (
+                      <div>
+                        <Text size="sm" color="muted">Tipo de plan</Text>
+                        <Text weight="medium">
+                          {user.planType === "investor" ? (
+                            <span className="flex items-center gap-1">
+                              Plan Inversionista
+                              <Badge className="bg-[#5352F6]/10 text-[#5352F6] ml-1">Premium</Badge>
+                            </span>
+                          ) : user.planType === "basic" ? (
+                            "Plan Básico"
+                          ) : (
+                            user.planType
+                          )}
+                        </Text>
                       </div>
                     )}
                   </div>
