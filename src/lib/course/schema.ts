@@ -250,6 +250,7 @@ export interface Module {
 
 export interface Lesson {
   id: string;
+  slug: string;
   title: string;
   description?: string;
   order: number;
@@ -276,6 +277,7 @@ export interface Lesson {
 
 export interface Quiz {
   id: string;
+  slug: string;
   title: string;
   description?: string;
   questions: QuizQuestion[];
@@ -287,6 +289,25 @@ export interface Quiz {
   isCompleted?: boolean;
   passed?: boolean;
   completedAt?: string;
+  attempts?: QuizAttempt[];
+}
+
+export interface QuizAttempt {
+  id: string;
+  score: number;
+  answers: QuizAnswer[];
+  passed: boolean;
+  quizId: string;
+  completedAt: string;
+  isCompleted: boolean;
+}
+
+export interface QuizAnswer {
+  id: string;
+  questionId: string;
+  answer: string;
+  isCorrect: boolean;
+  points: number;
 }
 
 export interface QuizQuestion {
@@ -400,6 +421,13 @@ export interface Course {
   status: 'draft' | 'published' | 'archived';
   featured?: boolean;
   isNew?: boolean;
+
+  // Progreso
+  progress?: {
+    overallProgress: number;
+    completedLessons: number;
+    totalLessons: number;
+  };
 
   // Configuración adicional
   settings: {

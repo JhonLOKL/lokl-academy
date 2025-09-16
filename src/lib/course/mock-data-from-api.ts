@@ -1,4 +1,4 @@
-import { CourseBySlugResponse, CoursesCardsResponse } from "./schema";
+import { CourseBySlugResponse, CoursesCardsResponse, Module, Lesson } from "./schema";
 
 export const getCoursesCards: CoursesCardsResponse = {
   success: true,
@@ -87,8 +87,8 @@ export const getCoursesCards: CoursesCardsResponse = {
           alt: 'Curso 1',
         },
         progress: {
-          overallProgress: 0,
-          completedLessons: 0,
+          overallProgress: 50,
+          completedLessons: 4,
           totalLessons: 8
         }
       }
@@ -108,79 +108,82 @@ export const courseBySlugMock: CourseBySlugResponse = {
   success: true,
   message: 'Curso encontrado',
   course: {
-      id: 'course-1',
+    id: 'course-1',
     slug: 'fundamentos-inversion-inmobiliaria-2026',
     title: 'Fundamentos de Inversión Inmobiliaria 2026',
-      subtitle: 'Tu primera inversión inmobiliaria paso a paso',
-      description: 'Aprende los fundamentos esenciales para invertir en bienes raíces de manera exitosa. Este curso te guiará desde cero hasta tu primera inversión rentable.',
-      excerpt: 'Domina los conceptos básicos de inversión inmobiliaria, análisis de propiedades, financiamiento y gestión de rentas en este curso completo para principiantes.',
-      
-      seo: {
-        title: 'Curso de Inversión Inmobiliaria 2024 - Aprende desde Cero | LOKL Academy',
-        description: 'Aprende inversión inmobiliaria desde cero con nuestro curso completo 2024. ROI, análisis de propiedades, financiamiento y más. ¡Comienza hoy!',
-        keywords: ['inversión inmobiliaria', 'curso bienes raices', 'ROI inmobiliario', 'análisis propiedades', 'financiamiento hipotecario'],
-        canonicalUrl: 'https://academy.lokl.life/cursos/fundamentos-inversion-inmobiliaria-2024',
-        ogImage: {
-          url: 'https://img.freepik.com/fotos-premium/arquitectura-corporativa-moderna-puede-ver-edificios-oficinas-paisaje-urbano_410516-276.jpg?w=2000',
-          alt: 'Curso de Fundamentos de Inversión Inmobiliaria 2024',
-          width: 1200,
-          height: 630
-        },
-        ogType: 'course',
-        twitterCard: 'summary_large_image'
+    subtitle: 'Tu primera inversión inmobiliaria paso a paso',
+    description: 'Aprende los fundamentos esenciales para invertir en bienes raíces de manera exitosa. Este curso te guiará desde cero hasta tu primera inversión rentable.',
+    excerpt: 'Domina los conceptos básicos de inversión inmobiliaria, análisis de propiedades, financiamiento y gestión de rentas en este curso completo para principiantes.',
+
+    seo: {
+      title: 'Curso de Inversión Inmobiliaria 2024 - Aprende desde Cero | LOKL Academy',
+      description: 'Aprende inversión inmobiliaria desde cero con nuestro curso completo 2024. ROI, análisis de propiedades, financiamiento y más. ¡Comienza hoy!',
+      keywords: ['inversión inmobiliaria', 'curso bienes raices', 'ROI inmobiliario', 'análisis propiedades', 'financiamiento hipotecario'],
+      canonicalUrl: 'https://academy.lokl.life/cursos/fundamentos-inversion-inmobiliaria-2024',
+      ogImage: {
+        url: 'https://img.freepik.com/fotos-premium/arquitectura-corporativa-moderna-puede-ver-edificios-oficinas-paisaje-urbano_410516-276.jpg?w=2000',
+        alt: 'Curso de Fundamentos de Inversión Inmobiliaria 2024',
+        width: 1200,
+        height: 630
       },
-  
-      content: {
-        modules: [
-          {
-            id: 'mod-1',
-            title: 'Introducción a la Inversión Inmobiliaria',
-            description: 'Conceptos básicos y tipos de inversión inmobiliaria',
-            order: 1,
-            duration: 120,
-            lessons: [
-              {
-                id: 'lesson-1-1',
-                title: '¿Por qué invertir en bienes raíces?',
-                description: 'Ventajas y beneficios de la inversión inmobiliaria',
-                order: 1,
-                duration: 25,
-                type: 'video',
+      ogType: 'course',
+      twitterCard: 'summary_large_image'
+    },
+
+    content: {
+      modules: [
+        {
+          id: 'mod-1',
+          title: 'Introducción a la Inversión Inmobiliaria',
+          description: 'Conceptos básicos y tipos de inversión inmobiliaria',
+          order: 1,
+          duration: 120,
+          lessons: [
+            {
+              id: 'lesson-1-1',
+              slug: 'por-qué-invertir-en-bienes-raices',
+              title: '¿Por qué invertir en bienes raíces?',
+              description: 'Ventajas y beneficios de la inversión inmobiliaria',
+              order: 1,
+              duration: 25,
+              type: 'video',
               videoUrl: 'https://www.youtube.com/embed/_fX2uSTd39E',
-                thumbnail: {
+              thumbnail: {
                 url: 'https://i.ytimg.com/vi/-RP8UDyx7dM/maxresdefault.jpg',
-                  alt: 'Introducción a la inversión inmobiliaria'
-                },
-              /* isPreview: true, */
-       /*        isCompleted: true,
-              completedAt: '2024-03-15T10:00:00Z' */
+                alt: 'Introducción a la inversión inmobiliaria'
               },
-              {
-                id: 'lesson-1-2',
-                title: 'Tipos de inversión inmobiliaria',
-                description: 'REITs, propiedades directas, crowdfunding y más',
-                order: 2,
-                duration: 30,
-                type: 'video',
+              /*isPreview: true, */
+              isCompleted: true,
+              completedAt: '2024-03-15T10:00:00Z'
+            },
+            {
+              id: 'lesson-1-2',
+              slug: 'tipos-de-inversion-inmobiliaria',
+              title: 'Tipos de inversión inmobiliaria',
+              description: 'REITs, propiedades directas, crowdfunding y más',
+              order: 2,
+              duration: 30,
+              type: 'video',
               videoUrl: 'https://www.youtube.com/embed/_d8QP0xZ0gA',
-                thumbnail: {
+              thumbnail: {
                 url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjlavWkAwV1nvt9g7xbGtw1r6uobXrBcJTfA&s',
-                  alt: 'Tipos de inversión inmobiliaria'
-                }
-              }
-            ],
-            quiz: {
-              id: 'quiz-1',
-              title: 'Evaluación Módulo 1',
-              description: 'Demuestra tu comprensión de los conceptos básicos',
-              questions: [
-                {
-                  id: 'q1',
-                  question: '¿Cuál es la principal ventaja de los REITs sobre la inversión directa?',
-                  type: 'multiple-choice',
-                  options: ['Mayor control', 'Mayor liquidez', 'Menores impuestos', 'Mayor rentabilidad'],
-                  correctAnswer: 'Mayor liquidez',
-                  explanation: 'Los REITs se pueden comprar y vender fácilmente en el mercado, ofreciendo mayor liquidez que las propiedades físicas.',
+                alt: 'Tipos de inversión inmobiliaria'
+              },
+            }
+          ],
+          quiz: {
+            id: 'quiz-1',
+            slug: 'evaluacion-modulo-1',
+            title: 'Evaluación Módulo 1',
+            description: 'Demuestra tu comprensión de los conceptos básicos',
+            questions: [
+              {
+                id: 'q1',
+                question: '¿Cuál es la principal ventaja de los REITs sobre la inversión directa?',
+                type: 'multiple-choice',
+                options: ['Mayor control', 'Mayor liquidez', 'Menores impuestos', 'Mayor rentabilidad'],
+                correctAnswer: 'Mayor liquidez',
+                explanation: 'Los REITs se pueden comprar y vender fácilmente en el mercado, ofreciendo mayor liquidez que las propiedades físicas.',
                 points: 35
               },
               {
@@ -191,65 +194,67 @@ export const courseBySlugMock: CourseBySlugResponse = {
                 correctAnswer: 'Mayor liquidez',
                 explanation: 'Los REITs se pueden comprar y vender fácilmente en el mercado, ofreciendo mayor liquidez que las propiedades físicas.',
                 points: 35
-                }
-              ],
-              passingScore: 70,
-            // maxAttempts: 3
-            }
-          },
-          {
-            id: 'mod-2',
-            title: 'Análisis de Propiedades',
-            description: 'Cómo evaluar el potencial de una inversión inmobiliaria',
-            order: 2,
-            duration: 180,
-            lessons: [
-              {
-                id: 'lesson-2-1',
-                title: 'Métricas clave: ROI, Cap Rate, Cash Flow',
-                order: 1,
-                duration: 35,
-                type: 'video',
-              videoUrl: 'https://www.youtube.com/embed/UtqsgiBtZSM'
-              },
-              {
-                id: 'lesson-2-2',
-                title: 'Análisis de mercado local',
-                order: 2,
-                duration: 40,
-                type: 'video',
-              videoUrl: 'www.youtube.com/embed/PrJjr8sEtdM'
               }
-            ]
+            ],
+            passingScore: 70,
+            // maxAttempts: 3
           }
-        ],
+        },
+        {
+          id: 'mod-2',
+          title: 'Análisis de Propiedades',
+          description: 'Cómo evaluar el potencial de una inversión inmobiliaria',
+          order: 2,
+          duration: 180,
+          lessons: [
+            {
+              id: 'lesson-2-1',
+              slug: 'metrica-roi-cap-rate-cash-flow',
+              title: 'Métricas clave: ROI, Cap Rate, Cash Flow',
+              order: 1,
+              duration: 35,
+              type: 'video',
+              videoUrl: 'https://www.youtube.com/embed/UtqsgiBtZSM'
+            },
+            {
+              id: 'lesson-2-2',
+              slug: 'analisis-mercado-local',
+              title: 'Análisis de mercado local',
+              order: 2,
+              duration: 40,
+              type: 'video',
+              videoUrl: 'www.youtube.com/embed/PrJjr8sEtdM'
+            }
+          ]
+        }
+      ],
       totalLessons: 4,
-        totalDuration: 480,
-        difficulty: 'principiante',
-        requirements: [
-          'Conocimientos básicos de finanzas personales',
-          'Interés en inversiones inmobiliarias',
-          'Acceso a calculadora o Excel'
-        ],
-        learningObjectives: [
-          'Entender los fundamentos de la inversión inmobiliaria',
-          'Calcular ROI, Cap Rate y Cash Flow de propiedades',
-          'Evaluar mercados locales para inversión',
-          'Identificar oportunidades de inversión rentables'
-        ],
-        skillsYouWillLearn: [
-          'Análisis de propiedades',
-          'Cálculo de métricas financieras',
-          'Investigación de mercados',
-          'Evaluación de riesgos'
-        ],
-        targetAudience: [
-          'Nuevos inversores inmobiliarios',
-          'Profesionales buscando ingresos pasivos',
-          'Estudiantes de finanzas'
-        ]
-      },
-  
+      totalDuration: 480,
+      difficulty: 'principiante',
+      requirements: [
+        'Conocimientos básicos de finanzas personales',
+        'Interés en inversiones inmobiliarias',
+        'Acceso a calculadora o Excel'
+      ],
+      learningObjectives: [
+        'Entender los fundamentos de la inversión inmobiliaria',
+        'Calcular ROI, Cap Rate y Cash Flow de propiedades',
+        'Evaluar mercados locales para inversión',
+        'Identificar oportunidades de inversión rentables'
+      ],
+      skillsYouWillLearn: [
+        'Análisis de propiedades',
+        'Cálculo de métricas financieras',
+        'Investigación de mercados',
+        'Evaluación de riesgos'
+      ],
+      targetAudience: [
+        'Nuevos inversores inmobiliarios',
+        'Profesionales buscando ingresos pasivos',
+        'Estudiantes de finanzas'
+      ]
+    },
+
     category: {
       id: 'category-1',
       name: 'Categoría 1',
@@ -280,16 +285,16 @@ export const courseBySlugMock: CourseBySlugResponse = {
         instagram: 'https://instagram.com/instructor1'
       }
     },
-  
-      pricing: {
-        type: 'free'
-      },
-  
-      accessRequirements: {
+
+    pricing: {
+      type: 'free'
+    },
+
+    accessRequirements: {
       plan: 'any'
-      },
-  
-      thumbnail: {
+    },
+
+    thumbnail: {
       url: 'https://lokl-academy.s3.us-east-1.amazonaws.com/blog-cover/IMAGE1757455046.webp',
       alt: 'Fundamentos de Inversión Inmobiliaria'
     },
@@ -307,34 +312,70 @@ export const courseBySlugMock: CourseBySlugResponse = {
 
     publishedAt: '2024-03-15T10:00:00Z',
     updatedAt: '2024-11-20T15:30:00Z',
-      status: 'published',
-      featured: true,
+    status: 'published',
+    featured: true,
     isNew: true,
-  
-      settings: {
-        allowDownloads: true,
-        allowDiscussions: true,
-        showProgress: true,
-        enforceOrder: true
-      }
+    progress: {
+      overallProgress: 50,
+      completedLessons: 4,
+      totalLessons: 8
+    },
+    settings: {
+      allowDownloads: true,
+      allowDiscussions: true,
+      showProgress: true,
+      enforceOrder: true
+    }
   }
 }
 
 export async function getCourseBySlug(slug: string): Promise<CourseBySlugResponse> {
   await new Promise((r) => setTimeout(r, 600));
-  const base = courseBySlugMock.course;
-  const course = {
-    ...base,
-    slug,
-    /* stats: base.stats || {
-      enrolledCount: 342,
-      completedCount: 120,
-      completionRate: 35.1,
-        averageRating: 4.8,
-      reviewsCount: 56,
-      totalViews: 1450,
-      averageTimeToComplete: 10,
-    }, */
-  };
+
+  // Usar una copia profunda para evitar modificar el objeto original
+  const course = JSON.parse(JSON.stringify(courseBySlugMock.course));
+
+  // Actualizar el slug del curso
+  course.slug = slug;
+
+  // Asegurarnos de que todas las lecciones y quizzes tienen un slug y están correctamente formateados
+  course.content.modules.forEach((module: Module) => {
+    // Formatear slugs de lecciones
+    module.lessons.forEach((lesson: Lesson) => {
+      // Si la lección no tiene slug, usar el ID como slug
+      if (!lesson.slug) {
+        lesson.slug = lesson.id;
+      }
+
+      // Asegurarnos de que el slug está en un formato URL-friendly
+      // Pero preservar los caracteres especiales como acentos
+      if (lesson.slug) {
+        // Reemplazar espacios con guiones
+        lesson.slug = lesson.slug.replace(/\s+/g, '-');
+        // Eliminar caracteres no permitidos en URLs
+        lesson.slug = lesson.slug.replace(/[^\w\-áéíóúÁÉÍÓÚñÑüÜ]/g, '');
+        // Convertir a minúsculas
+        lesson.slug = lesson.slug.toLowerCase();
+      }
+    });
+
+    // Formatear slug del quiz si existe
+    if (module.quiz) {
+      if (!module.quiz.slug) {
+        module.quiz.slug = module.quiz.id || `quiz-${module.id}`;
+      }
+
+      // Asegurarnos de que el slug del quiz está en un formato URL-friendly
+      if (module.quiz.slug) {
+        // Reemplazar espacios con guiones
+        module.quiz.slug = module.quiz.slug.replace(/\s+/g, '-');
+        // Eliminar caracteres no permitidos en URLs
+        module.quiz.slug = module.quiz.slug.replace(/[^\w\-áéíóúÁÉÍÓÚñÑüÜ]/g, '');
+        // Convertir a minúsculas
+        module.quiz.slug = module.quiz.slug.toLowerCase();
+      }
+    }
+  });
+
   return { success: true, message: 'Curso encontrado', course };
 }

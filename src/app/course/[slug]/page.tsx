@@ -85,8 +85,24 @@ export default function CourseDetailPage() {
   
   const isInvestorExclusive = Boolean(course && course.accessRequirements.plan === "investor");
   
-  // Obtener progreso del usuario (si existe)
-  const userProgress = course ? mockUserProgress.find(p => p.courseId === course.id) : undefined;
+  // Obtener progreso del usuario (si existe) o usar el progreso centralizado del curso
+  let userProgress = course ? mockUserProgress.find(p => p.courseId === course.id) : undefined;
+  
+  // Si no hay progreso específico del usuario pero el curso tiene información de progreso, usarla
+  if (!userProgress && course?.progress) {
+    userProgress = {
+      userId: "current-user",
+      courseId: course.id,
+      overallProgress: course.progress.overallProgress,
+      completedLessons: course.progress.completedLessons,
+      totalLessons: course.progress.totalLessons,
+      timeSpent: 0,
+      moduleProgress: [],
+      startedAt: new Date().toISOString(),
+      lastAccessedAt: new Date().toISOString()
+    };
+  }
+  
   const progressPercentage = userProgress?.overallProgress || 0;
   
   // Formatear la duración
@@ -270,7 +286,7 @@ export default function CourseDetailPage() {
                     </>
                   ) : (
                     <>
-                      <Link href={loading || !course ? "#" : `/course/${course.slug}/learn`} className="flex-1">
+                      <Link href={loading || !course ? "#" : `/course/${course.slug}/${course.content.modules[0].lessons[0].slug || course.content.modules[0].lessons[0].id}`} className="flex-1">
                         <Button size="lg" className="w-full" disabled={loading}>
                           {userProgress ? "Continuar curso" : "Ver curso"}
                         </Button>
@@ -298,7 +314,7 @@ export default function CourseDetailPage() {
                 <TabsTrigger value="contenido">Contenido del curso</TabsTrigger>
                 <TabsTrigger value="objetivos">Objetivos</TabsTrigger>
                 <TabsTrigger value="requisitos">Requisitos</TabsTrigger>
-                <TabsTrigger value="reviews">Reseñas</TabsTrigger>
+                {/* <TabsTrigger value="reviews">Reseñas</TabsTrigger> */}
               </TabsList>
               
               <TabsContent value="contenido" className="space-y-6">
@@ -405,7 +421,7 @@ export default function CourseDetailPage() {
                                    </div>
                                  ) : (
                                    <Link 
-                                     href={`/course/${course?.slug || ''}/learn?module=${module.id}&lesson=${lesson.id}`}
+                                     href={`/course/${course?.slug || ''}/learn/${lesson.slug || lesson.id}`}
                                      className="flex items-center justify-between w-full"
                                    >
                                      <div className="flex items-center gap-3">
@@ -766,7 +782,7 @@ export default function CourseDetailPage() {
               {isInvestorExclusive ? (
                 <Button className="w-full">Inscribirme como inversionista</Button>
               ) : (
-                <Link href={`/course/${course.slug}/learn`} className="w-full">
+                <Link href={`/course/${course.slug}/${course.content.modules[0].lessons[0].slug || course.content.modules[0].lessons[0].id}`} className="w-full">
                   <Button className="w-full">Ver curso</Button>
                 </Link>
               )}
