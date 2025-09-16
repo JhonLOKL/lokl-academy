@@ -1,5 +1,5 @@
 import { Course } from "@/lib/course/schema"
-import { enrollCourseService, getAllCoursesService, getUserCoursesService, markLessonCompletedService, saveQuizResultService } from "@/services/course-service"
+import { enrollCourseService, getAllCoursesService, getCourseBySlugService, getUserCoursesService, markLessonCompletedService, saveQuizResultService } from "@/services/course-service"
 
 
 
@@ -23,13 +23,36 @@ export const enrollCourseAction = async (body: { courseId: string }) : Promise<{
     }
 }
 
-export const markLessonCompletedAction = async (body: { courseId: string, lessonId: string }) : Promise<{ success: boolean, message: string, error?: string }> => {
+export const markLessonCompletedAction = async (body: { courseId: string, lessonId: string }) : Promise<{ 
+    success: boolean,
+    message: string,
+    error?: string,
+    data?: {
+        attempt: {
+            id: string,
+            quizId: string,
+            isCompleted: boolean,
+            passed: boolean,
+            completedAt: string,
+            score: number,
+            answers: {
+                id: string,
+                questionId: string,
+                answer: string,
+                points: number,
+                isCorrect: boolean
+            }[]
+        }
+    }
+
+ }> => {
     try {
         const response = await markLessonCompletedService(body)
         if (response && response.success) {
             return {
                 success: true,
-                message: "Clase completada correctamente"
+                message: "Clase completada correctamente",
+                data: response.data
             }
         }
         return response
@@ -101,6 +124,33 @@ export const getAllCoursesAction = async () : Promise<{ success: boolean,  data?
             success: false,
             error: "Error al obtener los cursos del usuario.",
             data: []
+        }
+    }
+}
+
+export const getCourseBySlugAction = async (slug: string) : Promise<{ success: boolean,  data?: {course: Course | null, isEnrolled: boolean}, error?: string }> => {
+    try {
+        const response = await getCourseBySlugService(slug)
+        if (!response.success) {
+            return {
+                success: false,
+                error: response.message,
+                data: {
+                    course: null,
+                    isEnrolled: false
+                }
+            }
+        }
+        return response
+    } catch (error) {
+        console.error("Error al obtener el curso. Intenlo mas tarde.", error)
+        return {
+            success: false,
+            error: "Error al obtener el curso. Intenlo mas tarde.",
+            data: {
+                course: null,
+                isEnrolled: false
+            }
         }
     }
 }

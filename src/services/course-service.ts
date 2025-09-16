@@ -47,7 +47,18 @@ export const getUserCoursesService = async () => {
 
 export const getAllCoursesService = async () => {
     try {
-        const url = `/api/academy/course`
+        const url = `/api/academy/courses`
+        return await getApi(url, true)
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response?.status) {
+            return error.response.data
+        }
+    }
+}
+
+export const getCourseBySlugService = async (slug: string) => {
+    try {
+        const url = `/api/academy/courses/${slug}`
         return await getApi(url, true)
     } catch (error) {
         if (axios.isAxiosError(error) && error.response?.status) {

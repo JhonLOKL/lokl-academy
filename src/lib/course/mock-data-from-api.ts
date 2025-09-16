@@ -165,6 +165,8 @@ export const courseBySlugMock: CourseBySlugResponse = {
               duration: 30,
               type: 'video',
               videoUrl: 'https://www.youtube.com/embed/_d8QP0xZ0gA',
+                           isCompleted: true,
+              completedAt: '2024-03-15T10:00:00Z',
               thumbnail: {
                 url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjlavWkAwV1nvt9g7xbGtw1r6uobXrBcJTfA&s',
                 alt: 'Tipos de inversión inmobiliaria'
