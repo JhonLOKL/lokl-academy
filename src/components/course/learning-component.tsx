@@ -75,7 +75,7 @@ export default function LearningComponent({
 }: LearningComponentProps) {
   const router = useRouter();
   const { slug } = useParams<{ slug: string }>();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showQuiz, setShowQuiz] = useState(isQuizMode);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [showDebugInfo, setShowDebugInfo] = useState(true);
