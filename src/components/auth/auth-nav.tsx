@@ -3,29 +3,31 @@
 import { useAuthStore } from "@/store/auth-store";
 import Link from "next/link";
 import { Button } from "@/components/design-system";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 export default function AuthNav() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { token, logout } = useAuthStore();
-  const router = useRouter();
+
+  // const router = useRouter();
   
-  const handleLogout = () => {
+/*   const handleLogout = () => {
     logout();
     router.push("/");
-  };
+  }; */
   
   return (
     <div className="flex items-center gap-4">
       {token ? (
         <>
           <Link href="/dashboard">
-            <Button variant="ghost" className="text-sm">
+            <Button variant="secondary" className="text-sm">
               Mi cuenta
             </Button>
           </Link>
-          <Button variant="secondary" onClick={handleLogout} className="text-sm">
+{/*           <Button variant="secondary" onClick={handleLogout} className="text-sm">
             Cerrar sesión
-          </Button>
+          </Button> */}
         </>
       ) : (
         <>

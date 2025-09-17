@@ -79,9 +79,10 @@ export default function DashboardPage() {
 */
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-[#F5F5F5]">
-        {/* Header con información del usuario - Mejorado con gradiente y mejor espaciado */}
-        <header className="bg-gradient-to-r from-[#5352F6] to-[#4A4AE5] text-white">
+      <>
+        <div className="min-h-screen bg-[#F5F5F5]">
+          {/* Header con información del usuario - Mejorado con gradiente y mejor espaciado */}
+          <header className="bg-gradient-to-r from-[#5352F6] to-[#4A4AE5] text-white">
           <div className="container mx-auto px-4 py-8 md:py-12">
             <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
@@ -430,7 +431,8 @@ export default function DashboardPage() {
             <Text size="sm" color="muted">© {new Date().getFullYear()} LOKL Academy. Todos los derechos reservados.</Text>
           </div>
         </footer>
-      </div>
+        </div>
+      </>
     </ProtectedRoute>
   );
 }
