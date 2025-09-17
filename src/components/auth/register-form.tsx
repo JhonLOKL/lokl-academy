@@ -227,7 +227,7 @@ export default function RegisterForm() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {/* Nombre */}
-              <FormField>
+              <FormField label="Nombre" htmlFor="firstName">
                 <label htmlFor="firstName" className="block text-sm font-medium">
                   Nombre
                 </label>
@@ -245,7 +245,7 @@ export default function RegisterForm() {
               </FormField>
               
               {/* Apellido */}
-              <FormField>
+              <FormField label="Apellido" htmlFor="lastName">
                 <label htmlFor="lastName" className="block text-sm font-medium">
                   Apellido
                 </label>
@@ -264,7 +264,7 @@ export default function RegisterForm() {
             </div>
             
             {/* Email */}
-            <FormField>
+            <FormField label="Correo electrónico" htmlFor="email">
               <label htmlFor="email" className="block text-sm font-medium">
                 Correo electrónico
               </label>
@@ -282,7 +282,7 @@ export default function RegisterForm() {
             </FormField>
             
             {/* Contraseña */}
-            <FormField>
+            <FormField label="Contraseña" htmlFor="password">
               <label htmlFor="password" className="block text-sm font-medium">
                 Contraseña
               </label>
@@ -300,7 +300,7 @@ export default function RegisterForm() {
             </FormField>
             
             {/* Confirmar Contraseña */}
-            <FormField>
+            <FormField label="Confirmar contraseña" htmlFor="confirmPassword">
               <label htmlFor="confirmPassword" className="block text-sm font-medium">
                 Confirmar contraseña
               </label>
@@ -318,7 +318,7 @@ export default function RegisterForm() {
             </FormField>
             
             {/* Teléfono */}
-            <FormField>
+            <FormField label="Teléfono" htmlFor="phone">
               <label htmlFor="phone" className="block text-sm font-medium">
                 Teléfono
               </label>
@@ -332,7 +332,7 @@ export default function RegisterForm() {
             </FormField>
             
             {/* ¿Cómo nos conociste? */}
-            <FormField>
+            <FormField label="¿Cómo nos conociste?" htmlFor="howDidYouHearAboutUs">
               <label htmlFor="howDidYouHearAboutUs" className="block text-sm font-medium">
                 ¿Cómo nos conociste?
               </label>
@@ -357,7 +357,7 @@ export default function RegisterForm() {
             </FormField>
             
             {/* Código de referido (opcional) */}
-            <FormField>
+            <FormField label="Código de referido (opcional)" htmlFor="referralCode">
               <label htmlFor="referralCode" className="block text-sm font-medium">
                 Código de referido (opcional)
               </label>

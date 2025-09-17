@@ -111,7 +111,7 @@ export default function LoginForm() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email */}
-            <FormField>
+            <FormField label="Correo electrónico" htmlFor="email">
               <label htmlFor="email" className="block text-sm font-medium">
                 Correo electrónico
               </label>
@@ -129,7 +129,7 @@ export default function LoginForm() {
             </FormField>
             
             {/* Contraseña */}
-            <FormField>
+            <FormField label="Contraseña" htmlFor="password">
               <div className="flex items-center justify-between">
                 <label htmlFor="password" className="block text-sm font-medium">
                   Contraseña
