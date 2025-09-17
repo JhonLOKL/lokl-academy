@@ -77,6 +77,7 @@ export default function LearningComponent({
   const { slug } = useParams<{ slug: string }>();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showQuiz, setShowQuiz] = useState(isQuizMode);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [showDebugInfo, setShowDebugInfo] = useState(true);
   const [videoDebugInfo, setVideoDebugInfo] = useState<{
     currentTime: number;
@@ -561,14 +562,14 @@ export default function LearningComponent({
               {currentLesson && currentLesson.type === 'video' && (
                 <div className="bg-black">
                   {/* Botón para mostrar/ocultar la depuración */}
-                  <div className="bg-black p-1 flex justify-end">
+                  {/* <div className="bg-black p-1 flex justify-end">
                     <button 
                       onClick={() => setShowDebugInfo(!showDebugInfo)}
                       className="text-xs text-white bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded"
                     >
                       {showDebugInfo ? "Ocultar depuración" : "Mostrar depuración"}
                     </button>
-                  </div>
+                  </div> */}
                   
                   {/* Barra de depuración del video */}
                   {videoDebugInfo && showDebugInfo && (
