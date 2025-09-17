@@ -55,7 +55,7 @@ export const setPostLoginRedirect = (path: string) => {
     if (typeof window !== "undefined" && path) {
       localStorage.setItem(POST_LOGIN_REDIRECT_KEY, path);
     }
-  } catch (_) {
+  } catch {
     // noop
   }
 };
@@ -65,7 +65,7 @@ export const getPostLoginRedirect = (): string | null => {
     if (typeof window !== "undefined") {
       return localStorage.getItem(POST_LOGIN_REDIRECT_KEY);
     }
-  } catch (_) {
+  } catch {
     // noop
   }
   return null;
@@ -77,7 +77,7 @@ export const consumePostLoginRedirect = (): string | null => {
     if (typeof window !== "undefined") {
       localStorage.removeItem(POST_LOGIN_REDIRECT_KEY);
     }
-  } catch (_) {
+  } catch {
     // noop
   }
   return path;

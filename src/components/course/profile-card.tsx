@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/design-system";
-import { Clock, ChevronDown, BookOpen, Award, Users, X } from "lucide-react";
+import { Clock, BookOpen, Award, Users, X } from "lucide-react";
 import { LearningProfile } from "@/lib/course/schema";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";

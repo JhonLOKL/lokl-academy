@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { getCourseBySlug } from "@/lib/course/mock-data-from-api";
+import { getCourseBySlugAction } from "@/actions/course-action";
 
 export default function QuizRedirectPage() {
   const { slug, moduleId } = useParams<{ slug: string; moduleId: string }>();
@@ -11,15 +11,15 @@ export default function QuizRedirectPage() {
   useEffect(() => {
     async function redirectToProperURL() {
       try {
-        // Obtener datos del curso para encontrar el slug del quiz
-        const courseData = await getCourseBySlug(String(slug));
+        // Obtener datos del curso para encontrar el slug del quiz (API real)
+        const res = await getCourseBySlugAction(String(slug));
         
-        if (courseData.success && courseData.course) {
-          const module = courseData.course.content.modules.find(m => m.id === moduleId);
+        if (res.success && res.data && res.data.course) {
+          const courseModule = res.data.course.content.modules.find(m => m.id === moduleId);
           
-          if (module && module.quiz) {
+          if (courseModule && courseModule.quiz) {
             // Redirigir a la nueva URL con el slug del quiz
-            router.replace(`/course/${slug}/${module.quiz.slug || `quiz-${moduleId}`}`);
+            router.replace(`/course/${slug}/${courseModule.quiz.slug || `quiz-${moduleId}`}`);
           } else {
             // Si no se encuentra el quiz, redirigir a la página del curso
             router.replace(`/course/${slug}`);

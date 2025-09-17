@@ -6,7 +6,7 @@ import { Button } from "@/components/design-system";
 import { useRouter } from "next/navigation";
 
 export default function AuthNav() {
-  const { user, token, logout } = useAuthStore();
+  const { token, logout } = useAuthStore();
   const router = useRouter();
   
   const handleLogout = () => {

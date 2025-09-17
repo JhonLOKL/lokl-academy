@@ -12,11 +12,8 @@ import {
   UserProfile,
   UserProgress,
   LearningProfile,
-  SubscriptionPlan,
   PlatformReview,
-  ExternalTool,
-  NewsletterItem,
-  CourseReview
+  ExternalTool
 } from './schema';
 
 // ===================================================================

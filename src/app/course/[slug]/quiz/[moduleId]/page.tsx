@@ -3,9 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { notFound } from "next/navigation";
-import { getCourseBySlug } from "@/lib/course/mock-data-from-api";
-import { mockUserProgress } from "@/lib/course/mock-data";
-import { Course } from "@/lib/course/schema";
+import { getCourseBySlugAction } from "@/actions/course-action";
+import { Course, Module } from "@/lib/course/schema";
 import dynamic from "next/dynamic";
 
 // Importar dinámicamente el componente de aprendizaje para evitar problemas de SSR
@@ -26,7 +25,7 @@ export default function QuizPage() {
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentModule, setCurrentModule] = useState<any>(null);
+  const [currentModule, setCurrentModule] = useState<Module | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -37,27 +36,28 @@ export default function QuizPage() {
         console.log("Cargando curso con slug:", slug);
         console.log("Buscando quiz para módulo:", moduleId);
         
-        const res = await getCourseBySlug(String(slug));
+        const res = await getCourseBySlugAction(String(slug));
         
         if (!isMounted) return;
         
-        if (res.success && res.course) {
-          setCourse(res.course);
-          console.log("Curso cargado:", res.course.title);
-          console.log("Módulos disponibles:", res.course.content.modules.length);
+        if (res.success && res.data && res.data.course) {
+          const c = res.data.course as Course;
+          setCourse(c);
+          console.log("Curso cargado:", c.title);
+          console.log("Módulos disponibles:", c.content.modules.length);
           
           // Buscar el módulo por ID
-          const module = res.course.content.modules.find(m => m.id === moduleId);
+          const courseModule = c.content.modules.find(m => m.id === moduleId);
           
-          if (module && module.quiz) {
-            console.log("Módulo y quiz encontrados:", module.title);
-            setCurrentModule(module);
+          if (courseModule && courseModule.quiz) {
+            console.log("Módulo y quiz encontrados:", courseModule.title);
+            setCurrentModule(courseModule);
           } else {
             console.error("Quiz no encontrado para el módulo:", moduleId);
             setError("Quiz no encontrado");
           }
         } else {
-          setError(res.message || "No encontrado");
+          setError(res.error || "No encontrado");
         }
       } catch (err) {
         if (!isMounted) return;
@@ -88,14 +88,10 @@ export default function QuizPage() {
     );
   }
 
-  // Obtener el progreso del usuario
-  const userProgress = mockUserProgress.find(progress => progress.courseId === course.id);
-
   return (
     <LearningComponent
-      course={course}
+      course={course as Course}
       currentModule={currentModule}
-      userProgress={userProgress}
       isQuizMode={true}
     />
   );

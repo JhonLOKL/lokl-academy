@@ -77,7 +77,7 @@ export default function CoursePage() {
         if (!mounted) return;
         if (allRes.success) setAllCourses(allRes.data || []);
         if (userRes.success) setUserCourses(userRes.data || []);
-      } catch (e) {
+      } catch {
         if (!mounted) return;
         setAllCourses([]);
         setUserCourses([]);

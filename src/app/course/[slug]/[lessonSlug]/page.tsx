@@ -2,9 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { notFound } from "next/navigation";
 import { getCourseBySlugAction } from "@/actions/course-action";
-import { Course } from "@/lib/course/schema";
+import { Course, Lesson, Module } from "@/lib/course/schema";
 import dynamic from "next/dynamic";
 
 // Importar dinámicamente el componente de aprendizaje para evitar problemas de SSR
@@ -26,8 +25,8 @@ export default function LessonPage() {
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentLesson, setCurrentLesson] = useState<any>(null);
-  const [currentModule, setCurrentModule] = useState<any>(null);
+  const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
+  const [currentModule, setCurrentModule] = useState<Module | null>(null);
   const [isQuizMode, setIsQuizMode] = useState(false);
 
   useEffect(() => {
@@ -52,10 +51,10 @@ export default function LessonPage() {
             router.replace(`/course/${slug}`);
             return;
           }
-          const c = res.data.course;
+          const c = res.data.course as Course;
           // Normalizar flags de completado si vienen con completedAt
-          c.content.modules.forEach((m: any) => {
-            m.lessons.forEach((l: any) => {
+          c.content.modules.forEach((m: Module) => {
+            m.lessons.forEach((l: Lesson) => {
               if (l.completedAt && !l.isCompleted) l.isCompleted = true;
             });
             if (m.quiz && m.quiz.completedAt && !m.quiz.isCompleted) m.quiz.isCompleted = true;
@@ -65,16 +64,16 @@ export default function LessonPage() {
           console.log("Módulos disponibles:", c.content.modules.length);
           
           // Buscar la lección o quiz por slug
-          let foundLesson = null;
-          let foundModule = null;
+          let foundLesson: Lesson | null = null;
+          let foundModule: Module | null = null;
           let isQuiz = false;
           
-          for (const courseModule of c.content.modules) {
+          for (const courseModule of c.content.modules as Module[]) {
             console.log("Revisando módulo:", courseModule.title);
             console.log("Lecciones en este módulo:", courseModule.lessons.length);
             
             // Imprimir todas las lecciones y sus slugs para depuración
-            courseModule.lessons.forEach(l => {
+            courseModule.lessons.forEach((l: Lesson) => {
               console.log(`Lección: ${l.title}, ID: ${l.id}, Slug: ${l.slug || 'sin slug'}`);
             });
             
@@ -91,7 +90,7 @@ export default function LessonPage() {
             }
             
             // Verificar si es una lección
-            const lesson = courseModule.lessons.find(l => 
+            const lesson = courseModule.lessons.find((l: Lesson) => 
               l.slug === decodedContentSlug || 
               l.id === decodedContentSlug
             );
@@ -133,7 +132,7 @@ export default function LessonPage() {
     loadCourse();
     
     return () => { isMounted = false; };
-  }, [slug, lessonSlug]);
+  }, [slug, lessonSlug, router]);
 
   if (!loading && (!course || error)) {
     return (

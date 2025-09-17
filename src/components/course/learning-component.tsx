@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
+// import Image from "next/image";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/design-system";
 import { Progress } from "@/components/ui/progress";
@@ -10,6 +10,7 @@ import QuizComponent from "@/components/course/quiz-component";
 import { markLessonCompletedAction } from "@/actions/course-action";
 import { ensureLoginOrRedirect } from "@/lib/auth-utils";
 import { useRouter } from "next/navigation";
+import type { Course, Module as CourseModule, Lesson, Quiz, QuizQuestion } from "@/lib/course/schema";
 import { 
   Clock, 
   CheckCircle, 
@@ -25,10 +26,23 @@ import {
 } from "lucide-react";
 
 // Declarar tipos para la API de YouTube
+type YTPlayer = {
+  getDuration: () => number;
+  getCurrentTime: () => number;
+};
+
+type YTPlayerCtor = new (
+  elementId: string,
+  opts: {
+    videoId: string;
+    events?: { onStateChange?: (event: { data: number }) => void };
+  }
+) => YTPlayer;
+
 declare global {
   interface Window {
     YT: {
-      Player: any;
+      Player: YTPlayerCtor;
       PlayerState: {
         PLAYING: number;
         PAUSED: number;
@@ -39,13 +53,26 @@ declare global {
   }
 }
 
+interface LearningComponentProps {
+  course: Course;
+  currentLesson?: Lesson | null;
+  currentModule: CourseModule;
+  userProgress?: Course["progress"];
+  isQuizMode?: boolean;
+}
+
+interface LessonRef {
+  lesson: Lesson;
+  module: CourseModule;
+}
+
 export default function LearningComponent({
   course,
   currentLesson = null,
   currentModule,
   userProgress,
   isQuizMode = false
-}) {
+}: LearningComponentProps) {
   const router = useRouter();
   const { slug } = useParams<{ slug: string }>();
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -59,7 +86,7 @@ export default function LearningComponent({
     target95Percent: number;
   } | null>(null);
   const [hasMarkedByVideo, setHasMarkedByVideo] = useState(false);
-  const [renderBump, setRenderBump] = useState(0);
+  const [, setRenderBump] = useState(0);
   const [autoplayCountdown, setAutoplayCountdown] = useState<number | null>(null);
   const [pauseAutoplay, setPauseAutoplay] = useState(false);
   const [showCourseCompleted, setShowCourseCompleted] = useState(false);
@@ -69,8 +96,8 @@ export default function LearningComponent({
   const progressPercentage = userProgress?.overallProgress || course?.progress?.overallProgress || 0;
   
   // Determinar lecciones previas y siguientes
-  let previousLesson = null;
-  let nextLesson = null;
+  let previousLesson: LessonRef | null = null;
+  let nextLesson: LessonRef | null = null;
   
   if (currentLesson) {
     const currentModuleIndex = course.content.modules.findIndex(m => m.id === currentModule.id);
@@ -108,9 +135,10 @@ export default function LearningComponent({
   }
   
   // Estado para controlar cuando el quiz ha sido completado
-  const [quizCompleted, setQuizCompleted] = useState(false);
-  const [quizScore, setQuizScore] = useState<number | null>(null);
-  const [quizPassed, setQuizPassed] = useState<boolean | null>(null);
+  const [quizCompleted, setQuizCompleted] = useState<boolean>(false);
+  // Se mantienen por si se requiere feedback visual en el futuro
+  const [, setQuizScore] = useState<number | null>(null);
+  const [, setQuizPassed] = useState<boolean | null>(null);
   
   // Verificar si el curso está completado
   const isCourseCompleted = React.useMemo(() => {
@@ -119,7 +147,7 @@ export default function LearningComponent({
       m.lessons.every(l => l.isCompleted) && 
       (!m.quiz || m.quiz.isCompleted)
     );
-  }, [course, renderBump]);
+  }, [course]);
 
   // Efecto para el contador de reproducción automática
   useEffect(() => {
@@ -207,9 +235,9 @@ export default function LearningComponent({
   };
   
   // Simular quiz del módulo actual
-  const currentQuiz = currentModule.quiz ? {
+  const currentQuiz: Quiz | null = currentModule.quiz ? ({
     ...currentModule.quiz,
-    questions: currentModule.quiz.questions || [
+    questions: currentModule.quiz.questions && currentModule.quiz.questions.length > 0 ? currentModule.quiz.questions : ([
       {
         id: "q1",
         question: "¿Cuál es el principal beneficio de invertir en bienes raíces?",
@@ -247,18 +275,18 @@ export default function LearningComponent({
         explanation: "El crowdfunding inmobiliario permite a inversores pequeños participar en proyectos grandes que tradicionalmente requerían grandes capitales.",
         points: 5
       }
-    ]
-  } : null;
+    ] as QuizQuestion[])
+  }) : null;
   
   // Formatear la duración
-  const formatDuration = (minutes: number): string => {
+  // Utilidad local (posible uso futuro)
+  /* const formatDuration = (minutes: number): string => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-    
     if (hours === 0) return `${mins} min`;
     if (mins === 0) return `${hours} h`;
     return `${hours} h ${mins} min`;
-  };
+  }; */
   
   return (
     <div className="flex h-screen flex-col bg-[#FAFAFA]">
@@ -409,7 +437,6 @@ export default function LearningComponent({
                         ) : (
                           <div 
                             className="flex items-center justify-between p-4 opacity-50 cursor-not-allowed"
-                            onMouseEnter={() => console.log("Quiz disponible", module.quiz.title)}
                           >
                             <div className="flex items-center">
                               <div className="mr-3 flex h-6 w-6 items-center justify-center rounded-full border border-[#E5E5E5] bg-white">
@@ -435,9 +462,7 @@ export default function LearningComponent({
                   {/* Quiz del módulo si existe */}
                   {module.quiz && (() => {
                     // Determinar si el quiz está disponible
-                    // Un quiz está completado si tiene la propiedad isCompleted o si hay un registro en quizScores
-                    const isQuizCompleted = module.quiz.isCompleted || 
-                      (userProgress?.quizScores && userProgress.quizScores.some(q => q.quizId === module.quiz.id)) || false;
+                    const isQuizCompleted = !!module.quiz && (module.quiz.isCompleted || false);
                     
                     // Verificar si todas las lecciones del módulo están completadas
                     // Solo miramos la propiedad isCompleted de cada lección
@@ -449,8 +474,8 @@ export default function LearningComponent({
                     
                     // Debug info para el estado del quiz
                     const quizDebugInfo = {
-                      quizId: module.quiz.id,
-                      quizTitle: module.quiz.title,
+                      quizId: module.quiz ? module.quiz.id : '',
+                      quizTitle: module.quiz ? module.quiz.title : '',
                       isQuizCompleted, // Ya no se usa para determinar disponibilidad
                       areAllLessonsCompleted,
                       isQuizAvailable,
@@ -471,11 +496,11 @@ export default function LearningComponent({
                       <div className="border-t border-[#E5E5E5]">
                         {isQuizAvailable ? (
                           <Link
-                            href={`/course/${course.slug}/${module.quiz.slug || module.quiz.id}`}
+                            href={`/course/${course.slug}/${module.quiz ? (module.quiz.slug || module.quiz.id) : ''}`}
                             className={`flex items-center justify-between p-4 ${
                               isQuizMode && module.id === currentModule.id ? "bg-[#F5F5F5]" : ""
                             } hover:bg-gray-50 transition-colors`}
-                            onMouseEnter={() => console.log("Quiz disponible", module.quiz.title)}
+                            onMouseEnter={() => console.log("Quiz disponible", module.quiz ? module.quiz.title : '')}
                           >
                             <div className="flex items-center">
                               <div className="mr-3 flex h-6 w-6 items-center justify-center rounded-full bg-green-100">
@@ -483,10 +508,10 @@ export default function LearningComponent({
                               </div>
                               <div>
                                 <div className="text-sm font-medium">
-                                  Quiz: {module.quiz.title}
+                                  Quiz: {module.quiz ? module.quiz.title : ''}
                                 </div>
                                 <div className="flex items-center text-xs text-[#6D6C6C]">
-                                  {module.quiz.questions?.length || 0} preguntas
+                                  {(module.quiz && module.quiz.questions ? module.quiz.questions.length : 0)} preguntas
                                 </div>
                               </div>
                             </div>
@@ -494,7 +519,6 @@ export default function LearningComponent({
                         ) : (
                           <div 
                             className="flex items-center justify-between p-4 opacity-50 cursor-not-allowed"
-                            onMouseEnter={() => console.log("Quiz disponible", module.quiz.title)}
                           >
                             <div className="flex items-center">
                               <div className="mr-3 flex h-6 w-6 items-center justify-center rounded-full bg-gray-100">
@@ -502,10 +526,10 @@ export default function LearningComponent({
                               </div>
                               <div>
                                 <div className="text-sm">
-                                  Quiz: {module.quiz.title}
+                                  Quiz: {module.quiz ? module.quiz.title : ''}
                                 </div>
                                 <div className="flex items-center text-xs text-[#6D6C6C]">
-                                  {module.quiz.questions?.length || 0} preguntas
+                                  {(module.quiz && module.quiz.questions ? module.quiz.questions.length : 0)} preguntas
                                 </div>
                               </div>
                             </div>
@@ -534,7 +558,7 @@ export default function LearningComponent({
           ) : (
             <>
               {/* Reproductor de video */}
-              {currentLesson.type === 'video' && (
+              {currentLesson && currentLesson.type === 'video' && (
                 <div className="bg-black">
                   {/* Botón para mostrar/ocultar la depuración */}
                   <div className="bg-black p-1 flex justify-end">
@@ -577,7 +601,7 @@ export default function LearningComponent({
                     </div>
                   )}
                   <div className="aspect-video w-full">
-                    {currentLesson.videoUrl ? (
+                    {currentLesson && currentLesson.videoUrl ? (
                       <div className="relative w-full h-full">
                         <iframe
                           src={`${currentLesson.videoUrl}?enablejsapi=1`}
@@ -595,7 +619,11 @@ export default function LearningComponent({
                                 const tag = document.createElement('script');
                                 tag.src = 'https://www.youtube.com/iframe_api';
                                 const firstScriptTag = document.getElementsByTagName('script')[0];
-                                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                                if (firstScriptTag && firstScriptTag.parentNode) {
+                                  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                                } else {
+                                  document.head.appendChild(tag);
+                                }
                               }
                               
                               // Función que se ejecutará cuando la API de YouTube esté lista
@@ -617,7 +645,7 @@ export default function LearningComponent({
                                   return (match && match[2].length === 11) ? match[2] : null;
                                 };
                                 
-                                const videoId = getYoutubeVideoId(currentLesson.videoUrl || '');
+                                const videoId = getYoutubeVideoId(currentLesson?.videoUrl || '');
                                 
                                 if (videoId) {
                                   // Crear una instancia del reproductor de YouTube
@@ -658,7 +686,7 @@ export default function LearningComponent({
                                               setHasMarkedByVideo(true);
                                               (async () => {
                                                 try {
-                                                  const ok = ensureLoginOrRedirect(`/course/${course.slug}/${currentLesson.slug || currentLesson.id}`, router.push);
+                                                  const ok = ensureLoginOrRedirect(`/course/${course.slug}/${currentLesson?.slug || currentLesson?.id}`, router.push);
                                                   if (!ok) {
                                                     clearInterval(checkProgress);
                                                     return;
@@ -706,7 +734,7 @@ export default function LearningComponent({
               )}
               
               {/* Contenido de texto */}
-              {currentLesson.type === 'text' && (
+              {currentLesson && currentLesson.type === 'text' && (
                 <div className="p-6">
                   <h2 className="mb-4 text-2xl font-bold">{currentLesson.title}</h2>
                   <div className="prose max-w-none">
@@ -737,7 +765,7 @@ export default function LearningComponent({
               )}
               
               {/* Contenido interactivo */}
-              {currentLesson.type === 'interactive' && (
+              {currentLesson && currentLesson.type === 'interactive' && (
                 <div className="flex h-full items-center justify-center p-6">
                   <div className="text-center">
                     <MessageCircle size={48} className="mx-auto mb-4 text-[#5352F6]" />
@@ -751,19 +779,19 @@ export default function LearningComponent({
               <div className="border-t border-[#E5E5E5] p-6">
                 <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div>
-                    <h2 className="mb-2 text-2xl font-bold">{currentLesson.title}</h2>
+                    <h2 className="mb-2 text-2xl font-bold">{currentLesson ? currentLesson.title : "Lección"}</h2>
                     <div className="flex items-center gap-4 text-sm text-[#6D6C6C]">
                       <span className="flex items-center">
                         <Clock size={16} className="mr-1" />
-                        {currentLesson.duration} minutos
+                        {currentLesson ? currentLesson.duration : 0} minutos
                       </span>
                       <span>
-                        Lección {currentModule.lessons.findIndex(l => l.id === currentLesson.id) + 1} de {currentModule.lessons.length}
+                        Lección {currentLesson ? currentModule.lessons.findIndex(l => l.id === currentLesson.id) + 1 : 0} de {currentModule.lessons.length}
                       </span>
                     </div>
                   </div>
                   
-                  {!currentLesson.isCompleted && (
+                  {currentLesson && !currentLesson.isCompleted && (
                     <Button 
                       onClick={markLessonCompleted}
                       className="bg-green-600 hover:bg-green-700 whitespace-nowrap"
@@ -804,8 +832,8 @@ export default function LearningComponent({
                       <CheckCircle size={32} className="text-green-600" />
                     </div>
                     <h3 className="text-xl font-bold mb-2">¡Felicidades! Has completado el curso</h3>
-                    <p className="text-[#6D6C6C] mb-4">
-                      Has finalizado todas las lecciones y evaluaciones de "{course.title}". 
+                        <p className="text-[#6D6C6C] mb-4">
+                      Has finalizado todas las lecciones y evaluaciones de &quot;{course.title}&quot;. 
                       Continúa tu aprendizaje con más cursos de LOKL Academy.
                     </p>
                     <div className="flex justify-center gap-3">
@@ -819,11 +847,13 @@ export default function LearningComponent({
                   </div>
                 )}
                 
-                <div className="prose max-w-none">
-                  <p>
-                    {currentLesson.description || "Descripción de la lección no disponible."}
-                  </p>
-                </div>
+                {currentLesson && (
+                  <div className="prose max-w-none">
+                    <p>
+                      {currentLesson.description || "Descripción de la lección no disponible."}
+                    </p>
+                  </div>
+                )}
                 
                 {/* Recursos adicionales */}
                 {currentModule.resources && currentModule.resources.length > 0 && (
