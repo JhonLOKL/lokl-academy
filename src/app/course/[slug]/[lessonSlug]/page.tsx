@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { notFound } from "next/navigation";
-import { getCourseBySlug } from "@/lib/course/mock-data-from-api";
-import { mockUserProgress } from "@/lib/course/mock-data";
+import { getCourseBySlugAction } from "@/actions/course-action";
 import { Course } from "@/lib/course/schema";
 import dynamic from "next/dynamic";
 
@@ -42,21 +41,29 @@ export default function LessonPage() {
         const decodedContentSlug = decodeURIComponent(String(lessonSlug));
         console.log("Buscando contenido con slug decodificado:", decodedContentSlug);
         
-        const res = await getCourseBySlug(String(slug));
+        const res = await getCourseBySlugAction(String(slug));
         
         if (!isMounted) return;
         
-        if (res.success && res.course) {
-          setCourse(res.course);
-          console.log("Curso cargado:", res.course.title);
-          console.log("Módulos disponibles:", res.course.content.modules.length);
+        if (res.success && res.data && res.data.course) {
+          const c = res.data.course;
+          // Normalizar flags de completado si vienen con completedAt
+          c.content.modules.forEach((m: any) => {
+            m.lessons.forEach((l: any) => {
+              if (l.completedAt && !l.isCompleted) l.isCompleted = true;
+            });
+            if (m.quiz && m.quiz.completedAt && !m.quiz.isCompleted) m.quiz.isCompleted = true;
+          });
+          setCourse(c);
+          console.log("Curso cargado:", c.title);
+          console.log("Módulos disponibles:", c.content.modules.length);
           
           // Buscar la lección o quiz por slug
           let foundLesson = null;
           let foundModule = null;
           let isQuiz = false;
           
-          for (const courseModule of res.course.content.modules) {
+          for (const courseModule of c.content.modules) {
             console.log("Revisando módulo:", courseModule.title);
             console.log("Lecciones en este módulo:", courseModule.lessons.length);
             
@@ -106,7 +113,7 @@ export default function LessonPage() {
             setError("Contenido no encontrado");
           }
         } else {
-          setError(res.message || "No encontrado");
+          setError(res.error || "No encontrado");
         }
       } catch (err) {
         if (!isMounted) return;
@@ -137,31 +144,17 @@ export default function LessonPage() {
     );
   }
 
-  // Obtener el progreso del usuario
-  // Primero intentamos obtener el progreso desde mockUserProgress (datos de usuario)
-  let userProgress = mockUserProgress.find(progress => progress.courseId === course.id);
-  
-  // Si no hay progreso específico del usuario, usamos el progreso centralizado del curso
-  if (!userProgress && course && course.progress) {
-    userProgress = {
-      userId: "current-user",
-      courseId: course.id || "",
-      overallProgress: course.progress.overallProgress,
-      completedLessons: course.progress.completedLessons,
-      totalLessons: course.progress.totalLessons,
-      timeSpent: 0,
-      moduleProgress: [],
-      startedAt: new Date().toISOString(),
-      lastAccessedAt: new Date().toISOString()
-    };
+  // Verificar si hay un problema con el video en la última lección
+  if (currentLesson && currentLesson.type === 'video' && !currentLesson.videoUrl) {
+    console.error("Error: URL de video no encontrada para la lección:", currentLesson.title);
   }
 
   return (
     <LearningComponent
-      course={course}
+      course={course as Course}
       currentLesson={currentLesson}
       currentModule={currentModule}
-      userProgress={userProgress}
+      userProgress={course?.progress}
       isQuizMode={isQuizMode}
     />
   );

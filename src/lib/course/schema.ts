@@ -100,6 +100,7 @@ export interface Instructor {
   bio: string;
   avatar: string;
   title?: string;
+  role?: string;
   company?: string;
   expertise: string[];
 

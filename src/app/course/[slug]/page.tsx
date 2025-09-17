@@ -1,34 +1,61 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound, useParams } from "next/navigation";
-import { Button } from "@/components/design-system";
+import { notFound, useParams, useRouter } from "next/navigation";
+import { Button, toast } from "@/components/design-system";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Clock, Users, Star, Calendar, CheckCircle, BookOpen, Award, Share2 } from "lucide-react";
-import { mockUserProgress } from "@/lib/course/mock-data";
-import { getCourseBySlug } from "@/lib/course/mock-data-from-api";
+import { Clock, Star, Calendar, CheckCircle, BookOpen, Award, Share2, AlertTriangle } from "lucide-react";
 import { Course } from "@/lib/course/schema";
+import { getCourseBySlugAction, enrollCourseAction } from "@/actions/course-action";
+import { useAuthStore } from "@/store/auth-store";
+import { ensureLoginOrRedirect } from "@/lib/auth-utils";
 
 export default function CourseDetailPage() {
   const { slug } = useParams<{ slug: string }>();
+  const router = useRouter();
+  const { user } = useAuthStore();
   const [, setActiveTab] = useState("contenido");
 
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isEnrolled, setIsEnrolled] = useState<boolean>(false);
+
+  // Verificar si el curso está completado - definido antes de cualquier return
+  const isCourseCompleted = useMemo(() => {
+    if (!course) return false;
+    return course?.content?.modules?.every(m => 
+      m.lessons.every(l => l.isCompleted) && 
+      (!m.quiz || m.quiz.isCompleted)
+    ) || false;
+  }, [course]);
 
   useEffect(() => {
     let isMounted = true;
     async function load() {
       try {
         setLoading(true);
-        const res = await getCourseBySlug(String(slug));
+        const res = await getCourseBySlugAction(String(slug));
         if (!isMounted) return;
-        if (res.success) setCourse(res.course);
-        else setError(res.message || "No encontrado");
+        if (res.success && res.data) {
+          const c = res.data.course as Course | null;
+          if (c) {
+            // Normalizar estados de completado a partir de completedAt si viene del backend
+            c.content.modules.forEach(m => {
+              m.lessons.forEach(lesson => {
+                if (lesson.completedAt && !lesson.isCompleted) lesson.isCompleted = true;
+              });
+              if (m.quiz) {
+                if (m.quiz.completedAt && !m.quiz.isCompleted) m.quiz.isCompleted = true;
+              }
+            });
+          }
+          setCourse(c);
+          setIsEnrolled(Boolean(res.data.isEnrolled));
+        } else setError(res.error || "No encontrado");
       } catch {
         if (!isMounted) return;
         setError("Error cargando el curso");
@@ -67,7 +94,7 @@ export default function CourseDetailPage() {
       </div>
     );
   }
-
+  
   if (!course) return null;
 
   // Aseguramos que course.stats siempre tenga valores por defecto
@@ -85,25 +112,7 @@ export default function CourseDetailPage() {
   
   const isInvestorExclusive = Boolean(course && course.accessRequirements.plan === "investor");
   
-  // Obtener progreso del usuario (si existe) o usar el progreso centralizado del curso
-  let userProgress = course ? mockUserProgress.find(p => p.courseId === course.id) : undefined;
-  
-  // Si no hay progreso específico del usuario pero el curso tiene información de progreso, usarla
-  if (!userProgress && course?.progress) {
-    userProgress = {
-      userId: "current-user",
-      courseId: course.id,
-      overallProgress: course.progress.overallProgress,
-      completedLessons: course.progress.completedLessons,
-      totalLessons: course.progress.totalLessons,
-      timeSpent: 0,
-      moduleProgress: [],
-      startedAt: new Date().toISOString(),
-      lastAccessedAt: new Date().toISOString()
-    };
-  }
-  
-  const progressPercentage = userProgress?.overallProgress || 0;
+  const progressPercentage = course?.progress?.overallProgress || 0;
   
   // Formatear la duración
   const formatDuration = (minutes: number): string => {
@@ -126,7 +135,9 @@ export default function CourseDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA]">
+    <>
+      
+      <div className="min-h-screen bg-[#FAFAFA]">
       {/* Hero Section */}
       <section className="relative">
         {/* Imagen de fondo */}
@@ -161,14 +172,18 @@ export default function CourseDetailPage() {
               {/* Miniatura del curso */}
               <div className="relative mb-6 h-48 w-full shrink-0 overflow-hidden rounded-lg md:mb-0 md:h-64 md:w-64">
                 {loading ? (
-                  <div className="h-full w-full animate-pulse bg-gray-200" />
-                ) : course && (
+                  <div className="h-full w-full animate-pulse bg-gray-200" style={{ animationDuration: '1.2s' }} />
+                ) : course?.thumbnail?.url ? (
                   <Image
                     src={course.thumbnail.url}
                     alt={course.title}
                     fill
                     className="object-cover grayscale"
                   />
+                ) : (
+                  <div className="h-full w-full flex items-center justify-center bg-gray-100 text-[#6D6C6C]">
+                    Sin imagen
+                  </div>
                 )}
               </div>
               
@@ -200,14 +215,14 @@ export default function CourseDetailPage() {
                 
                 {/* Estadísticas */}
                 <div className="mb-6 flex flex-wrap gap-6 text-sm text-[#6D6C6C]">
-                  <div className="flex items-center">
+{/*                   <div className="flex items-center">
                     <Users size={16} className="mr-2 text-[#5352F6]" />
                     <span>{loading || !course?.stats ? '—' : `${course.stats.enrolledCount} estudiantes`}</span>
                   </div>
                   <div className="flex items-center">
                     <Star size={16} className="mr-2 text-yellow-400" />
                     <span>{loading || !course?.stats ? '—' : `${course.stats.averageRating.toFixed(1)} (${course.stats.reviewsCount} reseñas)`}</span>
-                  </div>
+                  </div> */}
                   <div className="flex items-center">
                     <BookOpen size={16} className="mr-2 text-[#5352F6]" />
                     <span>{loading || !course ? '—' : `${course.content.totalLessons} lecciones`}</span>
@@ -220,83 +235,140 @@ export default function CourseDetailPage() {
                   )}
                 </div>
                 
-                {/* Instructor */}
-                <div className="mb-6 flex items-center">
-                  <div className="relative mr-3 h-12 w-12 overflow-hidden rounded-full">
-                    {loading ? (
-                      <div className="h-12 w-12 animate-pulse rounded-full bg-gray-200" />
-                    ) : course && (
-                      <Image 
-                        src={course.instructor.avatar} 
-                        alt={course.instructor.name}
-                        fill
-                        className="object-cover"
-                      />
-                    )}
-                  </div>
-                  <div>
-                    <p className="font-medium">{loading ? '—' : course?.instructor.name}</p>
-                    <p className="text-sm text-[#6D6C6C]">{loading ? '—' : (course?.instructor.title || course?.instructor.expertise.join(", "))}</p>
-                  </div>
-                </div>
-                
                 {/* Barra de progreso (si está inscrito) */}
-                {!loading && userProgress && course && (
-                  <div className="mb-6 bg-gradient-to-r from-[#F4F6FF] to-[#F8F9FF] p-5 rounded-lg border border-[#E8EAFF] shadow-sm">
-                    <div className="mb-4 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="h-8 w-8 rounded-full bg-[#5352F6]/10 flex items-center justify-center">
-                          <CheckCircle size={16} className="text-[#5352F6]" />
-                        </div>
-                        <div>
-                          <span className="block font-medium text-[#333]">{progressPercentage}% completado</span>
-                          <span className="block text-xs text-[#6D6C6C]">{userProgress.completedLessons} de {course.content.totalLessons} lecciones</span>
+                {!loading && isEnrolled && course && course.progress && (
+                  <>
+                    {isCourseCompleted ? (
+                      <div className="mb-6 bg-gradient-to-r from-[#F0FDF4] to-[#F7FEF5] p-5 rounded-lg border border-[#86EFAC] shadow-sm">
+                        <div className="flex items-center gap-4">
+                          <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                            <CheckCircle size={24} className="text-green-600" />
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="text-lg font-bold text-green-800 mb-1">¡Felicidades! Curso completado</h4>
+                            <p className="text-sm text-green-700 mb-3">
+                              Has completado todas las lecciones y evaluaciones de este curso. ¡Sigue aprendiendo con más cursos de LOKL Academy!
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              <Link href="/course">
+                                <Button variant="outline" size="sm" className="text-xs px-3 py-1 h-auto border-green-600 text-green-700 hover:bg-green-50">
+                                  Ver más cursos
+                                </Button>
+                              </Link>
+{/*                               <Button size="sm" className="text-xs px-3 py-1 h-auto bg-green-600 hover:bg-green-700">
+                                Obtener certificado
+                              </Button> */}
+                            </div>
+                          </div>
                         </div>
                       </div>
+                    ) : (
+                      <div className="mb-6 bg-gradient-to-r from-[#F4F6FF] to-[#F8F9FF] p-5 rounded-lg border border-[#E8EAFF] shadow-sm">
+                        <div className="mb-4 flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="h-8 w-8 rounded-full bg-[#5352F6]/10 flex items-center justify-center">
+                              <CheckCircle size={16} className="text-[#5352F6]" />
+                            </div>
+                            <div>
+                              <span className="block font-medium text-[#333]">{progressPercentage}% completado</span>
+                              <span className="block text-xs text-[#6D6C6C]">{course.progress.completedLessons} de {course.content.totalLessons} lecciones</span>
+                            </div>
+                          </div>
                       <Button variant="outline" size="sm" className="text-xs px-3 py-1 h-auto border-[#5352F6] text-[#5352F6] hover:bg-[#5352F6]/5">
-                        Continuar
+                        Ver de nuevo
                       </Button>
-                    </div>
-                    <div className="relative mt-2">
-                      <div className="h-2 w-full bg-[#E8EAFF] rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-gradient-to-r from-[#5352F6] to-[#7A79FF] rounded-full transition-all duration-500 ease-out"
-                          style={{ width: `${progressPercentage}%` }}
-                        />
+                        </div>
+                        <div className="relative mt-2">
+                          <div className="h-2 w-full bg-[#E8EAFF] rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-gradient-to-r from-[#5352F6] to-[#7A79FF] rounded-full transition-all duration-500 ease-out"
+                              style={{ width: `${progressPercentage}%` }}
+                            />
+                          </div>
+                          <div className="mt-1 flex justify-between text-xs text-[#6D6C6C]">
+                            <span>Progreso</span>
+                            <span className="font-medium text-[#5352F6]">{progressPercentage}%</span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="mt-1 flex justify-between text-xs text-[#6D6C6C]">
-                        <span>Progreso</span>
-                        <span className="font-medium text-[#5352F6]">{progressPercentage}%</span>
-                      </div>
-                    </div>
-                  </div>
+                    )}
+                  </>
                 )}
                 
                 {/* Botones de acción */}
                 <div className="flex flex-col gap-3 sm:flex-row">
-                  {isInvestorExclusive ? (
-                    <>
-                      <Button size="lg" className="flex-1" disabled={loading}>
-                        {userProgress ? "Continuar curso" : "Inscribirme como inversionista"}
-                      </Button>
-                      <Button variant="outline" size="lg" className="flex items-center gap-2">
-                        <Share2 size={18} />
-                        Compartir
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Link href={loading || !course ? "#" : `/course/${course.slug}/${course.content.modules[0].lessons[0].slug || course.content.modules[0].lessons[0].id}`} className="flex-1">
-                        <Button size="lg" className="w-full" disabled={loading}>
-                          {userProgress ? "Continuar curso" : "Ver curso"}
-                        </Button>
-                      </Link>
-                      <Button variant="outline" size="lg" className="flex items-center gap-2">
-                        <Share2 size={18} />
-                        Compartir
-                      </Button>
-                    </>
-                  )}
+                  <>
+                    <Button
+                      size="lg"
+                      className="flex-1"
+                      disabled={loading || !course}
+                      onClick={async () => {
+                        if (!course) return;
+                        const courseLanding = `/course/${course.slug}`;
+                        // Requiere login para iniciar/continuar
+                        const ok = ensureLoginOrRedirect(courseLanding, router.push);
+                        if (!ok) return;
+
+                        // Validación de plan
+                        const requiredPlan = course.accessRequirements.plan; // 'basic' | 'investor' | 'any' | 'premium'
+                        const userPlan = user?.planType || 'basic';
+
+                        const hasAccess =
+                          requiredPlan === 'any' ||
+                          requiredPlan === 'basic' ||
+                          (requiredPlan === 'premium' && (userPlan === 'investor' || userPlan === 'premium')) ||
+                          (requiredPlan === 'investor' && userPlan === 'investor');
+
+                        if (!hasAccess) {
+                          toast({
+                            title: "Acceso denegado",
+                            description: "Tu plan actual no permite acceder a este curso. Actualiza tu plan para continuar.",
+                            variant: "destructive",
+                            icon: <AlertTriangle className="h-5 w-5 text-red-600" />,
+                          });
+                          return;
+                        }
+
+                        if (!isEnrolled) {
+                          const res = await enrollCourseAction({ courseId: course.id });
+                          if (!res.success) {
+                            toast({
+                              title: "Error de inscripción",
+                              description: res.error || "No se pudo inscribir al curso. Intenta nuevamente más tarde.",
+                              variant: "destructive",
+                              icon: <AlertTriangle className="h-5 w-5 text-red-600" />,
+                            });
+                            return;
+                          } else {
+                            toast({
+                              title: "¡Inscripción exitosa!",
+                              description: "Te has inscrito correctamente al curso. ¡Comienza a aprender ahora!",
+                              variant: "success",
+                              icon: <CheckCircle className="h-5 w-5 text-green-600" />,
+                            });
+                          }
+                          // Recargar datos del curso para reflejar inscripción y progreso
+                          const reload = await getCourseBySlugAction(String(slug));
+                          if (reload.success && reload.data) {
+                            setCourse(reload.data.course as Course);
+                            setIsEnrolled(Boolean(reload.data.isEnrolled));
+                          }
+                        }
+
+                        // Navegar a la primera lección
+                        const first = course.content.modules[0]?.lessons[0];
+                        if (first) {
+                          router.push(`/course/${course.slug}/${first.slug || first.id}`);
+                        }
+                      }}
+                    >
+                      {isEnrolled ? (isCourseCompleted ? 'Ver de nuevo' : 'Continuar curso') : (isInvestorExclusive ? 'Ver curso' : 'Ver curso')}
+                    </Button>
+                    <Button variant="outline" size="lg" className="flex items-center gap-2">
+                      <Share2 size={18} />
+                      Compartir
+                    </Button>
+                  </>
                 </div>
               </div>
             </div>
@@ -371,11 +443,14 @@ export default function CourseDetailPage() {
                                      // Si todas las lecciones del módulo anterior están completadas
                                      const allPrevLessonsCompleted = prevModule.lessons.every(l => l.isCompleted);
                                      
-                                     // O si el quiz del módulo anterior está completado (si existe)
-                                     const prevQuizCompleted = prevModule.quiz?.isCompleted || false;
+                                     // Verificar si el quiz del módulo anterior está completado y aprobado (si existe)
+                                     const prevQuizCompletedAndPassed = 
+                                       prevModule.quiz?.isCompleted && prevModule.quiz?.passed || false;
                                      
-                                     // Desbloquear si cualquiera de las condiciones se cumple
-                                     if (allPrevLessonsCompleted || prevQuizCompleted) {
+                                     // Desbloquear solo si todas las lecciones están completadas
+                                     // Y si hay quiz, debe estar aprobado
+                                     if (allPrevLessonsCompleted && 
+                                         (!prevModule.quiz || prevQuizCompletedAndPassed)) {
                                        isLocked = false;
                                      }
                                    }
@@ -421,7 +496,7 @@ export default function CourseDetailPage() {
                                    </div>
                                  ) : (
                                    <Link 
-                                     href={`/course/${course?.slug || ''}/learn/${lesson.slug || lesson.id}`}
+                                     href={`/course/${course?.slug || ''}/${lesson.slug || lesson.id}`}
                                      className="flex items-center justify-between w-full"
                                    >
                                      <div className="flex items-center gap-3">
@@ -438,7 +513,7 @@ export default function CourseDetailPage() {
                                          <div className="h-10 w-16 rounded-md bg-green-100 flex items-center justify-center flex-shrink-0">
                                            <BookOpen size={20} className="text-green-600" />
                                          </div>
-                                       ) : userProgress?.moduleProgress?.some(m => m.moduleId === module.id && m.progress === 100) ? (
+                                       ) : module.lessons.every(l => l.isCompleted) ? (
                                          <div className="h-10 w-16 rounded-md bg-[#EEEEFE] flex items-center justify-center flex-shrink-0">
                                            <CheckCircle size={20} className="text-[#5352F6]" />
                                          </div>
@@ -516,7 +591,10 @@ export default function CourseDetailPage() {
                                    </div>
                                  ) : (
                                    <>
-                                     <div className="flex items-center gap-3">
+                                     <Link 
+                                       href={`/course/${course.slug}/${module.quiz.slug || module.quiz.id}`}
+                                       className="flex items-center gap-3 hover:text-[#5352F6] transition-colors"
+                                     >
                                        <div className="h-10 w-16 rounded-md bg-[#FFF4E5] flex items-center justify-center flex-shrink-0">
                                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500">
                                            <path d="M9 11l3 3 8-8"/>
@@ -532,7 +610,7 @@ export default function CourseDetailPage() {
                                          </span>
                                          <span className="text-xs text-[#6D6C6C]">{module.quiz.questions.length} preguntas • Puntaje mínimo: {module.quiz.passingScore}%</span>
                                        </div>
-                                     </div>
+                                     </Link>
                                      <div className="flex items-center">
                                        {module.quiz.isCompleted && (
                                          <Badge className={`${module.quiz.passed ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"} text-xs mr-2`}>
@@ -780,7 +858,11 @@ export default function CourseDetailPage() {
               </div>
               
               {isInvestorExclusive ? (
-                <Button className="w-full">Inscribirme como inversionista</Button>
+                <Button className="w-full">Soy inversionista, ver curso</Button>
+              ) : isEnrolled ? (
+                <Link href={`/course/${course.slug}/${course.content.modules[0].lessons[0].slug || course.content.modules[0].lessons[0].id}`} className="w-full">
+                  <Button className="w-full">{isCourseCompleted ? 'Ver de nuevo' : 'Continuar curso'}</Button>
+                </Link>
               ) : (
                 <Link href={`/course/${course.slug}/${course.content.modules[0].lessons[0].slug || course.content.modules[0].lessons[0].id}`} className="w-full">
                   <Button className="w-full">Ver curso</Button>
@@ -793,71 +875,97 @@ export default function CourseDetailPage() {
               <h3 className="mb-4 text-lg font-bold">Sobre el instructor</h3>
               
               <div className="mb-6 flex items-center">
-                <div className="relative mr-4 overflow-hidden border-2 border-[#5352F6]/10 shadow-md" style={{ borderRadius: '50%' }}>
-                  <Image 
-                    src={course.instructor.avatar} 
-                    alt={course.instructor.name}
-                    width={80}
-                    height={80}
-                    className="object-cover rounded-full aspect-square"
-                  />
+                <div className="relative mr-4 h-20 w-20 overflow-hidden border-2 border-[#5352F6]/10 rounded-full shadow-md">
+                  {loading ? (
+                    <div className="h-full w-full animate-pulse rounded-full bg-gray-200" style={{ animationDuration: '1.2s' }} />
+                  ) : course?.instructor?.avatar ? (
+                    <Image 
+                      src={course.instructor.avatar} 
+                      alt={course.instructor.name || 'Instructor LOKL'}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center bg-[#EEEEFE] text-[#5352F6] text-lg font-medium">
+                      {(course?.instructor?.name || 'L').charAt(0)}
+                    </div>
+                  )}
                 </div>
                 <div>
-                  <p className="text-lg font-medium text-[#333]">{course.instructor.name}</p>
-                  <p className="text-sm text-[#6D6C6C]">{course.instructor.title || course.instructor.expertise.join(", ")}</p>
+                  {loading ? (
+                    <div className="h-4 w-36 animate-pulse rounded bg-gray-200 mb-2" style={{ animationDuration: '1.2s' }} />
+                  ) : (
+                    <p className="text-lg font-medium text-[#333]">{course?.instructor?.name || 'Instructor LOKL'}</p>
+                  )}
+                  {loading ? (
+                    <div className="h-3 w-48 animate-pulse rounded bg-gray-200" style={{ animationDuration: '1.2s' }} />
+                  ) : (
+                    <p className="text-sm text-[#6D6C6C]">{course?.instructor?.title || course?.instructor?.expertise?.join(", ") || ''}</p>
+                  )}
                 </div>
               </div>
               
-              <div className="mb-6 grid grid-cols-2 gap-4 text-sm">
-                {(course.instructor.stats?.totalCourses ?? 0) > 0 && (
-                  <div className="rounded-lg bg-[#F5F7FF] p-3 flex flex-col items-center justify-center">
-                    <p className="font-bold text-lg text-[#5352F6]">{course.instructor.stats?.totalCourses}</p>
-                    <p className="text-[#6D6C6C]">Cursos</p>
-                  </div>
-                )}
-                {(course.instructor.stats?.totalStudents ?? 0) > 0 && (
-                  <div className="rounded-lg bg-[#F5F7FF] p-3 flex flex-col items-center justify-center">
-                    <p className="font-bold text-lg text-[#5352F6]">{course.instructor.stats?.totalStudents}</p>
-                    <p className="text-[#6D6C6C]">Estudiantes</p>
-                  </div>
-                )}
-                {(course.instructor.stats?.averageRating ?? 0) > 0 && (
-                  <div className="rounded-lg bg-[#F5F7FF] p-3 flex flex-col items-center justify-center">
-                    <p className="font-bold text-lg text-[#5352F6]">{course.instructor.stats?.averageRating?.toFixed(1)}</p>
-                    <p className="text-[#6D6C6C]">Calificación</p>
-                  </div>
-                )}
-                {(course.instructor.stats?.yearsExperience ?? 0) > 0 && (
-                  <div className="rounded-lg bg-[#F5F7FF] p-3 flex flex-col items-center justify-center">
-                    <p className="font-bold text-lg text-[#5352F6]">{course.instructor.stats?.yearsExperience}</p>
-                    <p className="text-[#6D6C6C]">Años exp.</p>
-                  </div>
-                )}
-              </div>
+              {/* Biografía del instructor */}
+              {course?.instructor?.bio && (
+                <div className="mb-6">
+                  <h4 className="mb-2 text-sm font-semibold text-[#333]">Biografía</h4>
+                  <p className="text-sm text-[#6D6C6C] leading-relaxed">{course.instructor.bio}</p>
+                </div>
+              )}
               
-              <p className="text-sm text-[#6D6C6C] leading-relaxed">{course.instructor.bio}</p>
+              {/* Enlaces sociales */}
+              {course?.instructor?.socialLinks && typeof course.instructor.socialLinks === 'object' && Object.keys(course.instructor.socialLinks).length > 0 && (
+                <div>
+                  <h4 className="mb-2 text-sm font-semibold text-[#333]">Redes sociales</h4>
+                  <div className="flex flex-wrap gap-3">
+                    {Object.entries(course.instructor.socialLinks).map(([platform, url], index) => (
+                      url && (
+                        <a 
+                          key={index}
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center rounded-md bg-[#F5F5F5] px-3 py-1.5 text-sm text-[#5352F6] hover:bg-[#EEEEFE] transition-colors"
+                        >
+                          {platform}
+                        </a>
+                      )
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </section>
       
       {/* CTA final */}
-      <section className="bg-[#5352F6] py-16 text-white">
+      <section className={`${isCourseCompleted ? 'bg-gradient-to-r from-green-600 to-green-700' : 'bg-[#5352F6]'} py-16 text-white`}>
         <div className="container mx-auto px-4 text-center">
           <h2 className="mb-6 text-3xl font-bold tracking-tight">
-            ¿Listo para comenzar tu aprendizaje?
+            {isCourseCompleted 
+              ? "¡Felicidades por completar el curso!" 
+              : "¿Listo para comenzar tu aprendizaje?"}
           </h2>
           <p className="mx-auto mb-8 max-w-2xl text-lg">
-            {isInvestorExclusive 
-              ? "Conviértete en inversionista LOKL y desbloquea este y muchos más cursos exclusivos."
-              : "Inscríbete ahora y comienza a aprender con este curso gratuito de alta calidad."
+            {isCourseCompleted 
+              ? "No pares de aprender. Explora más cursos y sigue mejorando tus habilidades con LOKL Academy."
+              : isInvestorExclusive 
+                ? "Conviértete en inversionista LOKL y desbloquea este y muchos más cursos exclusivos."
+                : "Inscríbete ahora y comienza a aprender con este curso gratuito de alta calidad."
             }
           </p>
           <Button size="lg" variant="secondary">
-            {isInvestorExclusive ? "Conocer más sobre inversiones LOKL" : "Ver curso ahora"}
+            {isCourseCompleted 
+              ? "Explorar más cursos" 
+              : isInvestorExclusive 
+                ? "Conocer más sobre inversiones LOKL" 
+                : "Ver curso ahora"
+            }
           </Button>
         </div>
       </section>
     </div>
+    </>
   );
 }

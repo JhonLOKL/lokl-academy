@@ -44,3 +44,57 @@ export const requireAuth = (
   
   return true;
 };
+
+// ==============================================
+// Redirección post-login
+// ==============================================
+const POST_LOGIN_REDIRECT_KEY = "lokl_post_login_redirect_path";
+
+export const setPostLoginRedirect = (path: string) => {
+  try {
+    if (typeof window !== "undefined" && path) {
+      localStorage.setItem(POST_LOGIN_REDIRECT_KEY, path);
+    }
+  } catch (_) {
+    // noop
+  }
+};
+
+export const getPostLoginRedirect = (): string | null => {
+  try {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem(POST_LOGIN_REDIRECT_KEY);
+    }
+  } catch (_) {
+    // noop
+  }
+  return null;
+};
+
+export const consumePostLoginRedirect = (): string | null => {
+  const path = getPostLoginRedirect();
+  try {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(POST_LOGIN_REDIRECT_KEY);
+    }
+  } catch (_) {
+    // noop
+  }
+  return path;
+};
+
+/**
+ * Si no hay sesión, guarda el destino y redirige a login.
+ * Retorna true si autenticado, false si se redirigió.
+ */
+export const ensureLoginOrRedirect = (
+  targetPath: string,
+  redirectFn: (path: string) => void
+): boolean => {
+  if (!isAuthenticated()) {
+    setPostLoginRedirect(targetPath);
+    redirectFn("/login");
+    return false;
+  }
+  return true;
+};

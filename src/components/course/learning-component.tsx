@@ -7,6 +7,9 @@ import { useParams } from "next/navigation";
 import { Button } from "@/components/design-system";
 import { Progress } from "@/components/ui/progress";
 import QuizComponent from "@/components/course/quiz-component";
+import { markLessonCompletedAction } from "@/actions/course-action";
+import { ensureLoginOrRedirect } from "@/lib/auth-utils";
+import { useRouter } from "next/navigation";
 import { 
   Clock, 
   CheckCircle, 
@@ -43,6 +46,7 @@ export default function LearningComponent({
   userProgress,
   isQuizMode = false
 }) {
+  const router = useRouter();
   const { slug } = useParams<{ slug: string }>();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showQuiz, setShowQuiz] = useState(isQuizMode);
@@ -52,8 +56,13 @@ export default function LearningComponent({
     duration: number;
     progress: number;
     remaining: number;
-    target90Percent: number;
+    target95Percent: number;
   } | null>(null);
+  const [hasMarkedByVideo, setHasMarkedByVideo] = useState(false);
+  const [renderBump, setRenderBump] = useState(0);
+  const [autoplayCountdown, setAutoplayCountdown] = useState<number | null>(null);
+  const [pauseAutoplay, setPauseAutoplay] = useState(false);
+  const [showCourseCompleted, setShowCourseCompleted] = useState(false);
   
   // Calcular el progreso del curso
   // Usamos el progreso del usuario si existe, o el progreso centralizado del curso
@@ -103,11 +112,75 @@ export default function LearningComponent({
   const [quizScore, setQuizScore] = useState<number | null>(null);
   const [quizPassed, setQuizPassed] = useState<boolean | null>(null);
   
+  // Verificar si el curso está completado
+  const isCourseCompleted = React.useMemo(() => {
+    if (!course) return false;
+    return course.content.modules.every(m => 
+      m.lessons.every(l => l.isCompleted) && 
+      (!m.quiz || m.quiz.isCompleted)
+    );
+  }, [course, renderBump]);
+
+  // Efecto para el contador de reproducción automática
+  useEffect(() => {
+    if (autoplayCountdown === null || pauseAutoplay || !nextLesson) return;
+    
+    if (autoplayCountdown <= 0) {
+      // Navegar a la siguiente lección
+      router.push(`/course/${course.slug}/${nextLesson.lesson.slug || nextLesson.lesson.id}`);
+      setAutoplayCountdown(null);
+      return;
+    }
+    
+    const timer = setTimeout(() => {
+      setAutoplayCountdown(prev => prev !== null ? prev - 1 : null);
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, [autoplayCountdown, pauseAutoplay, nextLesson, course, router]);
+
+  // Función para marcar una lección como completada
+  const markLessonCompleted = async () => {
+    if (!currentLesson) return;
+    
+    // Requerir login, guardar intención
+    const ok = ensureLoginOrRedirect(`/course/${course.slug}/${currentLesson.slug || currentLesson.id}`, router.push);
+    if (!ok) return;
+
+    try {
+      const res = await markLessonCompletedAction({ courseId: course.id, lessonId: currentLesson.id });
+      if (res.success) {
+        // Actualizar estado local
+        currentLesson.isCompleted = true;
+        setRenderBump(v => v + 1);
+        
+        // Iniciar contador para siguiente lección si existe
+        if (nextLesson) {
+          setAutoplayCountdown(10); // 10 segundos
+        } else if (isCourseCompleted) {
+          setShowCourseCompleted(true);
+        }
+      } else {
+        alert(res.error || "No se pudo marcar la clase como completada");
+      }
+    } catch (e) {
+      console.error("Error al completar la clase", e);
+      alert("Error al completar la clase");
+    }
+  };
+  
   // Manejar la finalización del quiz
   const handleQuizComplete = (score: number, passed: boolean) => {
     setQuizScore(score);
     setQuizPassed(passed);
     setQuizCompleted(true);
+    
+    // Si el quiz no fue aprobado, no permitir avanzar al siguiente módulo
+    if (!passed) {
+      console.log("Quiz no aprobado. No se desbloqueará el siguiente módulo.");
+    } else {
+      console.log("Quiz aprobado. Se desbloqueará el siguiente módulo.");
+    }
   };
   
   // Volver a la lección desde el quiz
@@ -196,12 +269,24 @@ export default function LearningComponent({
             <ChevronLeft size={20} />
             <span className="ml-1 hidden md:inline">Volver al curso</span>
           </Link>
-          <h1 className="truncate text-lg font-medium">
-            {isQuizMode && currentModule.quiz 
-              ? `Quiz: ${currentModule.quiz.title}` 
-              : course.title
-            }
-          </h1>
+          <div className="flex items-center">
+            <h1 className="truncate text-lg font-medium mr-4">
+              {isQuizMode && currentModule.quiz 
+                ? `Quiz: ${currentModule.quiz.title}` 
+                : course.title
+              }
+            </h1>
+            {!isQuizMode && currentLesson && !currentLesson.isCompleted && (
+              <Button 
+                onClick={markLessonCompleted}
+                className="bg-green-600 hover:bg-green-700"
+                size="sm"
+              >
+                <CheckCircle className="mr-2" size={14} />
+                Marcar completada
+              </Button>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-4">
           <div className="hidden md:block">
@@ -249,7 +334,7 @@ export default function LearningComponent({
                   <h3 className="font-medium">
                     {moduleIndex + 1}. {module.title}
                   </h3>
-                  {userProgress?.moduleProgress.some(m => m.moduleId === module.id && m.progress === 100) && (
+                  {module.lessons.every(l => l.isCompleted) && (
                     <CheckCircle size={16} className="text-[#5352F6]" />
                   )}
                 </div>
@@ -324,7 +409,7 @@ export default function LearningComponent({
                         ) : (
                           <div 
                             className="flex items-center justify-between p-4 opacity-50 cursor-not-allowed"
-                            onMouseEnter={() => console.log("Quiz bloqueado", module.quiz.title)}
+                            onMouseEnter={() => console.log("Quiz disponible", module.quiz.title)}
                           >
                             <div className="flex items-center">
                               <div className="mr-3 flex h-6 w-6 items-center justify-center rounded-full border border-[#E5E5E5] bg-white">
@@ -386,11 +471,11 @@ export default function LearningComponent({
                       <div className="border-t border-[#E5E5E5]">
                         {isQuizAvailable ? (
                           <Link
-                            href={`/course/${course.slug}/${module.quiz.slug || `quiz-${module.id}`}`}
+                            href={`/course/${course.slug}/${module.quiz.slug || module.quiz.id}`}
                             className={`flex items-center justify-between p-4 ${
                               isQuizMode && module.id === currentModule.id ? "bg-[#F5F5F5]" : ""
                             } hover:bg-gray-50 transition-colors`}
-                            onMouseEnter={() => console.log("Quiz bloqueado", module.quiz.title)}
+                            onMouseEnter={() => console.log("Quiz disponible", module.quiz.title)}
                           >
                             <div className="flex items-center">
                               <div className="mr-3 flex h-6 w-6 items-center justify-center rounded-full bg-green-100">
@@ -409,7 +494,7 @@ export default function LearningComponent({
                         ) : (
                           <div 
                             className="flex items-center justify-between p-4 opacity-50 cursor-not-allowed"
-                            onMouseEnter={() => console.log("Quiz bloqueado", module.quiz.title)}
+                            onMouseEnter={() => console.log("Quiz disponible", module.quiz.title)}
                           >
                             <div className="flex items-center">
                               <div className="mr-3 flex h-6 w-6 items-center justify-center rounded-full bg-gray-100">
@@ -442,6 +527,7 @@ export default function LearningComponent({
           {(isQuizMode || showQuiz) ? (
             <QuizComponent 
               quiz={currentQuiz!}
+              courseId={course.id}
               onComplete={handleQuizComplete}
               onBack={handleQuizBack}
             />
@@ -467,9 +553,9 @@ export default function LearningComponent({
                         <span>Tiempo actual: {videoDebugInfo.currentTime}s</span>
                         <span>Duración total: {videoDebugInfo.duration}s</span>
                         <span>Restante: {videoDebugInfo.remaining}s</span>
-                        <span>Meta 90%: {videoDebugInfo.target90Percent}s</span>
-                        <span className={videoDebugInfo.progress >= 90 ? "text-green-400 font-bold" : videoDebugInfo.progress >= 85 ? "text-yellow-400 font-bold" : ""}>
-                          Progreso: {videoDebugInfo.progress}% {videoDebugInfo.progress >= 85 && videoDebugInfo.progress < 90 ? "¡Casi completado!" : videoDebugInfo.progress >= 90 ? "¡COMPLETADO!" : ""}
+                        <span>Meta 95%: {videoDebugInfo.target95Percent}s</span>
+                        <span className={videoDebugInfo.progress >= 95 ? "text-green-400 font-bold" : videoDebugInfo.progress >= 90 ? "text-yellow-400 font-bold" : ""}>
+                          Progreso: {videoDebugInfo.progress}% {videoDebugInfo.progress >= 90 && videoDebugInfo.progress < 95 ? "¡Casi completado!" : videoDebugInfo.progress >= 95 ? "¡COMPLETADO!" : ""}
                         </span>
                       </div>
                       <div className="w-full bg-gray-700 h-2 rounded-full overflow-hidden">
@@ -481,7 +567,7 @@ export default function LearningComponent({
                       <div className="w-full bg-gray-700 h-1 mt-1 rounded-full overflow-hidden relative">
                         <div 
                           className="absolute h-full bg-red-500 w-1"
-                          style={{ left: `${90}%` }}
+                          style={{ left: `${95}%` }}
                         ></div>
                         <div 
                           className="h-full bg-green-500 transition-all duration-300 ease-out"
@@ -556,7 +642,7 @@ export default function LearningComponent({
                                               duration: Math.round(duration),
                                               progress: Math.round(progress),
                                               remaining: Math.round(duration - currentTime),
-                                              target90Percent: Math.round(duration * 0.9)
+                                              target95Percent: Math.round(duration * 0.95)
                                             };
                                             
                                             // Actualizar el estado con la información de depuración
@@ -567,11 +653,34 @@ export default function LearningComponent({
                                               console.log("Video progress:", JSON.stringify(debugInfo, null, 2));
                                             }
                                             
-                                            // Si el progreso es mayor o igual al 90%, mostrar la alerta
-                                            if (progress >= 90) {
-                                              console.log("VIDEO COMPLETED:", JSON.stringify(debugInfo, null, 2));
-                                              alert(`¡Video completado al ${Math.round(progress)}%! Ya puedes marcar la lección como completada.`);
-                                              clearInterval(checkProgress);
+                                            // Si el progreso es >= 95%, marcar completado (una sola vez)
+                                            if (progress >= 95 && !hasMarkedByVideo && currentLesson) {
+                                              setHasMarkedByVideo(true);
+                                              (async () => {
+                                                try {
+                                                  const ok = ensureLoginOrRedirect(`/course/${course.slug}/${currentLesson.slug || currentLesson.id}`, router.push);
+                                                  if (!ok) {
+                                                    clearInterval(checkProgress);
+                                                    return;
+                                                  }
+                                                  const res = await markLessonCompletedAction({ courseId: course.id, lessonId: currentLesson.id });
+                                                  if (res.success) {
+                                                    // Actualizar estado local
+                                                    currentLesson.isCompleted = true;
+                                                    
+                                                    // Iniciar contador para siguiente lección si existe
+                                                    if (nextLesson) {
+                                                      setAutoplayCountdown(10); // 10 segundos
+                                                    }
+                                                    
+                                                    setRenderBump(v => v + 1);
+                                                  }
+                                                } catch (e) {
+                                                  console.error('Error marcando clase completa por video', e);
+                                                } finally {
+                                                  clearInterval(checkProgress);
+                                                }
+                                              })();
                                             }
                                           }, 5000); // Verificar cada 5 segundos
                                         }
@@ -640,18 +749,75 @@ export default function LearningComponent({
               
               {/* Información de la lección */}
               <div className="border-t border-[#E5E5E5] p-6">
-                <div className="mb-6">
-                  <h2 className="mb-2 text-2xl font-bold">{currentLesson.title}</h2>
-                  <div className="flex items-center gap-4 text-sm text-[#6D6C6C]">
-                    <span className="flex items-center">
-                      <Clock size={16} className="mr-1" />
-                      {currentLesson.duration} minutos
-                    </span>
-                    <span>
-                      Lección {currentModule.lessons.findIndex(l => l.id === currentLesson.id) + 1} de {currentModule.lessons.length}
-                    </span>
+                <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div>
+                    <h2 className="mb-2 text-2xl font-bold">{currentLesson.title}</h2>
+                    <div className="flex items-center gap-4 text-sm text-[#6D6C6C]">
+                      <span className="flex items-center">
+                        <Clock size={16} className="mr-1" />
+                        {currentLesson.duration} minutos
+                      </span>
+                      <span>
+                        Lección {currentModule.lessons.findIndex(l => l.id === currentLesson.id) + 1} de {currentModule.lessons.length}
+                      </span>
+                    </div>
                   </div>
+                  
+                  {!currentLesson.isCompleted && (
+                    <Button 
+                      onClick={markLessonCompleted}
+                      className="bg-green-600 hover:bg-green-700 whitespace-nowrap"
+                      size="sm"
+                    >
+                      <CheckCircle className="mr-2" size={16} />
+                      Marcar como completada
+                    </Button>
+                  )}
                 </div>
+                
+                {/* Contador de reproducción automática */}
+                {autoplayCountdown !== null && nextLesson && (
+                  <div className="mb-6 p-3 bg-[#EEEEFE] rounded-md flex items-center justify-between">
+                    <div className="flex items-center">
+                      <div className="bg-[#5352F6] text-white w-8 h-8 rounded-full flex items-center justify-center font-bold mr-3">
+                        {autoplayCountdown}
+                      </div>
+                      <div>
+                        <p className="font-medium">Reproduciendo siguiente lección en {autoplayCountdown}s</p>
+                        <p className="text-sm text-[#6D6C6C]">{nextLesson.lesson.title}</p>
+                      </div>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setPauseAutoplay(!pauseAutoplay)}
+                    >
+                      {pauseAutoplay ? "Reanudar" : "Pausar"}
+                    </Button>
+                  </div>
+                )}
+                
+                {/* Mensaje de felicitación al completar el curso */}
+                {showCourseCompleted && (
+                  <div className="mb-6 p-6 bg-[#F0FDF4] border border-[#86EFAC] rounded-lg text-center">
+                    <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-green-100 mb-4">
+                      <CheckCircle size={32} className="text-green-600" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">¡Felicidades! Has completado el curso</h3>
+                    <p className="text-[#6D6C6C] mb-4">
+                      Has finalizado todas las lecciones y evaluaciones de "{course.title}". 
+                      Continúa tu aprendizaje con más cursos de LOKL Academy.
+                    </p>
+                    <div className="flex justify-center gap-3">
+                      <Link href="/course">
+                        <Button variant="outline">Ver más cursos</Button>
+                      </Link>
+                      <Link href="/">
+                        <Button>Volver al inicio</Button>
+                      </Link>
+                    </div>
+                  </div>
+                )}
                 
                 <div className="prose max-w-none">
                   <p>
@@ -705,39 +871,7 @@ export default function LearningComponent({
                   </div>
                 )}
                 
-                {/* Botón para marcar como completada */}
-                <div className="mt-8 flex justify-center">
-                        <Button 
-                    onClick={() => {
-                      // Mostrar información de depuración
-                      const debugInfo = {
-                        lesson: {
-                          id: currentLesson?.id,
-                          title: currentLesson?.title,
-                          isCompleted: currentLesson?.isCompleted
-                        },
-                        module: {
-                          id: currentModule?.id,
-                          title: currentModule?.title
-                        },
-                        userProgress: userProgress ? {
-                          overallProgress: userProgress.overallProgress,
-                          completedLessons: userProgress.completedLessons,
-                          totalLessons: userProgress.totalLessons,
-                          moduleProgress: userProgress.moduleProgress
-                        } : null
-                      };
-                      
-                      console.log("LESSON COMPLETION DEBUG:", JSON.stringify(debugInfo, null, 2));
-                      alert("Lección marcada como completada");
-                      // Aquí implementaríamos la lógica real para marcar como completada
-                    }}
-                    className="bg-green-600 hover:bg-green-700"
-                  >
-                    <CheckCircle className="mr-2" size={16} />
-                    Marcar como completada
-                  </Button>
-                </div>
+                {/* Botón para marcar como completada ya está arriba */}
 
                 {/* Navegación entre lecciones */}
                 <div className="mt-8 flex items-center justify-between border-t border-[#E5E5E5] pt-6">
@@ -768,7 +902,7 @@ export default function LearningComponent({
                       <ChevronRight size={20} className="ml-1" />
                     </Link>
                   ) : (
-                    <Button>Finalizar curso</Button>
+                    <Button onClick={() => setShowCourseCompleted(true)}>Finalizar curso</Button>
                   )}
                 </div>
               </div>

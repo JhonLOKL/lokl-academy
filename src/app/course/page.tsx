@@ -6,6 +6,7 @@ import HeroSection from "@/components/course/hero-section";
 import CourseCard from "@/components/course/course-card";
 import BenefitsSection from "@/components/course/benefits-section";
 import PlanComparison from "@/components/course/plan-comparison";
+import { Skeleton } from "@/components/ui/skeleton";
  
 
 // Componentes nuevos
@@ -22,8 +23,9 @@ import {
   mockExternalTools,
   mockPlatformReviews
 } from "@/lib/course/mock-data";
-import { getCoursesCards } from "@/lib/course/mock-data-from-api";
-import { Course, CourseCardLite, UserProgress } from "@/lib/course/schema";
+import { Course } from "@/lib/course/schema";
+import { getAllCoursesAction, getUserCoursesAction } from "@/actions/course-action";
+import { useAuthStore } from "@/store/auth-store";
 import { getBlogsLiteAction } from "@/actions/blog-action";
 import BlogSection from "@/components/lokl-academy/sections/blog-section";
 
@@ -57,101 +59,41 @@ export default function CoursePage() {
     loadBlogs();
   }, []);
   
-  // Datos desde la "API" simulada
-  const apiCourses = useMemo(() => getCoursesCards.data.courses, []);
+  const { token } = useAuthStore();
 
-  // Derivar listas para "Mi progreso" y "Todos"
-  const inProgressCourses = useMemo(
-    () => apiCourses.filter(c => c.progress && c.progress.overallProgress > 0),
-    [apiCourses]
-  );
+  const [userCourses, setUserCourses] = useState<Course[]>([]);
+  const [allCourses, setAllCourses] = useState<Course[]>([]);
+  const [loadingCourses, setLoadingCourses] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    async function loadCourses() {
+      setLoadingCourses(true);
+      try {
+        const [allRes, userRes] = await Promise.all([
+          getAllCoursesAction(),
+          token ? getUserCoursesAction() : Promise.resolve({ success: true, data: [] as Course[] })
+        ]);
+        if (!mounted) return;
+        if (allRes.success) setAllCourses(allRes.data || []);
+        if (userRes.success) setUserCourses(userRes.data || []);
+      } catch (e) {
+        if (!mounted) return;
+        setAllCourses([]);
+        setUserCourses([]);
+      } finally {
+        if (mounted) setLoadingCourses(false);
+      }
+    }
+    loadCourses();
+    return () => { mounted = false; };
+  }, [token]);
+
+  const inProgressCourses = useMemo(() => userCourses, [userCourses]);
   const remainingCourses = useMemo(
-    () => apiCourses.filter(c => !inProgressCourses.some(ip => ip.id === c.id)),
-    [apiCourses, inProgressCourses]
+    () => allCourses.filter(c => !inProgressCourses.some(uc => uc.id === c.id)),
+    [allCourses, inProgressCourses]
   );
-
-  // Adaptador: CourseCardLite -> Course (para reutilizar el componente CourseCard)
-  const mapLiteToCourse = (lite: CourseCardLite): Course => {
-    return {
-      id: lite.id,
-      slug: lite.slug,
-      title: lite.title,
-      subtitle: lite.subtitle,
-      description: lite.description,
-      excerpt: lite.excerpt,
-      seo: lite.seo,
-      content: {
-        modules: [],
-        totalLessons: lite.progress?.totalLessons ?? 0,
-        totalDuration: lite.durationMinutes ?? 0,
-        difficulty: 'principiante',
-        requirements: [],
-        learningObjectives: [],
-        skillsYouWillLearn: [],
-        targetAudience: [],
-      },
-      category: lite.category,
-      tags: lite.tags,
-      instructor: {
-        id: lite.instructor.id,
-        name: lite.instructor.name,
-        slug: lite.instructor.slug,
-        bio: lite.instructor.bio,
-        avatar: lite.instructor.avatar,
-        expertise: [],
-      },
-      pricing: {
-        type: lite.pricing.type,
-        price: lite.pricing.price,
-        originalPrice: lite.pricing.originalPrice,
-        currency: lite.pricing.currency,
-      },
-      accessRequirements: {
-        plan: lite.accessRequirements.plan,
-      },
-      thumbnail: lite.thumbnail,
-      stats: {
-        enrolledCount: lite.studentsCount ?? 0,
-        completedCount: 0,
-        completionRate: 0,
-        averageRating: lite.rating ?? 0,
-        reviewsCount: 0,
-        totalViews: 0,
-        averageTimeToComplete: 0,
-      },
-      certificate: {
-        available: false,
-        criteria: {
-          completionRequired: false,
-        },
-      },
-      publishedAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      status: 'published',
-      settings: {
-        allowDownloads: false,
-        allowDiscussions: false,
-        showProgress: true,
-        enforceOrder: false,
-      },
-    };
-  };
-  
-  const mapLiteProgressToUserProgress = (lite: CourseCardLite): UserProgress | undefined => {
-    if (!lite.progress) return undefined;
-    const started = new Date().toISOString();
-    return {
-      userId: 'guest',
-      courseId: lite.id,
-      overallProgress: lite.progress.overallProgress,
-      completedLessons: lite.progress.completedLessons,
-      totalLessons: lite.progress.totalLessons,
-      timeSpent: 0,
-      moduleProgress: [],
-      startedAt: started,
-      lastAccessedAt: started,
-    };
-  };
   // Paths en progreso se omiten por ahora
 
   // Filtros deshabilitados temporalmente
@@ -170,41 +112,55 @@ export default function CoursePage() {
       {/* Contenido principal */}
       <section className="container mx-auto px-4 py-12">
         {/* Cursos en progreso (si existen) */}
-        {inProgressCourses.length > 0 && (
+        {loadingCourses ? (
           <div className="mt-6">
-            <h3 className="mb-6 text-xl font-bold tracking-tight">Continúa aprendiendo</h3>
+            <h3 className="mb-6 text-xl font-bold tracking-tight">Cargando cursos...</h3>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {inProgressCourses.map((course) => (
-                      <CourseCard 
-                  key={course.id} 
-                  course={mapLiteToCourse(course)}
-                        showProgress={true}
-                  progress={mapLiteProgressToUserProgress(course)}
-                />
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="overflow-hidden rounded-lg border border-[#E5E5E5] bg-white shadow-sm">
+                  <Skeleton className="h-48 w-full" />
+                  <div className="p-4">
+                    <Skeleton className="mb-2 h-4 w-24" />
+                    <Skeleton className="mb-2 h-6 w-full" />
+                    <Skeleton className="mb-4 h-4 w-3/4" />
+                    <Skeleton className="mb-3 h-4 w-32" />
+                    <Skeleton className="h-2 w-full" />
+                  </div>
+                </div>
               ))}
-                      </div>
-                    </div>
-                  )}
-                  
-        {/* Todos los cursos (excluye los ya iniciados) */}
-        {apiCourses.length > 0 && remainingCourses.length > 0 && (
-          <div className="mt-10">
-            <div className="mb-6 flex items-center justify-between">
-              <h3 className="text-xl font-bold tracking-tight">Todos los cursos</h3>
-              <div className="text-sm text-[#6D6C6C]">
-                Mostrando <span className="font-medium">{remainingCourses.length}</span> de {apiCourses.length} cursos
-              </div>
             </div>
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {remainingCourses.map((course) => (
-                <CourseCard 
-                  key={course.id} 
-                  course={mapLiteToCourse(course)}
-                />
-                ))}
-              </div>
+          </div>
+        ) : (
+          <>
+            {inProgressCourses.length > 0 && (
+              <div className="mt-6">
+                <h3 className="mb-6 text-xl font-bold tracking-tight">Continúa aprendiendo</h3>
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {inProgressCourses.map((course) => (
+                    <CourseCard key={course.id} course={course} showProgress={true} />
+                  ))}
+                </div>
               </div>
             )}
+            
+            {/* Todos los cursos (excluye los ya iniciados) */}
+            {allCourses.length > 0 && remainingCourses.length > 0 && (
+              <div className="mt-10">
+                <div className="mb-6 flex items-center justify-between">
+                  <h3 className="text-xl font-bold tracking-tight">Todos los cursos</h3>
+                  <div className="text-sm text-[#6D6C6C]">
+                    Mostrando <span className="font-medium">{remainingCourses.length}</span> de {allCourses.length} cursos
+                  </div>
+                </div>
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {remainingCourses.map((course) => (
+                    <CourseCard key={course.id} course={course} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </section>
 
       {/* Rutas de aprendizaje */}

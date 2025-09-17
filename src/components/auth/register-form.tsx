@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuthStore } from "@/store/auth-store";
+import { consumePostLoginRedirect } from "@/lib/auth-utils";
 import { 
   Card, 
   CardHeader, 
@@ -175,7 +176,8 @@ export default function RegisterForm() {
     });
     
     if (success) {
-      router.push("/");
+      const target = consumePostLoginRedirect() || "/";
+      router.push(target);
     } else {
       setShowErrorDialog(true);
     }
