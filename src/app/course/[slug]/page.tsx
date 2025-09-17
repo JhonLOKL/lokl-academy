@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound, useParams, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button, toast } from "@/components/design-system";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -68,7 +68,23 @@ export default function CourseDetailPage() {
   }, [slug]);
 
   if (!loading && (!course || error)) {
-    notFound();
+    return (
+      <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center px-4">
+        <div className="w-full max-w-xl rounded-lg border border-[#E5E5E5] bg-white p-8 text-center shadow-sm">
+          <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-red-50 flex items-center justify-center">
+            <AlertTriangle className="h-6 w-6 text-red-600" />
+          </div>
+          <h1 className="mb-2 text-xl font-bold">No se pudo cargar el curso</h1>
+          <p className="mb-6 text-[#6D6C6C]">
+            {error || "Ha ocurrido un error al cargar la información del curso."}
+          </p>
+          <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+            <Button variant="outline" onClick={() => router.refresh()}>Reintentar</Button>
+            <Button onClick={() => router.push("/course")}>Volver a cursos</Button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (loading) {
@@ -132,6 +148,67 @@ export default function CourseDetailPage() {
       month: 'long', 
       day: 'numeric' 
     }).format(date);
+  };
+
+  // Handler unificado para iniciar/continuar/ver curso (valida plan, inscripción y navega)
+  const handleStartCourse = async () => {
+    if (!course) return;
+    const courseLanding = `/course/${course.slug}`;
+    // Requiere login para iniciar/continuar
+    const ok = ensureLoginOrRedirect(courseLanding, router.push);
+    if (!ok) return;
+
+    // Validación de plan
+    const requiredPlan = course.accessRequirements.plan; // 'basic' | 'investor' | 'any' | 'premium'
+    const userPlan = user?.planType || 'basic';
+
+    const hasAccess =
+      requiredPlan === 'any' ||
+      requiredPlan === 'basic' ||
+      (requiredPlan === 'premium' && (userPlan === 'investor' || userPlan === 'premium')) ||
+      (requiredPlan === 'investor' && userPlan === 'investor');
+
+    if (!hasAccess) {
+      toast({
+        title: "Acceso denegado",
+        description: "Tu plan actual no permite acceder a este curso. Actualiza tu plan para continuar.",
+        variant: "destructive",
+        icon: <AlertTriangle className="h-5 w-5 text-red-600" />,
+      });
+      return;
+    }
+
+    if (!isEnrolled) {
+      const res = await enrollCourseAction({ courseId: course.id });
+      if (!res.success) {
+        toast({
+          title: "Error de inscripción",
+          description: res.error || "No se pudo inscribir al curso. Intenta nuevamente más tarde.",
+          variant: "destructive",
+          icon: <AlertTriangle className="h-5 w-5 text-red-600" />,
+        });
+        return;
+      } else {
+        toast({
+          title: "¡Inscripción exitosa!",
+          description: "Te has inscrito correctamente al curso. ¡Comienza a aprender ahora!",
+          variant: "success",
+          icon: <CheckCircle className="h-5 w-5 text-green-600" />,
+        });
+      }
+      // Recargar datos del curso para reflejar inscripción y progreso
+      const reload = await getCourseBySlugAction(String(slug));
+      if (reload.success && reload.data) {
+        setCourse(reload.data.course as Course);
+        setIsEnrolled(Boolean(reload.data.isEnrolled));
+      }
+    }
+
+    // Navegar a la primera lección
+    const first = course.content.modules[0]?.lessons[0];
+    if (first) {
+      router.push(`/course/${course.slug}/${first.slug || first.id}`);
+    }
   };
 
   return (
@@ -302,65 +379,7 @@ export default function CourseDetailPage() {
                       size="lg"
                       className="flex-1"
                       disabled={loading || !course}
-                      onClick={async () => {
-                        if (!course) return;
-                        const courseLanding = `/course/${course.slug}`;
-                        // Requiere login para iniciar/continuar
-                        const ok = ensureLoginOrRedirect(courseLanding, router.push);
-                        if (!ok) return;
-
-                        // Validación de plan
-                        const requiredPlan = course.accessRequirements.plan; // 'basic' | 'investor' | 'any' | 'premium'
-                        const userPlan = user?.planType || 'basic';
-
-                        const hasAccess =
-                          requiredPlan === 'any' ||
-                          requiredPlan === 'basic' ||
-                          (requiredPlan === 'premium' && (userPlan === 'investor' || userPlan === 'premium')) ||
-                          (requiredPlan === 'investor' && userPlan === 'investor');
-
-                        if (!hasAccess) {
-                          toast({
-                            title: "Acceso denegado",
-                            description: "Tu plan actual no permite acceder a este curso. Actualiza tu plan para continuar.",
-                            variant: "destructive",
-                            icon: <AlertTriangle className="h-5 w-5 text-red-600" />,
-                          });
-                          return;
-                        }
-
-                        if (!isEnrolled) {
-                          const res = await enrollCourseAction({ courseId: course.id });
-                          if (!res.success) {
-                            toast({
-                              title: "Error de inscripción",
-                              description: res.error || "No se pudo inscribir al curso. Intenta nuevamente más tarde.",
-                              variant: "destructive",
-                              icon: <AlertTriangle className="h-5 w-5 text-red-600" />,
-                            });
-                            return;
-                          } else {
-                            toast({
-                              title: "¡Inscripción exitosa!",
-                              description: "Te has inscrito correctamente al curso. ¡Comienza a aprender ahora!",
-                              variant: "success",
-                              icon: <CheckCircle className="h-5 w-5 text-green-600" />,
-                            });
-                          }
-                          // Recargar datos del curso para reflejar inscripción y progreso
-                          const reload = await getCourseBySlugAction(String(slug));
-                          if (reload.success && reload.data) {
-                            setCourse(reload.data.course as Course);
-                            setIsEnrolled(Boolean(reload.data.isEnrolled));
-                          }
-                        }
-
-                        // Navegar a la primera lección
-                        const first = course.content.modules[0]?.lessons[0];
-                        if (first) {
-                          router.push(`/course/${course.slug}/${first.slug || first.id}`);
-                        }
-                      }}
+                      onClick={handleStartCourse}
                     >
                       {isEnrolled ? (isCourseCompleted ? 'Ver de nuevo' : 'Continuar curso') : (isInvestorExclusive ? 'Ver curso' : 'Ver curso')}
                     </Button>
@@ -494,53 +513,98 @@ export default function CourseDetailPage() {
                                        </Badge>
                                      </div>
                                    </div>
-                                 ) : (
-                                   <Link 
-                                     href={`/course/${course?.slug || ''}/${lesson.slug || lesson.id}`}
-                                     className="flex items-center justify-between w-full"
-                                   >
-                                     <div className="flex items-center gap-3">
-                                       {lesson.thumbnail ? (
-                                         <div className="relative h-10 w-16 overflow-hidden rounded-md flex-shrink-0">
-                                           <Image
-                                             src={lesson.thumbnail.url}
-                                             alt={lesson.thumbnail.alt || lesson.title}
-                                             fill
-                                             className="object-cover"
-                                           />
-                                         </div>
-                                       ) : lesson.isPreview ? (
-                                         <div className="h-10 w-16 rounded-md bg-green-100 flex items-center justify-center flex-shrink-0">
-                                           <BookOpen size={20} className="text-green-600" />
-                                         </div>
-                                       ) : module.lessons.every(l => l.isCompleted) ? (
-                                         <div className="h-10 w-16 rounded-md bg-[#EEEEFE] flex items-center justify-center flex-shrink-0">
-                                           <CheckCircle size={20} className="text-[#5352F6]" />
-                                         </div>
-                                       ) : (
-                                         <div className="h-10 w-16 rounded-md bg-gray-100 flex items-center justify-center flex-shrink-0">
-                                           <span className="text-sm font-medium text-gray-500">{moduleIndex + 1}.{lessonIndex + 1}</span>
-                                         </div>
-                                       )}
-                                       <div className="flex flex-col">
-                                         <span className={`text-sm ${lesson.isPreview ? "font-medium" : ""}`}>
-                                           {lesson.title}
-                                           {lesson.isPreview && (
-                                             <Badge className="ml-2 bg-green-100 text-green-600 text-xs">
-                                               Vista previa
-                                             </Badge>
-                                           )}
-                                         </span>
-                                         <span className="text-xs text-[#6D6C6C]">{formatDuration(lesson.duration)}</span>
-                                       </div>
-                                     </div>
-                                     <div className="flex items-center">
-                                       {lesson.isCompleted && (
-                                         <CheckCircle size={16} className="text-green-500 mr-2" />
-                                       )}
-                                     </div>
-                                   </Link>
-                                 )}
+                                ) : (
+                                  isEnrolled ? (
+                                    <Link 
+                                      href={`/course/${course?.slug || ''}/${lesson.slug || lesson.id}`}
+                                      className="flex items-center justify-between w-full"
+                                    >
+                                      <div className="flex items-center gap-3">
+                                        {lesson.thumbnail ? (
+                                          <div className="relative h-10 w-16 overflow-hidden rounded-md flex-shrink-0">
+                                            <Image
+                                              src={lesson.thumbnail.url}
+                                              alt={lesson.thumbnail.alt || lesson.title}
+                                              fill
+                                              className="object-cover"
+                                            />
+                                          </div>
+                                        ) : lesson.isPreview ? (
+                                          <div className="h-10 w-16 rounded-md bg-green-100 flex items-center justify-center flex-shrink-0">
+                                            <BookOpen size={20} className="text-green-600" />
+                                          </div>
+                                        ) : module.lessons.every(l => l.isCompleted) ? (
+                                          <div className="h-10 w-16 rounded-md bg-[#EEEEFE] flex items-center justify-center flex-shrink-0">
+                                            <CheckCircle size={20} className="text-[#5352F6]" />
+                                          </div>
+                                        ) : (
+                                          <div className="h-10 w-16 rounded-md bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                            <span className="text-sm font-medium text-gray-500">{moduleIndex + 1}.{lessonIndex + 1}</span>
+                                          </div>
+                                        )}
+                                        <div className="flex flex-col">
+                                          <span className={`text-sm ${lesson.isPreview ? "font-medium" : ""}`}>
+                                            {lesson.title}
+                                            {lesson.isPreview && (
+                                              <Badge className="ml-2 bg-green-100 text-green-600 text-xs">
+                                                Vista previa
+                                              </Badge>
+                                            )}
+                                          </span>
+                                          <span className="text-xs text-[#6D6C6C]">{formatDuration(lesson.duration)}</span>
+                                        </div>
+                                      </div>
+                                      <div className="flex items-center">
+                                        {lesson.isCompleted && (
+                                          <CheckCircle size={16} className="text-green-500 mr-2" />
+                                        )}
+                                      </div>
+                                    </Link>
+                                  ) : (
+                                    <div className="flex items-center justify-between w-full">
+                                      <div className="flex items-center gap-3">
+                                        {lesson.thumbnail ? (
+                                          <div className="relative h-10 w-16 overflow-hidden rounded-md flex-shrink-0">
+                                            <Image
+                                              src={lesson.thumbnail.url}
+                                              alt={lesson.thumbnail.alt || lesson.title}
+                                              fill
+                                              className="object-cover"
+                                            />
+                                          </div>
+                                        ) : lesson.isPreview ? (
+                                          <div className="h-10 w-16 rounded-md bg-green-100 flex items-center justify-center flex-shrink-0">
+                                            <BookOpen size={20} className="text-green-600" />
+                                          </div>
+                                        ) : module.lessons.every(l => l.isCompleted) ? (
+                                          <div className="h-10 w-16 rounded-md bg-[#EEEEFE] flex items-center justify-center flex-shrink-0">
+                                            <CheckCircle size={20} className="text-[#5352F6]" />
+                                          </div>
+                                        ) : (
+                                          <div className="h-10 w-16 rounded-md bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                            <span className="text-sm font-medium text-gray-500">{moduleIndex + 1}.{lessonIndex + 1}</span>
+                                          </div>
+                                        )}
+                                        <div className="flex flex-col">
+                                          <span className={`text-sm ${lesson.isPreview ? "font-medium" : ""}`}>
+                                            {lesson.title}
+                                            {lesson.isPreview && (
+                                              <Badge className="ml-2 bg-green-100 text-green-600 text-xs">
+                                                Vista previa
+                                              </Badge>
+                                            )}
+                                          </span>
+                                          <span className="text-xs text-[#6D6C6C]">{formatDuration(lesson.duration)}</span>
+                                        </div>
+                                      </div>
+                                      <div className="flex items-center">
+                                        {lesson.isCompleted && (
+                                          <CheckCircle size={16} className="text-green-500 mr-2" />
+                                        )}
+                                      </div>
+                                    </div>
+                                  )
+                                )}
                                </div>
                              );
                            })}
@@ -589,37 +653,57 @@ export default function CourseDetailPage() {
                                        </Badge>
                                      </div>
                                    </div>
-                                 ) : (
-                                   <>
-                                     <Link 
-                                       href={`/course/${course.slug}/${module.quiz.slug || module.quiz.id}`}
-                                       className="flex items-center gap-3 hover:text-[#5352F6] transition-colors"
-                                     >
-                                       <div className="h-10 w-16 rounded-md bg-[#FFF4E5] flex items-center justify-center flex-shrink-0">
-                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500">
-                                           <path d="M9 11l3 3 8-8"/>
-                                           <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/>
-                                         </svg>
-                                       </div>
-                                       <div className="flex flex-col">
-                                         <span className="text-sm font-medium">
-                                           {module.quiz.title || `Evaluación: ${module.title}`}
-                                           <Badge className="ml-2 bg-amber-100 text-amber-600 text-xs">
-                                             Quiz
-                                           </Badge>
-                                         </span>
-                                         <span className="text-xs text-[#6D6C6C]">{module.quiz.questions.length} preguntas • Puntaje mínimo: {module.quiz.passingScore}%</span>
-                                       </div>
-                                     </Link>
-                                     <div className="flex items-center">
-                                       {module.quiz.isCompleted && (
-                                         <Badge className={`${module.quiz.passed ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"} text-xs mr-2`}>
-                                           {module.quiz.passed ? "Aprobado" : "No aprobado"}
-                                         </Badge>
-                                       )}
-                                     </div>
-                                   </>
-                                 )}
+                                ) : (
+                                  isEnrolled ? (
+                                    <>
+                                      <Link 
+                                        href={`/course/${course.slug}/${module.quiz.slug || module.quiz.id}`}
+                                        className="flex items-center gap-3 hover:text-[#5352F6] transition-colors"
+                                      >
+                                        <div className="h-10 w-16 rounded-md bg-[#FFF4E5] flex items-center justify-center flex-shrink-0">
+                                          <svg xmlns="http://www.w3.org/200/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500">
+                                            <path d="M9 11l3 3 8-8"/>
+                                            <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/>
+                                          </svg>
+                                        </div>
+                                        <div className="flex flex-col">
+                                          <span className="text-sm font-medium">
+                                            {module.quiz.title || `Evaluación: ${module.title}`}
+                                            <Badge className="ml-2 bg-amber-100 text-amber-600 text-xs">
+                                              Quiz
+                                            </Badge>
+                                          </span>
+                                          <span className="text-xs text-[#6D6C6C]">{module.quiz.questions.length} preguntas • Puntaje mínimo: {module.quiz.passingScore}%</span>
+                                        </div>
+                                      </Link>
+                                      <div className="flex items-center">
+                                        {module.quiz.isCompleted && (
+                                          <Badge className={`${module.quiz.passed ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"} text-xs mr-2`}>
+                                            {module.quiz.passed ? "Aprobado" : "No aprobado"}
+                                          </Badge>
+                                        )}
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <div className="flex items-center gap-3">
+                                      <div className="h-10 w-16 rounded-md bg-[#FFF4E5] flex items-center justify-center flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500">
+                                          <path d="M9 11l3 3 8-8"/>
+                                          <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/>
+                                        </svg>
+                                      </div>
+                                      <div className="flex flex-col">
+                                        <span className="text-sm font-medium">
+                                          {module.quiz.title || `Evaluación: ${module.title}`}
+                                          <Badge className="ml-2 bg-amber-100 text-amber-600 text-xs">
+                                            Quiz
+                                          </Badge>
+                                        </span>
+                                        <span className="text-xs text-[#6D6C6C]">{module.quiz.questions.length} preguntas • Puntaje mínimo: {module.quiz.passingScore}%</span>
+                                      </div>
+                                    </div>
+                                  )
+                                )}
                                </div>
                              );
                            })()}
@@ -858,7 +942,7 @@ export default function CourseDetailPage() {
               </div>
               
               {isInvestorExclusive ? (
-                <Button className="w-full">Soy inversionista, ver curso</Button>
+                <Button className="w-full" disabled={loading || !course} onClick={handleStartCourse}>Soy inversionista, ver curso</Button>
               ) : isEnrolled ? (
                 <Link href={`/course/${course.slug}/${course.content.modules[0].lessons[0].slug || course.content.modules[0].lessons[0].id}`} className="w-full">
                   <Button className="w-full">{isCourseCompleted ? 'Ver de nuevo' : 'Continuar curso'}</Button>

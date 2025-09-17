@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { notFound } from "next/navigation";
 import { getCourseBySlugAction } from "@/actions/course-action";
 import { Course } from "@/lib/course/schema";
@@ -22,6 +22,7 @@ const LearningComponent = dynamic(() => import("@/components/course/learning-com
 
 export default function LessonPage() {
   const { slug, lessonSlug } = useParams<{ slug: string; lessonSlug: string }>();
+  const router = useRouter();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -46,6 +47,11 @@ export default function LessonPage() {
         if (!isMounted) return;
         
         if (res.success && res.data && res.data.course) {
+          // Validar que el usuario esté inscrito en el curso; si no, redirigir a la landing del curso
+          if (!res.data.isEnrolled) {
+            router.replace(`/course/${slug}`);
+            return;
+          }
           const c = res.data.course;
           // Normalizar flags de completado si vienen con completedAt
           c.content.modules.forEach((m: any) => {
@@ -130,7 +136,24 @@ export default function LessonPage() {
   }, [slug, lessonSlug]);
 
   if (!loading && (!course || error)) {
-    notFound();
+    return (
+      <div className="flex h-screen items-center justify-center px-4">
+        <div className="w-full max-w-xl rounded-lg border border-[#E5E5E5] bg-white p-8 text-center shadow-sm">
+          <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-red-50 flex items-center justify-center">
+            {/* icono inline para evitar más imports */}
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          </div>
+          <h1 className="mb-2 text-xl font-bold">No se pudo cargar el contenido</h1>
+          <p className="mb-6 text-[#6D6C6C]">
+            {error || "Revisa tu conexión e intenta nuevamente."}
+          </p>
+          <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+            <button className="inline-flex h-10 items-center justify-center rounded-md border border-[#E5E5E5] bg-white px-4 text-sm font-medium hover:bg-[#F5F5F5]" onClick={() => window.location.reload()}>Reintentar</button>
+            <button className="inline-flex h-10 items-center justify-center rounded-md bg-[#5352F6] px-4 text-sm font-medium text-white hover:opacity-90" onClick={() => router.replace(`/course/${slug}`)}>Volver al curso</button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (loading || (!currentLesson && !isQuizMode) || !currentModule) {
