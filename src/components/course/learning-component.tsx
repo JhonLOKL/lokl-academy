@@ -289,7 +289,7 @@ export default function LearningComponent({
   }; */
   
   return (
-    <div className="flex h-screen flex-col bg-[#FAFAFA]">
+    <div className="flex min-h-screen flex-col bg-[#FAFAFA]">
       {/* Header */}
       <header className="flex h-16 items-center justify-between border-b border-[#E5E5E5] bg-white px-4">
         <div className="flex items-center">
@@ -332,7 +332,7 @@ export default function LearningComponent({
         </div>
       </header>
       
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-x-hidden">
         {/* Sidebar - Lista de módulos y lecciones */}
         <aside 
           className={`w-full border-r border-[#E5E5E5] bg-white md:w-80 ${
@@ -546,7 +546,7 @@ export default function LearningComponent({
         </aside>
         
         {/* Contenido principal */}
-        <main className="flex-1 overflow-y-auto bg-white">
+        <main className="flex-1 bg-white">
           {/* Si estamos en modo quiz, mostrar solo el quiz */}
           {(isQuizMode || showQuiz) ? (
             <QuizComponent 

@@ -288,9 +288,6 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               .custom-scrollbar::-webkit-scrollbar-thumb:hover {
                 background: #5352F6;
               }
-              body:has(.fixed) {
-                overflow: hidden;
-              }
             `}</style>
 
             {/* Botón de acción */}
