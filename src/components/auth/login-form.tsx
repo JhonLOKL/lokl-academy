@@ -112,9 +112,6 @@ export default function LoginForm() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email */}
             <FormField label="Correo electrónico" htmlFor="email">
-              <label htmlFor="email" className="block text-sm font-medium">
-                Correo electrónico
-              </label>
               <Input
                 id="email"
                 type="email"
@@ -131,9 +128,6 @@ export default function LoginForm() {
             {/* Contraseña */}
             <FormField label="Contraseña" htmlFor="password">
               <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm font-medium">
-                  Contraseña
-                </label>
                 <Link href="/forgot-password" className="text-sm text-[#5352F6] hover:underline">
                   ¿Olvidaste tu contraseña?
                 </Link>

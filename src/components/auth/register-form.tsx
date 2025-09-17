@@ -228,9 +228,7 @@ export default function RegisterForm() {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {/* Nombre */}
               <FormField label="Nombre" htmlFor="firstName">
-                <label htmlFor="firstName" className="block text-sm font-medium">
-                  Nombre
-                </label>
+
                 <Input
                   id="firstName"
                   type="text"
@@ -246,9 +244,7 @@ export default function RegisterForm() {
               
               {/* Apellido */}
               <FormField label="Apellido" htmlFor="lastName">
-                <label htmlFor="lastName" className="block text-sm font-medium">
-                  Apellido
-                </label>
+
                 <Input
                   id="lastName"
                   type="text"
@@ -265,9 +261,7 @@ export default function RegisterForm() {
             
             {/* Email */}
             <FormField label="Correo electrónico" htmlFor="email">
-              <label htmlFor="email" className="block text-sm font-medium">
-                Correo electrónico
-              </label>
+
               <Input
                 id="email"
                 type="email"
@@ -283,9 +277,7 @@ export default function RegisterForm() {
             
             {/* Contraseña */}
             <FormField label="Contraseña" htmlFor="password">
-              <label htmlFor="password" className="block text-sm font-medium">
-                Contraseña
-              </label>
+
               <Input
                 id="password"
                 type="password"
@@ -301,9 +293,6 @@ export default function RegisterForm() {
             
             {/* Confirmar Contraseña */}
             <FormField label="Confirmar contraseña" htmlFor="confirmPassword">
-              <label htmlFor="confirmPassword" className="block text-sm font-medium">
-                Confirmar contraseña
-              </label>
               <Input
                 id="confirmPassword"
                 type="password"
@@ -319,9 +308,7 @@ export default function RegisterForm() {
             
             {/* Teléfono */}
             <FormField label="Teléfono" htmlFor="phone">
-              <label htmlFor="phone" className="block text-sm font-medium">
-                Teléfono
-              </label>
+
               <PhoneInput
                 countryCode={countryCode}
                 setCountryCode={setCountryCode}
@@ -333,9 +320,7 @@ export default function RegisterForm() {
             
             {/* ¿Cómo nos conociste? */}
             <FormField label="¿Cómo nos conociste?" htmlFor="howDidYouHearAboutUs">
-              <label htmlFor="howDidYouHearAboutUs" className="block text-sm font-medium">
-                ¿Cómo nos conociste?
-              </label>
+
               <Select 
                 value={howDidYouHearAboutUs} 
                 onValueChange={setHowDidYouHearAboutUs}
@@ -358,9 +343,7 @@ export default function RegisterForm() {
             
             {/* Código de referido (opcional) */}
             <FormField label="Código de referido (opcional)" htmlFor="referralCode">
-              <label htmlFor="referralCode" className="block text-sm font-medium">
-                Código de referido (opcional)
-              </label>
+
               <Input
                 id="referralCode"
                 type="text"
@@ -393,9 +376,7 @@ export default function RegisterForm() {
                 onCheckedChange={(checked) => setTermsAccepted(checked === true)}
                 className={validationErrors.termsAccepted ? "border-[#FF3B30]" : ""}
               />
-              <label htmlFor="terms" className="text-sm">
-                Acepto los <Link href="/terms" className="text-[#5352F6] hover:underline">términos y condiciones</Link> y la <Link href="/privacy" className="text-[#5352F6] hover:underline">política de privacidad</Link>
-              </label>
+
             </div>
             {validationErrors.termsAccepted && (
               <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.termsAccepted}</p>
