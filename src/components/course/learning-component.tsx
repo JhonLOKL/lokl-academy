@@ -16,7 +16,7 @@ import {
   CheckCircle, 
   ChevronLeft, 
   ChevronRight, 
-  Menu, 
+  BookOpen,
   X, 
   Play, 
   Download,
@@ -293,22 +293,37 @@ export default function LearningComponent({
     <div className="flex min-h-screen flex-col bg-[#FAFAFA]">
       {/* Header */}
       <header className="flex h-16 items-center justify-between border-b border-[#E5E5E5] bg-white px-4">
-        <div className="flex items-center">
-          <Link href={`/course/${course.slug}`} className="mr-4 flex items-center text-[#6D6C6C] hover:text-[#5352F6]">
+        {/* Contenedor izquierdo con estructura mejorada */}
+        <div className="flex items-center min-w-0 flex-1 pr-2">
+          {/* Botón de volver */}
+          <Link href={`/course/${course.slug}`} className="mr-2 flex-shrink-0 flex items-center text-[#6D6C6C] hover:text-[#5352F6]">
             <ChevronLeft size={20} />
             <span className="ml-1 hidden md:inline">Volver al curso</span>
           </Link>
-          <div className="flex items-center">
-            <h1 className="truncate text-lg font-medium mr-4">
-              {isQuizMode && currentModule.quiz 
-                ? `Quiz: ${currentModule.quiz.title}` 
-                : course.title
-              }
-            </h1>
+          
+          {/* Contenedor del título con múltiples líneas */}
+          <div className="flex items-start min-w-0 flex-1">
+            <div className="min-w-0 flex-1">
+              <h1 
+                className="text-sm leading-tight font-medium mr-2 line-clamp-2 sm:line-clamp-2 md:text-base md:line-clamp-1"
+              >
+                {isQuizMode && currentModule.quiz 
+                  ? `Quiz: ${currentModule.quiz.title}` 
+                  : course.title
+                }
+              </h1>
+              
+              {/* Muestra el progreso debajo del título */}
+              <div className="text-xs text-[#6D6C6C] mt-1 md:hidden">
+                {progressPercentage}% completado
+              </div>
+            </div>
+            
+            {/* Botón de marcar completada - solo visible en desktop */}
             {!isQuizMode && currentLesson && !currentLesson.isCompleted && (
               <Button 
                 onClick={markLessonCompleted}
-                className="bg-green-600 hover:bg-green-700"
+                className="bg-green-600 hover:bg-green-700 hidden md:flex flex-shrink-0"
                 size="sm"
               >
                 <CheckCircle className="mr-2" size={14} />
@@ -317,18 +332,28 @@ export default function LearningComponent({
             )}
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        
+        {/* Contenedor derecho con progreso y botón de menú */}
+        <div className="flex items-center gap-3 flex-shrink-0">
+          {/* Barra de progreso - solo visible en desktop */}
           <div className="hidden md:block">
             <Progress value={progressPercentage} className="h-2 w-32" />
             <div className="mt-1 text-xs text-[#6D6C6C]">{progressPercentage}% completado</div>
           </div>
+          
+          {/* Botón de menú con icono de libro - siempre visible en móvil */}
           <Button
             variant="outline"
             size="sm"
-            className="md:hidden"
+            className="md:hidden flex-shrink-0 bg-[#EEEEFE] border-[#5352F6]/20 hover:bg-[#EEEEFE]/80"
             onClick={() => setSidebarOpen(!sidebarOpen)}
+            title={sidebarOpen ? "Cerrar contenido del curso" : "Ver contenido del curso"}
           >
-            {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
+            {sidebarOpen ? (
+              <BookOpen size={18} className="text-[#5352F6]" />
+            ) : (
+              <BookOpen size={18} className="text-[#5352F6]" />
+            )}
           </Button>
         </div>
       </header>
