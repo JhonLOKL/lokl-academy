@@ -979,7 +979,10 @@ export default function CourseDetailPage() {
                   {loading ? (
                     <div className="h-4 w-36 animate-pulse rounded bg-gray-200 mb-2" style={{ animationDuration: '1.2s' }} />
                   ) : (
+                    <>
                     <p className="text-lg font-medium text-[#333]">{course?.instructor?.name || 'Instructor LOKL'}</p>
+                    <p className="text-sm text-[#333]">{course?.instructor?.role || ''}</p>
+                    </>
                   )}
                   {loading ? (
                     <div className="h-3 w-48 animate-pulse rounded bg-gray-200" style={{ animationDuration: '1.2s' }} />
