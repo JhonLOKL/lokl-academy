@@ -7,6 +7,26 @@
 // TIPOS BASE Y COMUNES
 // ===================================================================
 
+// Constantes para tipos de pricing
+export const PRICING_TYPES = {
+  FREE: 'free',
+  PREMIUM: 'premium',
+  EXCLUSIVE: 'exclusive',
+  INVESTOR: 'investor'
+} as const;
+
+export type PricingType = typeof PRICING_TYPES[keyof typeof PRICING_TYPES];
+
+// Constantes para planes de acceso
+export const ACCESS_PLANS = {
+  BASIC: 'basic',
+  INVESTOR: 'investor',
+  PREMIUM: 'premium',
+  ANY: 'any'
+} as const;
+
+export type AccessPlan = typeof ACCESS_PLANS[keyof typeof ACCESS_PLANS];
+
 export interface SEOMetadata {
   title: string;
   description: string;
@@ -14,7 +34,7 @@ export interface SEOMetadata {
   canonicalUrl?: string;
   author?: string;
   language?: string; // "es-CO", "es-ES"
-  
+
   // Open Graph
   ogImage: {
     url: string;
@@ -25,12 +45,12 @@ export interface SEOMetadata {
   ogType: "article" | "website" | "course";
   ogSiteName?: string;
   ogLocale?: string; // "es_CO", "es_ES"
-  
+
   // Twitter Cards
   twitterCard: "summary" | "summary_large_image";
   twitterSite?: string;
   twitterCreator?: string;
-  
+
   // Robots
   robots?: {
     index?: boolean;
@@ -39,10 +59,10 @@ export interface SEOMetadata {
     maxImagePreview?: "none" | "standard" | "large";
     maxVideoPreview?: number;
   };
-  
+
   // Datos estructurados personalizados
   structuredData?: Record<string, unknown>;
-  
+
   // Breadcrumbs para navegación
   breadcrumbs?: Array<{
     name: string;
@@ -80,9 +100,10 @@ export interface Instructor {
   bio: string;
   avatar: string;
   title?: string;
+  role?: string;
   company?: string;
   expertise: string[];
-  
+
   // Redes sociales
   socialLinks?: {
     twitter?: string;
@@ -90,7 +111,7 @@ export interface Instructor {
     instagram?: string;
     website?: string;
   };
-  
+
   // Estadísticas
   stats?: {
     totalCourses: number;
@@ -98,7 +119,7 @@ export interface Instructor {
     averageRating: number;
     yearsExperience: number;
   };
-  
+
   // SEO
   seo?: SEOMetadata;
 }
@@ -123,29 +144,29 @@ export interface UserProgress {
   userId: string;
   courseId?: string;
   pathId?: string;
-  
+
   // Progreso general
   overallProgress: number; // 0-100
   completedLessons: number;
   totalLessons: number;
   timeSpent: number; // En minutos
-  
+
   // Progreso por módulo/sección
   moduleProgress: Array<{
     moduleId: string;
     progress: number;
     completedAt?: string;
   }>;
-  
+
   // Fechas importantes
   startedAt: string;
   lastAccessedAt: string;
   completedAt?: string;
-  
+
   // Certificaciones
   certificateIssued?: boolean;
   certificateUrl?: string;
-  
+
   // Evaluaciones
   quizScores?: Array<{
     quizId: string;
@@ -160,12 +181,12 @@ export interface UserProfile {
   email: string;
   name: string;
   avatar?: string;
-  
+
   // Plan y permisos
   plan: 'basic' | 'investor' | 'premium';
   permissions: string[];
   subscriptionEndsAt?: string;
-  
+
   // Preferencias de aprendizaje
   preferences: {
     language: string;
@@ -174,7 +195,7 @@ export interface UserProfile {
     pushNotifications: boolean;
     preferredLearningTime?: 'morning' | 'afternoon' | 'evening';
   };
-  
+
   // Estadísticas de aprendizaje
   learningStats: {
     totalCoursesEnrolled: number;
@@ -184,7 +205,7 @@ export interface UserProfile {
     longestStreak: number;
     certificatesEarned: number;
   };
-  
+
   // Cursos y rutas
   enrolledCourses: string[]; // Course IDs
   enrolledPaths: string[]; // Path IDs
@@ -203,56 +224,91 @@ export interface Module {
   description?: string;
   order: number;
   duration: number; // En minutos
-  
+
   // Contenido del módulo
   lessons: Lesson[];
-  
+
   // Recursos adicionales
   resources?: Array<{
     title: string;
     url: string;
     type: 'pdf' | 'link' | 'download';
   }>;
-  
+
   // Evaluación
   quiz?: Quiz;
   assignment?: Assignment;
-  
+
   // Requisitos
   prerequisites?: string[]; // Module IDs
   isOptional?: boolean;
+
+  // Estado de completado (conveniencia; puede derivarse de las lecciones)
+  isCompleted?: boolean;
+  completedAt?: string;
+  progress?: number; // 0-100
 }
 
 export interface Lesson {
   id: string;
+  slug: string;
   title: string;
   description?: string;
   order: number;
   duration: number; // En minutos
   type: 'video' | 'text' | 'interactive' | 'live';
-  
+
   // Contenido
   videoUrl?: string;
-  textContent?: string;
+  textContent?: string; // contenido escrito de la clase
   interactiveContent?: Record<string, unknown>;
-  
+
   // Recursos
   thumbnail?: MediaAsset;
   attachments?: MediaAsset[];
-  
+
   // Configuración
   isPreview?: boolean; // Accesible sin inscripción
   isPremium?: boolean; // Requiere plan premium
+
+  // Estado de completado (fuente de verdad a nivel granular)
+  isCompleted?: boolean;
+  completedAt?: string;
 }
 
 export interface Quiz {
   id: string;
+  slug: string;
   title: string;
   description?: string;
   questions: QuizQuestion[];
   timeLimit?: number; // En minutos
   passingScore: number; // Porcentaje mínimo para aprobar
   maxAttempts?: number;
+
+  // Estado de completado/aprobación
+  isCompleted?: boolean;
+  passed?: boolean;
+  completedAt?: string;
+  attempts?: QuizAttempt[];
+}
+
+export interface QuizAttempt {
+  id: string;
+  score: number;
+  answers: QuizAnswer[];
+  passed: boolean;
+  quizId: string;
+  completedAt: string;
+  isCompleted: boolean;
+}
+
+export interface QuizAnswer {
+  id: string;
+  questionId: string;
+  answer: string;
+  isCorrect: boolean;
+  points: number;
 }
 
 export interface QuizQuestion {
@@ -282,10 +338,10 @@ export interface Course {
   subtitle?: string;
   description: string;
   excerpt: string;
-  
+
   // SEO específico
   seo: SEOMetadata;
-  
+
   // Contenido del curso
   content: {
     modules: Module[];
@@ -297,37 +353,45 @@ export interface Course {
     skillsYouWillLearn: string[];
     targetAudience: string[];
   };
-  
+
   // Categorización
   category: Category;
   tags: Tag[];
   instructor: Instructor;
-  
+
   // Pricing y acceso
   pricing: {
-    type: 'free' | 'premium' | 'exclusive' | 'investor';
+    type: PricingType;
     price?: number;
     originalPrice?: number;
     currency?: string;
     discountPercentage?: number;
     discountEndsAt?: string;
   };
-  
+
+  /*
+  Opción B: Investor incluye Premium
+  basic → solo free
+  premium → free, premium
+  investor → free, premium, investor
+  exclusive → nunca incluido
+  */
+
   // Requisitos de acceso
   accessRequirements: {
-    plan: 'basic' | 'investor' | 'premium' | 'any';
+    plan: AccessPlan;
     prerequisites?: string[]; // Course IDs requeridos
     minimumLevel?: string;
   };
-  
+
   // Multimedia
   thumbnail: MediaAsset;
   coverImage?: MediaAsset;
   previewVideo?: MediaAsset;
   gallery?: MediaAsset[];
-  
+
   // Métricas y engagement
-  stats: {
+  stats?: {
     enrolledCount: number;
     completedCount: number;
     completionRate: number; // Porcentaje
@@ -336,13 +400,13 @@ export interface Course {
     totalViews: number;
     averageTimeToComplete: number; // En horas
   };
-  
+
   // Reviews y testimonios
   reviews?: CourseReview[];
   testimonials?: Testimonial[];
-  
+
   // Certificación
-  certificate: {
+  certificate?: {
     available: boolean;
     template?: string;
     criteria: {
@@ -351,14 +415,21 @@ export interface Course {
       timeRequirement?: number; // En horas
     };
   };
-  
+
   // Fechas y estado
   publishedAt: string;
   updatedAt: string;
   status: 'draft' | 'published' | 'archived';
   featured?: boolean;
   isNew?: boolean;
-  
+
+  // Progreso
+  progress?: {
+    overallProgress: number;
+    completedLessons: number;
+    totalLessons: number;
+  };
+
   // Configuración adicional
   settings: {
     allowDownloads: boolean;
@@ -404,10 +475,10 @@ export interface LearningPath {
   subtitle?: string;
   description: string;
   excerpt: string;
-  
+
   // SEO
   seo: SEOMetadata;
-  
+
   // Estructura de la ruta
   structure: {
     totalCourses: number;
@@ -419,7 +490,7 @@ export interface LearningPath {
     learningObjectives: string[];
     skillsYouWillLearn: string[];
   };
-  
+
   // Cursos en orden específico
   courses: Array<{
     courseId: string;
@@ -430,7 +501,7 @@ export interface LearningPath {
     estimatedTime?: number; // Tiempo sugerido para este curso en la ruta
     description?: string; // Por qué este curso está en la ruta
   }>;
-  
+
   // Milestone y progreso
   milestones: Array<{
     id: string;
@@ -443,32 +514,32 @@ export interface LearningPath {
       template?: string;
     };
   }>;
-  
+
   // Categorización
   category: Category;
   tags: Tag[];
-  
+
   // Pricing
   pricing: {
-    type: 'free' | 'premium' | 'exclusive' | 'bundle';
+    type: PricingType | 'bundle';
     price?: number;
     originalPrice?: number;
     currency?: string;
     individualCoursesPrice?: number; // Precio si compras cursos por separado
     savings?: number; // Ahorro al comprar la ruta completa
   };
-  
+
   // Acceso
   accessRequirements: {
-    plan: 'basic' | 'investor' | 'premium' | 'any';
+    plan: AccessPlan;
     prerequisites?: string[]; // Path IDs requeridos
   };
-  
+
   // Multimedia
   thumbnail: MediaAsset;
   coverImage?: MediaAsset;
   previewVideo?: MediaAsset;
-  
+
   // Métricas
   stats: {
     enrolledCount: number;
@@ -478,16 +549,16 @@ export interface LearningPath {
     reviewsCount: number;
     averageTimeToComplete: number; // En semanas
   };
-  
+
   // Reviews específicas de la ruta
   reviews?: PathReview[];
-  
+
   // Fechas y estado
   publishedAt: string;
   updatedAt: string;
   status: 'draft' | 'published' | 'archived';
   featured?: boolean;
-  
+
   // Configuración
   settings: {
     enforceOrder: boolean; // Los cursos deben tomarse en orden
@@ -521,7 +592,7 @@ export interface LearningProfile {
   title: string; // "Inversionista Explorador", "Inversionista Héroe"
   description: string;
   level: 'explorer' | 'adventurer' | 'hero';
-  
+
   // Rutas incluidas en este perfil
   paths: Array<{
     pathId: string;
@@ -530,7 +601,7 @@ export interface LearningProfile {
     isCore: boolean; // Ruta esencial vs opcional
     description?: string;
   }>;
-  
+
   // Estadísticas agregadas
   aggregatedStats: {
     totalCourses: number;
@@ -539,14 +610,14 @@ export interface LearningProfile {
     averageRating: number;
     totalEnrolled: number;
   };
-  
+
   // Beneficios del perfil
   benefits: string[];
-  
+
   // Multimedia
   thumbnail: MediaAsset;
   badge?: MediaAsset; // Badge que se obtiene al completar
-  
+
   // SEO y metadata
   seo: SEOMetadata;
 }
@@ -560,7 +631,7 @@ export interface SubscriptionPlan {
   name: string; // "Básico", "Inversionista", "Premium"
   slug: string;
   description: string;
-  
+
   // Pricing
   pricing: {
     monthly: number;
@@ -568,7 +639,7 @@ export interface SubscriptionPlan {
     currency: string;
     yearlyDiscount?: number; // Porcentaje de descuento anual
   };
-  
+
   // Características y límites
   features: {
     // Acceso a contenido
@@ -577,30 +648,30 @@ export interface SubscriptionPlan {
     exclusiveCourses: boolean;
     allBlogs: boolean;
     podcasts: boolean;
-    
+
     // Soporte y comunidad
     dedicatedSupport: boolean;
     liveConferences: boolean;
     communityAccess: boolean;
-    
+
     // Beneficios de inversión (específico de LOKL)
     earlyProjectAccess: boolean;
     exclusiveProjects: boolean;
     investmentTools: boolean;
-    
+
     // Límites técnicos
     maxConcurrentCourses?: number;
     downloadLimit?: number;
     certificatesIncluded: boolean;
   };
-  
+
   // Audiencia objetivo
   targetAudience: string[];
-  
+
   // Estado
   isPopular?: boolean;
   isActive: boolean;
-  
+
   // Metadata
   createdAt: string;
   updatedAt: string;
@@ -616,25 +687,25 @@ export interface PlatformReview {
   userName: string;
   userAvatar?: string;
   userTitle?: string;
-  
+
   // Contenido del review
   rating: number; // 1-5
   title?: string;
   comment: string;
-  
+
   // Contexto
   userPlan: 'basic' | 'investor' | 'premium';
   coursesCompleted: number;
   timeOnPlatform: number; // En meses
-  
+
   // Engagement
   helpful: number;
   featured: boolean;
-  
+
   // Fechas
   createdAt: string;
   updatedAt?: string;
-  
+
   // Moderación
   status: 'pending' | 'approved' | 'rejected';
 }
@@ -649,16 +720,16 @@ export interface ExternalTool {
   description: string;
   url: string;
   category: 'simulator' | 'calculator' | 'comparator' | 'analyzer';
-  
+
   // Multimedia
   thumbnail: MediaAsset;
   screenshots?: MediaAsset[];
-  
+
   // Metadata
   isActive: boolean;
   requiresLogin: boolean;
   isPremium: boolean;
-  
+
   // Estadísticas
   stats: {
     totalClicks: number;
@@ -677,20 +748,20 @@ export interface NewsletterItem {
   excerpt: string;
   content: string;
   type: 'blog' | 'news' | 'trend' | 'announcement';
-  
+
   // Multimedia
   featuredImage?: MediaAsset;
-  
+
   // Metadata
   publishedAt: string;
   author?: Instructor;
   tags: Tag[];
-  
+
   // Engagement
   views: number;
   likes: number;
   shares: number;
-  
+
   // Estado
   featured: boolean;
   status: 'draft' | 'published';
@@ -700,6 +771,7 @@ export interface NewsletterItem {
 // TIPOS PARA API Y RESPONSES
 // ===================================================================
 
+// Its not used
 export interface PaginationData {
   currentPage: number;
   totalPages: number;
@@ -709,6 +781,7 @@ export interface PaginationData {
   hasPrev: boolean;
 }
 
+// Its not used
 export interface ApiResponse<T> {
   data: T;
   pagination?: PaginationData;
@@ -725,6 +798,63 @@ export interface ApiResponse<T> {
   errors?: string[];
 }
 
+export interface InstructorLite {
+  id: string;
+  name: string;
+  slug: string;
+  bio: string;
+  avatar: string;
+}
+
+export interface CourseCardLite {
+  id: string;
+  slug: string;
+  title: string;
+  subtitle?: string;
+  description: string;
+  excerpt: string;
+  seo: SEOMetadata;
+  instructor: InstructorLite;
+  category: Category;
+  tags: Tag[];
+  // Métricas resumidas para la tarjeta
+  rating?: number | null; // 0-5
+  studentsCount?: number | null; // número de estudiantes
+  durationMinutes?: number | null; // duración total del curso en minutos
+  pricing: {
+    type: PricingType;
+    price: number;
+    originalPrice: number;
+    currency: string;
+  };
+  accessRequirements: {
+    plan: AccessPlan;
+  };
+  thumbnail: MediaAsset;
+  // Progreso simplificado para la tarjeta
+  progress?: {
+    overallProgress: number; // 0-100
+    completedLessons: number;
+    totalLessons: number;
+  };
+}
+
+export interface CoursesCardsResponse {
+  success: boolean;
+  message?: string;
+  data: {
+    courses: CourseCardLite[];
+    pagination: PaginationData;
+  };
+}
+
+export interface CourseBySlugResponse {
+  success: boolean;
+  message?: string;
+  course: Course;
+}
+
+// Its not used
 export interface SearchFilters {
   query?: string;
   categories?: string[];
@@ -741,6 +871,7 @@ export interface SearchFilters {
   featured?: boolean;
 }
 
+// Its not used
 export interface SortOptions {
   field: 'title' | 'publishedAt' | 'rating' | 'enrolledCount' | 'duration' | 'price';
   order: 'asc' | 'desc';
@@ -750,12 +881,14 @@ export interface SortOptions {
 // TIPOS PARA COMPONENTES DE UI
 // ===================================================================
 
+// Its not used
 export interface BreadcrumbItem {
   name: string;
   href: string;
   current?: boolean;
 }
 
+// Its very used
 export interface CourseCardProps {
   course: Course;
   variant?: 'default' | 'compact' | 'featured' | 'horizontal';
@@ -766,6 +899,7 @@ export interface CourseCardProps {
   showStats?: boolean;
 }
 
+// Its not used
 export interface LearningPathCardProps {
   path: LearningPath;
   userProgress?: UserProgress;
@@ -773,6 +907,7 @@ export interface LearningPathCardProps {
   onClick?: (path: LearningPath) => void;
 }
 
+// Its not used
 export interface CourseGridProps {
   courses: Course[];
   loading?: boolean;

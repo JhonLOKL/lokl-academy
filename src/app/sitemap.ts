@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import { getAllCoursesAction } from "@/actions/course-action";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
@@ -46,6 +47,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Home/blog principales
   entries.push({ url: `${SITE_URL}/`, lastModified: new Date(), changeFrequency: 'weekly', priority: 1 });
   entries.push({ url: `${SITE_URL}/blog`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.7 });
+  entries.push({ url: `${SITE_URL}/course`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.8 });
 
   // URLs importantes adicionales (no eliminar)
   entries.push({ url: `https://academy.lokl.life`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 });
@@ -125,6 +127,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   } catch {
     // si falla, al menos devolvemos las entradas ya agregadas
+  }
+
+  // ==============================
+  // Cursos: incluir todas las URLs
+  // ==============================
+  try {
+    const coursesRes = await getAllCoursesAction();
+    if (coursesRes.success && coursesRes.data) {
+      for (const c of coursesRes.data) {
+        const url = `${SITE_URL}/course/${encodeURIComponent(c.slug)}`;
+        const updated = c.updatedAt || c.publishedAt || new Date().toISOString();
+        entries.push({
+          url,
+          lastModified: new Date(updated),
+          changeFrequency: 'weekly',
+          priority: 0.8,
+        });
+      }
+    }
+  } catch {
+    // noop
   }
 
   return entries;

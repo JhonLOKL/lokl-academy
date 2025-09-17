@@ -5,6 +5,7 @@ import { SiteNavbar } from "@/components/lokl-academy/layouts/site-navbar";
 import Script from "next/script";
 import { Suspense } from "react";
 import GAListener from "@/components/analytics/ga-listener";
+import { Toaster } from "@/components/design-system";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -148,6 +149,7 @@ export default function RootLayout({
         </Suspense>
         <SiteNavbar />
         {children}
+        <Toaster />
 
         {/* GTM NoScript fallback */}
         <noscript>

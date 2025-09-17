@@ -26,10 +26,13 @@ const CourseCard: React.FC<CourseCardProps> = ({
   showStats = true,
 }) => {
   // Calcular el progreso si está disponible
-  const progressPercentage = progress ? progress.overallProgress : 0;
-  const completedLessons = progress ? progress.completedLessons : 0;
+  const progressPercentage = course.progress?.overallProgress || (progress ? progress.overallProgress : 0);
+  const completedLessons = course.progress?.completedLessons || (progress ? progress.completedLessons : 0);
   const totalLessons = course.content.totalLessons;
   const remainingLessons = totalLessons - completedLessons;
+  
+  // Verificar si el curso está completado
+  const isCompleted = progressPercentage === 100;
 
   // Verificar si el curso es exclusivo para inversionistas
   const isInvestorExclusive = course.accessRequirements.plan === "investor";
@@ -53,10 +56,15 @@ const CourseCard: React.FC<CourseCardProps> = ({
         ${variant === "featured" ? "border-[#5352F6]" : ""}
       `}
     >
-      {/* Etiqueta para cursos exclusivos */}
+      {/* Etiqueta para cursos exclusivos o completados */}
       {isInvestorExclusive && (
         <div className="absolute right-0 top-0 z-10 bg-[#5352F6] px-2 py-1 text-xs font-medium text-white">
           Inversionista
+        </div>
+      )}
+      {isCompleted && (
+        <div className="absolute left-0 top-0 z-10 bg-green-600 px-2 py-1 text-xs font-medium text-white">
+          Completado
         </div>
       )}
 
@@ -81,12 +89,14 @@ const CourseCard: React.FC<CourseCardProps> = ({
         {/* Categoría y duración */}
         <div className="mb-2 flex items-center justify-between">
           <Badge variant="outline" className="bg-[#F5F5F5] text-xs font-medium text-[#5352F6]">
-            {course.category.name}
+            {course.category?.name ?? "Curso"}
           </Badge>
-          <div className="flex items-center text-xs text-[#6D6C6C]">
-            <Clock size={14} className="mr-1" />
-            {formatDuration(course.content.totalDuration)}
-          </div>
+          {course.content.totalDuration > 0 && (
+            <div className="flex items-center text-xs text-[#6D6C6C]">
+              <Clock size={14} className="mr-1" />
+              {formatDuration(course.content.totalDuration)}
+            </div>
+          )}
         </div>
 
         {/* Título del curso */}
@@ -104,52 +114,83 @@ const CourseCard: React.FC<CourseCardProps> = ({
         )}
 
         {/* Instructor */}
-        {showInstructor && (
+        {showInstructor && course.instructor && (
           <div className="mb-3 flex items-center">
             <div className="relative mr-2 h-6 w-6 overflow-hidden rounded-full">
-              <Image
-                src={course.instructor.avatar}
-                alt={course.instructor.name}
-                fill
-                className="object-cover"
-              />
+              {course.instructor.avatar ? (
+                <Image
+                  src={course.instructor.avatar}
+                  alt={course.instructor.name || "Instructor"}
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <div className="h-full w-full flex items-center justify-center bg-[#EEEEFE] text-[#5352F6] text-[10px] font-medium">
+                  {(course.instructor.name || "L").charAt(0)}
+                </div>
+              )}
             </div>
-            <span className="text-xs text-[#444444]">{course.instructor.name}</span>
+            <span className="text-xs text-[#444444]">{course.instructor.name || "Instructor LOKL"}</span>
           </div>
         )}
 
         {/* Estadísticas */}
-        {showStats && variant !== "compact" && (
+        {showStats && variant !== "compact" && course.stats && (course.stats.enrolledCount > 0 || course.stats.averageRating > 0) && (
           <div className="mb-3 flex items-center space-x-4 text-xs text-[#6D6C6C]">
-            <div className="flex items-center">
-              <Users size={14} className="mr-1" />
-              {course.stats.enrolledCount} estudiantes
-            </div>
-            <div className="flex items-center">
-              <Star size={14} className="mr-1 text-yellow-400" />
-              {course.stats.averageRating.toFixed(1)}
-            </div>
+            {course.stats.enrolledCount > 0 && (
+              <div className="flex items-center">
+                <Users size={14} className="mr-1" />
+                {course.stats.enrolledCount} estudiantes
+              </div>
+            )}
+            {course.stats.averageRating > 0 && (
+              <div className="flex items-center">
+                <Star size={14} className="mr-1 text-yellow-400" />
+                {course.stats.averageRating.toFixed(1)}
+              </div>
+            )}
           </div>
         )}
 
         {/* Barra de progreso */}
-        {showProgress && progress && (
+        {(showProgress || course.progress) && (
           <div className="mt-auto">
             <div className="mb-1 flex items-center justify-between text-xs">
-              <span className="font-medium">{progressPercentage}% completado</span>
+              <span className="font-medium">
+                {isCompleted ? (
+                  <span className="flex items-center text-green-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="mr-1 h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    Completado
+                  </span>
+                ) : (
+                  `${progressPercentage}% completado`
+                )}
+              </span>
               <span>{completedLessons}/{totalLessons} lecciones</span>
             </div>
-            <Progress value={progressPercentage} className="h-1.5" />
-            {remainingLessons > 0 && (
+            <Progress 
+              value={progressPercentage} 
+              className={`h-1.5 ${isCompleted ? 'bg-green-100' : ''}`}
+              indicatorClassName={isCompleted ? 'bg-green-600' : undefined}
+            />
+            {!isCompleted && remainingLessons > 0 && (
               <p className="mt-1 text-xs text-[#6D6C6C]">
                 Te faltan {remainingLessons} {remainingLessons === 1 ? 'lección' : 'lecciones'}
+              </p>
+            )}
+            {isCompleted && (
+              <p className="mt-1 text-xs text-green-600">
+                ¡Has completado este curso!
               </p>
             )}
           </div>
         )}
 
         {/* Estado del curso: Gratis o Inversionista */}
-        {!showProgress && (
+        {!showProgress && !course.progress && (
           <div className="mt-auto pt-2">
             {course.accessRequirements.plan === "basic" || course.accessRequirements.plan === "any" ? (
               <span className="rounded-full bg-green-100 px-2 py-0.5 text-sm font-medium text-green-600">

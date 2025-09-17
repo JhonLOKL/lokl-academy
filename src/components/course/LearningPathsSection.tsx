@@ -2,7 +2,6 @@
 
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/design-system";
 import { Clock } from "lucide-react";
@@ -54,11 +53,9 @@ const LearningPathsSection: React.FC<LearningPathsSectionProps> = ({ paths }) =>
 
                 <div className="flex flex-col md:flex-row md:gap-8">
                   <div className="md:w-7/12">
-                    <Link href={`/learning-path/${path.slug}`}>
-                      <h3 className="mb-3 text-xl font-bold tracking-tight group-hover:text-[#5352F6]">
-                        {path.title}
-                      </h3>
-                    </Link>
+                    <h3 className="mb-3 text-xl font-bold tracking-tight group-hover:text-[#5352F6]">
+                      {path.title}
+                    </h3>
 
                     <p className="mb-4 text-sm text-[#6D6C6C]">{path.excerpt}</p>
 
@@ -143,9 +140,7 @@ const LearningPathsSection: React.FC<LearningPathsSectionProps> = ({ paths }) =>
                         )}
                       </div>
 
-                      <Link href={`/learning-path/${path.slug}`} className="block w-full">
-                        <Button className="w-full">Ver ruta completa</Button>
-                      </Link>
+                      <Button className="w-full" disabled>Proxicamente</Button>
                     </div>
                   </div>
                 </div>

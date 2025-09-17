@@ -5,14 +5,16 @@ import { Button } from "@/components/design-system";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, AlertCircle } from "lucide-react";
 import { Quiz } from "@/lib/course/schema";
+import { saveQuizResultAction } from "@/actions/course-action";
 
 interface QuizComponentProps {
   quiz: Quiz;
   onComplete?: (score: number, passed: boolean) => void;
   onBack?: () => void;
+  courseId?: string;
 }
 
-export default function QuizComponent({ quiz, onComplete, onBack }: QuizComponentProps) {
+export default function QuizComponent({ quiz, onComplete, onBack, courseId }: QuizComponentProps) {
   const [answers, setAnswers] = useState<{[key: string]: string | string[]}>({});
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
@@ -28,7 +30,7 @@ export default function QuizComponent({ quiz, onComplete, onBack }: QuizComponen
   };
   
   // Calcular la puntuación y evaluar el quiz
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (submitted) return;
     
     let totalPoints = 0;
@@ -58,10 +60,24 @@ export default function QuizComponent({ quiz, onComplete, onBack }: QuizComponen
     const finalScore = Math.round((earnedPoints / totalPoints) * 100);
     setScore(finalScore);
     setSubmitted(true);
-    
-    if (onComplete) {
-      onComplete(finalScore, finalScore >= quiz.passingScore);
+
+    const passed = finalScore >= quiz.passingScore;
+
+    // Enviar resultado al backend si tenemos courseId
+    try {
+      if (courseId) {
+        const formattedAnswers = quiz.questions.map(q => ({
+          questionId: q.id,
+          answer: Array.isArray(answers[q.id]) ? (answers[q.id] as string[]).join(",") : String(answers[q.id] || "")
+        }));
+        await saveQuizResultAction({ courseId, quizId: quiz.id, answers: formattedAnswers });
+      }
+    } catch (e) {
+      // Podemos mostrar un toast en el futuro
+      console.error('Error guardando resultado de quiz', e);
     }
+
+    if (onComplete) onComplete(finalScore, passed);
   };
   
   // Verificar si todas las preguntas están respondidas
@@ -106,6 +122,13 @@ export default function QuizComponent({ quiz, onComplete, onBack }: QuizComponen
                 <p className="text-sm text-[#6D6C6C]">
                   Tu puntaje: <span className="font-medium">{score}%</span> (Mínimo requerido: {quiz.passingScore}%)
                 </p>
+                {!(score >= quiz.passingScore) && (
+                  <p className="mt-2 text-sm text-red-600">
+                    Debes aprobar este quiz para desbloquear el siguiente módulo.
+                    <br />
+                    <span className="font-medium">Las respuestas correctas no se mostrarán hasta que apruebes.</span>
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -128,8 +151,8 @@ export default function QuizComponent({ quiz, onComplete, onBack }: QuizComponen
             <div className="space-y-3">
               {question.options.map((option, optionIndex) => {
                 const isSelected = answers[question.id] === option;
-                const isCorrect = submitted && option === question.correctAnswer;
-                const isIncorrect = submitted && isSelected && option !== question.correctAnswer;
+                const isCorrect = submitted && score >= quiz.passingScore && option === question.correctAnswer;
+                const isIncorrect = submitted && score >= quiz.passingScore && isSelected && option !== question.correctAnswer;
                 
                 return (
                   <div 
@@ -165,8 +188,8 @@ export default function QuizComponent({ quiz, onComplete, onBack }: QuizComponen
             <div className="flex gap-4">
               {question.options.map((option, optionIndex) => {
                 const isSelected = answers[question.id] === option;
-                const isCorrect = submitted && option === question.correctAnswer;
-                const isIncorrect = submitted && isSelected && option !== question.correctAnswer;
+                const isCorrect = submitted && score >= quiz.passingScore && option === question.correctAnswer;
+                const isIncorrect = submitted && score >= quiz.passingScore && isSelected && option !== question.correctAnswer;
                 
                 return (
                   <div 
@@ -200,7 +223,7 @@ export default function QuizComponent({ quiz, onComplete, onBack }: QuizComponen
             </div>
           )}
           
-          {submitted && question.explanation && (
+          {submitted && question.explanation && score >= quiz.passingScore && (
             <div className="mt-4 rounded-md bg-[#F5F5F5] p-4">
               <div className="font-medium">Explicación:</div>
               <p className="text-sm text-[#6D6C6C]">{question.explanation}</p>
