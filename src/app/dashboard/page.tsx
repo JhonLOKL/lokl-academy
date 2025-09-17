@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/auth-store";
 import ProtectedRoute from "@/components/auth/protected-route";
 import ProfileAvatar from "@/components/auth/profile-avatar";
@@ -16,6 +17,10 @@ import {
   Badge,
   Text
 } from "@/components/design-system";
+import { Skeleton } from "@/components/ui/skeleton";
+import CourseCard from "@/components/course/course-card";
+import { getUserCoursesAction } from "@/actions/course-action";
+import { Course } from "@/lib/course/schema";
 import { useRouter } from "next/navigation";
 import {
   User,
@@ -27,9 +32,37 @@ export default function DashboardPage() {
   const { user, logout } = useAuthStore();
   const router = useRouter();
 
+  // Cursos del usuario
+  const [loadingCourses, setLoadingCourses] = useState<boolean>(true);
+  const [userCourses, setUserCourses] = useState<Course[]>([]);
+
   // Depuración de datos de usuario
   console.log('Datos de usuario:', user);
   console.log('Foto de perfil:', user?.profilePhoto);
+
+  // Cargar cursos del usuario
+  useEffect(() => {
+    let mounted = true;
+    async function loadUserCourses() {
+      setLoadingCourses(true);
+      try {
+        const res = await getUserCoursesAction();
+        if (!mounted) return;
+        if (res.success) {
+          setUserCourses(res.data || []);
+        } else {
+          setUserCourses([]);
+        }
+      } catch {
+        if (!mounted) return;
+        setUserCourses([]);
+      } finally {
+        if (mounted) setLoadingCourses(false);
+      }
+    }
+    loadUserCourses();
+    return () => { mounted = false; };
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -37,9 +70,9 @@ export default function DashboardPage() {
   };
 
   // Estos datos se cargarán desde la API en el futuro
-/*   const recentCourses: any[] = [];
-  const upcomingEvents: any[] = [];
- */
+/*   const recentCourses: never[] = [];
+  const upcomingEvents: never[] = [];
+*/
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-gray-50">
@@ -92,6 +125,38 @@ export default function DashboardPage() {
 
         {/* Contenido principal */}
         <div className="container mx-auto px-4 py-8">
+          {/* Mis cursos */}
+          <section className="mb-10">
+            <h2 className="mb-6 text-2xl font-bold tracking-tight">Mis cursos</h2>
+            {loadingCourses ? (
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="overflow-hidden rounded-lg border border-[#E5E5E5] bg-white shadow-sm">
+                    <Skeleton className="h-48 w-full" />
+                    <div className="p-4">
+                      <Skeleton className="mb-2 h-4 w-24" />
+                      <Skeleton className="mb-2 h-6 w-full" />
+                      <Skeleton className="mb-4 h-4 w-3/4" />
+                      <Skeleton className="mb-3 h-4 w-32" />
+                      <Skeleton className="h-2 w-full" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : userCourses.length > 0 ? (
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {userCourses.map((course) => (
+                  <CourseCard key={course.id} course={course} showProgress={true} />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-lg border border-[#E5E5E5] bg-white p-6 text-center text-[#6D6C6C]">
+                <p className="mb-4">Aún no tienes cursos inscritos.</p>
+                <Button onClick={() => router.push("/course")}>Explorar cursos</Button>
+              </div>
+            )}
+          </section>
+
           {/* Métricas principales - Comentadas hasta tener datos reales */}
           {/* 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
