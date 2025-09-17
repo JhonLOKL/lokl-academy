@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/auth-store";
 import { isAuthenticated } from "@/lib/auth-utils";
@@ -12,16 +12,20 @@ interface ProtectedRouteProps {
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const router = useRouter();
   const { token } = useAuthStore();
+  const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
     // Verificar si el token es válido
     if (!isAuthenticated()) {
       router.push("/login");
+    } else {
+      // Si está autenticado, ya no estamos cargando
+      setIsLoading(false);
     }
   }, [token, router]);
   
-  // Si no hay token válido, no renderizar los hijos
-  if (!isAuthenticated()) {
+  // Si no hay token válido o estamos cargando, mostrar pantalla de carga
+  if (!isAuthenticated() || isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
@@ -32,6 +36,6 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     );
   }
   
-  // Si hay token, renderizar los hijos
+  // Si hay token y no estamos cargando, renderizar los hijos
   return <>{children}</>;
 }
