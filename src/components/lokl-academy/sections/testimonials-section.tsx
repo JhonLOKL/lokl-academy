@@ -29,8 +29,8 @@ const TestimonialsSection = () => {
 
   const stats = [
     { value: "1,000+", label: "Inversionistas" },
-    { value: "50+", label: "Cursos" },
-    { value: "200+", label: "Artículos" },
+    { value: "1+", label: "Cursos" },
+    { value: "3+", label: "Artículos" },
     { value: "95%", label: "Satisfacción" }
   ];
 
