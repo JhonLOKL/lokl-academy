@@ -1,12 +1,3 @@
-export { default as BlogCard } from './blog-card';
-export { default as BlogHeader } from './blog-header';
-export { default as BlogCover } from './blog-cover';
-export { default as BlogTags } from './blog-tags';
-export { default as BlogCTA } from './blog-cta';
-export { default as AuthorProfile } from './author-profile';
-export { default as RelatedPosts } from './related-posts';
-export { default as LoklCTABanner } from './lokl-cta-banner';
-export { default as LoklInvestmentCard } from './lokl-investment-card';
-export { default as LoklInvestmentSection } from './lokl-investment-section';
-export { default as BlogContentClient } from './blog-content-client';
-export { default as BlogHeaderClient } from './blog-header-client';
+export { CourseListSchema, WebsiteSchema, OrganizationSchema, BreadcrumbSchema, SEOMetadata } from "./seo-schema";
+export { default as LoklCTABanner } from "./lokl-cta-banner";
+export { default as BlogCard } from "./blog-card";

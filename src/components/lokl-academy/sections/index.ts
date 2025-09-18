@@ -5,3 +5,4 @@ export { default as TestimonialsSection } from './testimonials-section';
 export { default as FaqSection } from './faq-section';
 export { default as CtaSection } from './cta-section';
 export { default as BlogSection } from './blog-section';
+export { default as FeaturedCoursesSection } from './featured-courses-section';
