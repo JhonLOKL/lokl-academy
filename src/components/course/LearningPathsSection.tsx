@@ -140,7 +140,7 @@ const LearningPathsSection: React.FC<LearningPathsSectionProps> = ({ paths }) =>
                         )}
                       </div>
 
-                      <Button className="w-full" disabled>Proxicamente</Button>
+                      <Button className="w-full" disabled>Proximamente</Button>
                     </div>
                   </div>
                 </div>

@@ -28,6 +28,7 @@ export function SiteNavbar() {
         { label: "Blogs", href: "/blog" },
         /*      { label: "Podcasts", href: "#podcasts" }, */
         { label: "FAQ", href: "#faq" },
+        { label: "Cursos", href: "/course" },
       ]}
       actions={
         token ? (
