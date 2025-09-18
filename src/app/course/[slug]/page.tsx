@@ -381,7 +381,7 @@ export default function CourseDetailPage() {
                       disabled={loading || !course}
                       onClick={handleStartCourse}
                     >
-                      {isEnrolled ? (isCourseCompleted ? 'Ver de nuevo' : 'Continuar curso') : (isInvestorExclusive ? 'Ver curso' : 'Ver curso')}
+                      {isEnrolled ? (isCourseCompleted ? 'Ver de nuevo' : 'Continuar curso') : (isInvestorExclusive ? 'Iniciar curso' : 'Iniciar curso gratis')}
                     </Button>
                     <Button variant="outline" size="lg" className="flex items-center gap-2">
                       <Share2 size={18} />
