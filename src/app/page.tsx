@@ -72,7 +72,7 @@ export default async function LandingPage() {
     .slice(0, 6);
 
   // Obtener un curso destacado para la sección de newsletter
-  const newsletterCourse = featuredCourses.length > 0 ? featuredCourses[0] : undefined;
+  // const newsletterCourse = featuredCourses.length > 0 ? featuredCourses[0] : undefined;
 
   return (
     <>
