@@ -6,3 +6,4 @@ export { default as BlogHeader } from "./blog-header";
 export { default as BlogCover } from "./blog-cover";
 export { default as AuthorProfile } from "./author-profile";
 export { default as BlogContentClient } from "./blog-content-client";
+export { default as BlogTags } from "./blog-tags";
