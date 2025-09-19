@@ -6,7 +6,7 @@ import { enrollCourseService, getAllCoursesService, getCourseBySlugService, getU
 export const enrollCourseAction = async (body: { courseId: string }) : Promise<{ success: boolean, message: string, error?: string }> => {
     try {
         const response = await enrollCourseService(body)
-        if (response && response.success) {
+        if (response && response?.success) {
             return {
                 success: true,
                 message: "Curso inscrito correctamente"
@@ -48,7 +48,7 @@ export const markLessonCompletedAction = async (body: { courseId: string, lesson
  }> => {
     try {
         const response = await markLessonCompletedService(body)
-        if (response && response.success) {
+        if (response && response?.success) {
             return {
                 success: true,
                 message: "Clase completada correctamente",
@@ -69,7 +69,7 @@ export const markLessonCompletedAction = async (body: { courseId: string, lesson
 export const saveQuizResultAction = async (body: { courseId: string, quizId: string, answers: { questionId: string, answer: string }[] }) : Promise<{ success: boolean, message: string, error?: string }> => {
     try {
         const response = await saveQuizResultService(body)
-        if (response && response.success) {
+        if (response && response?.success) {
             return {
                 success: true,
                 message: "Resultado del cuestionario guardado correctamente"
@@ -89,7 +89,7 @@ export const saveQuizResultAction = async (body: { courseId: string, quizId: str
 export const getUserCoursesAction = async () : Promise<{ success: boolean,  data?: Course[], error?: string }> => {
     try {
         const response = await getUserCoursesService()
-        if (!response.success) {
+        if (!response?.success) {
             return {
                 success: false,
                 error: response.message,
@@ -110,7 +110,7 @@ export const getUserCoursesAction = async () : Promise<{ success: boolean,  data
 export const getAllCoursesAction = async () : Promise<{ success: boolean,  data?: Course[], error?: string }> => {
     try {
         const response = await getAllCoursesService()
-        if (!response.success) {
+        if (!response?.success) {
             return {
                 success: false,
                 error: response.message,
@@ -131,7 +131,7 @@ export const getAllCoursesAction = async () : Promise<{ success: boolean,  data?
 export const getCourseBySlugAction = async (slug: string) : Promise<{ success: boolean,  data?: {course: Course | null, isEnrolled: boolean}, error?: string }> => {
     try {
         const response = await getCourseBySlugService(slug)
-        if (!response.success) {
+        if (!response?.success) {
             return {
                 success: false,
                 error: response.message,
