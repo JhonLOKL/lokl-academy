@@ -101,34 +101,37 @@ export default function WebinarsPage() {
           message: "¡Te has inscrito correctamente al webinar!"
         });
         
-        // Recargar los webinars inscritos para obtener el estado actualizado
+        // Recargar todos los webinars para obtener los datos actualizados con accessLink
         try {
-          const { enrollments: updatedEnrollments, error: enrolledError } = await getAllEnrolledWebinarsAction();
+          const { webinars: refreshedWebinars, error: refreshError } = await getWebinarsAction();
           
-          if (!enrolledError && updatedEnrollments) {
-            // Actualizar el estado de los webinars basado en las inscripciones actualizadas
-            setWebinars(currentWebinars => 
-              currentWebinars.map(webinar => {
+          if (!refreshError && refreshedWebinars) {
+            // También obtener las inscripciones actualizadas
+            const { enrollments: updatedEnrollments, error: enrolledError } = await getAllEnrolledWebinarsAction();
+            
+            if (!enrolledError && updatedEnrollments) {
+              // Procesar los webinars con la información actualizada
+              const processedWebinars = refreshedWebinars.map(webinar => {
                 const isEnrolled = updatedEnrollments.includes(webinar.id);
                 
                 return {
                   ...webinar,
                   canEnroll: !isEnrolled,
-                  // Si está inscrito, usar el accessLink del webinar original
                   accessLink: isEnrolled ? webinar.accessLink : undefined
                 };
-              })
-            );
-            
-            console.log("Inscripciones actualizadas:", updatedEnrollments);
+              });
+              
+              setWebinars(processedWebinars);
+              console.log("Webinars recargados después de inscripción:", processedWebinars);
+            }
           }
-        } catch (updateError) {
-          console.error("Error al actualizar webinars inscritos:", updateError);
-          // Como fallback, actualizar solo el webinar actual
+        } catch (refreshError) {
+          console.error("Error al recargar webinars:", refreshError);
+          // Como fallback, actualizar solo el webinar actual sin accessLink
           setWebinars(currentWebinars => 
             currentWebinars.map(webinar => 
               webinar.id === webinarId 
-                ? { ...webinar, canEnroll: false, accessLink: webinar.accessLink } 
+                ? { ...webinar, canEnroll: false } 
                 : webinar
             )
           );

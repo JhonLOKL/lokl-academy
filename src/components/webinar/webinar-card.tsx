@@ -46,6 +46,15 @@ const WebinarCard: React.FC<WebinarCardProps> = ({
 
   const dateInfo = formatWebinarDate(webinar.scheduledAt);
 
+  // Log para depurar el accessLink
+  console.log(`Webinar ${webinar.id}:`, {
+    accessLink,
+    webinarAccessLink: webinar.accessLink,
+    canEnroll: webinar.canEnroll,
+    enrollSuccess: enrollSuccess?.id === webinar.id,
+    isAuthenticated
+  });
+
   return (
     <div className="group relative flex h-full flex-col overflow-hidden rounded-xl border-2 border-[#E5E5E5] bg-white shadow-sm transition-all hover:shadow-lg hover:border-[#5352F6]/30 min-h-[500px] w-full">
       {/* Imagen grande como fondo que ocupa toda la tarjeta */}
@@ -99,16 +108,17 @@ const WebinarCard: React.FC<WebinarCardProps> = ({
                 <div className="rounded-md bg-green-50 p-3 text-center text-green-700">
                   {enrollSuccess.message}
                 </div>
-                {accessLink && (
+                {/* Mostrar el enlace inmediatamente después de inscribirse - siempre mostrar si existe */}
+                {webinar.accessLink && (
                   <div className="space-y-2">
                     <div className="rounded-md bg-[#EEEEFE] p-3 text-sm break-all">
                       <p className="font-semibold text-[#5352F6] mb-1">Enlace de acceso:</p>
-                      <p className="text-[#0F0F0F]">{accessLink}</p>
+                      <p className="text-[#0F0F0F]">{webinar.accessLink}</p>
                     </div>
                     <Button 
                       variant="primary" 
                       className="w-full"
-                      onClick={() => navigator.clipboard.writeText(accessLink || "")}
+                      onClick={() => navigator.clipboard.writeText(webinar.accessLink || "")}
                       type="button"
                     >
                       Copiar enlace
@@ -211,16 +221,17 @@ const WebinarCard: React.FC<WebinarCardProps> = ({
                 <div className="rounded-md bg-green-50 p-3 text-center text-green-700">
                   {enrollSuccess.message}
                 </div>
-                {accessLink && (
+                {/* Mostrar el enlace inmediatamente después de inscribirse - siempre mostrar si existe */}
+                {webinar.accessLink && (
                   <div className="space-y-2">
                     <div className="rounded-md bg-[#EEEEFE] p-3 text-sm break-all">
                       <p className="font-semibold text-[#5352F6] mb-1">Enlace de acceso:</p>
-                      <p className="text-[#0F0F0F]">{accessLink}</p>
+                      <p className="text-[#0F0F0F]">{webinar.accessLink}</p>
                     </div>
                     <Button 
                       variant="primary" 
                       className="w-full"
-                      onClick={() => navigator.clipboard.writeText(accessLink || "")}
+                      onClick={() => navigator.clipboard.writeText(webinar.accessLink || "")}
                       type="button"
                     >
                       Copiar enlace
