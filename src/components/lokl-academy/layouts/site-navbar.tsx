@@ -29,6 +29,7 @@ export function SiteNavbar() {
         /*      { label: "Podcasts", href: "#podcasts" }, */
         { label: "FAQ", href: "#faq" },
         { label: "Cursos", href: "/course" },
+        { label: "Webinar", href: "/webinar" },
       ]}
       actions={
         token ? (

@@ -1,4 +1,4 @@
-import { getWebinarsService, enrollWebinarService } from "@/services/webinar-service"
+import { getWebinarsService, enrollWebinarService, getAllEnrolledWebinarsService } from "@/services/webinar-service"
 import { Webinar } from "@/lib/webinar/schema"
 
 export const getWebinarsAction = async (): Promise<{ webinars: Webinar[], error?: string }> => {
@@ -41,6 +41,25 @@ export const enrollWebinarAction = async (body: { webinarId: string }): Promise<
             success: false,
             message: "Error al inscribir al webinar, intente mas tarde.",
             error: "Error al inscribir al webinar, intente mas tarde."
+        }
+    }
+}
+
+export const getAllEnrolledWebinarsAction = async (): Promise<{ enrollments: string[], error?: string }> => {
+    try {
+        const response = await getAllEnrolledWebinarsService()
+        if (!response?.success) {
+            return {
+                error: response.message,
+                enrollments: []
+            }
+        }
+        return { enrollments: response.enrollments || [] }
+    } catch (error) {
+        console.error("Error al obtener los webinars inscritos, intente mas tarde.", error)
+        return {
+            error: "Error al obtener los webinars inscritos, intente mas tarde.",
+            enrollments: []
         }
     }
 }
