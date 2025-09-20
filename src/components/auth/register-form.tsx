@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuthStore } from "@/store/auth-store";
-import { consumePostLoginRedirect } from "@/lib/auth-utils";
+import { consumePostLoginRedirect, setPostLoginRedirect } from "@/lib/auth-utils";
 import { 
   Card, 
   CardHeader, 
@@ -87,14 +87,26 @@ const PhoneInput = ({
 
 export default function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const navigatedRef = useRef(false);
   const { register, error, isLoading, clearError, token } = useAuthStore();
   
-  // Redirigir si ya está autenticado
+  // Si viene ?redirect en la URL, guardarlo para post-login
   useEffect(() => {
-    if (token) {
-      router.push("/");
+    const redirectParam = searchParams.get("redirect");
+    if (redirectParam) {
+      setPostLoginRedirect(redirectParam);
     }
-  }, [token, router]);
+  }, [searchParams]);
+
+  // Redirigir si ya está autenticado (respeta redirect almacenado o de la URL)
+  useEffect(() => {
+    if (token && !navigatedRef.current) {
+      const target = consumePostLoginRedirect() || searchParams.get("redirect") || "/";
+      navigatedRef.current = true;
+      router.push(target);
+    }
+  }, [token, router, searchParams]);
   
   // Estados para los campos del formulario
   const [firstName, setFirstName] = useState("");
@@ -176,8 +188,11 @@ export default function RegisterForm() {
     });
     
     if (success) {
-      const target = consumePostLoginRedirect() || "/";
-      router.push(target);
+      const target = consumePostLoginRedirect() || searchParams.get("redirect") || "/";
+      if (!navigatedRef.current) {
+        navigatedRef.current = true;
+        router.push(target);
+      }
     } else {
       setShowErrorDialog(true);
     }
@@ -396,7 +411,7 @@ export default function RegisterForm() {
         <CardFooter className="flex justify-center">
           <Text>
             ¿Ya tienes una cuenta?{" "}
-            <Link href="/login" className="text-[#5352F6] hover:underline">
+            <Link href={searchParams.get("redirect") ? `/login?redirect=${encodeURIComponent(searchParams.get("redirect") || "")}` : "/login"} className="text-[#5352F6] hover:underline">
               Inicia sesión
             </Link>
           </Text>
