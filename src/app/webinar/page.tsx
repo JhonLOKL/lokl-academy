@@ -186,32 +186,34 @@ export default function WebinarsPage() {
             </Paragraph>
           </div>
         ) : (
-          <CourseSwiper
-            slidesPerView={1}
-            spaceBetween={32}
-            breakpoints={{
-              320: {
-                slidesPerView: 1,
-                spaceBetween: 20,
-              },
-              768: {
-                slidesPerView: 1.05,
-                spaceBetween: 30,
-              },
-              1024: {
-                slidesPerView: 1.2,
-                spaceBetween: 40,
-              },
-              1440: {
-                slidesPerView: 1.5,
-                spaceBetween: 50,
-              },
-              1800: {
-                slidesPerView: 1.8,
-                spaceBetween: 60,
-              },
-            }}
-          >
+          <div className="flex justify-center">
+            <div className="w-full max-w-4xl">
+              <CourseSwiper
+                slidesPerView={1}
+                spaceBetween={32}
+                breakpoints={{
+                  320: {
+                    slidesPerView: 1,
+                    spaceBetween: 20,
+                  },
+                  768: {
+                    slidesPerView: 1,
+                    spaceBetween: 30,
+                  },
+                  1024: {
+                    slidesPerView: 1,
+                    spaceBetween: 40,
+                  },
+                  1440: {
+                    slidesPerView: 1,
+                    spaceBetween: 50,
+                  },
+                  1800: {
+                    slidesPerView: 1,
+                    spaceBetween: 60,
+                  },
+                }}
+              >
             {webinars.map((webinar) => (
               <WebinarCard
                 key={webinar.id}
@@ -223,7 +225,9 @@ export default function WebinarsPage() {
                 accessLink={webinar.accessLink}
               />
             ))}
-          </CourseSwiper>
+              </CourseSwiper>
+            </div>
+          </div>
         )}
       </div>
     </main>
