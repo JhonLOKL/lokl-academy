@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { getWebinarsAction, enrollWebinarAction, getAllEnrolledWebinarsAction } from "@/actions/webinar-action";
 import { Webinar } from "@/lib/webinar/schema";
@@ -14,7 +14,7 @@ import {
 import CourseSwiper from "@/components/course/course-swiper";
 import WebinarCard from "@/components/webinar/webinar-card";
 
-export default function WebinarsPage() {
+function WebinarsContent() {
   const [webinars, setWebinars] = useState<Webinar[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -134,9 +134,9 @@ export default function WebinarsPage() {
     };
 
     autoEnroll();
-  }, [isAuthenticated, webinars, searchParams, autoEnrollProcessed]);
+  }, [isAuthenticated, webinars, searchParams, autoEnrollProcessed, handleEnroll]);
 
-  const handleEnroll = async (webinarId: string) => {
+  const handleEnroll = useCallback(async (webinarId: string) => {
     if (!isAuthenticated) {
       // Redirigir a login o mostrar mensaje
       return;
@@ -197,7 +197,7 @@ export default function WebinarsPage() {
     } finally {
       setEnrollingId(null);
     }
-  };
+  }, [isAuthenticated]);
 
     return (
     <main className="min-h-screen bg-[#FAFAFA] py-12">
@@ -282,5 +282,21 @@ export default function WebinarsPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function WebinarsPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen bg-[#FAFAFA] py-12">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-center py-12">
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-[#5352F6] border-t-transparent"></div>
+          </div>
+        </div>
+      </main>
+    }>
+      <WebinarsContent />
+    </Suspense>
   );
 }
