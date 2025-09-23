@@ -183,7 +183,7 @@ const WebinarCard: React.FC<WebinarCardProps> = ({
                   <Button 
                     variant="primary" 
                     className="w-full sm:w-auto sm:px-6"
-                    onClick={() => window.location.href = "/login?redirect=/webinar"}
+                    onClick={() => window.location.href = `/login?redirect=/webinar?enroll=${webinar.id}`}
                     type="button"
                   >
                     Iniciar sesión para inscribirme
@@ -193,7 +193,7 @@ const WebinarCard: React.FC<WebinarCardProps> = ({
                   <Button 
                     variant="outline" 
                     className="w-full sm:w-auto sm:px-6"
-                    onClick={() => window.location.href = "/register?redirect=/webinar"}
+                    onClick={() => window.location.href = `/register?redirect=/webinar?enroll=${webinar.id}`}
                     type="button"
                   >
                     Registrarme
