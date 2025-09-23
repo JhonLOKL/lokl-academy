@@ -90,52 +90,6 @@ function WebinarsContent() {
     setAutoEnrollProcessed(false);
   }, [isAuthenticated]); // Recargar cuando cambie el estado de autenticación
 
-  // Auto-enroll cuando hay parámetro enroll y el usuario está autenticado
-  useEffect(() => {
-    const autoEnroll = async () => {
-      const enrollParam = searchParams.get('enroll');
-      
-      // Solo procesar si:
-      // 1. Hay parámetro enroll
-      // 2. El usuario está autenticado
-      // 3. Los webinars ya están cargados
-      // 4. No se ha procesado ya el auto-enroll
-      if (enrollParam && isAuthenticated && webinars.length > 0 && !autoEnrollProcessed) {
-        // Verificar que el webinar existe
-        const webinarExists = webinars.find(webinar => webinar.id === enrollParam);
-        
-        if (webinarExists) {
-          // Verificar si ya está inscrito
-          const isAlreadyEnrolled = !webinarExists.canEnroll;
-          
-          if (!isAlreadyEnrolled) {
-            console.log("Auto-inscribiendo al webinar:", enrollParam);
-            await handleEnroll(enrollParam);
-          } else {
-            console.log("Usuario ya está inscrito al webinar:", enrollParam);
-            setEnrollSuccess({
-              id: enrollParam,
-              message: "¡Ya estás inscrito a este webinar!"
-            });
-          }
-        } else {
-          console.log("Webinar no encontrado:", enrollParam);
-          setError("El webinar solicitado no existe o no está disponible.");
-        }
-        
-        // Marcar como procesado para evitar múltiples auto-enrolls
-        setAutoEnrollProcessed(true);
-        
-        // Limpiar el parámetro de la URL
-        const url = new URL(window.location.href);
-        url.searchParams.delete('enroll');
-        window.history.replaceState({}, '', url.toString());
-      }
-    };
-
-    autoEnroll();
-  }, [isAuthenticated, webinars, searchParams, autoEnrollProcessed, handleEnroll]);
-
   const handleEnroll = useCallback(async (webinarId: string) => {
     if (!isAuthenticated) {
       // Redirigir a login o mostrar mensaje
@@ -198,6 +152,52 @@ function WebinarsContent() {
       setEnrollingId(null);
     }
   }, [isAuthenticated]);
+
+  // Auto-enroll cuando hay parámetro enroll y el usuario está autenticado
+  useEffect(() => {
+    const autoEnroll = async () => {
+      const enrollParam = searchParams.get('enroll');
+      
+      // Solo procesar si:
+      // 1. Hay parámetro enroll
+      // 2. El usuario está autenticado
+      // 3. Los webinars ya están cargados
+      // 4. No se ha procesado ya el auto-enroll
+      if (enrollParam && isAuthenticated && webinars.length > 0 && !autoEnrollProcessed) {
+        // Verificar que el webinar existe
+        const webinarExists = webinars.find(webinar => webinar.id === enrollParam);
+        
+        if (webinarExists) {
+          // Verificar si ya está inscrito
+          const isAlreadyEnrolled = !webinarExists.canEnroll;
+          
+          if (!isAlreadyEnrolled) {
+            console.log("Auto-inscribiendo al webinar:", enrollParam);
+            await handleEnroll(enrollParam);
+          } else {
+            console.log("Usuario ya está inscrito al webinar:", enrollParam);
+            setEnrollSuccess({
+              id: enrollParam,
+              message: "¡Ya estás inscrito a este webinar!"
+            });
+          }
+        } else {
+          console.log("Webinar no encontrado:", enrollParam);
+          setError("El webinar solicitado no existe o no está disponible.");
+        }
+        
+        // Marcar como procesado para evitar múltiples auto-enrolls
+        setAutoEnrollProcessed(true);
+        
+        // Limpiar el parámetro de la URL
+        const url = new URL(window.location.href);
+        url.searchParams.delete('enroll');
+        window.history.replaceState({}, '', url.toString());
+      }
+    };
+
+    autoEnroll();
+  }, [isAuthenticated, webinars, searchParams, autoEnrollProcessed, handleEnroll]);
 
     return (
     <main className="min-h-screen bg-[#FAFAFA] py-12">
