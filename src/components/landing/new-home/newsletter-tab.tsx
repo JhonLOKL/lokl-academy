@@ -1,0 +1,110 @@
+"use client";
+
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ImageWithFallback } from './image-with-fallback';
+import { Mail, Shield, Users, Star, CheckCircle } from 'lucide-react';
+import { UseFormRegister } from 'react-hook-form';
+
+interface FormData {
+  email: string;
+  consent: boolean;
+}
+
+interface NewsletterTabProps {
+  onSubmit: () => void;
+  register: UseFormRegister<FormData>;
+  isSubmitted: boolean;
+}
+
+export default function NewsletterTab({ onSubmit, register, isSubmitted }: NewsletterTabProps) {
+  return (
+    <div className="animate-fade-in">
+      <Card className="overflow-hidden border-0 shadow-2xl shadow-[#5352F6]/30 hover:shadow-[#5352F6]/40 transition-all duration-300 p-0">
+        <div className="grid lg:grid-cols-2 min-h-[600px]">
+          {/* Columna izquierda - Imagen */}
+          <div className="relative h-[500px] lg:h-auto overflow-hidden group">
+            <ImageWithFallback
+              src="https://images.unsplash.com/photo-1563986768609-322da13575f3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxuZXdzbGV0dGVyJTIwZW1haWwlMjBtYXJrZXRpbmd8ZW58MXx8fHwxNzYwMjIwNDIwfDA&ixlib=rb-4.1.0&q=80&w=1080"
+              alt="Newsletter LOKL"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            {/* Overlay con gradiente */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#5352F6]/90 via-[#5352F6]/50 to-[#5352F6]/20"></div>
+            
+            {/* Texto sobre la imagen - Parte inferior */}
+            <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+              <h3 className="text-2xl md:text-3xl font-bold mb-3">
+                Mantente al día con <span className="text-white/90">LOKL</span>
+              </h3>
+              <p className="text-base text-white/90">
+                Recibe cada semana análisis de mercado, oportunidades exclusivas y consejos de inversión directo en tu inbox.
+              </p>
+            </div>
+          </div>
+
+          {/* Columna derecha - Formulario de suscripción */}
+          <div className="p-8 md:p-12 bg-gradient-to-br from-[#5352F6] via-[#5352F6] to-[#5352F6]/80 relative overflow-hidden">
+            {/* Efectos de brillo y patrón de fondo */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/5 rounded-full blur-2xl translate-y-1/2 -translate-x-1/3"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.1),transparent)]"></div>
+            
+            <div className="text-center space-y-6 relative flex flex-col justify-center h-full">
+              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto ring-4 ring-white/30 shadow-xl backdrop-blur-sm transition-transform duration-300 hover:scale-110">
+                <Mail className="h-10 w-10 text-white" />
+              </div>
+              <div>
+                <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
+                  Suscríbete a nuestro <span className="text-white/90">newsletter</span>
+                </h3>
+                <p className="text-base text-white/90 mb-4">
+                  1 email/semana · sin spam · plantillas y oportunidades exclusivas
+                </p>
+                <div className="flex items-center justify-center gap-4 text-sm text-white/80">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-4 w-4" />
+                    <span>+12,000 suscriptores</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Star className="h-4 w-4 fill-white" />
+                    <span>4.9/5 valoración</span>
+                  </div>
+                </div>
+              </div>
+
+              {isSubmitted ? (
+                <div className="py-6">
+                  <CheckCircle className="h-16 w-16 text-white mx-auto mb-4" />
+                  <p className="text-lg text-white font-medium">¡Gracias por suscribirte!</p>
+                  <p className="text-sm text-white/80 mt-2">Revisa tu email para confirmar tu suscripción (doble opt-in).</p>
+                </div>
+              ) : (
+                <form onSubmit={onSubmit} className="space-y-4">
+                  <Input
+                    type="email"
+                    placeholder="tu.email@ejemplo.com"
+                    {...register('email', { required: 'Email requerido' })}
+                    className="text-center bg-white/95 border-white/50 placeholder:text-muted-foreground/60 focus:bg-white text-foreground shadow-lg h-12"
+                  />
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-black hover:bg-black/90 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 h-12"
+                  >
+                    Recibir el boletín gratis
+                  </Button>
+                  {/* Aviso de privacidad visible */}
+                  <p className="text-xs text-white/80">
+                    <Shield className="h-3 w-3 inline mr-1" />
+                    Doble opt-in. Baja en 1 clic. <a href="#" className="text-white underline hover:text-white/80">Ver política de privacidad</a>
+                  </p>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+}
