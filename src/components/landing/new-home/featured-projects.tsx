@@ -1,25 +1,12 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Users, TrendingUp, ChevronLeft, ChevronRight, Building2, Waves, Flame, UtensilsCrossed, Dumbbell, Briefcase, Cpu, Car, Coffee, Eye, Play, DollarSign, Home, Maximize2, Sofa } from 'lucide-react';
+import LazyImage from './lazy-image';
 
-// Componente para manejar imágenes con fallback
-const ImageWithFallback = ({ src, alt, className }: { src: string, alt: string, className?: string }) => {
-  return (
-    <img 
-      src={src}
-      alt={alt}
-      className={className}
-      onError={(e) => {
-        const target = e.target as HTMLImageElement;
-        target.onerror = null;
-        target.src = "https://via.placeholder.com/800x600?text=Imagen+no+disponible";
-      }}
-    />
-  );
-};
+// Uso de LazyImage en lugar del componente ImageWithFallback
 
 export default function FeaturedProjects() {
   const [currentProject, setCurrentProject] = useState(1); // Indie Universe por defecto
@@ -100,7 +87,7 @@ export default function FeaturedProjects() {
       name: 'Aldea',
       location: 'La Unión, Colombia',
       description: 'Desarrollo inmobiliario innovador en zona estratégica con enfoque en comunidad y espacios modernos. Un proyecto único que redefinirá el concepto de inversión inmobiliaria en la región.',
-      image: 'https://images.unsplash.com/photo-1656646424531-cc9041d3e5ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb21tZXJjaWFsJTIwcmVhbCUyMGVzdGF0ZSUyMGJ1aWxkaW5nfGVufDF8fHx8MTc1OTczMDE0NHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+      image: 'https://lokl-assets.s3.us-east-1.amazonaws.com/aldea/aldea_houses.jpeg',
       videoUrl: 'https://www.youtube.com/watch?v=example3',
       minRoi: 14,
       maxRoi: 16,
@@ -153,10 +140,10 @@ export default function FeaturedProjects() {
   const mainProject = projects[visible.current];
 
   return (
-    <section className="py-12 md:py-16 bg-[rgb(243,243,243)]">
+    <section className="py-8 md:py-12 bg-[rgb(243,243,243)]">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
             <span className="text-[#5352F6]">Proyectos</span> destacados
           </h2>
@@ -169,13 +156,15 @@ export default function FeaturedProjects() {
         <div className="relative max-w-7xl mx-auto overflow-hidden">
           <div className="flex items-center justify-center">
             {/* Previous Project Preview - Partially Visible */}
-            <div className="hidden lg:block w-64 -mr-32 opacity-50 scale-75 transform transition-all duration-500 z-10">
-              <div className="relative rounded-2xl overflow-hidden shadow-lg cursor-pointer hover:scale-80 transition-transform" onClick={prevProject}>
-                <ImageWithFallback 
-                  src={projects[visible.prev].image}
-                  alt={projects[visible.prev].name}
-                  className="w-full h-80 object-cover"
-                />
+            <div className="hidden lg:block w-80 -mr-8 opacity-90 scale-95 transform transition-all duration-500 z-10">
+              <div className="relative rounded-2xl overflow-hidden shadow-lg cursor-pointer hover:scale-105 transition-transform" onClick={prevProject}>
+                <div className="mobile-aspect-ratio-container">
+                  <LazyImage 
+                    src={projects[visible.prev].image}
+                    alt={projects[visible.prev].name}
+                    className="w-full h-80 object-cover mobile-aspect-ratio-content"
+                  />
+                </div>
                 <div className="absolute inset-0 bg-black/30"></div>
                 <div className="absolute top-3 left-3">
                   <Badge className={`${projects[visible.prev].statusColor} text-white text-xs`}>
@@ -204,15 +193,16 @@ export default function FeaturedProjects() {
             </div>
 
             {/* Main Project - Larger and Prominent */}
-            <div className="w-full max-w-5xl mx-4 z-20 relative">
-              <div className={`${mainProject.status === 'Coming Soon' ? 'bg-gradient-to-br from-foreground via-foreground to-gray-900' : 'bg-white'} rounded-3xl shadow-2xl overflow-hidden transform scale-100`}>
-                <div className="grid lg:grid-cols-2">
+            <div className="w-full max-w-4xl mx-2 z-20 relative">
+              <div className={`${mainProject.status === 'Coming Soon' ? 'bg-black' : 'bg-white'} rounded-3xl shadow-2xl overflow-hidden transform scale-100`}>
+                <div className="grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
                   {/* Left Side - Image */}
-                  <div className="relative h-full group/image">
-                    <ImageWithFallback 
+                  <div className="relative h-full group/image sm:block mobile-aspect-ratio-container">
+                    <LazyImage 
                       src={mainProject.image} 
                       alt={mainProject.name}
-                      className="w-full h-full min-h-[400px] lg:min-h-[650px] object-cover"
+                      className="w-full h-full min-h-[calc(100vw*16/9)] sm:min-h-[280px] lg:min-h-[420px] object-cover mobile-aspect-ratio-content"
+                      priority={true}
                     />
                     
                     {/* Overlay oscuro sutil */}
@@ -249,16 +239,16 @@ export default function FeaturedProjects() {
                   {/* Right Side - Content */}
                   {mainProject.status === 'Coming Soon' ? (
                     // DISEÑO ESPECIAL PARA COMING SOON - VERSION NEGRA
-                    <div className="p-6 lg:p-10 flex flex-col justify-center h-full bg-gradient-to-br from-foreground via-foreground to-gray-900 text-white">
+                     <div className="p-6 lg:p-8 flex flex-col h-full bg-black text-white">
                       {/* Badge superior "Próximamente" */}
-                      <div className="mb-4">
+                      <div className="mb-8">
                         <Badge variant="outline" className="border-white/30 text-white px-4 py-2 text-sm bg-transparent">
                           Próximamente disponible
                         </Badge>
                       </div>
 
                       {/* Nombre del proyecto */}
-                      <h3 className="text-3xl lg:text-4xl font-bold mb-3 leading-tight">
+                      <h3 className="text-4xl lg:text-5xl font-bold mb-4 leading-tight">
                         {mainProject.name}
                       </h3>
 
@@ -271,21 +261,23 @@ export default function FeaturedProjects() {
                       </div>
 
                       {/* Description */}
-                      <p className="text-base text-white/80 mb-8 leading-relaxed">
+                      <p className="text-base text-white/80 leading-relaxed mb-12">
                         {mainProject.description}
                       </p>
 
                       {/* CTA Button - "Únete a la lista de espera" */}
-                      <Button 
-                        size="lg" 
-                        className="w-full bg-white hover:bg-white/90 text-foreground py-6 text-base font-semibold rounded-xl hover:scale-[1.02] transition-all duration-300"
-                      >
-                        Únete a la lista de espera
-                      </Button>
+                      <div className="w-full">
+                        <Button 
+                          size="lg" 
+                          className="w-full bg-white hover:bg-white/90 text-black py-3 text-base font-semibold rounded-xl hover:scale-[1.02] transition-all duration-300"
+                        >
+                          Únete a la lista de espera
+                        </Button>
+                      </div>
                     </div>
                   ) : (
                     // DISEÑO NORMAL PARA PROYECTOS ACTIVOS
-                  <div className="p-6 lg:p-10 flex flex-col h-full">
+                   <div className="p-4 lg:p-6 flex flex-col h-full max-h-[80vh] sm:max-h-none overflow-y-auto">
                     {/* Title */}
                     <h3 className="text-3xl lg:text-4xl font-bold text-foreground mb-2 leading-tight">
                       {mainProject.name}
@@ -325,12 +317,12 @@ export default function FeaturedProjects() {
                     </div>
 
                     {/* CUPOS DISPONIBLES - SUPER PROTAGONISMO */}
-                    <div className="mb-6">
-                      <div className="flex items-baseline gap-2 mb-2">
-                        <span className="text-7xl lg:text-8xl font-bold text-foreground leading-none">
+                    <div className="mb-4">
+                      <div className="flex items-baseline gap-2 mb-1">
+                        <span className="text-6xl lg:text-7xl font-bold text-foreground leading-none">
                           {mainProject.availableSpots}
                         </span>
-                        <span className="text-4xl lg:text-5xl font-bold text-muted-foreground leading-none">
+                        <span className="text-3xl lg:text-4xl font-bold text-muted-foreground leading-none">
                           /{mainProject.totalSpots}
                         </span>
                       </div>
@@ -338,13 +330,13 @@ export default function FeaturedProjects() {
                     </div>
 
                     {/* Description */}
-                    <p className="text-muted-foreground mb-5 leading-relaxed text-sm">
+                    <p className="text-muted-foreground mb-3 leading-relaxed text-sm line-clamp-2">
                       {mainProject.description}
                     </p>
 
                     {/* Amenities Tags */}
-                    <div className="mb-5">
-                      <div className="flex flex-wrap gap-2">
+                    <div className="mb-3">
+                      <div className="flex flex-wrap gap-1">
                         {mainProject.amenities.map((amenity, index) => {
                           const getAmenityIcon = (icon: string) => {
                             const iconMap: { [key: string]: any } = {
@@ -376,11 +368,11 @@ export default function FeaturedProjects() {
                     </div>
 
                     {/* Divider */}
-                    <div className="h-px bg-border mb-5"></div>
+                    <div className="h-px bg-border mb-3"></div>
 
                     {/* Investment Info - Simple text format */}
-                    <div className="mb-6">
-                      <p className="text-base text-foreground leading-relaxed">
+                    <div className="mb-4">
+                      <p className="text-sm text-foreground leading-relaxed">
                         <span className="font-bold">${mainProject.minInvestment.toLocaleString('es-CO')}</span>
                         {' '}cupo de inversión hasta en{' '}
                         <span className="text-[#5352F6] font-bold">{mainProject.installments} cuotas</span>
@@ -390,7 +382,7 @@ export default function FeaturedProjects() {
                     {/* CTA Button */}
                     <Button 
                       size="lg" 
-                      className="w-full bg-foreground hover:bg-foreground/90 text-white py-6 text-base font-semibold rounded-xl hover:scale-[1.02] transition-all duration-300 mt-auto"
+                      className="w-full bg-foreground hover:bg-foreground/90 text-white py-3 text-base font-semibold rounded-xl hover:scale-[1.02] transition-all duration-300 mt-auto"
                     >
                       Quiero conocer más
                     </Button>
@@ -401,13 +393,15 @@ export default function FeaturedProjects() {
             </div>
 
             {/* Next Project Preview - Partially Visible */}
-            <div className="hidden lg:block w-64 -ml-32 opacity-50 scale-75 transform transition-all duration-500 z-10">
-              <div className="relative rounded-2xl overflow-hidden shadow-lg cursor-pointer hover:scale-80 transition-transform" onClick={nextProject}>
-                <ImageWithFallback 
-                  src={projects[visible.next].image}
-                  alt={projects[visible.next].name}
-                  className="w-full h-80 object-cover"
-                />
+            <div className="hidden lg:block w-80 -ml-8 opacity-90 scale-95 transform transition-all duration-500 z-10">
+              <div className="relative rounded-2xl overflow-hidden shadow-lg cursor-pointer hover:scale-105 transition-transform" onClick={nextProject}>
+                <div className="mobile-aspect-ratio-container">
+                  <LazyImage 
+                    src={projects[visible.next].image}
+                    alt={projects[visible.next].name}
+                    className="w-full h-80 object-cover mobile-aspect-ratio-content"
+                  />
+                </div>
                 <div className="absolute inset-0 bg-black/30"></div>
                 <div className="absolute top-3 left-3">
                   <Badge className={`${projects[visible.next].statusColor} text-white text-xs`}>

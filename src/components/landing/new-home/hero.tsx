@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import {
   Select,
   SelectContent,
@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import LazyImage from "./lazy-image";
 
 export default function Hero() {
   const [monthlyAmount, setMonthlyAmount] = useState([1300000]);
@@ -159,11 +160,11 @@ export default function Hero() {
               media="(max-width: 767px)"
               srcSet={project.image}
             />
-            <img
+            <LazyImage
               src={project.image}
               alt={`Proyecto ${project.name} - LOKL`}
               className="absolute inset-0 h-full w-full object-cover"
-              fetchPriority={index === 0 ? "high" : "low"}
+              priority={index === 0}
             />
           </picture>
         ))}
@@ -239,8 +240,13 @@ export default function Hero() {
           {/* CTAs */}
           <div className="mt-6 flex flex-wrap gap-3">
             <a
-              href="#simulador"
-              onClick={handleSimulateClick}
+              href="#featured-projects"
+              onClick={(e) => {
+                e.preventDefault();
+                document
+                  .getElementById("featured-projects")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
               className="rounded-xl bg-[#5352F6] px-5 py-3 font-medium text-white hover:bg-[#5352F6]/90 focus:outline-none focus:ring-2 focus:ring-[#5352F6]/30"
             >
               Ver proyectos
@@ -273,7 +279,7 @@ export default function Hero() {
             {/* Simulador funcional del hero */}
             <div className="space-y-5 max-w-xs mx-auto">
               {/* Selector de Proyecto */}
-              <div>
+              <div className="w-full">
                 <label className="text-sm text-white/90 block mb-2">
                   Proyecto
                 </label>
@@ -281,7 +287,7 @@ export default function Hero() {
                   value={selectedHeroProject}
                   onValueChange={handleHeroProjectChange}
                 >
-                  <SelectTrigger className="bg-white/20 border-white/30 text-white hover:bg-white/25 transition-colors">
+                  <SelectTrigger className="bg-white/20 border-white/30 text-white hover:bg-white/25 transition-colors w-full">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -340,16 +346,6 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* CTA sticky (opcional, solo mobile) */}
-      <div className="fixed inset-x-0 bottom-3 z-20 mx-auto w-[92%] md:hidden">
-        <a
-          href="#simulador"
-          onClick={handleSimulateClick}
-          className="block rounded-xl bg-[#5352F6] py-3 text-center font-medium text-white"
-        >
-          Simular mi retorno
-        </a>
-      </div>
     </section>
   );
 }

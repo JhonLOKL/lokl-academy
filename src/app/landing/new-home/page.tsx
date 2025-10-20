@@ -1,16 +1,35 @@
 "use client";
 
-import React from "react";
+import React, { lazy, Suspense } from "react";
+import dynamic from "next/dynamic";
 import NewHeroSection from "./sections/new-hero-section";
 import StatsSection from "./sections/stats-section";
-import BenefitsSection from "./sections/benefits-section";
-import HowItWorksSection from "./sections/how-it-works-section";
-import SimulatorSection from "./sections/simulator-section";
-import FeaturedProjectsSection from "./sections/featured-projects-section";
-import TestimonialsSection from "./sections/testimonials-section";
-import CommunitySectionWrapper from "./sections/community-section";
-import FAQSection from "./sections/faq-section";
-import FinalCTASection from "./sections/final-cta-section";
+
+// Importación dinámica de componentes menos críticos
+const BenefitsSection = dynamic(() => import("./sections/benefits-section"), { 
+  loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
+});
+const HowItWorksSection = dynamic(() => import("./sections/how-it-works-section"), {
+  loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
+});
+const SimulatorSection = dynamic(() => import("./sections/simulator-section"), {
+  loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
+});
+const FeaturedProjectsSection = dynamic(() => import("./sections/featured-projects-section"), {
+  loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
+});
+const TestimonialsSection = dynamic(() => import("./sections/testimonials-section"), {
+  loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
+});
+const CommunitySectionWrapper = dynamic(() => import("./sections/community-section"), {
+  loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
+});
+const FAQSection = dynamic(() => import("./sections/faq-section"), {
+  loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
+});
+const FinalCTASection = dynamic(() => import("./sections/final-cta-section"), {
+  loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
+});
 
 import "../../../components/landing/new-home/animations.css";
 

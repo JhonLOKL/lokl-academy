@@ -24,7 +24,7 @@ export default function NewsletterTab({ onSubmit, register, isSubmitted }: Newsl
       <Card className="overflow-hidden border-0 shadow-2xl shadow-[#5352F6]/30 hover:shadow-[#5352F6]/40 transition-all duration-300 p-0">
         <div className="grid lg:grid-cols-2 min-h-[600px]">
           {/* Columna izquierda - Imagen */}
-          <div className="relative h-[500px] lg:h-auto overflow-hidden group">
+          <div className="relative h-[300px] sm:h-[400px] lg:h-auto overflow-hidden group">
             <ImageWithFallback
               src="https://images.unsplash.com/photo-1563986768609-322da13575f3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxuZXdzbGV0dGVyJTIwZW1haWwlMjBtYXJrZXRpbmd8ZW58MXx8fHwxNzYwMjIwNDIwfDA&ixlib=rb-4.1.0&q=80&w=1080"
               alt="Newsletter LOKL"
@@ -45,7 +45,7 @@ export default function NewsletterTab({ onSubmit, register, isSubmitted }: Newsl
           </div>
 
           {/* Columna derecha - Formulario de suscripción */}
-          <div className="p-8 md:p-12 bg-gradient-to-br from-[#5352F6] via-[#5352F6] to-[#5352F6]/80 relative overflow-hidden">
+          <div className="p-6 sm:p-8 md:p-12 bg-gradient-to-br from-[#5352F6] via-[#5352F6] to-[#5352F6]/80 relative overflow-hidden">
             {/* Efectos de brillo y patrón de fondo */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/5 rounded-full blur-2xl translate-y-1/2 -translate-x-1/3"></div>
@@ -81,7 +81,7 @@ export default function NewsletterTab({ onSubmit, register, isSubmitted }: Newsl
                   <p className="text-sm text-white/80 mt-2">Revisa tu email para confirmar tu suscripción (doble opt-in).</p>
                 </div>
               ) : (
-                <form onSubmit={onSubmit} className="space-y-4">
+                <form onSubmit={onSubmit} className="space-y-5">
                   <Input
                     type="email"
                     placeholder="tu.email@ejemplo.com"
@@ -90,7 +90,7 @@ export default function NewsletterTab({ onSubmit, register, isSubmitted }: Newsl
                   />
                   <Button 
                     type="submit" 
-                    className="w-full bg-black hover:bg-black/90 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 h-12"
+                    className="w-full bg-black hover:bg-black/90 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 h-12 text-base py-6"
                   >
                     Recibir el boletín gratis
                   </Button>

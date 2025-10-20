@@ -55,7 +55,7 @@ export default function CommunitySection() {
         {/* ============ HEADER ============ */}
         <div className="mb-12 text-center">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 font-normal">
-            Centro de <span className="text-[#5352F6] font-bold">aprendizaje</span> de inversión inmobiliaria
+            Lokl <span className="text-[#5352F6] font-bold">academy</span> 
           </h1>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
             Guías prácticas, cursos y webinars para invertir con criterio. Actualizado cada semana.
@@ -64,7 +64,7 @@ export default function CommunitySection() {
 
         {/* ============ STEPPER/TABS NAVIGATION ============ */}
         <div className="mb-8">
-          <div className="flex items-center justify-center gap-2 overflow-x-auto pb-4">
+          <div className="flex flex-nowrap items-center justify-around sm:justify-start md:justify-center gap-2 sm:gap-2 overflow-x-auto pb-4 px-2 -mx-4 md:mx-0 md:px-0 scrollbar-hide">
             {[
               { id: 'newsletter', label: 'Newsletter', icon: Mail },
               { id: 'articulos', label: 'Artículos recientes', icon: BookOpen },
@@ -77,14 +77,14 @@ export default function CommunitySection() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-300 whitespace-nowrap ${
+                  className={`flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-6 py-3 rounded-xl font-medium transition-all duration-300 whitespace-nowrap flex-shrink-0 ${
                     isActive 
                       ? 'bg-[#5352F6] text-white shadow-lg shadow-[#5352F6]/30 scale-105' 
                       : 'bg-white text-muted-foreground hover:bg-white/80 hover:text-foreground'
                   }`}
                 >
-                  <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-[#5352F6]'}`} />
-                  <span>{tab.label}</span>
+                  <Icon className={`w-6 h-6 sm:w-5 sm:h-5 ${isActive ? 'text-white' : 'text-[#5352F6]'}`} />
+                  <span className={`text-sm sm:text-base ${isActive ? 'block' : 'hidden sm:block'}`}>{tab.label}</span>
                 </button>
               );
             })}

@@ -117,8 +117,8 @@ export default function FAQ() {
 
           {/* Right: Utilities */}
           <div className="space-y-4">
-            {/* Category Chips */}
-            <div className="flex flex-wrap gap-2">
+            {/* Category Chips - Hidden on mobile */}
+            <div className="hidden md:flex flex-wrap gap-2">
               <Badge
                 variant={selectedCategory === '' ? "default" : "secondary"}
                 className="cursor-pointer hover:opacity-80 transition-opacity"
@@ -141,7 +141,7 @@ export default function FAQ() {
             </div>
 
             {/* Expand/Collapse All */}
-            <div className="flex justify-end">
+            <div className="flex justify-center md:justify-end">
               <Button
                 variant="ghost"
                 size="sm"
@@ -165,7 +165,7 @@ export default function FAQ() {
         </div>
 
         {/* Two Column Layout */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-12">
+        <div className="grid lg:grid-cols-2 gap-6 md:gap-8 mb-12">
           {/* Column A */}
           <div>
             <Accordion 

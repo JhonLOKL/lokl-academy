@@ -54,48 +54,48 @@ export default function Benefits() {
   
   const benefits = [
     {
+      title: "Impacto y comunidad",
+      description:
+        "Invertir con propósito es construir futuro. No se trata solo de capital, sino de consciencia. Invertimos en proyectos que restauran ecosistemas, dignifican el habitar y fortalecen el tejido social. Creamos comunidad entre inversionistas y las localidades donde se encuentran nuestro proyectos.",
+      ctaText: "Haz parte de la nueva forma de invertir",
+      image:
+        "https://i.pinimg.com/1200x/c9/69/d2/c969d204d68ff689d0bb306747ffef21.jpg",
+      benefit: "Propósito"
+    },
+    {
       title: "Accesible desde montos bajos",
       description:
-        "Empieza sin hipotecas ni deudas: entra con montos desde $1.000 USD (aproximadamento).",
-      ctaText: "Simular mi inversión",
-      image: "/images/new-home/benefits/accessible.jpg",
-      benefit: "100% digital"
+        "La inversión ya no es un privilegio. Es una herramienta de cambio. Desde $1.000 USD puedes activar un impacto real. Diseñamos este modelo para las nuevas generaciones: sin deudas, sin barreras, sin esperar a \"algún día\". Aquí, el acceso es el punto de partida, no el premio.",
+      ctaText: "Empieza donde estás, crece con nosotros",
+      image: "/images/new-home/Camilodolar.jpg",
+      benefit: "Inclusivo"
     },
     {
-      title: "Diversificación real de tu portafolio",
+      title: "Rentabilidad que transforma",
       description:
-        "Reparte el riesgo entre distintos proyectos y ciudades. Métricas comparables: plazo, rentabilidad, ocupación, ubicación.",
-      ctaText: "Ver proyectos disponibles",
-      image:
-        "https://i.pinimg.com/1200x/cc/02/33/cc02339533a0292bbd4d2ff5502c6a5a.jpg",
-      benefit: "Multi-ciudad"
-    },
-    {
-      title: "Rentabilidad estimada del 10–15% anual",
-      description:
-        "Modelos de flujo claros con supuestos auditables. Pagos periódicos según cada proyecto.",
-      ctaText: "Calcular mi retorno",
+        "Ganar sí, pero no a cualquier costo. Aquí, la rentabilidad nace del valor que se crea para todos: personas, comunidades y ecosistema. Modelos claros, retornos estimados del 8% al 15% anual y un compromiso con lo que realmente importa. Invertir con propósito también es rentable. Y lo estamos demostrando.",
+      ctaText: "Calcula tu retorno financiero y social",
       image:
         "https://i.pinimg.com/1200x/e0/6a/1f/e06a1f4c50a0c9547c67d7d31572ef4d.jpg",
-      benefit: "Modelo transparente"
+      benefit: "Sostenible"
     },
     {
       title: "Seguridad y transparencia",
       description:
-        "Due diligence y curaduría de cada proyecto. Panel en tiempo real: contratos, reportes y trazabilidad de pagos.",
-      ctaText: "Cómo protegemos tu inversión",
+        "La confianza no se promete, se construye. Cada proyecto pasa por una curaduría experta y puedes seguirlo en tiempo real: contratos, pagos, avances, todo abierto. En Lokl, la transparencia no es una opción. Es la base de todo. Porque construir juntos también es rendir cuentas juntos.",
+      ctaText: "Conoce cómo protegemos tu inversión",
       image:
         "https://i.pinimg.com/1200x/d2/bb/76/d2bb767f2db2eec528f23ca43858901e.jpg",
-      benefit: "Contratos en línea"
+      benefit: "Confiable"
     },
     {
-      title: "Impacto y comunidad",
+      title: "Valor que vuelve a ti",
       description:
-        "Proyectos con propósito (turismo, vivienda, coliving). Acceso a espacios y eventos exclusivos para inversionistas.",
-      ctaText: "Conocer beneficios para miembros",
+        "Invertir con Lokl es más que mover tu dinero: es vivir lo que construyes. Pagas en cuotas, sin deuda ni intermediarios, mientras tu inversión genera impacto real en comunidades locales. Ganas por rentabilidad, valorización y experiencias únicas en los proyectos que ayudas a hacer posibles.",
+      ctaText: "Descubre todos los beneficios",
       image:
-        "https://i.pinimg.com/1200x/c9/69/d2/c969d204d68ff689d0bb306747ffef21.jpg",
-      benefit: "Turismo/Vivienda"
+        "https://i.pinimg.com/1200x/cc/02/33/cc02339533a0292bbd4d2ff5502c6a5a.jpg",
+      benefit: "Integral"
     },
   ];
 
@@ -112,33 +112,37 @@ export default function Benefits() {
             invertir con LOKL
           </h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            Diversifica en bienes raíces con transparencia,
-            seguridad y retornos proyectados del 10–15% anual.
+            Inversión inmobiliaria con propósito: rentabilidad financiera, impacto social
+            y experiencias que transforman.
           </p>
         </div>
 
         {/* Benefits Carousel */}
         <Carousel
           opts={{
-            align: "start",
+            align: "center",
             loop: true,
+            containScroll: false
           }}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onTouchStart={handleMouseEnter}
           onTouchEnd={handleMouseLeave}
           setApi={setApi}
-          className="w-full"
+          className="w-full overflow-visible px-4 -mx-4"
         >
           <CarouselContent className="-ml-2 md:-ml-4">
             {benefits.map((benefit, index) => (
               <CarouselItem
                 key={index}
-                className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3"
+                className="pl-2 md:pl-4 basis-[85%] md:basis-1/2 lg:basis-1/3"
               >
-                <div className="group h-full">
+                <div 
+                  className="group h-full cursor-pointer" 
+                  onClick={() => api?.scrollTo(index)}
+                >
                   {/* Tarjeta con imagen de fondo dominante */}
-                  <div className="relative h-[500px] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
+                  <div className="relative h-[450px] md:h-[550px] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
                     {/* Imagen de fondo a pantalla completa */}
                     <div
                       className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
@@ -170,7 +174,7 @@ export default function Benefits() {
                         </h3>
 
                         {/* Descripción */}
-                        <p className="text-white/90 text-sm leading-relaxed drop-shadow-md">
+                        <p className="text-white/90 text-sm md:text-base leading-relaxed drop-shadow-md overflow-y-auto max-h-[180px] md:max-h-[220px] pr-2 custom-scrollbar">
                           {benefit.description}
                         </p>
 
@@ -178,9 +182,6 @@ export default function Benefits() {
                         <Button className="w-full bg-white/95 hover:bg-white text-[#5352F6] border-0 rounded-2xl px-6 py-6 font-medium transition-all duration-300 hover:scale-[1.03] hover:shadow-xl group/button backdrop-blur-sm">
                           <span className="flex items-center justify-center gap-2">
                             {benefit.ctaText}
-                            <span className="text-lg transition-transform duration-300 group-hover/button:translate-x-1">
-                              →
-                            </span>
                           </span>
                         </Button>
                       </div>
@@ -199,12 +200,6 @@ export default function Benefits() {
           <CarouselNext className="hidden md:flex -right-20 h-12 w-12 border-2 border-[#5352F6]/20 bg-white hover:bg-[#5352F6] hover:text-white hover:border-[#5352F6]" />
         </Carousel>
 
-        {/* Mobile indicators hint */}
-        <div className="mt-6 text-center md:hidden">
-          <p className="text-sm text-muted-foreground">
-            Desliza para ver más beneficios →
-          </p>
-        </div>
       </div>
     </section>
   );

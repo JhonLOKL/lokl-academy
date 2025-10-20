@@ -68,7 +68,7 @@ export default function HowItWorks() {
         </div>
 
         {/* Patrón escalonado diagonal premium mejorado */}
-        <div className="relative min-h-[1500px] md:min-h-[1300px] lg:min-h-[1100px]">
+        <div className="relative min-h-[1700px] md:min-h-[1500px] lg:min-h-[1300px]">
           {steps.map((step, index) => {
             const IconComponent = step.icon;
             const BadgeIconComponent = step.badgeIcon;
@@ -76,8 +76,8 @@ export default function HowItWorks() {
             // Posicionamiento escalonado diagonal
             const positions = [
               'top-0 left-0 lg:left-8',
-              'top-[32rem] md:top-[28rem] right-0 lg:top-[22rem] lg:right-8',
-              'top-[64rem] md:top-[56rem] left-0 lg:top-[44rem] lg:left-8'
+              'top-[36rem] md:top-[32rem] right-0 lg:top-[26rem] lg:right-8',
+              'top-[72rem] md:top-[64rem] left-0 lg:top-[52rem] lg:left-8'
             ];
 
             // Estilos dinámicos premium mejorados

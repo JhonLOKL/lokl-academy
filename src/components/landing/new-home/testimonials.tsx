@@ -1,38 +1,48 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Play } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import YouTubeEmbed from './youtube-embed';
 
 export default function Testimonials() {
-  // Efecto para controlar la pausa de animación en hover
+  // Estado para controlar si algún video está reproduciéndose
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const row1Ref = useRef<HTMLDivElement>(null);
+  const row2Ref = useRef<HTMLDivElement>(null);
+  
+  // Efecto para controlar la pausa de animación en hover y reproducción de video
   useEffect(() => {
     // Función para manejar el hover en la primera fila
     const handleRow1MouseEnter = () => {
-      const row = document.getElementById('testimonial-row-1');
-      if (row) row.style.animationPlayState = 'paused';
+      if (row1Ref.current && !isVideoPlaying) {
+        row1Ref.current.style.animationPlayState = 'paused';
+      }
     };
     
     const handleRow1MouseLeave = () => {
-      const row = document.getElementById('testimonial-row-1');
-      if (row) row.style.animationPlayState = 'running';
+      if (row1Ref.current && !isVideoPlaying) {
+        row1Ref.current.style.animationPlayState = 'running';
+      }
     };
     
     // Función para manejar el hover en la segunda fila
     const handleRow2MouseEnter = () => {
-      const row = document.getElementById('testimonial-row-2');
-      if (row) row.style.animationPlayState = 'paused';
+      if (row2Ref.current && !isVideoPlaying) {
+        row2Ref.current.style.animationPlayState = 'paused';
+      }
     };
     
     const handleRow2MouseLeave = () => {
-      const row = document.getElementById('testimonial-row-2');
-      if (row) row.style.animationPlayState = 'running';
+      if (row2Ref.current && !isVideoPlaying) {
+        row2Ref.current.style.animationPlayState = 'running';
+      }
     };
     
     // Añadir event listeners
-    const row1 = document.getElementById('testimonial-row-1');
-    const row2 = document.getElementById('testimonial-row-2');
+    const row1 = row1Ref.current;
+    const row2 = row2Ref.current;
     
     if (row1) {
       row1.addEventListener('mouseenter', handleRow1MouseEnter);
@@ -56,9 +66,25 @@ export default function Testimonials() {
         row2.removeEventListener('mouseleave', handleRow2MouseLeave);
       }
     };
-  }, []);
+  }, [isVideoPlaying]);
+  
+  // Función para manejar el estado de reproducción de video
+  const handleVideoPlayStateChange = (isPlaying: boolean) => {
+    setIsVideoPlaying(isPlaying);
+    
+    // Pausar ambos carruseles cuando un video está reproduciéndose
+    if (isPlaying) {
+      if (row1Ref.current) row1Ref.current.style.animationPlayState = 'paused';
+      if (row2Ref.current) row2Ref.current.style.animationPlayState = 'paused';
+    } else {
+      // Restaurar el estado normal de los carruseles
+      if (row1Ref.current) row1Ref.current.style.animationPlayState = 'running';
+      if (row2Ref.current) row2Ref.current.style.animationPlayState = 'running';
+    }
+  };
 
-  const allTestimonials = [
+  // Testimoniales de texto
+  const textTestimonials = [
     {
       id: 1,
       name: "María González",
@@ -88,14 +114,6 @@ export default function Testimonials() {
       isVideo: false
     },
     {
-      id: 5,
-      name: "Sofía Chen",
-      project: "Nido de Agua",
-      videoThumbnail: "https://images.unsplash.com/photo-1560472354-ca5be50bd4e0?w=400&h=225&fit=crop",
-      isVideo: true,
-      duration: "2:15"
-    },
-    {
       id: 6,
       name: "Roberto Silva",
       project: "Aldea",
@@ -122,34 +140,71 @@ export default function Testimonials() {
       project: "Aldea",
       content: "He estado construyendo mi patrimonio con LOKL. Pasé la última hora casi llorando porque las respuestas son increíbles.",
       isVideo: false
-    },
-    {
-      id: 10,
-      name: "Andrés Moreno",
-      project: "Indie Universe",
-      videoThumbnail: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=225&fit=crop",
-      isVideo: true,
-      duration: "1:45"
-    },
-    {
-      id: 11,
-      name: "Laura Jiménez",
-      project: "Nido de Agua",
-      content: "La mejor decisión fue empezar con poco. Ahora mis $1.3M mensuales se convirtieron en un portafolio sólido que crece cada mes.",
-      isVideo: false
-    },
-    {
-      id: 12,
-      name: "Fernando Castro",
-      project: "Aldea",
-      content: "Perfecta para complementar mi jubilación. Los dividendos llegan puntual cada trimestre y puedo reinvertir fácilmente.",
-      isVideo: false
     }
   ];
+  
+  // Videos de YouTube Shorts
+  const videoTestimonials = [
+    {
+      id: 101,
+      videoId: "Rrj91s3Fawc", // YouTube Shorts ID
+      isVideo: true,
+      duration: "0:30"
+    },
+    {
+      id: 102,
+      videoId: "RNH4CcUWhTU", // YouTube Shorts ID
+      isVideo: true,
+      duration: "0:30"
+    },
+    {
+      id: 103,
+      videoId: "MOshfGMEsME", // YouTube Shorts ID
+      isVideo: true,
+      duration: "0:30"
+    },
+    {
+      id: 104,
+      videoId: "jZeIbMTLx-0", // YouTube Shorts ID
+      isVideo: true,
+      duration: "0:30"
+    }
+  ];
+  
+  // Combinamos los testimoniales para crear dos filas, intercalando videos con texto
+  const row1Testimonials = [
+    textTestimonials[0],
+    textTestimonials[1],
+    videoTestimonials[0],
+    textTestimonials[2],
+    textTestimonials[3],
+    videoTestimonials[1],
+    // Repetimos para el scroll infinito
+    textTestimonials[0],
+    textTestimonials[1],
+    videoTestimonials[0],
+    textTestimonials[2],
+    textTestimonials[3],
+    videoTestimonials[1]
+  ];
+  
+  const row2Testimonials = [
+    textTestimonials[4],
+    textTestimonials[5],
+    videoTestimonials[2],
+    textTestimonials[6],
+    textTestimonials[7],
+    videoTestimonials[3],
+    // Repetimos para el scroll infinito
+    textTestimonials[4],
+    textTestimonials[5],
+    videoTestimonials[2],
+    textTestimonials[6],
+    textTestimonials[7],
+    videoTestimonials[3]
+  ];
 
-  // Duplicate testimonials for seamless infinite scroll
-  const row1Testimonials = [...allTestimonials, ...allTestimonials];
-  const row2Testimonials = [...allTestimonials.slice(6), ...allTestimonials.slice(0, 6), ...allTestimonials.slice(6), ...allTestimonials.slice(0, 6)];
+  // Ya hemos definido row1Testimonials y row2Testimonials arriba
 
   return (
     <section 
@@ -172,10 +227,17 @@ export default function Testimonials() {
       <div className="space-y-6">
         {/* Row 1 - Scrolling Right */}
         <div className="relative">
-          <div id="testimonial-row-1" className="flex gap-4 animate-scroll-right">
+          <div 
+            id="testimonial-row-1" 
+            ref={row1Ref}
+            className="flex gap-4 animate-scroll-right"
+          >
             {row1Testimonials.map((testimonial, index) => (
               <div key={`${testimonial.id}-${index}`}>
-                <TestimonialCard testimonial={testimonial} />
+                <TestimonialCard 
+                  testimonial={testimonial} 
+                  onVideoPlayStateChange={handleVideoPlayStateChange}
+                />
               </div>
             ))}
           </div>
@@ -183,10 +245,17 @@ export default function Testimonials() {
 
         {/* Row 2 - Scrolling Left */}
         <div className="relative">
-          <div id="testimonial-row-2" className="flex gap-4 animate-scroll-left">
+          <div 
+            id="testimonial-row-2" 
+            ref={row2Ref}
+            className="flex gap-4 animate-scroll-left"
+          >
             {row2Testimonials.map((testimonial, index) => (
               <div key={`${testimonial.id}-${index}`}>
-                <TestimonialCard testimonial={testimonial} />
+                <TestimonialCard 
+                  testimonial={testimonial} 
+                  onVideoPlayStateChange={handleVideoPlayStateChange}
+                />
               </div>
             ))}
           </div>
@@ -225,7 +294,12 @@ export default function Testimonials() {
   );
 }
 
-function TestimonialCard({ testimonial }: { testimonial: any }) {
+interface TestimonialCardProps {
+  testimonial: any;
+  onVideoPlayStateChange: (isPlaying: boolean) => void;
+}
+
+function TestimonialCard({ testimonial, onVideoPlayStateChange }: TestimonialCardProps) {
   // Función para obtener las iniciales del nombre
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('');
@@ -255,42 +329,21 @@ function TestimonialCard({ testimonial }: { testimonial: any }) {
   if (testimonial.isVideo) {
     return (
       <div className="flex-shrink-0 w-80 h-80 overflow-hidden group relative">
-        {/* Video thumbnail fills the entire card without Card wrapper */}
-        <div className="relative w-full h-full bg-black rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer">
-          <img 
-            src={testimonial.videoThumbnail} 
-            alt={`Video de ${testimonial.name}`}
-            className="w-full h-full object-cover rounded-xl"
+        {/* Video component that fills the entire card */}
+        <div className="w-full h-full">
+          <YouTubeEmbed 
+            videoId={testimonial.videoId} 
+            onPlayStateChange={onVideoPlayStateChange}
           />
-          
-          {/* Play Button Overlay - Centered */}
-          <div className="absolute inset-0 bg-black/30 flex items-center justify-center rounded-xl">
-            <div className="bg-white/95 rounded-full p-4 group-hover:bg-white group-hover:scale-110 transition-all duration-300 shadow-lg">
-              <Play className="h-8 w-8 text-[#5352F6] ml-1" fill="currentColor" />
-            </div>
-          </div>
           
           {/* Duration Badge - Top Right */}
           {testimonial.duration && (
-            <div className="absolute top-3 right-3 bg-black/70 text-white text-xs px-2 py-1 rounded">
+            <div className="absolute top-3 right-3 bg-black/70 text-white text-xs px-2 py-1 rounded z-10">
               {testimonial.duration}
             </div>
           )}
           
-          {/* Profile info overlay - Bottom with gradient */}
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-4 pt-16 rounded-b-xl">
-            <div className="flex items-center gap-3">
-              <Avatar className={`h-10 w-10 border-2 border-white/20 ${getAvatarColor(testimonial.name)}`}>
-                <AvatarFallback className="text-white font-medium">
-                  {getInitials(testimonial.name)}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <div className="font-bold text-sm text-white">{testimonial.name}</div>
-                <div className="text-xs text-white/80">{testimonial.project}</div>
-              </div>
-            </div>
-          </div>
+          {/* Eliminamos la información del perfil en la parte inferior */}
         </div>
       </div>
     );
