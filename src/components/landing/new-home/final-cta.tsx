@@ -43,17 +43,17 @@ export default function FinalCTA() {
             <div className="grid lg:grid-cols-[300px_1fr] bg-white">
               
               {/* Columna izquierda - Foto del asesor */}
-              <div className="relative h-[300px] lg:h-full overflow-hidden group">
+              <div className="relative h-[400px] md:h-[450px] lg:h-full overflow-hidden group">
                 <ImageWithFallback
                   src="/images/new-home/FinalCTA/4a625c50-56d1-4304-968c-32af7d2987de.png"
                   alt="Asesora especializada LOKL"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                 />
                 {/* Overlay sutil */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#5352F6]/40 via-transparent to-transparent"></div>
                 
-                {/* Badge sobre la imagen */}
-                <div className="absolute bottom-6 left-6 right-6">
+                {/* Badge sobre la imagen - Solo visible en desktop */}
+                <div className="absolute bottom-6 left-6 right-6 hidden lg:block">
                   <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 shadow-lg">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 bg-[#5352F6]/10 rounded-full flex items-center justify-center flex-shrink-0">

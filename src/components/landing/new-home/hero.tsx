@@ -144,8 +144,26 @@ export default function Hero() {
       id="hero"
       className="relative min-h-screen text-white"
     >
-      {/* Fondo a pantalla completa que cambia según el proyecto */}
-      <div className="absolute inset-0">
+      {/* Video de fondo - Solo desktop */}
+      <div className="absolute inset-0 hidden md:block">
+        <div className="relative w-full h-full">
+          <iframe
+            src="https://www.youtube.com/embed/LgazLvYNpd4?autoplay=1&mute=1&loop=1&playlist=LgazLvYNpd4&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&widgetid=1"
+            title="LOKL Hero Video"
+            className="absolute top-1/2 left-1/2 w-[177.78vh] h-[56.25vw] min-w-full min-h-full"
+            style={{
+              transform: 'translate(-50%, -50%)',
+              aspectRatio: '16/9'
+            }}
+            frameBorder="0"
+            allow="autoplay; encrypted-media"
+            allowFullScreen
+          />
+        </div>
+      </div>
+
+      {/* Fondo con imágenes - Solo móvil */}
+      <div className="absolute inset-0 md:hidden">
         {featuredProjects.map((project, index) => (
           <picture
             key={project.id}
@@ -156,10 +174,6 @@ export default function Hero() {
                 : "opacity-0"
             }`}
           >
-            <source
-              media="(max-width: 767px)"
-              srcSet={project.image}
-            />
             <LazyImage
               src={project.image}
               alt={`Proyecto ${project.name} - LOKL`}
@@ -178,17 +192,11 @@ export default function Hero() {
         {/* Columna IZQUIERDA: texto */}
         <div className="md:col-span-7">
           <h1 className="leading-[0.85] font-semibold md:text-6xl text-[48px] text-left text-[rgb(255,248,248)] max-w-xl">
-            <span className="text-white text-[40px] leading-[0.85]">
-              Invierte en bienes raíces en
-            </span>
-            <span className="text-[#5352F6] text-[40px]">{" "}Colombia{" "}</span>
-            <span className="text-white text-[40px] leading-[0.85]">
-              de forma simple y 100% digital
-            </span>
+            Invierte en bienes raíces con propósito y construye tu futuro
           </h1>
 
           <p className="mt-4 max-w-xl text-lg text-white/90"> 
-            <span className="text-white/90">Crowdfunding inmobiliario seguro y 100% digital en Colombia</span>
+            Proyectos creativos y sostenibles que generan empleo local y valor real para las nuevas generaciones.
           </p>
 
           {/* "Invierte" / micro-beneficios */}

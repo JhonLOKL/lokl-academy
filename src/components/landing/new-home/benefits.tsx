@@ -56,7 +56,7 @@ export default function Benefits() {
     {
       title: "Impacto y comunidad",
       description:
-        "Invertir con propósito es construir futuro. No se trata solo de capital, sino de consciencia. Invertimos en proyectos que restauran ecosistemas, dignifican el habitar y fortalecen el tejido social. Creamos comunidad entre inversionistas y las localidades donde se encuentran nuestro proyectos.",
+        "Invertir con propósito es construir futuro. Invertimos donde el capital también construye comunidad y ecosistemas.",
       ctaText: "Haz parte de la nueva forma de invertir",
       image:
         "https://i.pinimg.com/1200x/c9/69/d2/c969d204d68ff689d0bb306747ffef21.jpg",
@@ -65,15 +65,15 @@ export default function Benefits() {
     {
       title: "Accesible desde montos bajos",
       description:
-        "La inversión ya no es un privilegio. Es una herramienta de cambio. Desde $1.000 USD puedes activar un impacto real. Diseñamos este modelo para las nuevas generaciones: sin deudas, sin barreras, sin esperar a \"algún día\". Aquí, el acceso es el punto de partida, no el premio.",
-      ctaText: "Empieza donde estás, crece con nosotros",
+        "La inversión no es un privilegio. Desde $1.000 USD puedes activar impacto real, sin deudas ni barreras.",
+      ctaText: "Crece con nosotros",
       image: "/images/new-home/Camilodolar.jpg",
       benefit: "Inclusivo"
     },
     {
       title: "Rentabilidad que transforma",
       description:
-        "Ganar sí, pero no a cualquier costo. Aquí, la rentabilidad nace del valor que se crea para todos: personas, comunidades y ecosistema. Modelos claros, retornos estimados del 8% al 15% anual y un compromiso con lo que realmente importa. Invertir con propósito también es rentable. Y lo estamos demostrando.",
+        "Ganar sí, pero no a cualquier costo. Rentabilidad del 8% al 15% anual, con impacto real para todos.",
       ctaText: "Calcula tu retorno financiero y social",
       image:
         "https://i.pinimg.com/1200x/e0/6a/1f/e06a1f4c50a0c9547c67d7d31572ef4d.jpg",
@@ -82,7 +82,7 @@ export default function Benefits() {
     {
       title: "Seguridad y transparencia",
       description:
-        "La confianza no se promete, se construye. Cada proyecto pasa por una curaduría experta y puedes seguirlo en tiempo real: contratos, pagos, avances, todo abierto. En Lokl, la transparencia no es una opción. Es la base de todo. Porque construir juntos también es rendir cuentas juntos.",
+        "La confianza no se promete, se construye. Curaduría experta y seguimiento 100% abierto y en tiempo real.",
       ctaText: "Conoce cómo protegemos tu inversión",
       image:
         "https://i.pinimg.com/1200x/d2/bb/76/d2bb767f2db2eec528f23ca43858901e.jpg",
@@ -91,7 +91,7 @@ export default function Benefits() {
     {
       title: "Valor que vuelve a ti",
       description:
-        "Invertir con Lokl es más que mover tu dinero: es vivir lo que construyes. Pagas en cuotas, sin deuda ni intermediarios, mientras tu inversión genera impacto real en comunidades locales. Ganas por rentabilidad, valorización y experiencias únicas en los proyectos que ayudas a hacer posibles.",
+        "Aquí tu inversión también te transforma. Ganas por rentabilidad, impacto y experiencias únicas.",
       ctaText: "Descubre todos los beneficios",
       image:
         "https://i.pinimg.com/1200x/cc/02/33/cc02339533a0292bbd4d2ff5502c6a5a.jpg",

@@ -1,116 +1,108 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Users, TrendingUp, ChevronLeft, ChevronRight, Building2, Waves, Flame, UtensilsCrossed, Dumbbell, Briefcase, Cpu, Car, Coffee, Eye, Play, DollarSign, Home, Maximize2, Sofa } from 'lucide-react';
-import LazyImage from './lazy-image';
+import { Progress } from '@/components/ui/progress';
+import { MapPin, Users, TrendingUp, Shield, ChevronLeft, ChevronRight, Clock, Building2, Ticket, Waves, Flame, UtensilsCrossed, Dumbbell, Briefcase, Cpu, Car, Coffee, Eye, Play, Percent, DollarSign, Home, Maximize2, Sofa, X } from 'lucide-react';
+import { ImageWithFallback } from '@/components/ui/image-with-fallback';
+import { useIsMobile } from '@/hooks/use-is-mobile';
 
-// Uso de LazyImage en lugar del componente ImageWithFallback
+// Definir la interfaz para los datos de proyectos de la API
+interface ProjectData {
+  id: string;
+  projectCode: string;
+  name: string;
+  description: string;
+  country: string;
+  city: string;
+  phase: string;
+  minRent: number;
+  maxRent: number;
+  unitPrice: number;
+  minInvestmentUnits: number;
+  imageURL: string;
+  videoURL: string | null;
+  amenities: string[];
+  availableSpots: number | null;
+  totalSpots: number | null;
+  partners: number;
+  accommodations: number;
+  squareMeters: number;
+}
 
-export default function FeaturedProjects() {
-  const [currentProject, setCurrentProject] = useState(1); // Indie Universe por defecto
+interface FeaturedProjectsProps {
+  projectsData?: ProjectData[];
+}
 
-  const projects = [
-    {
-      id: 1,
-      name: 'Nido de Agua',
-      location: 'Guatapé, Colombia',
-      description: 'Complejo residencial premium con enfoque sostenible en una de las zonas más exclusivas de Guatapé.',
-      image: "https://lokl-assets.s3.amazonaws.com/nido-de-agua/AEREA+NOCHE.jpg",
-      videoUrl: 'https://www.youtube.com/watch?v=example',
-      minRoi: 12,
-      maxRoi: 14,
-      status: 'En construcción',
-      statusColor: 'bg-orange-500',
-      viewingNow: 23,
-      amenities: [
-        { icon: 'home', text: '45 Alojamientos' },
-        { icon: 'size', text: '24.5 m²' },
-        { icon: 'pool', text: 'Piscina infinita' },
-        { icon: 'bbq', text: 'Zona BBQ' },
-        { icon: 'gym', text: 'Gimnasio' },
-        { icon: 'coworking', text: 'Coworking' }
-      ],
-      minInvestment: 12900000,
-      installments: 12,
-      totalSize: 24.5,
-      units: 125000,
-      fundingProgress: 78,
-      daysRemaining: 12,
-      amountRaised: 19110000,
-      totalInvestors: 186,
-      availableSpots: 18,
-      totalSpots: 50,
+export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps) {
+  const isMobile = useIsMobile();
+  const [carouselIndex, setCarouselIndex] = useState(0); // Índice del carrusel (qué 3 proyectos mostrar)
+  const [selectedProject, setSelectedProject] = useState<number | null>(null); // null = estado inicial
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Usar datos de la API si están disponibles
+  const projects = projectsData && projectsData.length > 0 ? 
+    projectsData.map(project => ({
+      id: project.id,
+      name: project.name.charAt(0).toUpperCase() + project.name.slice(1), // Capitalizar nombre
+      location: `${project.city.charAt(0).toUpperCase() + project.city.slice(1)}, ${project.country.charAt(0).toUpperCase() + project.country.slice(1)}`,
+      description: project.description,
+      image: project.imageURL,
+      videoUrl: project.videoURL || 'https://www.youtube.com/watch?v=example',
+      minRoi: project.minRent * 100,
+      maxRoi: project.maxRent * 100,
+      status: project.name.toLowerCase().includes('aldea') || project.name.toLowerCase().includes('patito') || project.phase === 'No current phase' ? 'Próximamente' : 
+              project.name.toLowerCase().includes('nido') ? 'Construcción' :
+              project.name.toLowerCase().includes('indie') ? 'Operando' :
+              project.phase.includes('Etapa') ? 'En construcción' : project.phase,
+      statusColor: project.name.toLowerCase().includes('aldea') || project.name.toLowerCase().includes('patito') || project.phase === 'No current phase' ? 'bg-purple-500' : 
+                  project.name.toLowerCase().includes('nido') ? 'bg-blue-500' :
+                  project.name.toLowerCase().includes('indie') ? 'bg-green-500' :
+                  project.phase.includes('Etapa') ? 'bg-green-500' : 'bg-purple-500',
+      viewingNow: Math.floor(Math.random() * 30) + 10, // Valor aleatorio para demostración
+      amenities: project.amenities.map(amenity => {
+        // Mapear amenidades a formato esperado
+        const iconMap: { [key: string]: string } = {
+          'Bongo': 'home',
+          'Duneke': 'pool',
+          'Nido': 'coworking',
+          'Tambo': 'gym',
+          'Madriguera': 'bbq',
+          'Content Labs': 'smart',
+          'Coworking': 'coworking',
+          'Cafetería': 'cafe',
+          'Hotel': 'home',
+          'Coliving': 'home',
+          'Rooftop': 'restaurant'
+        };
+        
+        return { 
+          icon: iconMap[amenity] || 'home', 
+          text: amenity 
+        };
+      }),
+      minInvestment: project.unitPrice * project.minInvestmentUnits,
+      installments: 12, // Valor por defecto
+      totalSize: project.squareMeters / 100, // Convertir a una escala más pequeña para la UI
+      units: project.unitPrice,
+      fundingProgress: Math.min(Math.floor(Math.random() * 100), 100), // Valor aleatorio para demostración
+      daysRemaining: Math.floor(Math.random() * 30) + 5, // Valor aleatorio para demostración
+      amountRaised: project.unitPrice * project.partners,
+      totalInvestors: project.partners,
+      availableSpots: project.availableSpots || 10,
+      totalSpots: project.totalSpots || 50,
       tags: [
-        { text: 'Residencial', color: 'bg-blue-500 text-white' },
-        { text: 'Riesgo Medio', color: 'bg-yellow-500 text-white' }
+        { text: project.accommodations > 0 ? 'Residencial' : 'Mixto', color: 'bg-blue-500 text-white' },
+        { text: `Riesgo ${project.minRent > 0.14 ? 'Alto' : project.minRent > 0.11 ? 'Medio' : 'Bajo'}`, color: project.minRent > 0.14 ? 'bg-red-500 text-white' : project.minRent > 0.11 ? 'bg-yellow-500 text-white' : 'bg-green-500 text-white' }
       ]
-    },
-    {
-      id: 2,
-      name: 'Indie Universe',
-      location: 'Medellín, Laureles, Colombia',
-      description: 'Proyecto inmobiliario innovador en zona estratégica con tecnología smart building y espacios colaborativos.',
-      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/indie-universe/indie_universe.jpg",
-      videoUrl: 'https://www.youtube.com/watch?v=example2',
-      minRoi: 11,
-      maxRoi: 13,
-      status: 'Operando',
-      statusColor: 'bg-green-500',
-      viewingNow: 47,
-      amenities: [
-        { icon: 'home', text: '32 Alojamientos' },
-        { icon: 'size', text: '18.2 m²' },
-        { icon: 'coworking', text: 'Coworking' },
-        { icon: 'restaurant', text: 'Restaurante' },
-        { icon: 'smart', text: 'Smart Building' },
-        { icon: 'cafe', text: 'Café lounge' }
-      ],
-      minInvestment: 5310000,
-      installments: 6,
-      totalSize: 18.2,
-      units: 132000,
-      fundingProgress: 94,
-      daysRemaining: 5,
-      amountRaised: 17108000,
-      totalInvestors: 324,
-      availableSpots: 3,
-      totalSpots: 75,
-      tags: [
-        { text: 'Mixto', color: 'bg-purple-500 text-white' },
-        { text: 'Riesgo Bajo', color: 'bg-green-500 text-white' }
-      ]
-    },
-    {
-      id: 3,
-      name: 'Aldea',
-      location: 'La Unión, Colombia',
-      description: 'Desarrollo inmobiliario innovador en zona estratégica con enfoque en comunidad y espacios modernos. Un proyecto único que redefinirá el concepto de inversión inmobiliaria en la región.',
-      image: 'https://lokl-assets.s3.us-east-1.amazonaws.com/aldea/aldea_houses.jpeg',
-      videoUrl: 'https://www.youtube.com/watch?v=example3',
-      minRoi: 14,
-      maxRoi: 16,
-      status: 'Coming Soon',
-      statusColor: 'bg-purple-500',
-      viewingNow: 15,
-      amenities: [],
-      minInvestment: 8500000,
-      installments: 12,
-      totalSize: 32.8,
-      units: 138000,
-      fundingProgress: 43,
-      daysRemaining: 28,
-      amountRaised: 14104000,
-      totalInvestors: 98,
-      availableSpots: 28,
-      totalSpots: 50,
-      tags: []
-    }
-  ];
+    }))
+    : [];
 
   const formatCurrencyShort = (amount: number, unit: string = 'M') => {
-    return `$${amount}${unit}`;
+    return `${amount}${unit}`;
   };
 
   const formatCurrencyCOP = (amount: number) => {
@@ -122,347 +114,579 @@ export default function FeaturedProjects() {
     }).format(amount);
   };
 
-  const nextProject = () => {
-    setCurrentProject((prev) => (prev + 1) % projects.length);
+  // Navegación del carrusel
+  const nextCarousel = () => {
+    if (selectedProject !== null) {
+      // Si hay un proyecto seleccionado, avanzar al siguiente proyecto
+      setSelectedProject((prev) => prev !== null ? (prev + 1) % projects.length : 0);
+    } else {
+      // Sin selección, avanzar al siguiente proyecto en el carrusel
+      setCarouselIndex((prev) => (prev + 1) % projects.length);
+    }
   };
 
-  const prevProject = () => {
-    setCurrentProject((prev) => (prev - 1 + projects.length) % projects.length);
+  const prevCarousel = () => {
+    if (selectedProject !== null) {
+      // Si hay un proyecto seleccionado, retroceder al proyecto anterior
+      setSelectedProject((prev) => prev !== null ? (prev - 1 + projects.length) % projects.length : 0);
+    } else {
+      // Sin selección, retroceder al proyecto anterior en el carrusel
+      setCarouselIndex((prev) => (prev - 1 + projects.length) % projects.length);
+    }
   };
 
+  // Calcula qué proyectos mostrar
   const getVisibleProjects = () => {
-    const prev = (currentProject - 1 + projects.length) % projects.length;
-    const next = (currentProject + 1) % projects.length;
-    return { prev, current: currentProject, next };
+    // Siempre mostrar todos los proyectos, independientemente del estado de selección
+    return projects.map((_, index) => index);
   };
 
-  const visible = getVisibleProjects();
-  const mainProject = projects[visible.current];
+  // Determina qué proyectos están en el rango visible del carrusel desktop
+  const isInDesktopCarouselRange = (index: number) => {
+    // Si hay un proyecto seleccionado, mostrar solo 3 proyectos: el seleccionado y los 2 adyacentes
+    if (selectedProject !== null) {
+      const totalProjects = projects.length;
+      const prevIndex = (selectedProject - 1 + totalProjects) % totalProjects;
+      const nextIndex = (selectedProject + 1) % totalProjects;
+      return index === selectedProject || index === prevIndex || index === nextIndex;
+    }
+    
+    // En desktop sin selección, solo mostrar 3 proyectos consecutivos basados en carouselIndex
+    const visibleIndices = [];
+    for (let i = 0; i < 3; i++) {
+      visibleIndices.push((carouselIndex + i) % projects.length);
+    }
+    return visibleIndices.includes(index);
+  };
+
+  const visibleIndices = getVisibleProjects();
+  const visibleProjects = visibleIndices.map(index => ({ project: projects[index], index }));
+
+  // Manejo de gestos táctiles para móvil
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current - touchEndX.current > 75) {
+      // Swipe left
+      nextCarousel();
+    }
+
+    if (touchStartX.current - touchEndX.current < -75) {
+      // Swipe right
+      prevCarousel();
+    }
+  };
+
+  // Efecto para hacer scroll automático en móvil cuando cambia el carouselIndex
+  useEffect(() => {
+    if (selectedProject === null && scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const cardWidth = container.scrollWidth / projects.length;
+      const scrollPosition = cardWidth * carouselIndex;
+      
+      container.scrollTo({
+        left: scrollPosition,
+        behavior: 'smooth'
+      });
+    }
+  }, [carouselIndex, selectedProject, projects.length]);
 
   return (
-    <section className="py-8 md:py-12 bg-[rgb(243,243,243)]">
-      <div className="max-w-7xl mx-auto px-6">
+    <section className="py-12 md:py-16 bg-[rgb(243,243,243)]">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-            <span className="text-[#5352F6]">Proyectos</span> destacados
+            <span className="text-primary">Proyectos</span> destacados
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Descubre oportunidades de inversión curadas por nuestro equipo de expertos
           </p>
         </div>
 
-        {/* Carousel Container */}
-        <div className="relative max-w-7xl mx-auto overflow-hidden">
-          <div className="flex items-center justify-center">
-            {/* Previous Project Preview - Partially Visible */}
-            <div className="hidden lg:block w-80 -mr-8 opacity-90 scale-95 transform transition-all duration-500 z-10">
-              <div className="relative rounded-2xl overflow-hidden shadow-lg cursor-pointer hover:scale-105 transition-transform" onClick={prevProject}>
-                <div className="mobile-aspect-ratio-container">
-                  <LazyImage 
-                    src={projects[visible.prev].image}
-                    alt={projects[visible.prev].name}
-                    className="w-full h-80 object-cover mobile-aspect-ratio-content"
-                  />
-                </div>
-                <div className="absolute inset-0 bg-black/30"></div>
-                <div className="absolute top-3 left-3">
-                  <Badge className={`${projects[visible.prev].statusColor} text-white text-xs`}>
-                    {projects[visible.prev].status}
-                  </Badge>
-                </div>
-                <div className="absolute bottom-4 left-4 text-white">
-                  <h4 className="font-bold text-base">{projects[visible.prev].name}</h4>
-                  <p className="text-xs opacity-90 mb-2">{projects[visible.prev].location}</p>
-                  {projects[visible.prev].status !== 'Coming Soon' ? (
-                    <div className="flex gap-1 mt-1">
-                      <Badge className="bg-[#5352F6] text-white text-xs">
-                        {projects[visible.prev].minRoi}-{projects[visible.prev].maxRoi}% ROI
-                      </Badge>
-                      <Badge className="bg-white/20 text-white text-xs">
-                        {projects[visible.prev].availableSpots} cupos
-                      </Badge>
-                    </div>
-                  ) : (
-                    <Badge className="bg-white/20 text-white text-xs">
-                      Próximamente
-                    </Badge>
-                  )}
-                </div>
-              </div>
-            </div>
+        {/* Stacked Cards Container */}
+        <div className="relative perspective-1000">
+          {/* Navigation Buttons - Desktop (siempre visibles) - Con estilo de tarjeta principal */}
+          <>
+            <button
+              onClick={prevCarousel}
+              className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-40 w-12 h-12 bg-black/60 hover:bg-black/70 backdrop-blur-sm rounded-full shadow-xl items-center justify-center transition-all duration-300 hover:scale-110"
+              aria-label="Proyecto anterior"
+            >
+              <ChevronLeft className="w-6 h-6 text-white animate-pulse" />
+            </button>
+            <button
+              onClick={nextCarousel}
+              className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-40 w-12 h-12 bg-black/60 hover:bg-black/70 backdrop-blur-sm rounded-full shadow-xl items-center justify-center transition-all duration-300 hover:scale-110"
+              aria-label="Proyecto siguiente"
+            >
+              <ChevronRight className="w-6 h-6 text-white animate-pulse" />
+            </button>
+          </>
 
-            {/* Main Project - Larger and Prominent */}
-            <div className="w-full max-w-4xl mx-2 z-20 relative">
-              <div className={`${mainProject.status === 'Coming Soon' ? 'bg-black' : 'bg-white'} rounded-3xl shadow-2xl overflow-hidden transform scale-100`}>
-                <div className="grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
-                  {/* Left Side - Image */}
-                  <div className="relative h-full group/image sm:block mobile-aspect-ratio-container">
-                    <LazyImage 
-                      src={mainProject.image} 
-                      alt={mainProject.name}
-                      className="w-full h-full min-h-[calc(100vw*16/9)] sm:min-h-[280px] lg:min-h-[420px] object-cover mobile-aspect-ratio-content"
-                      priority={true}
-                    />
-                    
-                    {/* Overlay oscuro sutil */}
-                    <div className="absolute inset-0 bg-black/10"></div>
-
-                    {/* Status Badge - Top Left */}
-                    <div className="absolute top-4 left-4">
-                      <Badge className={`${mainProject.statusColor} text-white text-xs font-semibold px-4 py-1.5 shadow-lg`}>
-                        {mainProject.status}
-                      </Badge>
-                    </div>
-
-                    {/* Viewing Now - Top Right with animation */}
-                    {mainProject.status !== 'Coming Soon' && (
-                      <div className="absolute top-4 right-4">
-                        <div className="bg-black/70 backdrop-blur-md text-white px-3 py-2 rounded-full text-xs flex items-center gap-2 shadow-lg animate-pulse">
-                          <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                          <Eye className="w-3.5 h-3.5" />
-                          <span className="font-semibold">{mainProject.viewingNow} viendo ahora</span>
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* Video Play Button - Center */}
-                    {mainProject.status !== 'Coming Soon' && (
-                      <button className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white/90 hover:bg-white backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300 group-hover/image:scale-105">
-                        <Play className="w-7 h-7 text-[#5352F6] ml-1" fill="currentColor" />
-                      </button>
-                    )}
-
-                    {/* ROI Range - Bottom Left */}
-                  </div>
-
-                  {/* Right Side - Content */}
-                  {mainProject.status === 'Coming Soon' ? (
-                    // DISEÑO ESPECIAL PARA COMING SOON - VERSION NEGRA
-                     <div className="p-6 lg:p-8 flex flex-col h-full bg-black text-white">
-                      {/* Badge superior "Próximamente" */}
-                      <div className="mb-8">
-                        <Badge variant="outline" className="border-white/30 text-white px-4 py-2 text-sm bg-transparent">
-                          Próximamente disponible
-                        </Badge>
-                      </div>
-
-                      {/* Nombre del proyecto */}
-                      <h3 className="text-4xl lg:text-5xl font-bold mb-4 leading-tight">
-                        {mainProject.name}
-                      </h3>
-
-                      {/* Location */}
-                      <div className="flex items-center gap-2 mb-6">
-                        <MapPin className="w-4 h-4 text-white/70" />
-                        <p className="text-base text-white/90">
-                          {mainProject.location}
-                        </p>
-                      </div>
-
-                      {/* Description */}
-                      <p className="text-base text-white/80 leading-relaxed mb-12">
-                        {mainProject.description}
-                      </p>
-
-                      {/* CTA Button - "Únete a la lista de espera" */}
-                      <div className="w-full">
-                        <Button 
-                          size="lg" 
-                          className="w-full bg-white hover:bg-white/90 text-black py-3 text-base font-semibold rounded-xl hover:scale-[1.02] transition-all duration-300"
-                        >
-                          Únete a la lista de espera
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    // DISEÑO NORMAL PARA PROYECTOS ACTIVOS
-                   <div className="p-4 lg:p-6 flex flex-col h-full max-h-[80vh] sm:max-h-none overflow-y-auto">
-                    {/* Title */}
-                    <h3 className="text-3xl lg:text-4xl font-bold text-foreground mb-2 leading-tight">
-                      {mainProject.name}
-                    </h3>
-
-                    {/* Location */}
-                    <div className="inline-flex items-center gap-2 text-muted-foreground mb-4">
-                      <MapPin className="w-4 h-4 text-[#5352F6]" />
-                      <span className="text-sm">{mainProject.location}</span>
-                    </div>
-
-                    {/* Stats Row - ROI, Inversionistas y Precio por Unit */}
-                    <div className="grid grid-cols-3 gap-4 mb-6 pb-4 border-b border-border">
-                      {/* ROI Estimado */}
-                      <div>
-                        <div className="font-bold text-foreground mb-1">
-                          {mainProject.minRoi}-{mainProject.maxRoi}%
-                        </div>
-                        <div className="text-xs text-muted-foreground">ROI Estimado</div>
-                      </div>
-                      
-                      {/* Número de Inversionistas */}
-                      <div>
-                        <div className="font-bold text-foreground mb-1">
-                          {mainProject.totalInvestors.toLocaleString('es-CO')}
-                        </div>
-                        <div className="text-xs text-muted-foreground">Inversionistas</div>
-                      </div>
-                      
-                      {/* Precio por Unit */}
-                      <div>
-                        <div className="font-bold text-foreground mb-1">
-                          ${mainProject.units.toLocaleString('es-CO')}
-                        </div>
-                        <div className="text-xs text-muted-foreground">Precio por Unit</div>
-                      </div>
-                    </div>
-
-                    {/* CUPOS DISPONIBLES - SUPER PROTAGONISMO */}
-                    <div className="mb-4">
-                      <div className="flex items-baseline gap-2 mb-1">
-                        <span className="text-6xl lg:text-7xl font-bold text-foreground leading-none">
-                          {mainProject.availableSpots}
-                        </span>
-                        <span className="text-3xl lg:text-4xl font-bold text-muted-foreground leading-none">
-                          /{mainProject.totalSpots}
-                        </span>
-                      </div>
-                      <p className="text-base text-[#5352F6] font-semibold">Cupos Disponibles</p>
-                    </div>
-
-                    {/* Description */}
-                    <p className="text-muted-foreground mb-3 leading-relaxed text-sm line-clamp-2">
-                      {mainProject.description}
-                    </p>
-
-                    {/* Amenities Tags */}
-                    <div className="mb-3">
-                      <div className="flex flex-wrap gap-1">
-                        {mainProject.amenities.map((amenity, index) => {
-                          const getAmenityIcon = (icon: string) => {
-                            const iconMap: { [key: string]: any } = {
-                              home: Home,
-                              size: Maximize2,
-                              pool: Waves,
-                              bbq: Flame,
-                              gym: Dumbbell,
-                              coworking: Briefcase,
-                              restaurant: UtensilsCrossed,
-                              smart: Cpu,
-                              parking: Car,
-                              cafe: Coffee,
-                              sofa: Sofa
-                            };
-                            return iconMap[icon] || Building2;
-                          };
-                          
-                          const IconComponent = getAmenityIcon(amenity.icon);
-                          
-                          return (
-                            <div key={index} className="flex items-center gap-1.5 bg-[#5352F6]/5 hover:bg-[#5352F6]/10 border border-[#5352F6]/10 hover:border-[#5352F6]/20 rounded-full px-3 py-1.5 transition-all duration-300">
-                              <IconComponent className="w-3.5 h-3.5 text-[#5352F6] flex-shrink-0" />
-                              <span className="text-xs text-foreground font-medium">{amenity.text}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Divider */}
-                    <div className="h-px bg-border mb-3"></div>
-
-                    {/* Investment Info - Simple text format */}
-                    <div className="mb-4">
-                      <p className="text-sm text-foreground leading-relaxed">
-                        <span className="font-bold">${mainProject.minInvestment.toLocaleString('es-CO')}</span>
-                        {' '}cupo de inversión hasta en{' '}
-                        <span className="text-[#5352F6] font-bold">{mainProject.installments} cuotas</span>
-                      </p>
-                    </div>
-
-                    {/* CTA Button */}
-                    <Button 
-                      size="lg" 
-                      className="w-full bg-foreground hover:bg-foreground/90 text-white py-3 text-base font-semibold rounded-xl hover:scale-[1.02] transition-all duration-300 mt-auto"
+          {/* Mini Carrusel/Galería en móvil cuando hay proyecto seleccionado */}
+          {isMobile && selectedProject !== null && (
+            <div className="mb-4 px-4">
+              <div className="overflow-x-auto scrollbar-hide">
+                <div className="flex gap-2 pb-2">
+                  {projects.map((project, idx) => (
+                    <div 
+                      key={idx} 
+                      className={`flex-shrink-0 cursor-pointer transition-all duration-300 ${
+                        idx === selectedProject 
+                          ? 'opacity-100 scale-100 border-2 border-primary' 
+                          : 'opacity-70 scale-95 hover:opacity-90 hover:scale-100'
+                      }`}
+                      onClick={() => setSelectedProject(idx)}
                     >
-                      Quiero conocer más
-                    </Button>
-                  </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Next Project Preview - Partially Visible */}
-            <div className="hidden lg:block w-80 -ml-8 opacity-90 scale-95 transform transition-all duration-500 z-10">
-              <div className="relative rounded-2xl overflow-hidden shadow-lg cursor-pointer hover:scale-105 transition-transform" onClick={nextProject}>
-                <div className="mobile-aspect-ratio-container">
-                  <LazyImage 
-                    src={projects[visible.next].image}
-                    alt={projects[visible.next].name}
-                    className="w-full h-80 object-cover mobile-aspect-ratio-content"
-                  />
-                </div>
-                <div className="absolute inset-0 bg-black/30"></div>
-                <div className="absolute top-3 left-3">
-                  <Badge className={`${projects[visible.next].statusColor} text-white text-xs`}>
-                    {projects[visible.next].status}
-                  </Badge>
-                </div>
-                <div className="absolute bottom-4 left-4 text-white">
-                  <h4 className="font-bold text-base">{projects[visible.next].name}</h4>
-                  <p className="text-xs opacity-90 mb-2">{projects[visible.next].location}</p>
-                  {projects[visible.next].status !== 'Coming Soon' ? (
-                    <div className="flex gap-1 mt-1">
-                      <Badge className="bg-[#5352F6] text-white text-xs">
-                        {projects[visible.next].minRoi}-{projects[visible.next].maxRoi}% ROI
-                      </Badge>
-                      <Badge className="bg-white/20 text-white text-xs">
-                        {projects[visible.next].availableSpots} cupos
-                      </Badge>
+                      <div className="w-20 h-20 rounded-lg overflow-hidden relative">
+                        <ImageWithFallback 
+                          src={project.image} 
+                          alt={project.name}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className={`absolute inset-0 ${idx === selectedProject ? 'bg-black/10' : 'bg-black/40'}`}></div>
+                      </div>
                     </div>
-                  ) : (
-                    <Badge className="bg-white/20 text-white text-xs">
-                      Próximamente
-                    </Badge>
-                  )}
+                  ))}
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
-          {/* Navigation Arrows */}
-          <Button
-            variant="outline"
-            size="icon"
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm border-0 shadow-lg rounded-full z-30 hover:bg-white hover:scale-110 transition-all"
-            onClick={prevProject}
+          {/* Container con overflow para peek effect en móvil */}
+          <div 
+            ref={scrollContainerRef}
+            className={`
+              ${selectedProject === null ? 'overflow-x-auto md:overflow-visible scrollbar-hide snap-x snap-mandatory' : ''}
+            `}
           >
-            <ChevronLeft className="w-5 h-5" />
-          </Button>
+            <div className={`flex ${selectedProject !== null ? 'items-start' : 'items-stretch'} ${selectedProject !== null ? 'gap-2' : 'gap-4 md:gap-6'} ${selectedProject === null ? 'px-[5vw] md:px-0' : ''} max-w-7xl mx-auto ${selectedProject !== null ? 'justify-center md:justify-between' : 'justify-start md:justify-between'}`}>
+            {visibleProjects
+              .map(({ project, index }, arrayIndex) => {
+              const isSelected = selectedProject === index;
+              const hasSelection = selectedProject !== null;
+              
+              // En desktop sin selección, ocultar si no está en el rango del carrusel
+              const hideInDesktop = !isInDesktopCarouselRange(index);
+              
+              // En móvil, si hay selección, solo mostrar el proyecto seleccionado
+              const hideInMobile = isMobile && hasSelection && !isSelected;
+              
+              return (
+                <div
+                  key={index}
+                  className={`
+                    transition-all duration-500 ease-out cursor-pointer flex-shrink-0
+                    ${hideInDesktop ? 'md:hidden' : ''}
+                    ${hideInMobile ? 'hidden md:block' : ''}
+                    ${isSelected 
+                      ? 'w-full md:flex-1 z-30' 
+                      : hasSelection 
+                        ? 'md:w-24 lg:w-28 z-10 md:hover:w-28 lg:hover:w-32' 
+                        : 'w-[78vw] md:w-[calc(33.333%-1rem)] z-20 snap-center'
+                    }
+                  `}
+                  onClick={() => setSelectedProject(index)}
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                >
+                  {/* Card */}
+                  <div className={`
+                    ${project.status === 'Próximamente' 
+                      ? 'bg-gradient-to-br from-foreground via-foreground to-gray-900' 
+                      : 'bg-white'
+                    } 
+                    rounded-3xl shadow-2xl overflow-hidden h-full
+                    ${!isSelected && hasSelection && 'hover:shadow-3xl'}
+                  `}>
+                    <div className={`grid grid-cols-1 ${isSelected ? 'lg:grid-cols-2' : ''} h-full`}>
+                      {/* Left Side - Image (Siempre visible) */}
+                      <div className="relative group/image h-full">
+                        <ImageWithFallback 
+                          src={project.image} 
+                          alt={project.name}
+                          className="w-full h-full object-cover min-h-[500px] lg:min-h-[650px]"
+                        />
+                        
+                        {/* Overlay oscuro - Menos intenso en móvil */}
+                        <div className={`absolute inset-0 ${isSelected ? 'bg-black/10' : isMobile ? 'bg-black/5' : 'bg-black/30'}`}></div>
 
-          <Button
-            variant="outline"
-            size="icon"
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-sm border-0 shadow-lg rounded-full z-30 hover:bg-white hover:scale-110 transition-all"
-            onClick={nextProject}
-          >
-            <ChevronRight className="w-5 h-5" />
-          </Button>
+                        {/* Eliminado el overlay con flechas para tarjetas laterales */}
 
-          {/* Dots Indicator */}
-          <div className="flex justify-center gap-2 mt-8">
-            {projects.map((_, index) => (
-              <button
-                key={index}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === visible.current 
-                    ? 'bg-[#5352F6] w-8' 
-                    : 'bg-gray-300 hover:bg-gray-400'
-                }`}
-                onClick={() => setCurrentProject(index)}
-              />
-            ))}
-          </div>
+                        {/* Badges - Top Left */}
+                        {(!hasSelection || isSelected) && (
+                          <div className="absolute top-4 left-4 flex flex-col gap-2">
+                            <Badge className={`${project.statusColor} text-white text-xs font-semibold px-4 py-1.5 shadow-lg`}>
+                              {project.status}
+                            </Badge>
+                            {project.status !== 'Próximamente' && (
+                              <Badge className="bg-primary text-white text-xs font-semibold px-4 py-1.5 shadow-lg">
+                                {project.minRoi}-{project.maxRoi}% ROI
+                              </Badge>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Viewing Now - Top Right (solo en seleccionada) */}
+                        {isSelected && project.status !== 'Próximamente' && (
+                          <div className="absolute top-4 right-4">
+                            <div className="bg-black/70 backdrop-blur-md text-white px-3 py-2 rounded-full text-xs flex items-center gap-2 shadow-lg animate-pulse">
+                              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                              <Eye className="w-3.5 h-3.5" />
+                              <span className="font-semibold">{project.viewingNow} viendo ahora</span>
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* Video Play Button - Center (solo en seleccionada) */}
+                        {isSelected && project.status !== 'Próximamente' && (
+                          <button className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white/90 hover:bg-white backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300 group-hover/image:scale-105">
+                            <Play className="w-7 h-7 text-primary ml-1" fill="currentColor" />
+                          </button>
+                        )}
+
+                        {/* Info prominente - En estado inicial (sin selección) - Versión móvil */}
+                        {!hasSelection && isMobile && (
+                          <div className="md:hidden absolute inset-0 flex flex-col justify-end p-5 text-white bg-gradient-to-t from-black/70 via-black/40 to-transparent">
+                            {project.status !== 'Próximamente' ? (
+                              <>
+                                {/* Nombre del proyecto */}
+                                <h3 className="text-2xl font-bold mb-2 leading-tight drop-shadow-lg text-shadow">
+                                  {project.name}
+                                </h3>
+
+                                {/* Ubicación */}
+                                <div className="flex items-center gap-2 mb-4">
+                                  <MapPin className="w-4 h-4 drop-shadow-md" />
+                                  <span className="text-base drop-shadow-lg text-shadow-sm">
+                                    {project.location}
+                                  </span>
+                                </div>
+
+                                {/* CUPOS DISPONIBLES - Reducido */}
+                                <div className="mb-4">
+                                  <div className="flex items-baseline gap-2 mb-1">
+                                    <span className="text-3xl font-bold leading-none drop-shadow-lg text-shadow">
+                                      {project.availableSpots}
+                                    </span>
+                                    <span className="text-xl font-bold opacity-80 leading-none drop-shadow-md">
+                                      /{project.totalSpots}
+                                    </span>
+                                  </div>
+                                  <p className="text-base font-semibold drop-shadow-lg">Cupos Disponibles</p>
+                                </div>
+                              </>
+                            ) : (
+                              // Coming Soon - Misma altura mínima que las otras tarjetas
+                              <>
+                                {/* Nombre del proyecto */}
+                                <h3 className="text-2xl font-bold mb-2 leading-tight drop-shadow-lg text-shadow">
+                                  {project.name}
+                                </h3>
+
+                                {/* Ubicación */}
+                                <div className="flex items-center gap-2 mb-4">
+                                  <MapPin className="w-4 h-4 drop-shadow-md" />
+                                  <span className="text-base drop-shadow-lg text-shadow-sm">
+                                    {project.location}
+                                  </span>
+                                </div>
+
+                                {/* Badge de Próximamente */}
+                                <div className="mb-4">
+                                  <Badge className="bg-white/40 text-white text-sm px-4 py-1.5 w-fit backdrop-blur-sm shadow-lg">
+                                    Únete a la lista de espera
+                                  </Badge>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Info prominente - En estado inicial (sin selección) - Versión desktop */}
+                        {!hasSelection && (
+                          <div className="hidden md:flex absolute inset-0 flex-col justify-end p-6 lg:p-8 text-white">
+                            {project.status !== 'Próximamente' ? (
+                              <>
+                                {/* Nombre del proyecto */}
+                                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 leading-tight">
+                                  {project.name}
+                                </h3>
+
+                                {/* Ubicación */}
+                                <div className="flex items-center gap-2 mb-8">
+                                  <MapPin className="w-5 h-5" />
+                                  <span className="text-base lg:text-lg">{project.location}</span>
+                                </div>
+
+                                {/* CUPOS DISPONIBLES - Reducido */}
+                                <div className="mb-4 min-h-[80px] sm:min-h-[85px] lg:min-h-[90px]">
+                                  <div className="flex items-baseline gap-2 mb-2">
+                                    <span className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-none">
+                                      {project.availableSpots}
+                                    </span>
+                                    <span className="text-2xl sm:text-3xl lg:text-4xl font-bold opacity-70 leading-none">
+                                      /{project.totalSpots}
+                                    </span>
+                                  </div>
+                                  <p className="text-base lg:text-lg font-semibold">Cupos Disponibles</p>
+                                </div>
+                              </>
+                            ) : (
+                              // Coming Soon - Misma altura mínima que las otras tarjetas
+                              <>
+                                {/* Nombre del proyecto */}
+                                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 leading-tight">
+                                  {project.name}
+                                </h3>
+
+                                {/* Ubicación */}
+                                <div className="flex items-center gap-2 mb-8">
+                                  <MapPin className="w-5 h-5" />
+                                  <span className="text-base lg:text-lg">{project.location}</span>
+                                </div>
+
+                                {/* Espaciador con misma altura que sección de cupos */}
+                                <div className="mb-4 min-h-[80px] sm:min-h-[85px] lg:min-h-[90px]">
+                                  <Badge className="bg-white/20 text-white text-base px-6 py-3 w-fit backdrop-blur-sm">
+                                    Únete a la lista de espera
+                                  </Badge>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Right Side - Content (Solo visible en tarjeta seleccionada) */}
+                      {isSelected && (
+                        project.status === 'Próximamente' ? (
+                          // DISEÑO ESPECIAL PARA COMING SOON
+                          <div className="p-6 lg:p-10 flex flex-col justify-center h-full bg-gradient-to-br from-foreground via-foreground to-gray-900 text-white relative">
+                            {/* Close Button */}
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedProject(null);
+                              }}
+                              className="absolute top-4 right-4 z-50 w-10 h-10 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110"
+                            >
+                              <X className="w-5 h-5" />
+                            </button>
+
+                            <div className="mb-4">
+                              <Badge variant="outline" className="border-white/30 text-white px-4 py-2 text-sm bg-transparent">
+                                Próximamente disponible
+                              </Badge>
+                            </div>
+
+                            <h3 className="text-3xl lg:text-4xl font-bold mb-3 leading-tight">
+                              {project.name}
+                            </h3>
+
+                            <div className="flex items-center gap-2 mb-6">
+                              <MapPin className="w-4 h-4 text-white/70" />
+                              <p className="text-base text-white/90">
+                                {project.location}
+                              </p>
+                            </div>
+
+                            <p className="text-base text-white/80 mb-8 leading-relaxed">
+                              {project.description}
+                            </p>
+
+                            <Button 
+                              size="lg" 
+                              className="w-full bg-white hover:bg-white/90 text-foreground py-6 text-base font-semibold rounded-xl hover:scale-[1.02] transition-all duration-300"
+                              onClick={() => {
+                                // Determinar la URL según el proyecto
+                                let url = '';
+                                const projectName = project.name.toLowerCase();
+                                if (projectName.includes('aldea')) {
+                                  url = 'https://lokl.life/project-signup/aldea';
+                                } else if (projectName.includes('patito')) {
+                                  url = 'https://lokl.life/project-signup/patito-feo';
+                                }
+                                
+                                if (url) {
+                                  window.open(url, '_blank');
+                                }
+                              }}
+                            >
+                              Únete a la lista de espera
+                            </Button>
+                          </div>
+                        ) : (
+                          // DISEÑO NORMAL PARA PROYECTOS ACTIVOS
+                          <div className="p-6 lg:p-10 flex flex-col h-full relative">
+                            {/* Close Button */}
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedProject(null);
+                              }}
+                              className="absolute top-4 right-4 z-50 w-10 h-10 bg-gray-100 hover:bg-gray-200 text-foreground rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110"
+                            >
+                              <X className="w-5 h-5" />
+                            </button>
+
+                            <h3 className="text-3xl lg:text-4xl font-bold text-foreground mb-2 leading-tight">
+                              {project.name}
+                            </h3>
+
+                            <div className="inline-flex items-center gap-2 text-muted-foreground mb-4">
+                              <MapPin className="w-4 h-4 text-primary" />
+                              <span className="text-sm">{project.location}</span>
+                            </div>
+
+                            {/* Stats Row */}
+                            <div className="grid grid-cols-3 gap-4 mb-6 pb-4 border-b border-border">
+                              <div>
+                                <div className="font-bold text-foreground mb-1">
+                                  {project.totalInvestors.toLocaleString('es-CO')}
+                                </div>
+                                <div className="text-xs text-muted-foreground">Inversionistas</div>
+                              </div>
+                              
+                              <div>
+                                <div className="font-bold text-foreground mb-1">
+                                  {project.minRoi}-{project.maxRoi}%
+                                </div>
+                                <div className="text-xs text-muted-foreground">ROI Anual</div>
+                              </div>
+                              
+                              <div>
+                                <div className="font-bold text-foreground mb-1">
+                                  ${project.units.toLocaleString('es-CO')}
+                                </div>
+                                <div className="text-xs text-muted-foreground">Precio por Unit</div>
+                              </div>
+                            </div>
+
+                            {/* CUPOS DISPONIBLES */}
+                            <div className="mb-6">
+                              <div className="flex items-baseline gap-2 mb-2">
+                                <span className="text-3xl lg:text-4xl font-bold text-foreground leading-none">
+                                  {project.availableSpots}
+                                </span>
+                                <span className="text-xl lg:text-2xl font-bold text-muted-foreground leading-none">
+                                  /{project.totalSpots}
+                                </span>
+                              </div>
+                              <p className="text-base text-primary font-semibold">Cupos Disponibles</p>
+                            </div>
+
+                            {/* Description */}
+                            <p className="text-muted-foreground mb-5 leading-relaxed text-sm">
+                              {project.description}
+                            </p>
+
+                            {/* Amenities Tags */}
+                            <div className="mb-5">
+                              <div className="flex flex-wrap gap-2">
+                                {project.amenities.map((amenity, index) => {
+                                  const getAmenityIcon = (icon: string) => {
+                                    const iconMap: { [key: string]: any } = {
+                                      home: Home,
+                                      size: Maximize2,
+                                      pool: Waves,
+                                      bbq: Flame,
+                                      gym: Dumbbell,
+                                      coworking: Briefcase,
+                                      restaurant: UtensilsCrossed,
+                                      smart: Cpu,
+                                      parking: Car,
+                                      cafe: Coffee,
+                                      sofa: Sofa
+                                    };
+                                    return iconMap[icon] || Building2;
+                                  };
+                                  
+                                  const IconComponent = getAmenityIcon(amenity.icon);
+                                  
+                                  return (
+                                    <div key={index} className="flex items-center gap-1.5 bg-primary/5 hover:bg-primary/10 border border-primary/10 hover:border-primary/20 rounded-full px-3 py-1.5 transition-all duration-300">
+                                      <IconComponent className="w-3.5 h-3.5 text-primary flex-shrink-0" />
+                                      <span className="text-xs text-foreground font-medium">{amenity.text}</span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+
+                            {/* Divider */}
+                            <div className="h-px bg-border mb-5"></div>
+
+                            {/* Investment Info */}
+                            <div className="mb-6">
+                              <p className="text-base text-foreground leading-relaxed">
+                                <span className="font-bold">${project.minInvestment.toLocaleString('es-CO')}</span>
+                                {' '}cupo de inversión hasta en{' '}
+                                <span className="text-primary font-bold">{project.installments} cuotas</span>
+                              </p>
+                            </div>
+
+                            {/* CTA Button */}
+                            <Button 
+                              size="lg" 
+                              className="w-full bg-foreground hover:bg-foreground/90 text-white py-6 text-base font-semibold rounded-xl hover:scale-[1.02] transition-all duration-300 mt-auto"
+                              onClick={() => {
+                                // Determinar la URL según el proyecto
+                                let url = '';
+                                const projectName = project.name.toLowerCase();
+                                if (projectName.includes('nido')) {
+                                  url = 'https://lokl.life/project/nido-de-agua';
+                                } else if (projectName.includes('indie')) {
+                                  url = 'https://lokl.life/project/indie-universe';
+                                } else if (projectName.includes('aldea')) {
+                                  url = 'https://lokl.life/project-signup/aldea';
+                                } else if (projectName.includes('patito')) {
+                                  url = 'https://lokl.life/project-signup/patito-feo';
+                                }
+                                
+                                if (url) {
+                                  window.open(url, '_blank');
+                                }
+                              }}
+                            >
+                              Quiero conocer más
+                            </Button>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            </div> {/* Cierre flex container */}
+          </div> {/* Cierre overflow container */}
+
+          {/* Dots Indicator - Solo móvil */}
+          {selectedProject === null && (
+            <div className="md:hidden flex justify-center gap-2 mt-8">
+              {projects.map((_, index) => (
+                <button
+                  key={index}
+                  className={`h-2.5 rounded-full transition-all duration-300 touch-manipulation ${
+                    index === carouselIndex 
+                      ? 'bg-primary w-10' 
+                      : 'bg-gray-300 hover:bg-gray-400 active:bg-gray-500 w-2.5'
+                  }`}
+                  onClick={() => setCarouselIndex(index)}
+                  aria-label={`Ir al grupo de proyectos ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>
