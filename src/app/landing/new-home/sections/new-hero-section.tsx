@@ -3,6 +3,10 @@
 import React from "react";
 import Hero from "@/components/landing/new-home/hero";
 
-export default function NewHeroSection() {
-  return <Hero />;
+interface NewHeroSectionProps {
+  onWhatIsClick?: () => void;
+}
+
+export default function NewHeroSection({ onWhatIsClick }: NewHeroSectionProps) {
+  return <Hero onWhatIsClick={onWhatIsClick} />;
 }

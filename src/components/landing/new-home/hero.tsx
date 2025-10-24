@@ -11,7 +11,11 @@ import {
 import { Slider } from "@/components/ui/slider";
 import LazyImage from "./lazy-image";
 
-export default function Hero() {
+interface HeroProps {
+  onWhatIsClick?: () => void;
+}
+
+export default function Hero({ onWhatIsClick }: HeroProps) {
   const [monthlyAmount, setMonthlyAmount] = useState([1300000]);
   const [term, setTerm] = useState("12");
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
@@ -134,9 +138,13 @@ export default function Hero() {
   };
 
   const handleWhatIsClick = () => {
-    document
-      .getElementById("que-es-lokl")
-      ?.scrollIntoView({ behavior: "smooth" });
+    if (onWhatIsClick) {
+      onWhatIsClick();
+    } else {
+      document
+        .getElementById("que-es-lokl")
+        ?.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (

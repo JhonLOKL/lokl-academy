@@ -1,9 +1,10 @@
 "use client";
 
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useState } from "react";
 import dynamic from "next/dynamic";
 import NewHeroSection from "./sections/new-hero-section";
 import StatsSection from "./sections/stats-section";
+import WhatIsLokl from "@/components/landing/new-home/WhatIsLokl";
 
 // Importación dinámica de componentes menos críticos
 const BenefitsSection = dynamic(() => import("./sections/benefits-section"), { 
@@ -34,10 +35,27 @@ const FinalCTASection = dynamic(() => import("./sections/final-cta-section"), {
 import "../../../components/landing/new-home/animations.css";
 
 export default function NewHomePage() {
+  const [showWhatIsLokl, setShowWhatIsLokl] = useState(false);
+
+  const handleWhatIsClick = () => {
+    setShowWhatIsLokl(true);
+    // Scroll suave a la sección después de un pequeño delay para que se renderice
+    setTimeout(() => {
+      document
+        .getElementById("que-es-lokl")
+        ?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
+
   return (
     <main className="min-h-screen w-full">
       <section className="min-h-screen w-full">
-        <NewHeroSection />
+        <NewHeroSection onWhatIsClick={handleWhatIsClick} />
+      </section>
+
+      {/* Sección WhatIsLokl - Solo se muestra cuando se hace clic en el botón */}
+      <section className="w-full">
+        <WhatIsLokl isVisible={showWhatIsLokl} />
       </section>
 
       <section className="w-full">
