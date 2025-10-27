@@ -67,18 +67,18 @@ export default function HowItWorks() {
           </p>
         </div>
 
-        {/* Patrón escalonado diagonal premium mejorado */}
-        <div className="relative min-h-[1700px] md:min-h-[1500px] lg:min-h-[1300px]">
+                 {/* Patrón escalonado diagonal premium mejorado */}
+         <div className="relative min-h-[1400px] md:min-h-[1500px] lg:min-h-[1300px]">
           {steps.map((step, index) => {
             const IconComponent = step.icon;
             const BadgeIconComponent = step.badgeIcon;
             
-            // Posicionamiento escalonado diagonal
-            const positions = [
-              'top-0 left-0 lg:left-8',
-              'top-[36rem] md:top-[32rem] right-0 lg:top-[26rem] lg:right-8',
-              'top-[72rem] md:top-[64rem] left-0 lg:top-[52rem] lg:left-8'
-            ];
+                         // Posicionamiento escalonado diagonal
+             const positions = [
+               'top-0 left-0 lg:left-8',
+               'top-[28rem] md:top-[32rem] right-0 lg:top-[26rem] lg:right-8',
+               'top-[56rem] md:top-[64rem] left-0 lg:top-[52rem] lg:left-8'
+             ];
 
             // Estilos dinámicos premium mejorados
             const getCardStyles = () => {
@@ -207,45 +207,68 @@ export default function HowItWorks() {
                   </div>
 
                   {/* Layout horizontal mejorado */}
-                  <div className="flex flex-col md:flex-row gap-10 lg:gap-12 items-start relative z-10 mt-6 bg-[rgba(74,35,35,0)]">
+                  <div className="flex flex-col relative z-10 mt-6 bg-[rgba(74,35,35,0)]">
                     
-                    {/* Ícono premium con animación mejorada */}
-                    <div className="relative flex-shrink-0 mt-6">
-                      <div className={`w-28 h-28 lg:w-32 lg:h-32 ${styles.iconBg} ${styles.iconRing} rounded-[2rem] flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 relative overflow-hidden`}>
-                        {/* Gradient overlay animado */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        <IconComponent className={`w-14 h-14 lg:w-16 lg:h-16 ${styles.iconColor} group-hover:scale-110 transition-transform duration-300 relative z-10`} />
-                        {/* Shine effect interno */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 translate-x-[-100%] group-hover:translate-x-[100%]" style={{ transition: 'all 1s ease-in-out' }} />
+                    {/* Ícono y título en la misma fila */}
+                    <div className="flex flex-row gap-4 md:gap-6 items-center mb-6">
+                      {/* Ícono premium con animación mejorada */}
+                      <div className="relative flex-shrink-0">
+                        <div className={`w-20 h-20 lg:w-24 lg:h-24 ${styles.iconBg} ${styles.iconRing} rounded-[1.5rem] flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 relative overflow-hidden`}>
+                          {/* Gradient overlay animado */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                          <IconComponent className={`w-10 h-10 lg:w-12 lg:h-12 ${styles.iconColor} group-hover:scale-110 transition-transform duration-300 relative z-10`} />
+                          {/* Shine effect interno */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 translate-x-[-100%] group-hover:translate-x-[100%]" style={{ transition: 'all 1s ease-in-out' }} />
+                        </div>
+                        {/* Círculo decorativo externo con pulso */}
+                        <div className="absolute -inset-2 rounded-[1.5rem] border-2 border-transparent group-hover:border-[#5352F6]/20 transition-all duration-500 opacity-0 group-hover:opacity-100 bg-[rgba(95,20,20,0)]" />
                       </div>
-                      {/* Círculo decorativo externo con pulso */}
-                      <div className="absolute -inset-3 rounded-[2.5rem] border-2 border-transparent group-hover:border-[#5352F6]/20 transition-all duration-500 opacity-0 group-hover:opacity-100 bg-[rgba(95,20,20,0)]" />
-                      {/* Puntos decorativos */}
-                      <div className="absolute -top-2 -right-2 w-4 h-4 bg-[#5352F6] rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 delay-100 shadow-lg shadow-[#5352F6]/50" />
-                      <div className="absolute -bottom-2 -left-2 w-3 h-3 bg-[#5352F6]/60 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 delay-200 shadow-md shadow-[#5352F6]/40" />
+
+                      {/* Título con animación en hover mejorado */}
+                      <h3 className="text-2xl md:text-3xl lg:text-4xl leading-tight group-hover:translate-x-2 transition-transform duration-300 flex-1">
+                        {step.number === '1' ? (
+                          <a href="/register" className="hover:opacity-80 transition-opacity">
+                            <span className={`font-normal ${styles.titleMain}`}>
+                              {step.titleItalic.replace(/^\d+\.\s*/, '')}
+                            </span>
+                            {' '}
+                            <span className={`font-bold ${styles.titleHighlight}`}>
+                              {step.titleBold}
+                            </span>
+                          </a>
+                        ) : step.number === '2' ? (
+                          <a href="https://lokl.life/project/nido-de-agua" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
+                            <span className={`font-normal ${styles.titleMain}`}>
+                              {step.titleItalic.replace(/^\d+\.\s*/, '')}
+                            </span>
+                            {' '}
+                            <span className={`font-bold ${styles.titleHighlight}`}>
+                              {step.titleBold}
+                            </span>
+                          </a>
+                        ) : (
+                          <>
+                            <span className={`font-normal ${styles.titleMain}`}>
+                              {step.titleItalic.replace(/^\d+\.\s*/, '')}
+                            </span>
+                            {' '}
+                            <span className={`font-bold ${styles.titleHighlight}`}>
+                              {step.titleBold}
+                            </span>
+                          </>
+                        )}
+                      </h3>
                     </div>
 
-                    {/* Contenido premium mejorado */}
-                    <div className="flex-1 space-y-6">
-                      {/* Título con animación en hover mejorado */}
-                      <h3 className="text-2xl md:text-3xl lg:text-4xl leading-tight group-hover:translate-x-2 transition-transform duration-300">
-                        <span className={`font-normal ${styles.titleMain}`}>
-                          {step.titleItalic.replace(/^\d+\.\s*/, '')}
-                        </span>
-                        {' '}
-                        <span className={`font-bold ${styles.titleHighlight}`}>
-                          {step.titleBold}
-                        </span>
-                      </h3>
-
-                      {/* Descripción mejorada */}
-                      <p className={`text-base lg:text-lg leading-relaxed ${styles.description}`}>
+                    {/* Descripción mejorada - Abajo con más espacio */}
+                    <div className="space-y-6">
+                      <p className={`text-lg lg:text-xl leading-relaxed ${styles.description} max-w-3xl`}>
                         {step.description}
                       </p>
 
                       {/* Línea decorativa inferior mejorada con gradiente */}
-                      <div className="pt-6">
-                        <div className="h-1.5 w-0 group-hover:w-24 bg-gradient-to-r from-[#5352F6] via-[#5352F6]/80 to-[#5352F6]/50 rounded-full transition-all duration-700 shadow-lg shadow-[#5352F6]/30" />
+                      <div className="pt-2">
+                        <div className="h-1.5 w-0 group-hover:w-32 bg-gradient-to-r from-[#5352F6] via-[#5352F6]/80 to-[#5352F6]/50 rounded-full transition-all duration-700 shadow-lg shadow-[#5352F6]/30" />
                       </div>
                     </div>
                   </div>
