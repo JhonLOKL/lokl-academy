@@ -22,26 +22,14 @@ export default function NewsletterTab({ onSubmit, register, isSubmitted }: Newsl
   return (
     <div className="animate-fade-in">
       <Card className="overflow-hidden border-0 shadow-2xl shadow-[#5352F6]/30 hover:shadow-[#5352F6]/40 transition-all duration-300 p-0">
-        <div className="grid lg:grid-cols-2 min-h-[600px]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[600px]">
           {/* Columna izquierda - Imagen */}
-          <div className="relative h-[300px] sm:h-[400px] lg:h-auto overflow-hidden group">
+          <div className="relative h-[500px] lg:h-[600px] overflow-hidden group bg-gray-100 flex items-start pt-0">
             <ImageWithFallback
-              src="https://images.unsplash.com/photo-1563986768609-322da13575f3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxuZXdzbGV0dGVyJTIwZW1haWwlMjBtYXJrZXRpbmd8ZW58MXx8fHwxNzYwMjIwNDIwfDA&ixlib=rb-4.1.0&q=80&w=1080"
+              src="/images/new-home/NEWSLETTER.png"
               alt="Newsletter LOKL"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
             />
-            {/* Overlay con gradiente */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#5352F6]/90 via-[#5352F6]/50 to-[#5352F6]/20"></div>
-            
-            {/* Texto sobre la imagen - Parte inferior */}
-            <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-              <h3 className="text-2xl md:text-3xl font-bold mb-3">
-                Mantente al día con <span className="text-white/90">LOKL</span>
-              </h3>
-              <p className="text-base text-white/90">
-                Recibe cada semana análisis de mercado, oportunidades exclusivas y consejos de inversión directo en tu inbox.
-              </p>
-            </div>
           </div>
 
           {/* Columna derecha - Formulario de suscripción */}

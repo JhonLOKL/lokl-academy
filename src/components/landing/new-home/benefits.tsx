@@ -58,8 +58,7 @@ export default function Benefits() {
       description:
         "Invertir con propósito es construir futuro. Invertimos donde el capital también construye comunidad y ecosistemas.",
       ctaText: "Haz parte de la nueva forma de invertir",
-      image:
-        "https://i.pinimg.com/1200x/c9/69/d2/c969d204d68ff689d0bb306747ffef21.jpg",
+      image: "/images/new-home/TECH_01.png",
       benefit: "Propósito"
     },
     {
@@ -75,8 +74,7 @@ export default function Benefits() {
       description:
         "Ganar sí, pero no a cualquier costo. Rentabilidad del 8% al 15% anual, con impacto real para todos.",
       ctaText: "Calcula tu retorno financiero y social",
-      image:
-        "https://i.pinimg.com/1200x/e0/6a/1f/e06a1f4c50a0c9547c67d7d31572ef4d.jpg",
+      image: "/images/new-home/TECH_03.png",
       benefit: "Sostenible"
     },
     {
@@ -93,8 +91,7 @@ export default function Benefits() {
       description:
         "Aquí tu inversión también te transforma. Ganas por rentabilidad, impacto y experiencias únicas.",
       ctaText: "Descubre todos los beneficios",
-      image:
-        "https://i.pinimg.com/1200x/cc/02/33/cc02339533a0292bbd4d2ff5502c6a5a.jpg",
+      image: "/images/new-home/TECH_02.png",
       benefit: "Integral"
     },
   ];
