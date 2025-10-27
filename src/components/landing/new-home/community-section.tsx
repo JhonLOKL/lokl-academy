@@ -8,8 +8,8 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import NewsletterTab from './newsletter-tab';
-import ArticulosTab from './articulos-tab';
-import CursosTab from './cursos-tab';
+import ArticlesTab from './articles-tab';
+import CoursesTab from './courses-tab';
 import PerfilTab from './perfil-tab';
 import { 
   Mail, 
@@ -94,8 +94,8 @@ export default function CommunitySection() {
         {/* ============ TAB CONTENT ============ */}
         <div className="min-h-[600px] mb-0">
           {activeTab === 'newsletter' && <NewsletterTab onSubmit={handleSubmit(onSubmit)} register={register} isSubmitted={isSubmitted} />}
-          {activeTab === 'articulos' && <ArticulosTab />}
-          {activeTab === 'cursos' && <CursosTab />}
+          {activeTab === 'articulos' && <ArticlesTab />}
+          {activeTab === 'cursos' && <CoursesTab />}
           {activeTab === 'perfil' && <PerfilTab />}
         </div>
       </div>
