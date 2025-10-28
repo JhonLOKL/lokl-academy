@@ -57,6 +57,9 @@ export default function SimulatorPhase1({ simulatorName }: SimulatorPhase1Props)
   // Estados para el modal de captura de leads
   const [showLeadModal, setShowLeadModal] = useState(false);
   const [hasSubmittedLead, setHasSubmittedLead] = useState(false);
+  
+  // Estado para trackear la primera simulación CON datos completos
+  const [hasSimulatedWithData, setHasSimulatedWithData] = useState(false);
 
   // Cargar proyectos disponibles
   useEffect(() => {
@@ -101,6 +104,48 @@ export default function SimulatorPhase1({ simulatorName }: SimulatorPhase1Props)
     }).format(value);
   };
 
+  // Función que se ejecuta en la primera simulación CON datos completos del usuario
+  const onFirstSimulationWithData = (userData: { name: string; email: string; isAuthenticated: boolean }) => {
+    console.log("🎉 PRIMERA SIMULACIÓN CON DATOS COMPLETOS!", {
+      usuario: {
+        nombre: userData.name,
+        email: userData.email,
+        autenticado: userData.isAuthenticated,
+      },
+      simulacion: {
+        proyecto: selectedProject?.name,
+        montoInversion: formatCurrency(investmentAmount),
+        cuotas: installments,
+        simulador: simulatorName,
+      },
+      marketing: {
+        utmSource,
+        utmMedium,
+        utmCampaign,
+        utmTerm,
+        utmContent,
+      },
+      timestamp: new Date().toISOString(),
+    });
+
+    // TODO: Aquí se llamará a la función real del backend cuando esté disponible
+    // Ejemplo:
+    // await trackFirstSimulationEvent({
+    //   userId: user?.id,
+    //   userName: userData.name,
+    //   userEmail: userData.email,
+    //   projectId: selectedProject?.id,
+    //   projectName: selectedProject?.name,
+    //   investmentAmount,
+    //   installments,
+    //   simulator: simulatorName,
+    //   utmSource,
+    //   utmMedium,
+    //   utmCampaign,
+    //   isAuthenticated: userData.isAuthenticated,
+    // });
+  };
+
   // Función para guardar la simulación
   const saveSimulation = async (simData: SimulationData) => {
     if (!selectedProject) return;
@@ -127,6 +172,16 @@ export default function SimulatorPhase1({ simulatorName }: SimulatorPhase1Props)
           },
           true // isAuthenticated
         );
+
+        // Ejecutar función de primera simulación con datos completos (usuario autenticado)
+        if (!hasSimulatedWithData) {
+          onFirstSimulationWithData({
+            name: `${user.firstName} ${user.lastName}`,
+            email: user.email,
+            isAuthenticated: true,
+          });
+          setHasSimulatedWithData(true);
+        }
       } else if (hasSubmittedLead) {
         // Usuario no autenticado pero ya envió datos del lead
         // Aquí necesitarías guardar los datos del lead en el estado
@@ -214,6 +269,16 @@ export default function SimulatorPhase1({ simulatorName }: SimulatorPhase1Props)
           },
           false // isAuthenticated
         );
+
+        // Ejecutar función de primera simulación con datos completos (usuario no autenticado)
+        if (!hasSimulatedWithData) {
+          onFirstSimulationWithData({
+            name: `${data.firstName} ${data.lastName}`,
+            email: data.email,
+            isAuthenticated: false,
+          });
+          setHasSimulatedWithData(true);
+        }
       } catch (error) {
         console.error("Error al guardar simulación con datos del lead:", error);
       }
@@ -223,7 +288,7 @@ export default function SimulatorPhase1({ simulatorName }: SimulatorPhase1Props)
     setHasSubmittedLead(true);
     setShowLeadModal(false);
   };
-
+  
   return (
     <div className="space-y-6">
       <Card>
@@ -342,7 +407,7 @@ export default function SimulatorPhase1({ simulatorName }: SimulatorPhase1Props)
                     <p className="text-muted-foreground">Inversión Mínima:</p>
                     <p className="font-medium">{formatCurrency(minInvestment)}</p>
                   </div>
-                  <div>
+    <div>
                     <p className="text-muted-foreground">Renta Mensual:</p>
                     <p className="font-medium">
                       {formatCurrency(selectedProject.minRent)} -{" "}
