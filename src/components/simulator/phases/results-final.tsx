@@ -2,7 +2,7 @@
 
 import { ProjectCard } from "@/schemas/project-card-schema";
 import { SimulationData } from "@/schemas/simulator-schema";
-import { MapPin, TrendingUp, Phone, AlertCircle } from "lucide-react";
+import { MapPin, TrendingUp, Phone } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
@@ -226,21 +226,10 @@ export default function ResultsFinal({ project, simulationData }: ResultsFinalPr
       </div>
 
       {/* Disclaimer */}
-      <div className="bg-slate-50 border-l-4 border-[#5352F6] rounded-lg p-5 shadow-sm">
-        <div className="flex gap-3">
-          <div className="flex-shrink-0">
-            <div className="w-10 h-10 bg-[#5352F6]/10 rounded-full flex items-center justify-center">
-              <AlertCircle className="w-5 h-5 text-[#5352F6]" />
-            </div>
-          </div>
-          <div className="flex-1">
-            <p className="font-bold text-slate-900 mb-2 text-sm">Información importante</p>
-            <p className="text-slate-600 text-xs leading-relaxed">
-              * Los retornos mostrados son estimaciones basadas en supuestos de mercado y pueden variar.
-              Las inversiones en bienes raíces conllevan riesgos y no garantizan rendimientos.
-            </p>
-          </div>
-        </div>
+      <div className="text-center px-4">
+        <p className="text-xs text-slate-500 leading-relaxed">
+          * Los retornos mostrados son estimaciones basadas en supuestos de mercado y pueden variar. Las inversiones en bienes raíces conllevan riesgos y no garantizan rendimientos.
+        </p>
       </div>
     </div>
   );
