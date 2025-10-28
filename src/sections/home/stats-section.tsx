@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { Users, TrendingUp, ArrowRight, Star, Calendar, Hotel } from 'lucide-react';
+import { Users, TrendingUp, ArrowRight, Star, Calendar, Hotel, DollarSign } from 'lucide-react';
 
 export default function StatsSection() {
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -86,10 +86,10 @@ export default function StatsSection() {
 
           <div className="text-center group">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 mb-4 group-hover:bg-white/30 transition-colors">
-              <TrendingUp className="w-8 h-8 text-white" />
+              <DollarSign className="w-8 h-8 text-white" />
             </div>
             <div className="text-4xl md:text-5xl font-bold text-white mb-2">
-              $50M
+              $50MM
             </div>
             <div className="text-lg text-white/90 font-medium mb-2">
               capital invertido
@@ -105,7 +105,7 @@ export default function StatsSection() {
               <Calendar className="w-8 h-8 text-white" />
             </div>
             <div className="text-4xl md:text-5xl font-bold text-white mb-2">
-              10 años
+              5 años
             </div>
             <div className="text-lg text-white/90 font-medium mb-2">
               de experiencia
@@ -118,17 +118,17 @@ export default function StatsSection() {
 
           <div className="text-center group">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 mb-4 group-hover:bg-white/30 transition-colors">
-              <Hotel className="w-8 h-8 text-white" />
+              <TrendingUp className="w-8 h-8 text-white" />
             </div>
             <div className="text-4xl md:text-5xl font-bold text-white mb-2">
-              70%
+              12 - 15%
             </div>
             <div className="text-lg text-white/90 font-medium mb-2">
-              de ocupación promedio
+              de rentabilidad estimada
             </div>
             <div className="flex items-center justify-center text-sm text-white/70">
               <TrendingUp className="w-4 h-4 mr-1" />
-              Proyectos financiados
+              Potencial de ganancias pasivas
             </div>
           </div>
         </div>
