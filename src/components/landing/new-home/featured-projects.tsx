@@ -29,7 +29,9 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
       name: project.name.charAt(0).toUpperCase() + project.name.slice(1), // Capitalizar nombre
       location: `${project.city.charAt(0).toUpperCase() + project.city.slice(1)}, ${project.country.charAt(0).toUpperCase() + project.country.slice(1)}`,
       description: project.description,
-      image: project.imageURL,
+      image: project.name.toLowerCase().includes('indie') 
+        ? '/images/new-home/INDIE UNIVERSE.png' 
+        : project.imageURL,
       videoUrl: project.videoURL || 'https://www.youtube.com/watch?v=example',
       minRoi: project.minRent * 100,
       maxRoi: project.maxRent * 100,
@@ -360,7 +362,7 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                         <ImageWithFallback 
                           src={project.image} 
                           alt={project.name}
-                          className="w-full h-full object-cover min-h-[500px] lg:min-h-[650px]"
+                          className="w-full h-full object-cover min-h-[500px] lg:min-h-[650px] max-h-[550px] lg:max-h-[700px]"
                         />
                         
                         {/* Overlay oscuro - Menos intenso en móvil */}
