@@ -66,7 +66,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
   };
 
   // Helper para calcular rangos del slider
-  const calculateSliderRange = (project: any) => {
+  const calculateSliderRange = (project: { unitPrice: number; minInvestmentUnits: number }) => {
     const minInvestment = Math.max(project.unitPrice * project.minInvestmentUnits, 1000000);
     const calculatedMax = project.unitPrice * 100;
     const maxInvestment = Math.max(calculatedMax, minInvestment * 2);
@@ -145,237 +145,325 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
   return (
     <section
       id="hero"
-      className="relative min-h-screen text-white overflow-hidden"
+      className="relative text-white"
     >
-      {/* Video de fondo - Solo desktop */}
-      <div className="absolute inset-0 hidden md:block overflow-hidden">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          className="absolute inset-0 w-full h-full object-cover"
-          poster="https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe_poster.jpg"
-          aria-label="Video de fondo mostrando proyectos inmobiliarios LOKL"
-        >
-          <source 
-            src="https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe.mp4" 
-            type="video/mp4"
-          />
-          <track
-            kind="captions"
-            srcLang="es"
-            label="Español"
-          />
-          Tu navegador no soporta videos HTML5.
-        </video>
-      </div>
+      {/* Contenedor del Hero con imagen de fondo */}
+      <div className="relative h-screen md:min-h-screen overflow-hidden">
+        {/* Video de fondo - Solo desktop */}
+        <div className="absolute inset-0 hidden md:block overflow-hidden">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            className="absolute inset-0 w-full h-full object-cover"
+            poster="https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe_poster.jpg"
+            aria-label="Video de fondo mostrando proyectos inmobiliarios LOKL"
+          >
+            <source 
+              src="https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe.mp4" 
+              type="video/mp4"
+            />
+            <track
+              kind="captions"
+              srcLang="es"
+              label="Español"
+            />
+            Tu navegador no soporta videos HTML5.
+          </video>
+        </div> 
 
-      {/* Fondo con imágenes - Solo móvil */}
-      <div className="absolute inset-0 md:hidden">
-        {availableProjects.length > 0 ? (
-          availableProjects.map((project, index) => (
-            <div
-              key={project.id}
-              aria-hidden="true"
-              className={`absolute inset-0 transition-opacity duration-1000 ${
-                index === currentProjectIndex
-                  ? "opacity-100"
-                  : "opacity-0"
-              }`}
-            >
-              <picture>
-                <LazyImage
-                  src={project.imageURL}
-                  alt={`Proyecto ${project.name} - ${project.city} - LOKL`}
-                  className="absolute inset-0 h-full w-full object-cover"
-                  priority={index === 0}
-                />
-              </picture>
-            </div>
-          ))
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-[#5352F6] to-[#3a39c4]" />
-        )}
-      </div>
-
-      {/* Overlay para contraste del texto */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/20"></div>
-
-      {/* Contenido en 2 columnas */}
-      <div className="relative z-10 mx-auto grid min-h-screen max-w-7xl grid-cols-1 items-center gap-8 px-6 py-10 md:grid-cols-12">
-        {/* Columna IZQUIERDA: texto */}
-        <div className="md:col-span-7">
-          <h1 className="leading-[0.85] font-semibold md:text-6xl text-[48px] text-left text-[rgb(255,248,248)] max-w-xl">
-            Invierte en bienes raíces con propósito y construye tu futuro
-          </h1>
-
-          <p className="mt-4 max-w-xl text-lg text-white/90"> 
-            Proyectos creativos y sostenibles que generan empleo local y valor real para las nuevas generaciones.
-          </p>
-
-          {/* "Invierte" / micro-beneficios */}
-          <div className="mt-5 grid grid-cols-2 gap-2 w-fit">
-            <span className="rounded-full bg-white/10 px-3 py-1 text-sm text-center whitespace-nowrap">
-              <span className="text-[rgba(255,255,255,1)] font-bold">
-                Diversificación
-              </span>
-            </span>
-            <span className="rounded-full bg-white/10 px-3 py-1 text-sm text-center whitespace-nowrap">
-              <span className="text-[rgba(255,255,255,1)] font-bold">
-                Hospitality
-              </span>
-            </span>
-            <span className="rounded-full bg-white/10 px-3 py-1 text-sm text-center whitespace-nowrap">
-              <span className="text-[rgba(255,255,255,1)] font-bold">
-                Sostenibilidad
-              </span>
-            </span>
-            <span className="rounded-full bg-white/10 px-3 py-1 text-sm text-center whitespace-nowrap">
-              <span className="text-[rgba(255,255,255,1)] font-bold">
-                Crowdfunding
-              </span>
-            </span>
-          </div>
-
-          {/* Proyecto destacado rotativo - fuera de tarjeta */}
-          {availableProjects.length > 0 && (
-            <div className="mt-6">
+        {/* Fondo con imágenes - Solo móvil - ocupa toda la altura de viewport */}
+        <div className="absolute inset-0 md:hidden h-screen">
+          {availableProjects.length > 0 ? (
+            availableProjects.map((project, index) => (
               <div
-                key={currentProjectIndex}
-                className="animate-in fade-in duration-500"
+                key={project.id}
+                aria-hidden="true"
+                className={`absolute inset-0 transition-opacity duration-1000 ${
+                  index === currentProjectIndex
+                    ? "opacity-100"
+                    : "opacity-0"
+                }`}
               >
-                <p className="text-lg text-white/90 mb-2">
-                  <span className="text-white/90">
-                    Invierte en{" "}
-                  </span>
-                  <span className="text-[rgba(255,255,255,1)] font-semibold font-bold">
-                    {availableProjects[currentProjectIndex]?.name}
-                  </span>
-                  <span className="text-white/90"> desde</span>
-                </p>
-                <p className="text-3xl font-semibold text-white">
-                  {formatCurrency(
-                    availableProjects[currentProjectIndex]?.unitPrice * 
-                    availableProjects[currentProjectIndex]?.minInvestmentUnits
-                  )}
-                </p>
+                <picture>
+                  <LazyImage
+                    src={project.imageURL}
+                    alt={`Proyecto ${project.name} - ${project.city} - LOKL`}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    priority={index === 0}
+                  />
+                </picture>
               </div>
-            </div>
+            ))
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-[#5352F6] to-[#3a39c4]" />
           )}
-
-          {/* CTAs */}
-          <div className="mt-6 flex flex-wrap gap-3">
-            <a
-              href="#featured-projects"
-              onClick={(e) => {
-                e.preventDefault();
-                document
-                  .getElementById("featured-projects")
-                  ?.scrollIntoView({ behavior: "smooth" });
-              }}
-              className="rounded-xl bg-[#5352F6] px-5 py-3 font-medium text-white hover:bg-[#5352F6]/90 focus:outline-none focus:ring-2 focus:ring-[#5352F6]/30"
-            >
-              Ver proyectos
-            </a>
-            <a
-              href="#que-es-lokl"
-              onClick={handleWhatIsClick}
-              className="rounded-xl border border-white/70 px-5 py-3 font-medium text-white hover:bg-white/10"
-            >
-              <span className="text-white">¿Qué es </span>
-              <span className="text-[rgba(255,255,255,1)] font-bold">
-                LOKL
-              </span>
-              <span className="text-white">?</span>
-            </a>
-          </div>
         </div>
 
-        {/* Columna DERECHA: preview del simulador con glassmorphism */}
-        <div className="md:col-span-5">
-          <div className="rounded-2xl p-6 shadow-2xl ring-1 ring-white/20 bg-white/15 backdrop-blur-xl backdrop-saturate-150 max-w-sm mx-auto">
-            {/* Título del teaser */}
-            <h3 className="text-xl font-semibold text-white mb-1">
-              Proyección rápida
-            </h3>
-            <p className="text-sm text-white/70 mb-6">
-              Simula tu inversión en segundos
+        {/* Overlay para contraste del texto */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/20 via-50% to-transparent"></div>
+
+        {/* Contenido en 2 columnas - Desktop, 1 columna Mobile - Centrado verticalmente */}
+        <div className="relative z-10 mx-auto flex items-center h-full max-w-7xl px-6">
+          <div className="grid grid-cols-1 w-full gap-8 md:grid-cols-12">
+          {/* Columna IZQUIERDA: texto */}
+          <div className="md:col-span-7">
+            <h1 className="leading-[0.85] font-semibold md:text-6xl text-[48px] text-left text-[rgb(255,248,248)] max-w-xl">
+              Invierte en bienes raíces con propósito y construye tu futuro
+            </h1>
+
+            <p className="mt-4 max-w-xl text-lg text-white/90"> 
+              Proyectos creativos y sostenibles que generan empleo local y valor real para las nuevas generaciones.
             </p>
 
-            {/* Simulador funcional del hero */}
-            {availableProjects.length > 0 && selectedHeroProjectId && currentHeroProject ? (
-              <div className="space-y-5 max-w-xs mx-auto">
-                {/* Selector de Proyecto */}
-                <div className="w-full">
-                  <label className="text-sm text-white/90 block mb-2">
-                    Proyecto
-                  </label>
-                  <Select
-                    value={selectedHeroProjectId}
-                    onValueChange={handleHeroProjectChange}
-                  >
-                    <SelectTrigger className="bg-white/20 border-white/30 text-white hover:bg-white/25 transition-colors w-full">
-                      <SelectValue placeholder="Selecciona un proyecto" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableProjects.map((project) => (
-                        <SelectItem key={project.id} value={project.id}>
-                          {project.name} - {project.city}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+            {/* "Invierte" / micro-beneficios */}
+            <div className="mt-5 grid grid-cols-2 gap-2 w-fit">
+              <span className="rounded-full bg-white/10 px-3 py-1 text-sm text-center whitespace-nowrap">
+                <span className="text-[rgba(255,255,255,1)] font-bold">
+                  Diversificación
+                </span>
+              </span>
+              <span className="rounded-full bg-white/10 px-3 py-1 text-sm text-center whitespace-nowrap">
+                <span className="text-[rgba(255,255,255,1)] font-bold">
+                  Hospitality
+                </span>
+              </span>
+              <span className="rounded-full bg-white/10 px-3 py-1 text-sm text-center whitespace-nowrap">
+                <span className="text-[rgba(255,255,255,1)] font-bold">
+                  Sostenibilidad
+                </span>
+              </span>
+              <span className="rounded-full bg-white/10 px-3 py-1 text-sm text-center whitespace-nowrap">
+                <span className="text-[rgba(255,255,255,1)] font-bold">
+                  Crowdfunding
+                </span>
+              </span>
+            </div>
 
-                {/* Barra deslizable para monto de inversión */}
-                <div className="w-full">
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="text-sm text-white/90">
-                      Valor a invertir
-                    </label>
-                    <span className="text-sm font-semibold text-white">
-                      {formatCurrency(heroInvestmentAmount)}
-                    </span>
-                  </div>
-                  
-                  <div className="w-full py-2">
-                    <Slider
-                      key={selectedHeroProjectId} // Forzar re-render cuando cambie el proyecto
-                      value={[heroInvestmentAmount]}
-                      onValueChange={handleSliderChange}
-                      min={calculateSliderRange(currentHeroProject).minInvestment}
-                      max={calculateSliderRange(currentHeroProject).maxInvestment}
-                      step={calculateSliderRange(currentHeroProject).step}
-                      className="w-full touch-pan-y"
-                    />
-                  </div>
-                  
-                  <div className="flex justify-between mt-1 text-xs text-white/60">
-                    <span>
-                      {formatCurrency(calculateSliderRange(currentHeroProject).minInvestment)}
-                    </span>
-                    <span>
-                      {formatCurrency(calculateSliderRange(currentHeroProject).maxInvestment)}
-                    </span>
-                  </div>
-                </div>
-
-                {/* CTA */}
-                <button
-                  onClick={handleViewFullProjection}
-                  className="block w-full rounded-xl bg-[#5352F6] px-4 py-3 text-center font-medium text-white hover:bg-[#5352F6]/90 focus:outline-none focus:ring-2 focus:ring-[#5352F6]/30 transition-all shadow-lg hover:shadow-xl"
+            {/* Proyecto destacado rotativo - fuera de tarjeta */}
+            {availableProjects.length > 0 && (
+              <div className="mt-6">
+                <div
+                  key={currentProjectIndex}
+                  className="animate-in fade-in duration-500"
                 >
-                  Ver proyección completa
-                </button>
-              </div>
-            ) : (
-              <div className="text-center text-white/70 py-8">
-                Cargando simulador...
+                  <p className="text-lg text-white/90 mb-2">
+                    <span className="text-white/90">
+                      Invierte en{" "}
+                    </span>
+                    <span className="text-[rgba(255,255,255,1)] font-semibold font-bold">
+                      {availableProjects[currentProjectIndex]?.name}
+                    </span>
+                    <span className="text-white/90"> desde</span>
+                  </p>
+                  <p className="text-3xl font-semibold text-white">
+                    {formatCurrency(
+                      availableProjects[currentProjectIndex]?.unitPrice * 
+                      availableProjects[currentProjectIndex]?.minInvestmentUnits
+                    )}
+                  </p>
+                </div>
               </div>
             )}
+
+            {/* CTAs */}
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a
+                href="#featured-projects"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document
+                    .getElementById("featured-projects")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="rounded-xl bg-[#5352F6] px-5 py-3 font-medium text-white hover:bg-[#5352F6]/90 focus:outline-none focus:ring-2 focus:ring-[#5352F6]/30"
+              >
+                Ver proyectos
+              </a>
+              <a
+                href="#que-es-lokl"
+                onClick={handleWhatIsClick}
+                className="rounded-xl border border-white/70 px-5 py-3 font-medium text-white hover:bg-white/10"
+              >
+                <span className="text-white">¿Qué es </span>
+                <span className="text-[rgba(255,255,255,1)] font-bold">
+                  LOKL
+                </span>
+                <span className="text-white">?</span>
+              </a>
+            </div>
           </div>
+
+          {/* Columna DERECHA: preview del simulador con glassmorphism - Solo desktop */}
+          <div className="hidden md:block md:col-span-5">
+            <div className="rounded-2xl p-6 shadow-2xl ring-1 ring-white/20 bg-white/15 backdrop-blur-xl backdrop-saturate-150 max-w-sm mx-auto">
+              {/* Título del teaser */}
+              <h3 className="text-xl font-semibold text-white mb-1">
+                Proyección rápida
+              </h3>
+              <p className="text-sm text-white/70 mb-6">
+                Simula tu inversión en segundos
+              </p>
+
+              {/* Simulador funcional del hero */}
+              {availableProjects.length > 0 && selectedHeroProjectId && currentHeroProject ? (
+                <div className="space-y-5 max-w-xs mx-auto">
+                  {/* Selector de Proyecto */}
+                  <div className="w-full">
+                    <label className="text-sm text-white/90 block mb-2">
+                      Proyecto
+                    </label>
+                    <Select
+                      value={selectedHeroProjectId}
+                      onValueChange={handleHeroProjectChange}
+                    >
+                      <SelectTrigger className="bg-white/20 border-white/30 text-white hover:bg-white/25 transition-colors w-full">
+                        <SelectValue placeholder="Selecciona un proyecto" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableProjects.map((project) => (
+                          <SelectItem key={project.id} value={project.id}>
+                            {project.name} - {project.city}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Barra deslizable para monto de inversión */}
+                  <div className="w-full">
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="text-sm text-white/90">
+                        Valor a invertir
+                      </label>
+                      <span className="text-sm font-semibold text-white">
+                        {formatCurrency(heroInvestmentAmount)}
+                      </span>
+                    </div>
+                    
+                    <div className="w-full py-2">
+                      <Slider
+                        value={[heroInvestmentAmount]}
+                        onValueChange={handleSliderChange}
+                        min={currentHeroProject.unitPrice * currentHeroProject.minInvestmentUnits}
+                        max={currentHeroProject.unitPrice * 100}
+                        step={currentHeroProject.unitPrice}
+                        className="w-full touch-pan-y"
+                      />
+                    </div>
+                    
+                    <div className="flex justify-between mt-1 text-xs text-white/60">
+                      <span>
+                        {formatCurrency(currentHeroProject.unitPrice * currentHeroProject.minInvestmentUnits)}
+                      </span>
+                      <span>
+                        {formatCurrency(currentHeroProject.unitPrice * 100)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* CTA */}
+                  <button
+                    onClick={handleViewFullProjection}
+                    className="block w-full rounded-xl bg-[#5352F6] px-4 py-3 text-center font-medium text-white hover:bg-[#5352F6]/90 focus:outline-none focus:ring-2 focus:ring-[#5352F6]/30 transition-all shadow-lg hover:shadow-xl"
+                  >
+                    Ver proyección completa
+                  </button>
+                </div>
+              ) : (
+                <div className="text-center text-white/70 py-8">
+                  Cargando simulador...
+                </div>
+              )}
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Simulador Mobile - Sin tarjeta, directo sobre fondo */}
+      <div className="md:hidden bg-background py-8 px-6">
+        <div className="max-w-sm mx-auto">
+          {/* Título del simulador mobile */}
+          <h3 className="text-xl font-semibold text-foreground mb-1">
+            Proyección rápida
+          </h3>
+          <p className="text-sm text-muted-foreground mb-6">
+            Simula tu inversión en segundos
+          </p>
+
+          {/* Simulador funcional mobile */}
+          {availableProjects.length > 0 && selectedHeroProjectId && currentHeroProject ? (
+            <div className="space-y-5">
+              {/* Selector de Proyecto */}
+              <div className="w-full">
+                <label className="text-sm text-foreground block mb-2 font-medium">
+                  Proyecto
+                </label>
+                <Select
+                  value={selectedHeroProjectId}
+                  onValueChange={handleHeroProjectChange}
+                >
+                  <SelectTrigger className="w-full bg-white !text-black">
+                    <SelectValue placeholder="Selecciona un proyecto" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableProjects.map((project) => (
+                      <SelectItem key={project.id} value={project.id}>
+                        {project.name} - {project.city}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Barra deslizable para monto de inversión */}
+              <div className="w-full">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-sm text-foreground font-medium">
+                    Valor a invertir
+                  </label>
+                  <span className="text-sm font-semibold text-[#5352F6]">
+                    {formatCurrency(heroInvestmentAmount)}
+                  </span>
+                </div>
+                
+                <div className="w-full py-2">
+                  <Slider
+                    value={[heroInvestmentAmount]}
+                    onValueChange={handleSliderChange}
+                    min={currentHeroProject.unitPrice * currentHeroProject.minInvestmentUnits}
+                    max={currentHeroProject.unitPrice * 100}
+                    step={currentHeroProject.unitPrice}
+                    className="w-full touch-pan-y"
+                  />
+                </div>
+                
+                <div className="flex justify-between mt-1 text-xs text-muted-foreground">
+                  <span>
+                    {formatCurrency(currentHeroProject.unitPrice * currentHeroProject.minInvestmentUnits)}
+                  </span>
+                  <span>
+                    {formatCurrency(currentHeroProject.unitPrice * 100)}
+                  </span>
+                </div>
+              </div>
+
+              {/* CTA */}
+              <button
+                onClick={handleViewFullProjection}
+                className="block w-full rounded-xl bg-[#5352F6] px-4 py-3 text-center font-medium text-white hover:bg-[#5352F6]/90 focus:outline-none focus:ring-2 focus:ring-[#5352F6]/30 transition-all shadow-lg hover:shadow-xl"
+              >
+                Ver proyección completa
+              </button>
+            </div>
+          ) : (
+            <div className="text-center text-muted-foreground py-8">
+              Cargando simulador...
+            </div>
+          )}
         </div>
       </div>
 

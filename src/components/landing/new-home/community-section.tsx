@@ -27,9 +27,9 @@ export default function CommunitySection() {
         
         {/* ============ HEADER ============ */}
         <div className="mb-12 text-center">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 font-normal">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
             Lokl <span className="text-[#5352F6] font-bold">academy</span> 
-          </h1>
+          </h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
             Guías prácticas, cursos y webinars para invertir con criterio. Actualizado cada semana.
           </p>
