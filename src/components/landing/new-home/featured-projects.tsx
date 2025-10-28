@@ -84,7 +84,7 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
       // Si hay un proyecto seleccionado, avanzar al siguiente proyecto
       setSelectedProject((prev) => prev !== null ? (prev + 1) % projects.length : 0);
     } else {
-      // Sin selección, avanzar al siguiente proyecto en el carrusel
+      // Sin selección, avanzar al siguiente proyecto individualmente
       setCarouselIndex((prev) => (prev + 1) % projects.length);
     }
   };
@@ -94,37 +94,51 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
       // Si hay un proyecto seleccionado, retroceder al proyecto anterior
       setSelectedProject((prev) => prev !== null ? (prev - 1 + projects.length) % projects.length : 0);
     } else {
-      // Sin selección, retroceder al proyecto anterior en el carrusel
+      // Sin selección, retroceder al proyecto anterior individualmente
       setCarouselIndex((prev) => (prev - 1 + projects.length) % projects.length);
     }
   };
 
-  // Calcula qué proyectos mostrar
-  const getVisibleProjects = () => {
-    // Siempre mostrar todos los proyectos, independientemente del estado de selección
-    return projects.map((_, index) => index);
-  };
 
-  // Determina qué proyectos están en el rango visible del carrusel desktop
-  const isInDesktopCarouselRange = (index: number) => {
-    // Si hay un proyecto seleccionado, mostrar solo 3 proyectos: el seleccionado y los 2 adyacentes
+  // Obtener los proyectos visibles en el orden correcto
+  const getVisibleProjectsInOrder = () => {
     if (selectedProject !== null) {
+      // Si hay un proyecto seleccionado, mostrar solo 3 proyectos: el seleccionado y los 2 adyacentes
       const totalProjects = projects.length;
       const prevIndex = (selectedProject - 1 + totalProjects) % totalProjects;
       const nextIndex = (selectedProject + 1) % totalProjects;
-      return index === selectedProject || index === prevIndex || index === nextIndex;
+      return [
+        { project: projects[prevIndex], index: prevIndex },
+        { project: projects[selectedProject], index: selectedProject },
+        { project: projects[nextIndex], index: nextIndex }
+      ];
     }
     
-    // En desktop sin selección, solo mostrar 3 proyectos consecutivos basados en carouselIndex
-    const visibleIndices = [];
-    for (let i = 0; i < 3; i++) {
-      visibleIndices.push((carouselIndex + i) % projects.length);
+    // Sin selección
+    const totalProjects = projects.length;
+    
+    if (isMobile) {
+      // En móvil sin selección, mostrar solo el proyecto actual
+      return [{ project: projects[carouselIndex], index: carouselIndex }];
     }
-    return visibleIndices.includes(index);
+    
+    // En desktop sin selección, mostrar 3 proyectos consecutivos basados en carouselIndex
+    if (totalProjects <= 3) {
+      // Si hay 3 o menos proyectos, mostrar todos en orden
+      return projects.map((project, index) => ({ project, index }));
+    }
+    
+    // Para más de 3 proyectos, mostrar 3 consecutivos en orden
+    const visibleProjects = [];
+    for (let i = 0; i < 3; i++) {
+      const actualIndex = (carouselIndex + i) % totalProjects;
+      visibleProjects.push({ project: projects[actualIndex], index: actualIndex });
+    }
+    
+    return visibleProjects;
   };
 
-  const visibleIndices = getVisibleProjects();
-  const visibleProjects = visibleIndices.map(index => ({ project: projects[index], index }));
+  const visibleProjects = getVisibleProjectsInOrder();
 
   // Manejo de gestos táctiles para móvil
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -147,9 +161,9 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
     }
   };
 
-  // Efecto para hacer scroll automático en móvil cuando cambia el carouselIndex
+  // Efecto para hacer scroll automático en móvil cuando cambia el carouselIndex (solo para desktop)
   useEffect(() => {
-    if (selectedProject === null && scrollContainerRef.current) {
+    if (selectedProject === null && scrollContainerRef.current && !isMobile) {
       const container = scrollContainerRef.current;
       const cardWidth = container.scrollWidth / projects.length;
       const scrollPosition = cardWidth * carouselIndex;
@@ -159,7 +173,17 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
         behavior: 'smooth'
       });
     }
-  }, [carouselIndex, selectedProject, projects.length]);
+  }, [carouselIndex, selectedProject, projects.length, isMobile]);
+
+  // Efecto para resetear el carrusel cuando se deselecciona un proyecto
+  useEffect(() => {
+    if (selectedProject === null) {
+      // Asegurar que el carouselIndex esté dentro del rango válido
+      if (carouselIndex >= projects.length) {
+        setCarouselIndex(0);
+      }
+    }
+  }, [selectedProject, carouselIndex, projects.length]);
 
   return (
     <section className="py-12 md:py-16 bg-[rgb(243,243,243)]">
@@ -175,7 +199,7 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
         </div>
 
         {/* Stacked Cards Container */}
-        <div className="relative perspective-1000">
+        <div className="relative perspective-1000 overflow-hidden">
           {/* Navigation Buttons - Desktop (siempre visibles) - Con estilo de tarjeta principal */}
           <>
             <button
@@ -193,6 +217,26 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
               <ChevronRight className="w-6 h-6 text-white animate-pulse" />
             </button>
           </>
+
+          {/* Navigation Buttons - Mobile (solo cuando no hay selección) */}
+          {isMobile && selectedProject === null && (
+            <>
+              <button
+                onClick={prevCarousel}
+                className="flex md:hidden absolute left-0 top-1/2 -translate-y-1/2 z-40 w-10 h-10 items-center justify-center transition-all duration-300 hover:scale-110"
+                aria-label="Proyecto anterior"
+              >
+                <ChevronLeft className="w-6 h-6 text-black" />
+              </button>
+              <button
+                onClick={nextCarousel}
+                className="flex md:hidden absolute right-0 top-1/2 -translate-y-1/2 z-40 w-10 h-10 items-center justify-center transition-all duration-300 hover:scale-110"
+                aria-label="Proyecto siguiente"
+              >
+                <ChevronRight className="w-6 h-6 text-black" />
+              </button>
+            </>
+          )}
 
           {/* Mini Carrusel/Galería en móvil cuando hay proyecto seleccionado */}
           {isMobile && selectedProject !== null && (
@@ -228,17 +272,13 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
           <div 
             ref={scrollContainerRef}
             className={`
-              ${selectedProject === null ? 'overflow-x-auto md:overflow-visible scrollbar-hide snap-x snap-mandatory' : ''}
+              ${selectedProject === null ? 'md:overflow-visible' : ''}
             `}
           >
-            <div className={`flex ${selectedProject !== null ? 'items-start' : 'items-stretch'} ${selectedProject !== null ? 'gap-2' : 'gap-4 md:gap-6'} ${selectedProject === null ? 'px-[5vw] md:px-0' : ''} max-w-7xl mx-auto ${selectedProject !== null ? 'justify-center md:justify-between' : 'justify-start md:justify-between'}`}>
-            {visibleProjects
-              .map(({ project, index }) => {
+            <div className={`flex ${selectedProject !== null ? 'items-start' : 'items-stretch'} ${selectedProject !== null ? 'gap-2' : 'gap-4 md:gap-6'} ${selectedProject === null ? 'md:px-0' : ''} max-w-7xl mx-auto ${selectedProject !== null ? 'justify-center md:justify-between' : isMobile ? 'justify-center' : 'justify-start md:justify-between'}`}>
+            {visibleProjects.map(({ project, index }) => {
               const isSelected = selectedProject === index;
               const hasSelection = selectedProject !== null;
-              
-              // En desktop sin selección, ocultar si no está en el rango del carrusel
-              const hideInDesktop = !isInDesktopCarouselRange(index);
               
               // En móvil, si hay selección, solo mostrar el proyecto seleccionado
               const hideInMobile = isMobile && hasSelection && !isSelected;
@@ -247,20 +287,27 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                 <div
                   key={index}
                   className={`
-                    transition-all duration-500 ease-out cursor-pointer flex-shrink-0
-                    ${hideInDesktop ? 'md:hidden' : ''}
+                    transition-all duration-700 ease-in-out flex-shrink-0
                     ${hideInMobile ? 'hidden md:block' : ''}
                     ${isSelected 
                       ? 'w-full md:flex-1 z-30' 
                       : hasSelection 
                         ? 'md:w-24 lg:w-28 z-10 md:hover:w-28 lg:hover:w-32' 
-                        : 'w-[78vw] md:w-[calc(33.333%-1rem)] z-20 snap-center'
+                        : isMobile 
+                          ? 'w-full max-w-72 mx-auto z-20' 
+                          : 'w-[calc(33.333%-1rem)] z-20 snap-center'
                     }
+                    ${!hasSelection ? 'cursor-pointer' : ''}
                   `}
-                  onClick={() => setSelectedProject(index)}
-                  onTouchStart={handleTouchStart}
-                  onTouchMove={handleTouchMove}
-                  onTouchEnd={handleTouchEnd}
+                  onClick={() => {
+                    // Solo permitir selección si no hay proyecto seleccionado
+                    if (!hasSelection) {
+                      setSelectedProject(index);
+                    }
+                  }}
+                  onTouchStart={!hasSelection ? handleTouchStart : undefined}
+                  onTouchMove={!hasSelection ? handleTouchMove : undefined}
+                  onTouchEnd={!hasSelection ? handleTouchEnd : undefined}
                 >
                   {/* Card */}
                   <div className={`
@@ -635,7 +682,7 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
           </div> {/* Cierre overflow container */}
 
           {/* Dots Indicator - Solo móvil */}
-          {selectedProject === null && (
+          {selectedProject === null && projects.length > 1 && (
             <div className="md:hidden flex justify-center gap-2 mt-8">
               {projects.map((_, index) => (
                 <button
@@ -646,7 +693,7 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                       : 'bg-gray-300 hover:bg-gray-400 active:bg-gray-500 w-2.5'
                   }`}
                   onClick={() => setCarouselIndex(index)}
-                  aria-label={`Ir al grupo de proyectos ${index + 1}`}
+                  aria-label={`Ir al proyecto ${index + 1}`}
                 />
               ))}
             </div>
