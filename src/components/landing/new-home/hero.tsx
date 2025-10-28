@@ -23,25 +23,24 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
 
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
 
-  // Estado para el simulador del hero
-  const [selectedHeroProjectId, setSelectedHeroProjectId] = useState<string | null>(null);
-  const [heroInvestmentAmount, setHeroInvestmentAmount] = useState([5310000]);
-
   // Filtrar proyectos activos (que no estén en "Etapa 0")
   const availableProjects = globalProjects.filter(p => p.phase !== "Etapa 0");
 
-  // Inicializar el proyecto seleccionado con el primero disponible
+  // Estado para el simulador del hero
+  const [selectedHeroProjectId, setSelectedHeroProjectId] = useState<string>("");
+  const [heroInvestmentAmount, setHeroInvestmentAmount] = useState(5310000);
+
+  // Inicializar el proyecto y monto cuando estén disponibles
   useEffect(() => {
     if (availableProjects.length > 0 && !selectedHeroProjectId) {
-      setSelectedHeroProjectId(availableProjects[0].id);
-      setHeroInvestmentAmount([availableProjects[0].unitPrice * availableProjects[0].minInvestmentUnits]);
+      const firstProject = availableProjects[0];
+      setSelectedHeroProjectId(firstProject.id);
+      setHeroInvestmentAmount(firstProject.unitPrice * firstProject.minInvestmentUnits);
     }
   }, [availableProjects, selectedHeroProjectId]);
 
   // Obtener el proyecto actualmente seleccionado
-  const currentHeroProject = selectedHeroProjectId 
-    ? availableProjects.find(p => p.id === selectedHeroProjectId)
-    : availableProjects[0];
+  const currentHeroProject = availableProjects.find(p => p.id === selectedHeroProjectId) || availableProjects[0];
 
   // Proyectos disponibles con sus imágenes correspondientes
   const featuredProjects = [
@@ -81,12 +80,17 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
 
   // Actualizar el monto mínimo cuando cambia el proyecto en el hero
   const handleHeroProjectChange = (projectId: string) => {
-    setSelectedHeroProjectId(projectId);
     const project = availableProjects.find(p => p.id === projectId);
     if (project) {
+      setSelectedHeroProjectId(projectId);
       const minInvestment = project.unitPrice * project.minInvestmentUnits;
-      setHeroInvestmentAmount([minInvestment]);
+      setHeroInvestmentAmount(minInvestment);
     }
+  };
+
+  // Handler para el cambio del slider
+  const handleSliderChange = (value: number[]) => {
+    setHeroInvestmentAmount(value[0]);
   };
 
   // Estas funciones se mantienen para uso futuro si se necesita mostrar proyecciones en el hero
@@ -130,12 +134,12 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
 
     // Guardar datos de la simulación actual en el store global
     setSelectedProject(currentHeroProject);
-    setInvestmentAmount(heroInvestmentAmount[0]);
+    setInvestmentAmount(heroInvestmentAmount);
     setInstallments(12); // Por defecto 12 cuotas
 
     console.log("Navegando al simulador con datos:", {
       project: currentHeroProject.name,
-      amount: heroInvestmentAmount[0],
+      amount: heroInvestmentAmount,
       installments: 12,
     });
 
@@ -318,73 +322,75 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
             </p>
 
             {/* Simulador funcional del hero */}
-            <div className="space-y-5 max-w-xs mx-auto">
-              {/* Selector de Proyecto */}
-              <div className="w-full">
-                <label className="text-sm text-white/90 block mb-2">
-                  Proyecto
-                </label>
-                <Select
-                  value={selectedHeroProjectId || undefined}
-                  onValueChange={handleHeroProjectChange}
-                >
-                  <SelectTrigger className="bg-white/20 border-white/30 text-white hover:bg-white/25 transition-colors w-full">
-                    <SelectValue placeholder="Selecciona un proyecto" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {availableProjects.map((project) => (
-                      <SelectItem key={project.id} value={project.id}>
-                        {project.name} - {project.city}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Barra deslizable para monto de inversión */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm text-white/90">
-                    Valor a invertir
+            {availableProjects.length > 0 && selectedHeroProjectId && currentHeroProject ? (
+              <div className="space-y-5 max-w-xs mx-auto">
+                {/* Selector de Proyecto */}
+                <div className="w-full">
+                  <label className="text-sm text-white/90 block mb-2">
+                    Proyecto
                   </label>
-                  <span className="text-sm font-semibold text-white">
-                    {formatCurrency(heroInvestmentAmount[0])}
-                  </span>
+                  <Select
+                    value={selectedHeroProjectId}
+                    onValueChange={handleHeroProjectChange}
+                  >
+                    <SelectTrigger className="bg-white/20 border-white/30 text-white hover:bg-white/25 transition-colors w-full">
+                      <SelectValue placeholder="Selecciona un proyecto" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableProjects.map((project) => (
+                        <SelectItem key={project.id} value={project.id}>
+                          {project.name} - {project.city}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-                {currentHeroProject && (
-                  <>
-                    <Slider
-                      value={heroInvestmentAmount}
-                      onValueChange={setHeroInvestmentAmount}
-                      min={currentHeroProject.unitPrice * currentHeroProject.minInvestmentUnits}
-                      max={currentHeroProject.unitPrice * 100} // Max 100 unidades
-                      step={currentHeroProject.unitPrice}
-                      className="w-full"
-                    />
-                    <div className="flex justify-between mt-1 text-xs text-white/60">
-                      <span>
-                        {formatCurrency(
-                          currentHeroProject.unitPrice * currentHeroProject.minInvestmentUnits,
-                        )}
-                      </span>
-                      <span>
-                        {formatCurrency(
-                          currentHeroProject.unitPrice * 100,
-                        )}
-                      </span>
-                    </div>
-                  </>
-                )}
-              </div>
 
-              {/* CTA */}
-              <button
-                onClick={handleViewFullProjection}
-                className="block w-full rounded-xl bg-[#5352F6] px-4 py-3 text-center font-medium text-white hover:bg-[#5352F6]/90 focus:outline-none focus:ring-2 focus:ring-[#5352F6]/30 transition-all shadow-lg hover:shadow-xl"
-              >
-                Ver proyección completa
-              </button>
-            </div>
+                {/* Barra deslizable para monto de inversión */}
+                <div className="w-full">
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm text-white/90">
+                      Valor a invertir
+                    </label>
+                    <span className="text-sm font-semibold text-white">
+                      {formatCurrency(heroInvestmentAmount)}
+                    </span>
+                  </div>
+                  
+                  <div className="w-full py-2">
+                    <Slider
+                      value={[heroInvestmentAmount]}
+                      onValueChange={handleSliderChange}
+                      min={currentHeroProject.unitPrice * currentHeroProject.minInvestmentUnits}
+                      max={currentHeroProject.unitPrice * 100}
+                      step={currentHeroProject.unitPrice}
+                      className="w-full touch-pan-y"
+                    />
+                  </div>
+                  
+                  <div className="flex justify-between mt-1 text-xs text-white/60">
+                    <span>
+                      {formatCurrency(currentHeroProject.unitPrice * currentHeroProject.minInvestmentUnits)}
+                    </span>
+                    <span>
+                      {formatCurrency(currentHeroProject.unitPrice * 100)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* CTA */}
+                <button
+                  onClick={handleViewFullProjection}
+                  className="block w-full rounded-xl bg-[#5352F6] px-4 py-3 text-center font-medium text-white hover:bg-[#5352F6]/90 focus:outline-none focus:ring-2 focus:ring-[#5352F6]/30 transition-all shadow-lg hover:shadow-xl"
+                >
+                  Ver proyección completa
+                </button>
+              </div>
+            ) : (
+              <div className="text-center text-white/70 py-8">
+                Cargando simulador...
+              </div>
+            )}
           </div>
         </div>
       </div>
