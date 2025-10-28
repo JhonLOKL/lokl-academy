@@ -35,7 +35,8 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
     if (availableProjects.length > 0 && !selectedHeroProjectId) {
       const firstProject = availableProjects[0];
       setSelectedHeroProjectId(firstProject.id);
-      setHeroInvestmentAmount(firstProject.unitPrice * firstProject.minInvestmentUnits);
+      const { minInvestment } = calculateSliderRange(firstProject);
+      setHeroInvestmentAmount(minInvestment);
     }
   }, [availableProjects, selectedHeroProjectId]);
 
@@ -64,19 +65,39 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
     }).format(amount);
   };
 
+  // Helper para calcular rangos del slider
+  const calculateSliderRange = (project: { unitPrice: number; minInvestmentUnits: number }) => {
+    const minInvestment = Math.max(project.unitPrice * project.minInvestmentUnits, 1000000);
+    const calculatedMax = project.unitPrice * 100;
+    const maxInvestment = Math.max(calculatedMax, minInvestment * 2);
+    const step = Math.max(project.unitPrice, 100000);
+    
+    return { minInvestment, maxInvestment, step };
+  };
+
   // Actualizar el monto mínimo cuando cambia el proyecto en el hero
   const handleHeroProjectChange = (projectId: string) => {
     const project = availableProjects.find(p => p.id === projectId);
     if (project) {
       setSelectedHeroProjectId(projectId);
-      const minInvestment = project.unitPrice * project.minInvestmentUnits;
+      const { minInvestment } = calculateSliderRange(project);
+      
+      // Siempre iniciar en el valor mínimo del proyecto
       setHeroInvestmentAmount(minInvestment);
     }
   };
 
   // Handler para el cambio del slider
   const handleSliderChange = (value: number[]) => {
-    setHeroInvestmentAmount(value[0]);
+    if (currentHeroProject) {
+      const newValue = value[0];
+      const { minInvestment, maxInvestment } = calculateSliderRange(currentHeroProject);
+      
+      // Asegurar que el valor esté dentro del rango válido
+      if (newValue >= minInvestment && newValue <= maxInvestment) {
+        setHeroInvestmentAmount(newValue);
+      }
+    }
   };
 
   const handleViewFullProjection = (e: React.MouseEvent) => {
