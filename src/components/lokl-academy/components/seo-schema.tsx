@@ -10,9 +10,9 @@ interface CourseListSchemaProps {
 
 export const CourseListSchema: React.FC<CourseListSchemaProps> = ({
   courses,
-  organizationName = "LOKL Academy",
-  organizationLogo = "https://academy.lokl.life/logo.png",
-  organizationUrl = "https://academy.lokl.life",
+  organizationName = "LOKL",
+  organizationLogo = "https://lokl.life/images/lokl-logo.png",
+  organizationUrl = "https://lokl.life",
 }) => {
   if (!courses || courses.length === 0) {
     return null;
@@ -32,7 +32,7 @@ export const CourseListSchema: React.FC<CourseListSchemaProps> = ({
       }
     },
     "courseCode": course.id,
-    "educationalCredentialAwarded": course.certificate?.available ? "Certificado de LOKL Academy" : null,
+    "educationalCredentialAwarded": course.certificate?.available ? "Certificado de LOKL" : null,
     "timeRequired": `PT${Math.floor(course.content.totalDuration / 60)}H${course.content.totalDuration % 60}M`,
     "image": course.thumbnail.url,
     "url": `${organizationUrl}/course/${course.slug}`,
@@ -98,10 +98,10 @@ interface WebsiteSchemaProps {
 }
 
 export const WebsiteSchema: React.FC<WebsiteSchemaProps> = ({
-  name = "LOKL Academy",
-  url = "https://academy.lokl.life",
-  description = "Plataforma educativa para inversores inmobiliarios con cursos, blogs, podcasts y recursos para maximizar tus inversiones en bienes raíces.",
-  logoUrl = "https://academy.lokl.life/logo.png"
+  name = "LOKL",
+  url = "https://lokl.life",
+  description = "Invierte en bienes raíces con propósito. Crowdfunding inmobiliario accesible en proyectos hoteleros y sostenibles desde $1.3M mensuales. Construye patrimonio con impacto real.",
+  logoUrl = "https://lokl.life/images/lokl-logo.png"
 }) => {
   const schema = {
     "@context": "https://schema.org",
@@ -109,12 +109,15 @@ export const WebsiteSchema: React.FC<WebsiteSchemaProps> = ({
     "name": name,
     "url": url,
     "description": description,
+    "inLanguage": "es-CO",
     "publisher": {
       "@type": "Organization",
       "name": name,
       "logo": {
         "@type": "ImageObject",
-        "url": logoUrl
+        "url": logoUrl,
+        "width": 250,
+        "height": 60
       }
     },
     "potentialAction": {
@@ -142,19 +145,43 @@ export const OrganizationSchema: React.FC<{
   url?: string;
   logoUrl?: string;
   socialLinks?: string[];
+  description?: string;
 }> = ({
-  name = "LOKL Academy",
-  url = "https://academy.lokl.life",
-  logoUrl = "https://academy.lokl.life/logo.png",
-  socialLinks = []
+  name = "LOKL",
+  url = "https://lokl.life",
+  logoUrl = "https://lokl.life/images/lokl-logo.png",
+  socialLinks = [
+    "https://www.instagram.com/lokl.life/",
+    "https://www.linkedin.com/company/lokl-life/",
+    "https://www.facebook.com/lokl.life/"
+  ],
+  description = "Plataforma de crowdfunding inmobiliario que democratiza el acceso a inversiones en bienes raíces. Proyectos hoteleros sostenibles con impacto social y rentabilidad real."
 }) => {
   const schema = {
     "@context": "https://schema.org",
-    "@type": "EducationalOrganization",
+    "@type": "Organization",
     "name": name,
+    "alternateName": "LOKL Life",
     "url": url,
-    "logo": logoUrl,
-    "sameAs": socialLinks
+    "description": description,
+    "logo": {
+      "@type": "ImageObject",
+      "url": logoUrl,
+      "width": 250,
+      "height": 60
+    },
+    "image": logoUrl,
+    "sameAs": socialLinks,
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "Atención al Cliente",
+      "areaServed": "CO",
+      "availableLanguage": ["Spanish"]
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "CO"
+    }
   };
 
   return (
