@@ -66,10 +66,10 @@ export default function CommunitySection() {
 
         {/* ============ TAB CONTENT ============ */}
         <div className="min-h-[600px] mb-0">
+          {activeTab === 'perfil' && <PerfilTab />}
           {activeTab === 'newsletter' && <NewsletterTab isSubmitted={isSubmitted} onSuccess={handleSuccess} />}
           {activeTab === 'articulos' && <ArticlesTab />}
           {activeTab === 'cursos' && <CoursesTab />}
-          {activeTab === 'perfil' && <PerfilTab />}
         </div>
       </div>
     </section>

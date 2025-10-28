@@ -14,7 +14,7 @@ export default function PerfilTab() {
             {/* Columna izquierda - Imagen */}
             <div className="relative h-[500px] lg:h-auto overflow-hidden group">
               <ImageWithFallback
-                src="https://images.unsplash.com/photo-1618044733300-9472054094ee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBpbnZlc3RvciUyMGFuYWx5c2lzfGVufDF8fHx8MTc2MDEyNjYxNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+                src="https://i.pinimg.com/1200x/93/2f/41/932f41b14a353b32c0c180a65ca55b8c.jpg"
                 alt="Descubre tu perfil de inversionista"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
