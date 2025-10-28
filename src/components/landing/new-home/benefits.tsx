@@ -99,16 +99,16 @@ export default function Benefits() {
   return (
     <section
       id="benefits"
-      className="py-12 md:py-16 bg-[rgb(243,243,243)]"
+      className="py-8 sm:py-12 md:py-16 bg-[rgb(243,243,243)]"
     >
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
             <span className="text-[#5352F6]">BENEFICIOS</span> de
             invertir con LOKL
           </h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-2">
             Inversión inmobiliaria con propósito: rentabilidad financiera, impacto social
             y experiencias que transforman.
           </p>
@@ -126,20 +126,20 @@ export default function Benefits() {
           onTouchStart={handleMouseEnter}
           onTouchEnd={handleMouseLeave}
           setApi={setApi}
-          className="w-full overflow-visible px-4 -mx-4"
+          className="w-full overflow-visible px-2 sm:px-4 -mx-2 sm:-mx-4"
         >
-          <CarouselContent className="-ml-2 md:-ml-4">
+          <CarouselContent className="-ml-1 sm:-ml-2 md:-ml-4">
             {benefits.map((benefit, index) => (
               <CarouselItem
                 key={index}
-                className="pl-2 md:pl-4 basis-[85%] md:basis-1/2 lg:basis-1/3"
+                className="pl-1 sm:pl-2 md:pl-4 basis-[90%] sm:basis-[85%] md:basis-1/2 lg:basis-1/3"
               >
                 <div 
                   className="group h-full cursor-pointer" 
                   onClick={() => api?.scrollTo(index)}
                 >
                   {/* Tarjeta con imagen de fondo dominante */}
-                  <div className="relative h-[450px] md:h-[550px] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
+                  <div className="relative h-[400px] sm:h-[450px] md:h-[550px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
                     {/* Imagen de fondo a pantalla completa */}
                     <div
                       className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
@@ -152,32 +152,32 @@ export default function Benefits() {
                     <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/80 group-hover:from-black/30 group-hover:to-black/90 transition-all duration-500" />
 
                     {/* Contenido sobre la imagen */}
-                    <div className="relative h-full flex flex-col justify-between p-8">
+                    <div className="relative h-full flex flex-col justify-between p-4 sm:p-6 md:p-8">
                       {/* Badge superior opcional */}
                       <div className="self-start">
-                        <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/30">
-                          <div className="w-2 h-2 bg-[#5352F6] rounded-full animate-pulse" />
-                          <span className="text-white text-xs font-medium">
+                        <div className="inline-flex items-center gap-2 sm:gap-2.5 bg-white/20 backdrop-blur-md px-4 sm:px-5 py-2 sm:py-2.5 rounded-full border border-white/30">
+                          <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-[#5352F6] rounded-full animate-pulse" />
+                          <span className="text-white text-sm sm:text-base font-medium">
                            {benefit.benefit}
                           </span>
                         </div>
                       </div>
 
                       {/* Contenido inferior */}
-                      <div className="space-y-4">
+                      <div className="space-y-3 sm:space-y-4">
                         {/* Título */}
-                        <h3 className="text-white font-bold text-2xl leading-tight drop-shadow-lg">
+                        <h3 className="text-white font-bold text-2xl sm:text-3xl md:text-4xl leading-tight drop-shadow-lg">
                           {benefit.title}
                         </h3>
 
                         {/* Descripción */}
-                        <p className="text-white/90 text-sm md:text-base leading-relaxed drop-shadow-md overflow-y-auto max-h-[180px] md:max-h-[220px] pr-2 custom-scrollbar">
+                        <p className="text-white/90 text-base sm:text-lg md:text-xl leading-relaxed drop-shadow-md overflow-y-auto max-h-[120px] sm:max-h-[140px] md:max-h-[160px] lg:max-h-[180px] pr-1 sm:pr-2 scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent">
                           {benefit.description}
                         </p>
 
                         {/* Botón CTA */}
-                        <Button className="w-full bg-white/95 hover:bg-white text-[#5352F6] border-0 rounded-2xl px-6 py-6 font-medium transition-all duration-300 hover:scale-[1.03] hover:shadow-xl group/button backdrop-blur-sm">
-                          <span className="flex items-center justify-center gap-2">
+                        <Button className="w-full bg-white/95 hover:bg-white text-[#5352F6] border-0 rounded-xl sm:rounded-2xl px-4 sm:px-5 md:px-6 py-3 sm:py-4 md:py-5 font-medium transition-all duration-300 hover:scale-[1.02] hover:shadow-xl group/button backdrop-blur-sm text-xs sm:text-sm md:text-base min-h-[44px] sm:min-h-[48px] md:min-h-[52px]">
+                          <span className="flex items-center justify-center gap-2 text-center leading-tight px-2 break-words">
                             {benefit.ctaText}
                           </span>
                         </Button>
