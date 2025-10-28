@@ -32,12 +32,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { LeadFormSchema, LeadFormData, HOW_DID_YOU_HEAR_OPTIONS } from "@/schemas/lead-schema";
+import Link from "next/link";
 
 interface LeadCaptureModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: LeadFormData) => Promise<void>;
   isLoading?: boolean;
+  onLoginRedirect?: () => void; // Callback para guardar estado antes de redirigir
 }
 
 export default function LeadCaptureModal({
@@ -45,6 +47,7 @@ export default function LeadCaptureModal({
   onClose,
   onSubmit,
   isLoading = false,
+  onLoginRedirect,
 }: LeadCaptureModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -78,6 +81,35 @@ export default function LeadCaptureModal({
             Queremos conocerte mejor para ofrecerte una experiencia personalizada.
           </DialogDescription>
         </DialogHeader>
+
+        {/* Opción de iniciar sesión */}
+        <div className="bg-muted/50 p-4 rounded-lg border">
+          <p className="text-sm text-muted-foreground mb-2">
+            ¿Ya tienes una cuenta?
+          </p>
+          <Link
+            href="/login?redirect=%2F%23simulador"
+            onClick={() => {
+              onLoginRedirect?.();
+              onClose();
+            }}
+          >
+            <Button type="button" variant="outline" className="w-full">
+              Iniciar sesión
+            </Button>
+          </Link>
+        </div>
+
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">
+              O completa tus datos
+            </span>
+          </div>
+        </div>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">

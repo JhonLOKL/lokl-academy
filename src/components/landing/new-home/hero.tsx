@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect } from "react";
 import {
   Select,
   SelectContent,
@@ -10,41 +10,38 @@ import {
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import LazyImage from "./lazy-image";
+import { useProjectStore } from "@/store/project-store";
+import { useSimulatorStore } from "@/store/simulator-store";
 
 interface HeroProps {
   onWhatIsClick?: () => void;
 }
 
 export default function Hero({ onWhatIsClick }: HeroProps) {
-  const [monthlyAmount, setMonthlyAmount] = useState([1300000]);
-  const [term, setTerm] = useState("12");
+  const { projects: globalProjects } = useProjectStore();
+  const { setSelectedProject, setInvestmentAmount, setInstallments } = useSimulatorStore();
+
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
 
   // Estado para el simulador del hero
-  const [selectedHeroProject, setSelectedHeroProject] = useState("indie-universe");
+  const [selectedHeroProjectId, setSelectedHeroProjectId] = useState<string | null>(null);
   const [heroInvestmentAmount, setHeroInvestmentAmount] = useState([5310000]);
 
-  // Configuración de proyectos para el simulador del hero
-  const heroProjects = {
-    "indie-universe": {
-      name: "Indie Universe",
-      units: 40,
-      minInvestment: 5310000,
-      maxInvestment: 212400000, // 40 units * 5,310,000
-      returnRate: 0.125, // 12.5%
-      location: "Bogotá",
-    },
-    "nido-de-agua": {
-      name: "Nido de Agua",
-      units: 100,
-      minInvestment: 12900000,
-      maxInvestment: 1290000000, // 100 units * 12,900,000
-      returnRate: 0.135, // 13.5%
-      location: "Medellín",
-    },
-  };
+  // Filtrar proyectos activos (que no estén en "Etapa 0")
+  const availableProjects = globalProjects.filter(p => p.phase !== "Etapa 0");
 
-  const currentHeroProject = heroProjects[selectedHeroProject as keyof typeof heroProjects];
+  // Inicializar el proyecto seleccionado con el primero disponible
+  useEffect(() => {
+    if (availableProjects.length > 0 && !selectedHeroProjectId) {
+      setSelectedHeroProjectId(availableProjects[0].id);
+      setHeroInvestmentAmount([availableProjects[0].unitPrice * availableProjects[0].minInvestmentUnits]);
+    }
+  }, [availableProjects, selectedHeroProjectId]);
+
+  // Obtener el proyecto actualmente seleccionado
+  const currentHeroProject = selectedHeroProjectId 
+    ? availableProjects.find(p => p.id === selectedHeroProjectId)
+    : availableProjects[0];
 
   // Proyectos disponibles con sus imágenes correspondientes
   const featuredProjects = [
@@ -84,57 +81,78 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
 
   // Actualizar el monto mínimo cuando cambia el proyecto en el hero
   const handleHeroProjectChange = (projectId: string) => {
-    setSelectedHeroProject(projectId);
-    const project = heroProjects[projectId as keyof typeof heroProjects];
-    setHeroInvestmentAmount([project.minInvestment]);
-  };
-
-  const calculateHeroProjection = () => {
-    const amount = heroInvestmentAmount[0];
-    const unitsInvested = Math.floor(
-      amount / currentHeroProject.minInvestment,
-    );
-    const actualInvestment = unitsInvested * currentHeroProject.minInvestment;
-    const annualReturn = currentHeroProject.returnRate;
-
-    // Proyección a 12 meses
-    const projectedValue = actualInvestment * (1 + annualReturn);
-    const returns = projectedValue - actualInvestment;
-
-    return {
-      unitsInvested,
-      actualInvestment,
-      projectedValue: Math.round(projectedValue),
-      returns: Math.round(returns),
-    };
-  };
-
-  const calculateProjection = () => {
-    const monthly = monthlyAmount[0];
-    const months = parseInt(term);
-    const totalInvested = monthly * months;
-    const annualReturn = 0.125; // 12.5% average
-    const monthlyReturn = annualReturn / 12;
-
-    let futureValue = 0;
-    for (let i = 0; i < months; i++) {
-      futureValue = (futureValue + monthly) * (1 + monthlyReturn);
+    setSelectedHeroProjectId(projectId);
+    const project = availableProjects.find(p => p.id === projectId);
+    if (project) {
+      const minInvestment = project.unitPrice * project.minInvestmentUnits;
+      setHeroInvestmentAmount([minInvestment]);
     }
-
-    return {
-      invested: totalInvested,
-      projected: Math.round(futureValue),
-      returns: Math.round(futureValue - totalInvested),
-    };
   };
 
-  const projection = calculateProjection();
-  const heroProjection = calculateHeroProjection();
+  // Estas funciones se mantienen para uso futuro si se necesita mostrar proyecciones en el hero
+  // const calculateHeroProjection = () => {
+  //   if (!currentHeroProject) {
+  //     return {
+  //       unitsInvested: 0,
+  //       actualInvestment: 0,
+  //       projectedValue: 0,
+  //       returns: 0,
+  //     };
+  //   }
 
-  const handleSimulateClick = () => {
-    document
-      .getElementById("simulador")
-      ?.scrollIntoView({ behavior: "smooth" });
+  //   const amount = heroInvestmentAmount[0];
+  //   const unitPrice = currentHeroProject.unitPrice;
+  //   const unitsInvested = Math.floor(amount / unitPrice);
+  //   const actualInvestment = unitsInvested * unitPrice;
+    
+  //   // Calcular retorno anual promedio basado en renta min y max
+  //   const averageRent = (currentHeroProject.minRent + currentHeroProject.maxRent) / 2;
+  //   const annualIncome = averageRent * 12;
+  //   const annualReturn = annualIncome / unitPrice; // Retorno anualizado
+
+  //   // Proyección a 12 meses
+  //   const projectedValue = actualInvestment * (1 + annualReturn);
+  //   const returns = projectedValue - actualInvestment;
+
+  //   return {
+  //     unitsInvested,
+  //     actualInvestment,
+  //     projectedValue: Math.round(projectedValue),
+  //     returns: Math.round(returns),
+  //   };
+  // };
+
+
+  const handleViewFullProjection = (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    if (!currentHeroProject) return;
+
+    // Guardar datos de la simulación actual en el store global
+    setSelectedProject(currentHeroProject);
+    setInvestmentAmount(heroInvestmentAmount[0]);
+    setInstallments(12); // Por defecto 12 cuotas
+
+    console.log("Navegando al simulador con datos:", {
+      project: currentHeroProject.name,
+      amount: heroInvestmentAmount[0],
+      installments: 12,
+    });
+
+    // Hacer scroll al simulador
+    const simulatorElement = document.getElementById("simulador");
+    if (simulatorElement) {
+      simulatorElement.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      // Si no existe todavía (por ejemplo, si aún no se ha renderizado)
+      // intentar después de un pequeño delay
+      setTimeout(() => {
+        const element = document.getElementById("simulador");
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 100);
+    }
   };
 
   const handleWhatIsClick = () => {
@@ -307,19 +325,18 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
                   Proyecto
                 </label>
                 <Select
-                  value={selectedHeroProject}
+                  value={selectedHeroProjectId || undefined}
                   onValueChange={handleHeroProjectChange}
                 >
                   <SelectTrigger className="bg-white/20 border-white/30 text-white hover:bg-white/25 transition-colors w-full">
-                    <SelectValue />
+                    <SelectValue placeholder="Selecciona un proyecto" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="indie-universe">
-                      Indie Universe - Medellín
-                    </SelectItem>
-                    <SelectItem value="nido-de-agua">
-                      Nido de Agua - Guatape
-                    </SelectItem>
+                    {availableProjects.map((project) => (
+                      <SelectItem key={project.id} value={project.id}>
+                        {project.name} - {project.city}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -334,36 +351,39 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
                     {formatCurrency(heroInvestmentAmount[0])}
                   </span>
                 </div>
-                <Slider
-                  value={heroInvestmentAmount}
-                  onValueChange={setHeroInvestmentAmount}
-                  min={currentHeroProject.minInvestment}
-                  max={currentHeroProject.maxInvestment}
-                  step={currentHeroProject.minInvestment}
-                  className="w-full"
-                />
-                <div className="flex justify-between mt-1 text-xs text-white/60">
-                  <span>
-                    {formatCurrency(
-                      currentHeroProject.minInvestment,
-                    )}
-                  </span>
-                  <span>
-                    {formatCurrency(
-                      currentHeroProject.maxInvestment,
-                    )}
-                  </span>
-                </div>
+                {currentHeroProject && (
+                  <>
+                    <Slider
+                      value={heroInvestmentAmount}
+                      onValueChange={setHeroInvestmentAmount}
+                      min={currentHeroProject.unitPrice * currentHeroProject.minInvestmentUnits}
+                      max={currentHeroProject.unitPrice * 100} // Max 100 unidades
+                      step={currentHeroProject.unitPrice}
+                      className="w-full"
+                    />
+                    <div className="flex justify-between mt-1 text-xs text-white/60">
+                      <span>
+                        {formatCurrency(
+                          currentHeroProject.unitPrice * currentHeroProject.minInvestmentUnits,
+                        )}
+                      </span>
+                      <span>
+                        {formatCurrency(
+                          currentHeroProject.unitPrice * 100,
+                        )}
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* CTA */}
-              <a
-                href="#simulador"
-                onClick={handleSimulateClick}
+              <button
+                onClick={handleViewFullProjection}
                 className="block w-full rounded-xl bg-[#5352F6] px-4 py-3 text-center font-medium text-white hover:bg-[#5352F6]/90 focus:outline-none focus:ring-2 focus:ring-[#5352F6]/30 transition-all shadow-lg hover:shadow-xl"
               >
                 Ver proyección completa
-              </a>
+              </button>
             </div>
           </div>
         </div>

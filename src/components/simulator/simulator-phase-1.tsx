@@ -457,12 +457,16 @@ export default function SimulatorPhase1({ simulatorName }: SimulatorPhase1Props)
         />
       )}
 
-      {/* Modal de captura de leads */}
-      <LeadCaptureModal
-        isOpen={showLeadModal}
-        onClose={() => setShowLeadModal(false)}
-        onSubmit={handleLeadSubmit}
-      />
+              {/* Modal de captura de leads */}
+              <LeadCaptureModal
+                isOpen={showLeadModal}
+                onClose={() => setShowLeadModal(false)}
+                onSubmit={handleLeadSubmit}
+                onLoginRedirect={() => {
+                  // Guardar estado actual antes de redirigir al login
+                  useSimulatorStore.getState().saveSimulationState();
+                }}
+              />
     </div>
   );
 }

@@ -24,7 +24,7 @@ export default function Simulator({
   }, [project, selectedProject, setSelectedProject]);
 
   return (
-    <div className="container mx-auto p-6">
+    <div id="simulador" className="container mx-auto p-6 scroll-mt-20">
       <h2 className="text-3xl font-bold mb-6">Simulador de Retorno de Inversión</h2>
       <SimulatorPhase1 simulatorName={simulatorName} />
     </div>
