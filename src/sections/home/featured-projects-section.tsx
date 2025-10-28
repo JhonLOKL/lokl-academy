@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import FeaturedProjects from "@/components/landing/new-home/featured-projects";
+import FeaturedProjects from "@/components/home/featured-projects";
 import { getProjectCardsAction } from "@/actions/project-actions";
 
 export default function FeaturedProjectsSection() {
@@ -47,3 +47,5 @@ export default function FeaturedProjectsSection() {
     </section>
   );
 }
+
+

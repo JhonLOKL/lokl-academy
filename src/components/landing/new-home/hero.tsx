@@ -150,24 +150,31 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
   return (
     <section
       id="hero"
-      className="relative min-h-screen text-white"
+      className="relative min-h-screen text-white overflow-hidden"
     >
       {/* Video de fondo - Solo desktop */}
-      <div className="absolute inset-0 hidden md:block">
-        <div className="relative w-full h-full">
-          <iframe
-            src="https://www.youtube.com/embed/LgazLvYNpd4?autoplay=1&mute=1&loop=1&playlist=LgazLvYNpd4&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&widgetid=1"
-            title="LOKL Hero Video"
-            className="absolute top-1/2 left-1/2 w-[177.78vh] h-[56.25vw] min-w-full min-h-full"
-            style={{
-              transform: 'translate(-50%, -50%)',
-              aspectRatio: '16/9'
-            }}
-            frameBorder="0"
-            allow="autoplay; encrypted-media"
-            allowFullScreen
+      <div className="absolute inset-0 hidden md:block overflow-hidden">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          className="absolute inset-0 w-full h-full object-cover"
+          poster="https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe_poster.jpg"
+          aria-label="Video de fondo mostrando proyectos inmobiliarios LOKL"
+        >
+          <source 
+            src="https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe.mp4" 
+            type="video/mp4"
           />
-        </div>
+          <track
+            kind="captions"
+            srcLang="es"
+            label="Español"
+          />
+          Tu navegador no soporta videos HTML5.
+        </video>
       </div>
 
       {/* Fondo con imágenes - Solo móvil */}
@@ -362,6 +369,33 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
         </div>
       </div>
 
+      {/* Schema JSON-LD para SEO del video */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "VideoObject",
+            "name": "LOKL - Inversiones inmobiliarias con propósito",
+            "description": "Descubre cómo invertir en bienes raíces y proyectos hoteleros con LOKL. Crowdfunding inmobiliario accesible desde $1.3M mensuales.",
+            "thumbnailUrl": "https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe_poster.jpg",
+            "uploadDate": new Date().toISOString(),
+            "contentUrl": "https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe.mp4",
+            "embedUrl": "https://lokl.life",
+            "duration": "PT1M",
+            "publisher": {
+              "@type": "Organization",
+              "name": "LOKL",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://lokl.life/images/lokl-logo.png"
+              }
+            },
+            "inLanguage": "es",
+            "keywords": "inversiones inmobiliarias, crowdfunding, bienes raíces, hotelería, LOKL"
+          })
+        }}
+      />
     </section>
   );
 }

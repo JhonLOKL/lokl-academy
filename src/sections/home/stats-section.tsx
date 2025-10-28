@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { Users, TrendingUp, Building2, ArrowRight, Star, Calendar, Hotel } from 'lucide-react';
+import { Users, TrendingUp, ArrowRight, Star, Calendar, Hotel } from 'lucide-react';
 
 export default function StatsSection() {
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -10,7 +10,6 @@ export default function StatsSection() {
   const [isTouching, setIsTouching] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   
-  // Detectar si es móvil
   useEffect(() => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -24,34 +23,26 @@ export default function StatsSection() {
     };
   }, []);
   
-  // Sin rotación automática ni funcionalidad de loop - solo navegación manual
-  
-  // Efecto para desplazar al índice actual
   useEffect(() => {
     if (!carouselRef.current || !isMobile) return;
     
-    const itemWidth = 280 + 16; // Ancho del elemento + gap
+    const itemWidth = 280 + 16;
     carouselRef.current.scrollTo({
       left: currentIndex * itemWidth,
       behavior: isTransitioning ? 'smooth' : (carouselRef.current.style.scrollBehavior as 'smooth' | 'auto' | undefined) || 'smooth'
     });
   }, [currentIndex, isMobile, isTransitioning]);
   
-  // Manejar eventos táctiles
   const handleTouchStart = () => {
     setIsTouching(true);
   };
   
   const handleTouchEnd = () => {
     setIsTouching(false);
-    
-    // Detectar a qué elemento se ha desplazado
     if (carouselRef.current) {
       const scrollLeft = carouselRef.current.scrollLeft;
-      const itemWidth = 280 + 16; // Ancho del elemento + gap
+      const itemWidth = 280 + 16;
       const newIndex = Math.round(scrollLeft / itemWidth);
-      
-      // Asegurarse de que el índice esté dentro del rango válido
       if (newIndex >= 0 && newIndex <= 3) {
         setCurrentIndex(newIndex);
       }
@@ -60,7 +51,6 @@ export default function StatsSection() {
   
   return (
     <section className="bg-[#5352F6] relative overflow-hidden py-12 md:py-16">
-      {/* Elementos decorativos de fondo */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-white/20"></div>
         <div className="absolute bottom-10 right-10 w-24 h-24 rounded-full bg-white/15"></div>
@@ -68,7 +58,6 @@ export default function StatsSection() {
       </div>
 
       <div className="mx-auto max-w-7xl px-6 relative z-10">
-        {/* Título de la sección */}
         <div className="text-center mb-12">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
             Construyendo inversiones inmobiliarias con <span className="text-white/90">propósito</span>
@@ -78,9 +67,7 @@ export default function StatsSection() {
           </p>
         </div>
 
-        {/* Grid para desktop / Carrusel para móvil */}
         <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-          {/* Inversionistas - Desktop */}
           <div className="text-center group">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 mb-4 group-hover:bg-white/30 transition-colors">
               <Users className="w-8 h-8 text-white" />
@@ -97,7 +84,6 @@ export default function StatsSection() {
             </div>
           </div>
 
-          {/* Capital Invertido - Desktop */}
           <div className="text-center group">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 mb-4 group-hover:bg-white/30 transition-colors">
               <TrendingUp className="w-8 h-8 text-white" />
@@ -114,7 +100,6 @@ export default function StatsSection() {
             </div>
           </div>
 
-          {/* Experiencia - Desktop */}
           <div className="text-center group">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 mb-4 group-hover:bg-white/30 transition-colors">
               <Calendar className="w-8 h-8 text-white" />
@@ -131,7 +116,6 @@ export default function StatsSection() {
             </div>
           </div>
 
-          {/* Ocupación promedio - Desktop */}
           <div className="text-center group">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 mb-4 group-hover:bg-white/30 transition-colors">
               <Hotel className="w-8 h-8 text-white" />
@@ -149,10 +133,7 @@ export default function StatsSection() {
           </div>
         </div>
         
-        {/* Contenedor del carrusel - oculta los bordes y la barra de desplazamiento */}
         <div className="md:hidden relative overflow-hidden mb-12 -mx-6">
-          
-          {/* Carrusel solo para móvil */}
           <div 
             ref={carouselRef}
             className="flex overflow-x-scroll scrollbar-hide snap-x snap-mandatory gap-6 px-4 py-4 mx-auto justify-start md:justify-center"
@@ -167,7 +148,6 @@ export default function StatsSection() {
             onMouseUp={handleTouchEnd}
             onMouseLeave={handleTouchEnd}
           >
-            {/* Inversionistas - Móvil */}
             <div className="text-center group flex-shrink-0 w-[280px] snap-center mx-auto bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300 hover:bg-white/10">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 mb-4 group-hover:bg-white/30 transition-colors">
                 <Users className="w-8 h-8 text-white" />
@@ -184,7 +164,6 @@ export default function StatsSection() {
               </div>
             </div>
 
-            {/* Capital Invertido - Móvil */}
             <div className="text-center group flex-shrink-0 w-[280px] snap-center mx-auto bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300 hover:bg-white/10">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 mb-4 group-hover:bg-white/30 transition-colors">
                 <TrendingUp className="w-8 h-8 text-white" />
@@ -201,7 +180,6 @@ export default function StatsSection() {
               </div>
             </div>
 
-            {/* Experiencia - Móvil */}
             <div className="text-center group flex-shrink-0 w-[280px] snap-center mx-auto bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300 hover:bg-white/10">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 mb-4 group-hover:bg-white/30 transition-colors">
                 <Calendar className="w-8 h-8 text-white" />
@@ -218,7 +196,6 @@ export default function StatsSection() {
               </div>
             </div>
 
-            {/* Ocupación promedio - Móvil */}
             <div className="text-center group flex-shrink-0 w-[280px] snap-center mx-auto bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300 hover:bg-white/10">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 mb-4 group-hover:bg-white/30 transition-colors">
                 <Hotel className="w-8 h-8 text-white" />
@@ -234,11 +211,9 @@ export default function StatsSection() {
                 Proyectos financiados
               </div>
             </div>
-            
           </div>
         </div>
         
-        {/* Indicadores de posición - Solo móvil */}
         <div className="md:hidden flex justify-center gap-2 mt-4">
           {[0, 1, 2, 3].map((index) => (
             <button
@@ -254,3 +229,5 @@ export default function StatsSection() {
     </section>
   );
 }
+
+

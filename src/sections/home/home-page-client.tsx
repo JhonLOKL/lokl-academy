@@ -1,45 +1,43 @@
 "use client";
 
-import React, { lazy, Suspense, useState } from "react";
+import React, { useState } from "react";
 import dynamic from "next/dynamic";
-import NewHeroSection from "./sections/new-hero-section";
-import StatsSection from "./sections/stats-section";
-import WhatIsLokl from "@/components/landing/new-home/WhatIsLokl";
+import NewHeroSection from "./new-hero-section";
+import StatsSection from "./stats-section";
+import WhatIsLokl from "@/components/home/WhatIsLokl";
 
-// Importación dinámica de componentes menos críticos
-const BenefitsSection = dynamic(() => import("./sections/benefits-section"), { 
+const BenefitsSection = dynamic(() => import("./benefits-section"), { 
   loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
 });
-const HowItWorksSection = dynamic(() => import("./sections/how-it-works-section"), {
+const HowItWorksSection = dynamic(() => import("./how-it-works-section"), {
   loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
 });
-const SimulatorSection = dynamic(() => import("./sections/simulator-section"), {
+const SimulatorSection = dynamic(() => import("./simulator-section"), {
   loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
 });
-const FeaturedProjectsSection = dynamic(() => import("./sections/featured-projects-section"), {
+const FeaturedProjectsSection = dynamic(() => import("./featured-projects-section"), {
   loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
 });
-const TestimonialsSection = dynamic(() => import("./sections/testimonials-section"), {
+const TestimonialsSection = dynamic(() => import("./testimonials-section"), {
   loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
 });
-const CommunitySectionWrapper = dynamic(() => import("./sections/community-section"), {
+const CommunitySectionWrapper = dynamic(() => import("./community-section"), {
   loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
 });
-const FAQSection = dynamic(() => import("./sections/faq-section"), {
+const FAQSection = dynamic(() => import("./faq-section"), {
   loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
 });
-const FinalCTASection = dynamic(() => import("./sections/final-cta-section"), {
+const FinalCTASection = dynamic(() => import("./final-cta-section"), {
   loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
 });
 
-import "../../../components/landing/new-home/animations.css";
+import "@/components/home/animations.css";
 
-export default function NewHomePage() {
+export default function HomePageClient() {
   const [showWhatIsLokl, setShowWhatIsLokl] = useState(false);
 
   const handleWhatIsClick = () => {
     setShowWhatIsLokl(true);
-    // Scroll suave a la sección después de un pequeño delay para que se renderice
     setTimeout(() => {
       document
         .getElementById("que-es-lokl")
@@ -53,7 +51,6 @@ export default function NewHomePage() {
         <NewHeroSection onWhatIsClick={handleWhatIsClick} />
       </section>
 
-      {/* Sección WhatIsLokl - Solo se muestra cuando se hace clic en el botón */}
       <section className="w-full">
         <WhatIsLokl isVisible={showWhatIsLokl} />
       </section>
@@ -96,3 +93,5 @@ export default function NewHomePage() {
     </main>
   );
 }
+
+
