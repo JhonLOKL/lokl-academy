@@ -135,12 +135,12 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
     // Guardar datos de la simulación actual en el store global
     setSelectedProject(currentHeroProject);
     setInvestmentAmount(heroInvestmentAmount);
-    setInstallments(12); // Por defecto 12 cuotas
+    setInstallments(1); // Por defecto 1 cuota (Pago único)
 
     console.log("Navegando al simulador con datos:", {
       project: currentHeroProject.name,
       amount: heroInvestmentAmount,
-      installments: 12,
+      installments: 1,
     });
 
     // Hacer scroll al simulador
