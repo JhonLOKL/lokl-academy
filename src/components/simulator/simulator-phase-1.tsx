@@ -127,23 +127,6 @@ export default function SimulatorPhase1({ simulatorName }: SimulatorPhase1Props)
       },
       timestamp: new Date().toISOString(),
     });
-
-    // TODO: Aquí se llamará a la función real del backend cuando esté disponible
-    // Ejemplo:
-    // await trackFirstSimulationEvent({
-    //   userId: user?.id,
-    //   userName: userData.name,
-    //   userEmail: userData.email,
-    //   projectId: selectedProject?.id,
-    //   projectName: selectedProject?.name,
-    //   investmentAmount,
-    //   installments,
-    //   simulator: simulatorName,
-    //   utmSource,
-    //   utmMedium,
-    //   utmCampaign,
-    //   isAuthenticated: userData.isAuthenticated,
-    // });
   };
 
   // Función para guardar la simulación

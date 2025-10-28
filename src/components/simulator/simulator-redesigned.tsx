@@ -6,6 +6,7 @@ import { useAuthStore } from "@/store/auth-store";
 import { useUtmStore } from "@/store/utm-store";
 import { getProjectCardsAction } from "@/actions/project-actions";
 import { createSimulationAction, saveSimulationAction } from "@/actions/simulator-actions";
+import { upsertLeadAction } from "@/actions/user-action";
 import { SimulationData } from "@/schemas/simulator-schema";
 import { LeadFormData } from "@/schemas/lead-schema";
 import { parsePhoneData } from "@/lib/phone-utils";
@@ -50,6 +51,7 @@ export default function SimulatorRedesigned({
   const [simulationError, setSimulationError] = useState<string | null>(null);
   const [hasSubmittedLead, setHasSubmittedLead] = useState(false);
   const [hasSimulatedWithData, setHasSimulatedWithData] = useState(false);
+  const [leadFormData, setLeadFormData] = useState<LeadFormData | null>(null);
 
   // Cargar proyectos disponibles
   useEffect(() => {
@@ -206,6 +208,8 @@ export default function SimulatorRedesigned({
           name: `${user.firstName} ${user.lastName}`,
           email: user.email,
           isAuthenticated: true,
+          ...(user.phone && { phone: user.phone }),
+          ...(user.leadOrigin && { leadOrigin: user.leadOrigin }),
         });
         setHasSimulatedWithData(true);
       }
@@ -216,6 +220,9 @@ export default function SimulatorRedesigned({
 
   const handleLeadSubmit = async (data: LeadFormData) => {
     const phoneData = parsePhoneData(data.phone);
+    
+    // Guardar datos del formulario para usar en onFirstSimulationWithData
+    setLeadFormData(data);
 
     if (simulationData && selectedProject) {
       try {
@@ -250,6 +257,8 @@ export default function SimulatorRedesigned({
             name: `${data.firstName} ${data.lastName}`,
             email: data.email,
             isAuthenticated: false,
+            phone: phoneData.fullPhone,
+            leadOrigin: data.howDidYouHearAboutUs,
           });
           setHasSimulatedWithData(true);
         }
@@ -262,32 +271,45 @@ export default function SimulatorRedesigned({
     }
   };
 
-  const onFirstSimulationWithData = (userData: {
+  const onFirstSimulationWithData = async (userData: {
     name: string;
     email: string;
     isAuthenticated: boolean;
+    phone?: string;
+    leadOrigin?: string;
   }) => {
-    console.log("🎉 PRIMERA SIMULACIÓN CON DATOS COMPLETOS!", {
-      usuario: {
-        nombre: userData.name,
+    try {
+      // Extraer firstName del nombre completo
+      const nameParts = userData.name.split(' ');
+      const firstName = nameParts[0] || '';
+
+      // Preparar datos para upsertLeadAction
+      const leadData = {
         email: userData.email,
-        autenticado: userData.isAuthenticated,
-      },
-      simulacion: {
-        proyecto: selectedProject?.name,
-        montoInversion: investmentAmount,
-        cuotas: installments,
-        simulador: simulatorName,
-      },
-      marketing: {
-        utmSource,
-        utmMedium,
-        utmCampaign,
-        utmTerm,
-        utmContent,
-      },
-      timestamp: new Date().toISOString(),
-    });
+        firstName: firstName,
+        ...(selectedProject && { project: selectedProject.name }),
+        ...(userData.phone && { phone: userData.phone }),
+        ...(userData.leadOrigin && { leadOrigin: userData.leadOrigin }),
+        ...(utmSource && { utmSource }),
+        ...(utmMedium && { utmMedium }),
+        ...(utmCampaign && { utmCampaign }),
+        ...(utmTerm && { utmTerm }),
+        ...(utmContent && { utmContent }),
+        origin: 'Simulador',
+        status: userData.isAuthenticated ? 'Interesado' : 'Interesado',
+      };
+
+      console.log('Guardando lead por primera vez:', leadData);
+      const response = await upsertLeadAction(leadData);
+      
+      if (response.success) {
+        console.log('✅ Lead guardado exitosamente en primera simulación');
+      } else {
+        console.error('❌ Error al guardar lead:', response.message);
+      }
+    } catch (error) {
+      console.error('❌ Error en onFirstSimulationWithData:', error);
+    }
   };
 
   const handleLoginRedirect = () => {
