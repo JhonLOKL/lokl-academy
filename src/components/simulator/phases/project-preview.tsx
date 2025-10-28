@@ -9,14 +9,6 @@ interface ProjectPreviewProps {
 }
 
 export default function ProjectPreview({ project }: ProjectPreviewProps) {
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
-
   const hasValidRent =
     project.minRent > 0 && project.maxRent > 0 && project.unitPrice > 0;
 

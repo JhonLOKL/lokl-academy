@@ -13,9 +13,7 @@ const BenefitsSection = dynamic(() => import("./benefits-section"), {
 const HowItWorksSection = dynamic(() => import("./how-it-works-section"), {
   loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
 });
-const SimulatorSection = dynamic(() => import("./simulator-section"), {
-  loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
-});
+
 const FeaturedProjectsSection = dynamic(() => import("./featured-projects-section"), {
   loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
 });
