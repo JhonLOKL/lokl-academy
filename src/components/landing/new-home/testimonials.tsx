@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { Play } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import YouTubeEmbed from './youtube-embed';
@@ -303,19 +302,30 @@ export default function Testimonials() {
   );
 }
 
+type Testimonial = {
+  id: number;
+  isVideo: boolean;
+  videoId?: string;
+  duration?: string;
+  name?: string;
+  project?: string;
+  content?: string;
+};
+
 interface TestimonialCardProps {
-  testimonial: any;
+  testimonial: Testimonial;
   onVideoPlayStateChange: (isPlaying: boolean) => void;
 }
 
 function TestimonialCard({ testimonial, onVideoPlayStateChange }: TestimonialCardProps) {
   // Función para obtener las iniciales del nombre
-  const getInitials = (name: string) => {
+  const getInitials = (name?: string) => {
+    if (!name) return '?';
     return name.split(' ').map(n => n[0]).join('');
   };
 
   // Función para obtener un color de fondo basado en el nombre
-  const getAvatarColor = (name: string) => {
+  const getAvatarColor = (name?: string) => {
     // Lista de colores para los avatares
     const colors = [
       "bg-blue-500",
@@ -330,12 +340,14 @@ function TestimonialCard({ testimonial, onVideoPlayStateChange }: TestimonialCar
       "bg-cyan-500"
     ];
     
+    if (!name) return colors[0];
+    
     // Usar la suma de los códigos de caracteres del nombre para seleccionar un color
     const charSum = name.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
     return colors[charSum % colors.length];
   };
 
-  if (testimonial.isVideo) {
+  if (testimonial.isVideo && testimonial.videoId) {
     return (
       <div className="flex-shrink-0 w-80 h-80 overflow-hidden group relative">
         {/* Video component that fills the entire card */}

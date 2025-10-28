@@ -1,6 +1,6 @@
 "use client";
 
-import { H2, Paragraph, Text, Heading, HighlightHeading } from "@/components/design-system";
+import { Paragraph, Text, Heading } from "@/components/design-system";
 
 interface WhatIsLoklProps {
   isVisible: boolean;

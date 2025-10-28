@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from 'react';
-import { Play, Pause } from 'lucide-react';
+import { Play } from 'lucide-react';
+import Image from 'next/image';
 
 interface YouTubeEmbedProps {
   videoId: string;
@@ -86,6 +87,7 @@ export default function YouTubeEmbed({ videoId, onPlayStateChange }: YouTubeEmbe
         }
       } catch (e) {
         // Ignorar mensajes que no son JSON
+        console.error(e);
       }
     };
 
@@ -111,12 +113,13 @@ export default function YouTubeEmbed({ videoId, onPlayStateChange }: YouTubeEmbe
       {!isLoaded && (
         <div 
           onClick={handlePlayClick}
-          className="w-full h-full cursor-pointer"
+          className="w-full h-full cursor-pointer relative"
         >
-          <img 
+          <Image 
             src={getThumbnailUrl(videoId)} 
             alt="Video thumbnail"
-            className="w-full h-full object-cover rounded-xl"
+            fill
+            className="object-cover rounded-xl"
           />
           
           {/* Overlay con botón de play sobre la miniatura */}

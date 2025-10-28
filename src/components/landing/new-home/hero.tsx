@@ -202,7 +202,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
       {/* Fondo con imágenes - Solo móvil */}
       <div className="absolute inset-0 md:hidden">
         {featuredProjects.map((project, index) => (
-          <picture
+          <div
             key={project.id}
             aria-hidden="true"
             className={`absolute inset-0 transition-opacity duration-1000 ${
@@ -211,13 +211,15 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
                 : "opacity-0"
             }`}
           >
-            <LazyImage
-              src={project.image}
-              alt={`Proyecto ${project.name} - LOKL`}
-              className="absolute inset-0 h-full w-full object-cover"
-              priority={index === 0}
-            />
-          </picture>
+            <picture>
+              <LazyImage
+                src={project.image}
+                alt={`Proyecto ${project.name} - LOKL`}
+                className="absolute inset-0 h-full w-full object-cover"
+                priority={index === 0}
+              />
+            </picture>
+          </div>
         ))}
       </div>
 
