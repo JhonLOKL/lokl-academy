@@ -7,32 +7,10 @@ import { Progress } from '@/components/ui/progress';
 import { MapPin, Users, TrendingUp, Shield, ChevronLeft, ChevronRight, Clock, Building2, Ticket, Waves, Flame, UtensilsCrossed, Dumbbell, Briefcase, Cpu, Car, Coffee, Eye, Play, Percent, DollarSign, Home, Maximize2, Sofa, X } from 'lucide-react';
 import { ImageWithFallback } from '@/components/ui/image-with-fallback';
 import { useIsMobile } from '@/hooks/use-is-mobile';
-
-// Definir la interfaz para los datos de proyectos de la API
-interface ProjectData {
-  id: string;
-  projectCode: string;
-  name: string;
-  description: string;
-  country: string;
-  city: string;
-  phase: string;
-  minRent: number;
-  maxRent: number;
-  unitPrice: number;
-  minInvestmentUnits: number;
-  imageURL: string;
-  videoURL: string | null;
-  amenities: string[];
-  availableSpots: number | null;
-  totalSpots: number | null;
-  partners: number;
-  accommodations: number;
-  squareMeters: number;
-}
+import { ProjectCard } from '@/schemas/project-card-schema';
 
 interface FeaturedProjectsProps {
-  projectsData?: ProjectData[];
+  projectsData?: ProjectCard[];
 }
 
 export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps) {
@@ -594,7 +572,7 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                               <div className="flex flex-wrap gap-2">
                                 {project.amenities.map((amenity, index) => {
                                   const getAmenityIcon = (icon: string) => {
-                                    const iconMap: { [key: string]: any } = {
+                                    const iconMap: Record<string, typeof Home> = {
                                       home: Home,
                                       size: Maximize2,
                                       pool: Waves,
