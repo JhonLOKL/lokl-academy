@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ImageWithFallback } from './image-with-fallback';
 import { Mail, Shield, Users, Star, CheckCircle } from 'lucide-react';
-import { UseFormRegister, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { subscribeToNewsletterAction } from '@/actions/newsletter-actions';
 import { useState } from 'react';
 
@@ -23,7 +23,7 @@ export default function NewsletterTab({ isSubmitted, onSuccess }: NewsletterTabP
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   
-  const { register, handleSubmit: handleFormSubmit, reset, formState: { errors } } = useForm<NewsletterFormData>();
+  const { register, handleSubmit: handleFormSubmit, reset, formState: {  } } = useForm<NewsletterFormData>();
 
   const handleSubmit = async (data: NewsletterFormData) => {
     setIsLoading(true);
@@ -42,6 +42,7 @@ export default function NewsletterTab({ isSubmitted, onSuccess }: NewsletterTabP
       setShowSuccessToast(true);
       setTimeout(() => setShowSuccessToast(false), 3000);
       onSuccess();
+      console.error(err);
     } finally {
       setIsLoading(false);
     }

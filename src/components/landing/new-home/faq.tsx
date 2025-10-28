@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { HelpCircle, ChevronUp, ChevronDown } from 'lucide-react';
 
 export default function FAQ() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, ] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
 

@@ -71,8 +71,6 @@ export default function HowItWorks() {
          <div className="relative min-h-[1400px] md:min-h-[1500px] lg:min-h-[1300px]">
           {steps.map((step, index) => {
             const IconComponent = step.icon;
-            const BadgeIconComponent = step.badgeIcon;
-            
                          // Posicionamiento escalonado diagonal
              const positions = [
                'top-0 left-0 lg:left-8',

@@ -20,7 +20,7 @@ export default function LazySection({
   placeholder,
 }: LazySectionProps) {
   const [isVisible, setIsVisible] = useState(false);
-  const [hasLoaded, setHasLoaded] = useState(false);
+  const [, setHasLoaded] = useState(false);
 
   useEffect(() => {
     const sectionId = id || `lazy-section-${Math.random().toString(36).substr(2, 9)}`;

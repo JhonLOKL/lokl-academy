@@ -3,8 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { MapPin, Users, TrendingUp, Shield, ChevronLeft, ChevronRight, Clock, Building2, Ticket, Waves, Flame, UtensilsCrossed, Dumbbell, Briefcase, Cpu, Car, Coffee, Eye, Play, Percent, DollarSign, Home, Maximize2, Sofa, X } from 'lucide-react';
+import { MapPin, ChevronLeft, ChevronRight, Building2, Waves, Flame, UtensilsCrossed, Dumbbell, Briefcase, Cpu, Car, Coffee, Eye, Play, Home, Maximize2, Sofa, X } from 'lucide-react';
 import { ImageWithFallback } from '@/components/ui/image-with-fallback';
 import { useIsMobile } from '@/hooks/use-is-mobile';
 import { ProjectCard } from '@/schemas/project-card-schema';
@@ -78,19 +77,6 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
       ]
     }))
     : [];
-
-  const formatCurrencyShort = (amount: number, unit: string = 'M') => {
-    return `${amount}${unit}`;
-  };
-
-  const formatCurrencyCOP = (amount: number) => {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
 
   // Navegación del carrusel
   const nextCarousel = () => {
@@ -247,7 +233,7 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
           >
             <div className={`flex ${selectedProject !== null ? 'items-start' : 'items-stretch'} ${selectedProject !== null ? 'gap-2' : 'gap-4 md:gap-6'} ${selectedProject === null ? 'px-[5vw] md:px-0' : ''} max-w-7xl mx-auto ${selectedProject !== null ? 'justify-center md:justify-between' : 'justify-start md:justify-between'}`}>
             {visibleProjects
-              .map(({ project, index }, arrayIndex) => {
+              .map(({ project, index }) => {
               const isSelected = selectedProject === index;
               const hasSelection = selectedProject !== null;
               

@@ -1,49 +1,22 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import NewsletterTab from './newsletter-tab';
 import ArticlesTab from './articles-tab';
 import CoursesTab from './courses-tab';
 import PerfilTab from './perfil-tab';
 import { 
   Mail, 
-  Calendar, 
-  Clock, 
-  CheckCircle,
   BookOpen,
-  Star,
-  Share2,
-  Bookmark,
-  Award,
-  Shield,
-  Users,
-  ExternalLink,
-  ChevronRight,
-  Check,
   TrendingUp,
   Play,
-  Download,
 } from 'lucide-react';
-
-interface FormData {
-  email: string;
-  consent: boolean;
-}
 
 export default function CommunitySection() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [activeTab, setActiveTab] = useState<'newsletter' | 'articulos' | 'cursos' | 'perfil'>('newsletter');
-  
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
 
-  const onSubmit = (data: FormData) => {
-    console.log('Newsletter subscription:', data);
+  const handleSuccess = () => {
     setIsSubmitted(true);
     setTimeout(() => setIsSubmitted(false), 3000);
   };
@@ -70,13 +43,13 @@ export default function CommunitySection() {
               { id: 'articulos', label: 'Artículos recientes', icon: BookOpen },
               { id: 'cursos', label: 'Últimos cursos', icon: Play },
               { id: 'perfil', label: 'Descubre tu perfil', icon: TrendingUp }
-            ].map((tab, index) => {
+            ].map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
+                  onClick={() => setActiveTab(tab.id as 'newsletter' | 'articulos' | 'cursos' | 'perfil')}
                   className={`flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-6 py-3 rounded-xl font-medium transition-all duration-300 whitespace-nowrap flex-shrink-0 ${
                     isActive 
                       ? 'bg-[#5352F6] text-white shadow-lg shadow-[#5352F6]/30 scale-105' 
@@ -93,7 +66,7 @@ export default function CommunitySection() {
 
         {/* ============ TAB CONTENT ============ */}
         <div className="min-h-[600px] mb-0">
-          {activeTab === 'newsletter' && <NewsletterTab onSubmit={handleSubmit(onSubmit)} register={register} isSubmitted={isSubmitted} />}
+          {activeTab === 'newsletter' && <NewsletterTab isSubmitted={isSubmitted} onSuccess={handleSuccess} />}
           {activeTab === 'articulos' && <ArticlesTab />}
           {activeTab === 'cursos' && <CoursesTab />}
           {activeTab === 'perfil' && <PerfilTab />}
