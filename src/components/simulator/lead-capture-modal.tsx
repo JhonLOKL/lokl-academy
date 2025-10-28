@@ -46,7 +46,6 @@ export default function LeadCaptureModal({
   isOpen,
   onClose,
   onSubmit,
-  isLoading = false,
   onLoginRedirect,
 }: LeadCaptureModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);

@@ -21,14 +21,6 @@ interface ResultsFinalProps {
 }
 
 export default function ResultsFinal({ project, simulationData }: ResultsFinalProps) {
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
-
   // Calcular rentabilidad con validación
   const hasValidRent = project.minRent > 0 && project.maxRent > 0 && project.unitPrice > 0;
   

@@ -7,8 +7,8 @@ export default function StatsSection() {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const [isTouching, setIsTouching] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [, setIsTouching] = useState(false);
+  const [isTransitioning,] = useState(false);
   
   useEffect(() => {
     const checkIfMobile = () => {

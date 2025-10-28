@@ -3,6 +3,7 @@
 import React from "react";
 import { Navbar } from "@/components/design-system";
 import Link from "next/link";
+import Image from "next/image";
 import { useAuthStore } from "@/store/auth-store";
 import dynamic from "next/dynamic";
 
@@ -19,10 +20,13 @@ export function SiteNavbar() {
     <Navbar
       logo={
         <Link href="/" className="hover:opacity-80 transition-opacity">
-          <img 
+          <Image 
             src="/images/new-home/logo.png" 
             alt="LOKL Academy" 
+            width={120}
+            height={32}
             className="h-8 w-auto"
+            priority
           />
         </Link>
       }

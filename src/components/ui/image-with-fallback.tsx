@@ -25,7 +25,7 @@ export const ImageWithFallback = ({
   onLoad,
 }: ImageWithFallbackProps) => {
   const [imgSrc, setImgSrc] = useState(src);
-  const [hasError, setHasError] = useState(false);
+  const [, setHasError] = useState(false);
 
   useEffect(() => {
     setImgSrc(src);
