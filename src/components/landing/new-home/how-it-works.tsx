@@ -160,11 +160,6 @@ export default function HowItWorks() {
               <div 
                 key={step.number} 
                 className={`absolute w-full max-w-xl lg:max-w-2xl group ${positions[index]}`}
-                style={{ 
-                  animation: 'fadeInUp 0.8s ease-out forwards',
-                  animationDelay: `${index * 200}ms`,
-                  opacity: 0
-                }}
               >
                 {/* Líneas conectoras mejoradas con animación y glow */}
                 {index < steps.length - 1 && (
@@ -270,7 +265,11 @@ export default function HowItWorks() {
                       <div className="pt-2">
                         <div className="h-1.5 w-0 group-hover:w-32 bg-gradient-to-r from-[#5352F6] via-[#5352F6]/80 to-[#5352F6]/50 rounded-full transition-all duration-700 shadow-lg shadow-[#5352F6]/30" />
                       </div>
+
+
                     </div>
+
+
                   </div>
 
                   {/* Efecto de brillo animado en hover mejorado */}
@@ -294,19 +293,10 @@ export default function HowItWorks() {
         </div>
       </div>
 
-      {/* Keyframes para animaciones */}
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(40px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </section>
   );
 }
+
+
+
+
