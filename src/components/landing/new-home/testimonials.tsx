@@ -87,61 +87,70 @@ export default function Testimonials() {
   const textTestimonials = [
     {
       id: 1,
-      name: "María González",
-      project: "Indie Universe",
-      content: "Invertir en LOKL es mucho mejor que los CDTs tradicionales. Los retornos son consistentes y la plataforma es transparente.",
+      name: "María Camila R.",
+      project: "Nido de Agua",
+      content:
+        "Fue la primera vez en mi vida que invertí en real estate. Entré con un monto que sí podía pagar, no millones imposibles. Tres meses después ya me quedé en la propiedad con mi pareja y sentí: ‘wow, esto no es teoría, es mío’.",
       isVideo: false
     },
     {
       id: 2,
-      name: "Carlos Rodríguez",
-      project: "Nido de Agua",
-      content: "Creo que LOKL va a ganar. Lo que me llevó a creer esto está más allá del producto en sí y cómo el equipo ejecuta.",
+      name: "Andrés P.",
+      project: "Aldea",
+      content:
+        "Yo siempre pensé que invertir en hotelería era solo para gente con mucho capital. Con LOKL fue distinto: cero papeleo raro, todo súper claro, y ahora tengo una parte de un proyecto que genera renta turística. Literal estoy diversificando sin pelear con el banco.",
       isVideo: false
     },
     {
       id: 3,
-      name: "Ana Martín",
-      project: "Aldea",
-      content: "Increíble. Acabo de construir mi portafolio con 1 prompt.",
+      name: "Laura G.",
+      project: "Indie Universe",
+      content:
+        "No es solo la rentabilidad. Es acompañamiento. Me explicaron paso a paso dónde va mi plata, qué riesgo hay y cómo salgo si algún día quiero vender. Nadie en finanzas te habla así de claro.",
       isVideo: false
     },
     {
       id: 4,
-      name: "Diego López",
-      project: "Indie Universe",
-      content: "He estado usando LOKL exclusivamente durante semanas. No están pagando nada. Realmente muy bueno.",
+      name: "Jorge M.",
+      project: "Nido de Agua",
+      content:
+        "Yo trabajo tiempo completo y no tengo cabeza para administrar propiedades. LOKL me dejó entrar al negocio hotelero sin tener que ser ‘el administrador’. Recibo actualizaciones, sé cuánto entra, y puedo usar noches en el lugar. Eso para mí es libertad.",
+      isVideo: false
+    },
+    {
+      id: 5,
+      name: "Daniela S.",
+      project: "Aldea",
+      content:
+        "En mi familia nadie había invertido en bienes raíces porque siempre era: ‘toca comprar el apartamento completo’. Con LOKL entendí que también puedo ser dueña de un pedacito de un hotel hermoso que la gente sí usa. Me cambió la mentalidad.",
       isVideo: false
     },
     {
       id: 6,
-      name: "Roberto Silva",
-      project: "Aldea",
-      content: "La razón por la que elegí LOKL es porque están en una misión constante de optimizar y mejorar la experiencia. Los planes de transparencia son claros y justos.",
+      name: "Felipe L.",
+      project: "Indie Universe",
+      content:
+        "Lo que más me gustó fue la transparencia. Antes de poner un peso vi números reales de ocupación, costos y proyección. No fue ‘confía y ya’, fue: aquí están los datos, decide tú. Eso me dio mucha paz.",
       isVideo: false
     },
     {
       id: 7,
-      name: "Lucía Vega",
-      project: "Indie Universe",
-      content: "LOKL hace que invertir sea increíblemente divertido y rápido!",
+      name: "Lucía V.",
+      project: "Nido de Agua",
+      content:
+        "Para mí esto es doble impacto: crecimiento financiero y estilo de vida. Invierto en turismo consciente, en un lugar al que quiero volver, y además estoy construyendo patrimonio. Nunca había sentido que una inversión también me regalaba recuerdos.",
       isVideo: false
     },
     {
       id: 8,
-      name: "Miguel Torres",
-      project: "Nido de Agua",
-      content: "Una de las características más geniales de LOKL es la pestaña 'Proyectos' que lista todos los problemas en tu inversión.",
-      isVideo: false
-    },
-    {
-      id: 9,
-      name: "Patricia Ruiz",
+      name: "Ricardo T.",
       project: "Aldea",
-      content: "He estado construyendo mi patrimonio con LOKL. Pasé la última hora casi llorando porque las respuestas son increíbles.",
+      content:
+        "Yo venía guardando plata en CDT porque ‘eso es lo seguro’. Pero el CDT no me da nada más que intereses chiquitos. Aquí siento que mi dinero está trabajando en algo real, físico, que puedo visitar y mostrar.",
       isVideo: false
     }
   ];
+  
   
   // Videos de YouTube Shorts
   const videoTestimonials = [
