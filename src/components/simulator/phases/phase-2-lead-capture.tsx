@@ -209,8 +209,8 @@ export default function Phase2LeadCaptureComponent({
                   disabled={isSubmitting}
                 >
                   <FormControl>
-                    <SelectTrigger className="bg-white/20 border-white/30 text-white h-11">
-                      <SelectValue placeholder="Selecciona una opción" />
+                    <SelectTrigger className="bg-white/20 border-white/30 !text-white h-11">
+                      <SelectValue placeholder="Selecciona una opción" className="!text-white" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
