@@ -122,37 +122,65 @@ export default function ResultsFinal({ project, simulationData }: ResultsFinalPr
         </ResponsiveContainer>
       </div>
 
-      {/* Botón de contacto con asesor */}
-      <div className="bg-gradient-to-r from-[#5352F6] to-[#7c3aed] rounded-2xl p-6 text-white">
+      {/* Card de asesor */}
+      <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200">
         <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-            <Phone className="w-6 h-6" />
+          {/* Foto del asesor */}
+          <div className="flex-shrink-0">
+            <div className="relative w-20 h-20 rounded-full overflow-hidden border-4 border-[#5352F6]">
+              <Image
+                src="https://lokl-assets.s3.amazonaws.com/about-us/pipe.jpg"
+                alt="Felipe Restrepo - Asesor LOKL"
+                fill
+                className="object-cover"
+              />
+            </div>
           </div>
+
+          {/* Contenido */}
           <div className="flex-1">
-            <h4 className="font-bold text-lg mb-2">¿Necesitas ayuda para decidir?</h4>
-            <p className="text-white/90 text-sm mb-4">
-              Agenda una llamada con nuestros expertos y resuelve todas tus dudas sobre esta inversión
-            </p>
+            <div className="mb-3">
+              <h4 className="font-bold text-lg text-slate-900 mb-1">
+                ¿Necesitas ayuda para decidir?
+              </h4>
+              <p className="text-slate-600 text-sm leading-relaxed">
+                Agenda una llamada con nuestros expertos y resuelve todas tus dudas sobre esta inversión
+              </p>
+            </div>
+
             <Button
-              className="bg-white text-[#5352F6] hover:bg-white/90 font-semibold"
+              className="w-full bg-[#5352F6] hover:bg-[#5352F6]/90 text-white font-semibold shadow-md"
               size="lg"
             >
               <Phone className="w-4 h-4 mr-2" />
               Agendar llamada
             </Button>
+
+            {/* Info del asesor */}
+            <div className="mt-3 pt-3 border-t border-slate-100">
+              <p className="text-xs text-slate-500">
+                <span className="font-semibold text-slate-700">Felipe Restrepo</span> · Asesor de Inversiones LOKL
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Disclaimer */}
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex gap-3">
-        <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-        <div className="text-sm text-amber-900">
-          <p className="font-semibold mb-1">Información importante</p>
-          <p className="text-amber-800">
-            * Los retornos mostrados son estimaciones basadas en supuestos de mercado y pueden variar. 
-            Las inversiones en bienes raíces conllevan riesgos y no garantizan rendimientos.
-          </p>
+      <div className="bg-slate-50 border-l-4 border-[#5352F6] rounded-lg p-5 shadow-sm">
+        <div className="flex gap-3">
+          <div className="flex-shrink-0">
+            <div className="w-10 h-10 bg-[#5352F6]/10 rounded-full flex items-center justify-center">
+              <AlertCircle className="w-5 h-5 text-[#5352F6]" />
+            </div>
+          </div>
+          <div className="flex-1">
+            <p className="font-bold text-slate-900 mb-2 text-sm">Información importante</p>
+            <p className="text-slate-600 text-xs leading-relaxed">
+              * Los retornos mostrados son estimaciones basadas en supuestos de mercado y pueden variar.
+              Las inversiones en bienes raíces conllevan riesgos y no garantizan rendimientos.
+            </p>
+          </div>
         </div>
       </div>
     </div>
