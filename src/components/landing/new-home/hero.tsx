@@ -43,32 +43,18 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
   // Obtener el proyecto actualmente seleccionado
   const currentHeroProject = availableProjects.find(p => p.id === selectedHeroProjectId) || availableProjects[0];
 
-  // Proyectos disponibles con sus imágenes correspondientes
-  const featuredProjects = [
-    {
-      id: 1,
-      name: "Nido de Agua",
-      amount: "12,900,000",
-      image: "/images/new-home/NIDO_AGUA_HERO.png",
-    },
-    {
-      id: 2,
-      name: "Indie Universe",
-      amount: "5,310,000",
-      image: "/images/new-home/INDIE UNIVERSE_HERO.png",
-    },
-  ];
-
   // Rotación automática de proyectos cada 5 segundos
   useEffect(() => {
+    if (availableProjects.length === 0) return;
+    
     const interval = setInterval(() => {
       setCurrentProjectIndex(
-        (prev) => (prev + 1) % featuredProjects.length,
+        (prev) => (prev + 1) % availableProjects.length,
       );
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [featuredProjects.length]);
+  }, [availableProjects.length]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("es-CO", {
@@ -113,40 +99,6 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
       }
     }
   };
-
-  // Estas funciones se mantienen para uso futuro si se necesita mostrar proyecciones en el hero
-  // const calculateHeroProjection = () => {
-  //   if (!currentHeroProject) {
-  //     return {
-  //       unitsInvested: 0,
-  //       actualInvestment: 0,
-  //       projectedValue: 0,
-  //       returns: 0,
-  //     };
-  //   }
-
-  //   const amount = heroInvestmentAmount[0];
-  //   const unitPrice = currentHeroProject.unitPrice;
-  //   const unitsInvested = Math.floor(amount / unitPrice);
-  //   const actualInvestment = unitsInvested * unitPrice;
-    
-  //   // Calcular retorno anual promedio basado en renta min y max
-  //   const averageRent = (currentHeroProject.minRent + currentHeroProject.maxRent) / 2;
-  //   const annualIncome = averageRent * 12;
-  //   const annualReturn = annualIncome / unitPrice; // Retorno anualizado
-
-  //   // Proyección a 12 meses
-  //   const projectedValue = actualInvestment * (1 + annualReturn);
-  //   const returns = projectedValue - actualInvestment;
-
-  //   return {
-  //     unitsInvested,
-  //     actualInvestment,
-  //     projectedValue: Math.round(projectedValue),
-  //     returns: Math.round(returns),
-  //   };
-  // };
-
 
   const handleViewFullProjection = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -222,26 +174,30 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
 
       {/* Fondo con imágenes - Solo móvil */}
       <div className="absolute inset-0 md:hidden">
-        {featuredProjects.map((project, index) => (
-          <div
-            key={project.id}
-            aria-hidden="true"
-            className={`absolute inset-0 transition-opacity duration-1000 ${
-              index === currentProjectIndex
-                ? "opacity-100"
-                : "opacity-0"
-            }`}
-          >
-            <picture>
-              <LazyImage
-                src={project.image}
-                alt={`Proyecto ${project.name} - LOKL`}
-                className="absolute inset-0 h-full w-full object-cover"
-                priority={index === 0}
-              />
-            </picture>
-          </div>
-        ))}
+        {availableProjects.length > 0 ? (
+          availableProjects.map((project, index) => (
+            <div
+              key={project.id}
+              aria-hidden="true"
+              className={`absolute inset-0 transition-opacity duration-1000 ${
+                index === currentProjectIndex
+                  ? "opacity-100"
+                  : "opacity-0"
+              }`}
+            >
+              <picture>
+                <LazyImage
+                  src={project.imageURL}
+                  alt={`Proyecto ${project.name} - ${project.city} - LOKL`}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  priority={index === 0}
+                />
+              </picture>
+            </div>
+          ))
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-[#5352F6] to-[#3a39c4]" />
+        )}
       </div>
 
       {/* Overlay para contraste del texto */}
@@ -284,26 +240,30 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
           </div>
 
           {/* Proyecto destacado rotativo - fuera de tarjeta */}
-          <div className="mt-6">
-            <div
-              key={currentProjectIndex}
-              className="animate-in fade-in duration-500"
-            >
-              <p className="text-lg text-white/90 mb-2">
-                <span className="text-white/90">
-                  Invierte en{" "}
-                </span>
-                <span className="text-[rgba(255,255,255,1)] font-semibold font-bold">
-                  {featuredProjects[currentProjectIndex].name}
-                </span>
-                <span className="text-white/90"> desde</span>
-              </p>
-              <p className="text-3xl font-semibold text-white">
-                ${featuredProjects[currentProjectIndex].amount}{" "}
-                COP
-              </p>
+          {availableProjects.length > 0 && (
+            <div className="mt-6">
+              <div
+                key={currentProjectIndex}
+                className="animate-in fade-in duration-500"
+              >
+                <p className="text-lg text-white/90 mb-2">
+                  <span className="text-white/90">
+                    Invierte en{" "}
+                  </span>
+                  <span className="text-[rgba(255,255,255,1)] font-semibold font-bold">
+                    {availableProjects[currentProjectIndex]?.name}
+                  </span>
+                  <span className="text-white/90"> desde</span>
+                </p>
+                <p className="text-3xl font-semibold text-white">
+                  {formatCurrency(
+                    availableProjects[currentProjectIndex]?.unitPrice * 
+                    availableProjects[currentProjectIndex]?.minInvestmentUnits
+                  )}
+                </p>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* CTAs */}
           <div className="mt-6 flex flex-wrap gap-3">
