@@ -16,6 +16,8 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
   const isMobile = useIsMobile();
   const [carouselIndex, setCarouselIndex] = useState(0); // Índice del carrusel (qué 3 proyectos mostrar)
   const [selectedProject, setSelectedProject] = useState<number | null>(null); // null = estado inicial
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false); // Estado para controlar la reproducción del video
+  const [currentVideoUrl, setCurrentVideoUrl] = useState<string>(''); // URL del video actual
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -97,6 +99,18 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
       // Sin selección, retroceder al proyecto anterior individualmente
       setCarouselIndex((prev) => (prev - 1 + projects.length) % projects.length);
     }
+  };
+
+  // Función para manejar la reproducción del video
+  const handlePlayVideo = (videoUrl: string) => {
+    setCurrentVideoUrl(videoUrl);
+    setIsVideoPlaying(true);
+  };
+
+  // Función para cerrar el video
+  const handleCloseVideo = () => {
+    setIsVideoPlaying(false);
+    setCurrentVideoUrl('');
   };
 
 
@@ -184,6 +198,28 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
       }
     }
   }, [selectedProject, carouselIndex, projects.length]);
+
+  // Efecto para cerrar el video con la tecla Escape
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isVideoPlaying) {
+        handleCloseVideo();
+      }
+    };
+
+    if (isVideoPlaying) {
+      document.addEventListener('keydown', handleKeyDown);
+      // Prevenir scroll del body cuando el modal está abierto
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isVideoPlaying]);
 
   return (
     <section className="py-12 md:py-16 bg-[rgb(243,243,243)]">
@@ -358,8 +394,14 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                         )}
                         
                         {/* Video Play Button - Center (solo en seleccionada) */}
-                        {isSelected && project.status !== 'Próximamente' && (
-                          <button className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white/90 hover:bg-white backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300 group-hover/image:scale-105">
+                        {isSelected && project.status !== 'Próximamente' && project.videoUrl && (
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handlePlayVideo(project.videoUrl);
+                            }}
+                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white/90 hover:bg-white backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300 group-hover/image:scale-105"
+                          >
                             <Play className="w-7 h-7 text-primary ml-1" fill="currentColor" />
                           </button>
                         )}
@@ -700,6 +742,32 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
           )}
         </div>
       </div>
+
+      {/* Modal de Video */}
+      {isVideoPlaying && currentVideoUrl && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+          <div className="relative w-full max-w-4xl mx-4">
+            {/* Botón de cerrar */}
+            <button
+              onClick={handleCloseVideo}
+              className="absolute -top-12 right-0 z-10 w-10 h-10 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            {/* Contenedor del video */}
+            <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden shadow-2xl">
+              <iframe
+                src={currentVideoUrl}
+                title="Video del proyecto"
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
