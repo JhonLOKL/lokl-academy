@@ -51,6 +51,9 @@ export default function ResultsFinal({ project, simulationData }: ResultsFinalPr
     return: rate * 100,
   }));
 
+  // Key única para forzar re-render del gráfico cuando cambien los datos
+  const chartKey = `chart-${simulationData.totalIncome}-${simulationData.totalValuation}-${simulationData.unitsAmount}`;
+
   return (
     <div className="space-y-6">
       {/* Header del proyecto con imagen */}
@@ -90,7 +93,7 @@ export default function ResultsFinal({ project, simulationData }: ResultsFinalPr
         </h4>
         
         {/* Gráfica de barras sin leyenda en el chart */}
-        <ResponsiveContainer width="100%" height={280}>
+        <ResponsiveContainer width="100%" height={280} key={chartKey}>
           <BarChart 
             data={chartData}
             margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
@@ -150,10 +153,10 @@ export default function ResultsFinal({ project, simulationData }: ResultsFinalPr
         </ResponsiveContainer>
 
         {/* Tags de rentabilidad exactamente debajo de cada año */}
-        <div className="relative mt-2" style={{ marginLeft: '65px', marginRight: '0px' }}>
+        <div className="relative mt-2" style={{ marginLeft: '65px', marginRight: '0px' }} key={`tags-${chartKey}`}>
           <div className="grid grid-cols-5 gap-0">
             {chartData.map((data, index) => (
-              <div key={index} className="flex justify-center items-center">
+              <div key={`tag-${index}-${data.return}`} className="flex justify-center items-center">
                 <div className="inline-flex items-center gap-1.5 px-2 py-1 md:px-3 md:py-1.5 bg-white border-2 border-[#5352F6] rounded-full">
                   <span className="text-xs md:text-sm font-semibold text-[#5352F6]">
                     {data.return.toFixed(2)}%
