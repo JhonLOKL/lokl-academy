@@ -14,7 +14,7 @@ import {
 
 export default function CommunitySection() {
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [activeTab, setActiveTab] = useState<'newsletter' | 'articulos' | 'cursos' | 'perfil'>('newsletter');
+  const [activeTab, setActiveTab] = useState<'newsletter' | 'articulos' | 'cursos' | 'perfil'>('perfil');
 
   const handleSuccess = () => {
     setIsSubmitted(true);
@@ -39,10 +39,10 @@ export default function CommunitySection() {
         <div className="mb-8">
           <div className="flex flex-nowrap items-center justify-around sm:justify-start md:justify-center gap-2 sm:gap-2 overflow-x-auto pb-4 px-2 -mx-4 md:mx-0 md:px-0 scrollbar-hide">
             {[
+              { id: 'perfil', label: 'Descubre tu perfil', icon: TrendingUp },
               { id: 'newsletter', label: 'Newsletter', icon: Mail },
               { id: 'articulos', label: 'Artículos recientes', icon: BookOpen },
-              { id: 'cursos', label: 'Últimos cursos', icon: Play },
-              { id: 'perfil', label: 'Descubre tu perfil', icon: TrendingUp }
+              { id: 'cursos', label: 'Últimos cursos', icon: Play }
             ].map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -66,10 +66,10 @@ export default function CommunitySection() {
 
         {/* ============ TAB CONTENT ============ */}
         <div className="min-h-[600px] mb-0">
+          {activeTab === 'perfil' && <PerfilTab />}
           {activeTab === 'newsletter' && <NewsletterTab isSubmitted={isSubmitted} onSuccess={handleSuccess} />}
           {activeTab === 'articulos' && <ArticlesTab />}
           {activeTab === 'cursos' && <CoursesTab />}
-          {activeTab === 'perfil' && <PerfilTab />}
         </div>
       </div>
     </section>

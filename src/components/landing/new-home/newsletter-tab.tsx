@@ -54,10 +54,11 @@ export default function NewsletterTab({ isSubmitted, onSuccess }: NewsletterTabP
           {/* Columna izquierda - Imagen */}
           <div className="relative h-[500px] lg:h-[600px] overflow-hidden group bg-gray-100 flex items-start pt-0">
             <ImageWithFallback
-              src="/images/new-home/NEWSLETTER.png"
+              src="https://lokl-assets.s3.us-east-1.amazonaws.com/home/newsletter.png"
               alt="Newsletter LOKL"
               className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
             />
+            {/* <div className="absolute inset-0 bg-gradient-to-t from-[#5352F6]/90 via-[#5352F6]/50 to-[#5352F6]/20"></div> */}
           </div>
 
           {/* Columna derecha - Formulario de suscripción */}
