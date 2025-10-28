@@ -35,7 +35,8 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
     if (availableProjects.length > 0 && !selectedHeroProjectId) {
       const firstProject = availableProjects[0];
       setSelectedHeroProjectId(firstProject.id);
-      setHeroInvestmentAmount(firstProject.unitPrice * firstProject.minInvestmentUnits);
+      const { minInvestment } = calculateSliderRange(firstProject);
+      setHeroInvestmentAmount(minInvestment);
     }
   }, [availableProjects, selectedHeroProjectId]);
 
@@ -78,19 +79,39 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
     }).format(amount);
   };
 
+  // Helper para calcular rangos del slider
+  const calculateSliderRange = (project: any) => {
+    const minInvestment = Math.max(project.unitPrice * project.minInvestmentUnits, 1000000);
+    const calculatedMax = project.unitPrice * 100;
+    const maxInvestment = Math.max(calculatedMax, minInvestment * 2);
+    const step = Math.max(project.unitPrice, 100000);
+    
+    return { minInvestment, maxInvestment, step };
+  };
+
   // Actualizar el monto mínimo cuando cambia el proyecto en el hero
   const handleHeroProjectChange = (projectId: string) => {
     const project = availableProjects.find(p => p.id === projectId);
     if (project) {
       setSelectedHeroProjectId(projectId);
-      const minInvestment = project.unitPrice * project.minInvestmentUnits;
+      const { minInvestment } = calculateSliderRange(project);
+      
+      // Siempre iniciar en el valor mínimo del proyecto
       setHeroInvestmentAmount(minInvestment);
     }
   };
 
   // Handler para el cambio del slider
   const handleSliderChange = (value: number[]) => {
-    setHeroInvestmentAmount(value[0]);
+    if (currentHeroProject) {
+      const newValue = value[0];
+      const { minInvestment, maxInvestment } = calculateSliderRange(currentHeroProject);
+      
+      // Asegurar que el valor esté dentro del rango válido
+      if (newValue >= minInvestment && newValue <= maxInvestment) {
+        setHeroInvestmentAmount(newValue);
+      }
+    }
   };
 
   // Estas funciones se mantienen para uso futuro si se necesita mostrar proyecciones en el hero
@@ -361,21 +382,22 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
                   
                   <div className="w-full py-2">
                     <Slider
+                      key={selectedHeroProjectId} // Forzar re-render cuando cambie el proyecto
                       value={[heroInvestmentAmount]}
                       onValueChange={handleSliderChange}
-                      min={currentHeroProject.unitPrice * currentHeroProject.minInvestmentUnits}
-                      max={currentHeroProject.unitPrice * 100}
-                      step={currentHeroProject.unitPrice}
+                      min={calculateSliderRange(currentHeroProject).minInvestment}
+                      max={calculateSliderRange(currentHeroProject).maxInvestment}
+                      step={calculateSliderRange(currentHeroProject).step}
                       className="w-full touch-pan-y"
                     />
                   </div>
                   
                   <div className="flex justify-between mt-1 text-xs text-white/60">
                     <span>
-                      {formatCurrency(currentHeroProject.unitPrice * currentHeroProject.minInvestmentUnits)}
+                      {formatCurrency(calculateSliderRange(currentHeroProject).minInvestment)}
                     </span>
                     <span>
-                      {formatCurrency(currentHeroProject.unitPrice * 100)}
+                      {formatCurrency(calculateSliderRange(currentHeroProject).maxInvestment)}
                     </span>
                   </div>
                 </div>
