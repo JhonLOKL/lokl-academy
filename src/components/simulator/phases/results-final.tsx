@@ -2,7 +2,7 @@
 
 import { ProjectCard } from "@/schemas/project-card-schema";
 import { SimulationData } from "@/schemas/simulator-schema";
-import { MapPin, TrendingUp, Phone, AlertCircle } from "lucide-react";
+import { MapPin, TrendingUp, Phone } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,7 +12,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 
@@ -52,6 +51,9 @@ export default function ResultsFinal({ project, simulationData }: ResultsFinalPr
     return: rate * 100,
   }));
 
+  // Key única para forzar re-render del gráfico cuando cambien los datos
+  const chartKey = `chart-${simulationData.totalIncome}-${simulationData.totalValuation}-${simulationData.unitsAmount}`;
+
   return (
     <div className="space-y-6">
       {/* Header del proyecto con imagen */}
@@ -86,74 +88,151 @@ export default function ResultsFinal({ project, simulationData }: ResultsFinalPr
 
       {/* Gráfica de proyección */}
       <div className="bg-white rounded-2xl p-6 shadow-sm">
-        <h4 className="font-bold text-lg mb-4 text-slate-900">
+        <h4 className="font-bold text-lg mb-6 text-slate-900">
           Proyección de retorno a 5 años
         </h4>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+        
+        {/* Gráfica de barras sin leyenda en el chart */}
+        <ResponsiveContainer width="100%" height={280} key={chartKey}>
+          <BarChart 
+            data={chartData}
+            margin={{ top: 5, right: 10, left: 10, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
             <XAxis 
               dataKey="year" 
-              tick={{ fill: '#64748b', fontSize: 12 }}
-              axisLine={{ stroke: '#cbd5e1' }}
+              tick={{ fill: '#64748b', fontSize: 13, fontWeight: 500 }}
+              axisLine={{ stroke: '#e2e8f0' }}
+              tickLine={false}
             />
             <YAxis 
               tick={{ fill: '#64748b', fontSize: 12 }}
-              axisLine={{ stroke: '#cbd5e1' }}
-              label={{ value: 'Millones COP', angle: -90, position: 'insideLeft', fill: '#64748b' }}
+              axisLine={false}
+              tickLine={false}
+              label={{ 
+                value: 'Millones COP', 
+                angle: -90, 
+                position: 'insideLeft', 
+                fill: '#64748b',
+                style: { fontSize: 12 }
+              }}
+              tickFormatter={(value) => `${value.toFixed(1)}`}
             />
             <Tooltip
               contentStyle={{
                 backgroundColor: '#ffffff',
-                border: '1px solid #e2e8f0',
-                borderRadius: '8px',
-                boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                border: 'none',
+                borderRadius: '12px',
+                boxShadow: '0 10px 25px -5px rgb(0 0 0 / 0.1)',
+                padding: '12px'
               }}
-              formatter={(value: number) => `${value.toFixed(2)}%`}
+              labelStyle={{ fontWeight: 'bold', color: '#1e293b', marginBottom: '8px' }}
+              formatter={(value: number, name: string) => {
+                if (name === 'Valorización' || name === 'Utilidades') {
+                  return [`$${value.toFixed(2)}M`, name];
+                }
+                return [`${value.toFixed(2)}%`, name];
+              }}
+              cursor={{ fill: 'rgba(99, 102, 241, 0.05)' }}
             />
-            <Legend 
-              wrapperStyle={{ paddingTop: '20px' }}
-              iconType="circle"
+            <Bar 
+              dataKey="valorization" 
+              fill="#6366f1" 
+              name="Valorización" 
+              radius={[8, 8, 0, 0]}
+              maxBarSize={60}
             />
-            <Bar dataKey="valorization" fill="#6366f1" name="Valorización" radius={[8, 8, 0, 0]} />
-            <Bar dataKey="income" fill="#10b981" name="Utilidades" radius={[8, 8, 0, 0]} />
-            <Bar dataKey="return" fill="#8b5cf6" name="Rentabilidad" radius={[8, 8, 0, 0]} />
+            <Bar 
+              dataKey="income" 
+              fill="#10b981" 
+              name="Utilidades" 
+              radius={[8, 8, 0, 0]}
+              maxBarSize={60}
+            />
           </BarChart>
         </ResponsiveContainer>
+
+        {/* Tags de rentabilidad exactamente debajo de cada año */}
+        <div className="relative mt-2" style={{ marginLeft: '65px', marginRight: '0px' }} key={`tags-${chartKey}`}>
+          <div className="grid grid-cols-5 gap-0">
+            {chartData.map((data, index) => (
+              <div key={`tag-${index}-${data.return}`} className="flex justify-center items-center">
+                <div className="inline-flex items-center gap-1.5 px-2 py-1 md:px-3 md:py-1.5 bg-white border-2 border-[#5352F6] rounded-full">
+                  <span className="text-xs md:text-sm font-semibold text-[#5352F6]">
+                    {data.return.toFixed(2)}%
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Leyenda de colores debajo */}
+        <div className="flex items-center justify-center gap-6 mt-6 pt-4 border-t border-slate-100">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-[#6366f1] rounded-full"></div>
+            <span className="text-sm text-slate-700 font-medium">Valorización</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-[#10b981] rounded-full"></div>
+            <span className="text-sm text-slate-700 font-medium">Utilidades</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 border-2 border-[#6366f1] rounded-full"></div>
+            <span className="text-sm text-slate-700 font-medium">Rentabilidad</span>
+          </div>
+        </div>
       </div>
 
-      {/* Botón de contacto con asesor */}
-      <div className="bg-gradient-to-r from-[#5352F6] to-[#7c3aed] rounded-2xl p-6 text-white">
+      {/* Card de asesor */}
+      <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200">
         <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-            <Phone className="w-6 h-6" />
+          {/* Foto del asesor */}
+          <div className="flex-shrink-0">
+            <div className="relative w-20 h-20 rounded-full overflow-hidden border-4 border-[#5352F6]">
+              <Image
+                src="https://lokl-assets.s3.amazonaws.com/about-us/pipe.jpg"
+                alt="Felipe Restrepo - Asesor LOKL"
+                fill
+                className="object-cover"
+              />
+            </div>
           </div>
+
+          {/* Contenido */}
           <div className="flex-1">
-            <h4 className="font-bold text-lg mb-2">¿Necesitas ayuda para decidir?</h4>
-            <p className="text-white/90 text-sm mb-4">
-              Agenda una llamada con nuestros expertos y resuelve todas tus dudas sobre esta inversión
-            </p>
+            <div className="mb-3">
+              <h4 className="font-bold text-lg text-slate-900 mb-1">
+                ¿Necesitas ayuda para decidir?
+              </h4>
+              <p className="text-slate-600 text-sm leading-relaxed">
+                Agenda una llamada con nuestros expertos y resuelve todas tus dudas sobre esta inversión
+              </p>
+            </div>
+
             <Button
-              className="bg-white text-[#5352F6] hover:bg-white/90 font-semibold"
+              className="w-full bg-[#5352F6] hover:bg-[#5352F6]/90 text-white font-semibold shadow-md"
               size="lg"
             >
               <Phone className="w-4 h-4 mr-2" />
               Agendar llamada
             </Button>
+
+            {/* Info del asesor */}
+            <div className="mt-3 pt-3 border-t border-slate-100">
+              <p className="text-xs text-slate-500">
+                <span className="font-semibold text-slate-700">Felipe Restrepo</span> · Asesor de Inversiones LOKL
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Disclaimer */}
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex gap-3">
-        <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-        <div className="text-sm text-amber-900">
-          <p className="font-semibold mb-1">Información importante</p>
-          <p className="text-amber-800">
-            * Los retornos mostrados son estimaciones basadas en supuestos de mercado y pueden variar. 
-            Las inversiones en bienes raíces conllevan riesgos y no garantizan rendimientos.
-          </p>
-        </div>
+      <div className="text-center px-4">
+        <p className="text-xs text-slate-500 leading-relaxed">
+          * Los retornos mostrados son estimaciones basadas en supuestos de mercado y pueden variar. Las inversiones en bienes raíces conllevan riesgos y no garantizan rendimientos.
+        </p>
       </div>
     </div>
   );
