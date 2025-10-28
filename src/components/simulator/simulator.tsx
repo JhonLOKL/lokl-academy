@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import SimulatorPhase1 from "./simulator-phase-1";
+import SimulatorRedesigned from "./simulator-redesigned";
 import { ProjectCard } from "@/schemas/project-card-schema";
 import { useSimulatorStore } from "@/store/simulator-store";
 
@@ -24,9 +24,8 @@ export default function Simulator({
   }, [project, selectedProject, setSelectedProject]);
 
   return (
-    <div id="simulador" className="container mx-auto p-6 scroll-mt-20">
-      <h2 className="text-3xl font-bold mb-6">Simulador de Retorno de Inversión</h2>
-      <SimulatorPhase1 simulatorName={simulatorName} />
+    <div id="simulador" className="scroll-mt-20 bg-gradient-to-b from-slate-50 to-white">
+      <SimulatorRedesigned simulatorName={simulatorName} />
     </div>
   );
 }
