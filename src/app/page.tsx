@@ -12,6 +12,9 @@ export const metadata: Metadata = {
     canonical: "https://lokl.life",
   },
   authors: [{ name: "LOKL" }],
+  creator: "LOKL",
+  publisher: "LOKL",
+  category: "Finance",
   openGraph: {
     title: "LOKL - Inversiones Inmobiliarias y Crowdfunding en Colombia",
     description: "Inversiones inmobiliarias accesibles desde $1.3M. Crowdfunding inmobiliario con proyectos hoteleros verificados. Rentabilidad transparente y comunidad de inversionistas.",
