@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import YouTubeEmbed from './youtube-embed';
 
 export default function Testimonials() {
@@ -10,6 +12,9 @@ export default function Testimonials() {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const row1Ref = useRef<HTMLDivElement>(null);
   const row2Ref = useRef<HTMLDivElement>(null);
+  
+  // Estado para el carrusel móvil
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
   
   // Efecto para controlar la pausa de animación en hover y reproducción de video
   useEffect(() => {
@@ -80,6 +85,15 @@ export default function Testimonials() {
       if (row1Ref.current) row1Ref.current.style.animationPlayState = 'running';
       if (row2Ref.current) row2Ref.current.style.animationPlayState = 'running';
     }
+  };
+
+  // Funciones para navegación móvil
+  const nextTestimonial = () => {
+    setCurrentTestimonial((prev) => (prev + 1) % allTestimonials.length);
+  };
+
+  const prevTestimonial = () => {
+    setCurrentTestimonial((prev) => (prev - 1 + allTestimonials.length) % allTestimonials.length);
   };
 
   // Testimoniales de texto
@@ -179,6 +193,13 @@ export default function Testimonials() {
     }
   ];
   
+  // Combinamos todos los testimonios para el carrusel móvil
+  // Los videos van primero para móvil
+  const allTestimonials = [
+    ...videoTestimonials,
+    ...textTestimonials
+  ];
+
   // Combinamos los testimoniales para crear dos filas, intercalando videos con texto
   const row1Testimonials = [
     textTestimonials[0],
@@ -231,8 +252,44 @@ export default function Testimonials() {
         </div>
       </div>
 
-      {/* Scrolling Rows */}
-      <div className="space-y-6">
+      {/* Mobile Carousel - Solo visible en móvil */}
+      <div className="block md:hidden">
+        <div className="flex justify-center items-center mb-6">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={prevTestimonial}
+              className="rounded-full p-2"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            
+            <span className="text-sm text-muted-foreground">
+              {currentTestimonial + 1} / {allTestimonials.length}
+            </span>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={nextTestimonial}
+              className="rounded-full p-2"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+        
+        <div className="flex justify-center">
+          <TestimonialCard 
+            testimonial={allTestimonials[currentTestimonial]} 
+            onVideoPlayStateChange={handleVideoPlayStateChange}
+          />
+        </div>
+      </div>
+
+      {/* Desktop Scrolling Rows - Solo visible en desktop */}
+      <div className="hidden md:block space-y-6">
         {/* Row 1 - Scrolling Right */}
         <div className="relative">
           <div 

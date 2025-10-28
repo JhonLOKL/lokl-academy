@@ -67,10 +67,20 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
 
   // Helper para calcular rangos del slider
   const calculateSliderRange = (project: { unitPrice: number; minInvestmentUnits: number }) => {
-    const minInvestment = Math.max(project.unitPrice * project.minInvestmentUnits, 1000000);
+    const minInvestment = project.unitPrice * project.minInvestmentUnits;
     const calculatedMax = project.unitPrice * 100;
-    const maxInvestment = Math.max(calculatedMax, minInvestment * 2);
-    const step = Math.max(project.unitPrice, 100000);
+    
+    // Asegurar que el máximo sea siempre mayor que el mínimo
+    let maxInvestment;
+    if (calculatedMax <= minInvestment) {
+      // Si el máximo calculado es menor o igual al mínimo, usar un múltiplo del mínimo
+      maxInvestment = minInvestment * 10; // 10 veces el mínimo para dar rango suficiente
+    } else {
+      maxInvestment = calculatedMax;
+    }
+    
+    const step = project.unitPrice;
+    
     
     return { minInvestment, maxInvestment, step };
   };
@@ -344,23 +354,31 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
                     </div>
                     
                     <div className="w-full py-2">
-                      <Slider
-                        value={[heroInvestmentAmount]}
-                        onValueChange={handleSliderChange}
-                        min={currentHeroProject.unitPrice * currentHeroProject.minInvestmentUnits}
-                        max={currentHeroProject.unitPrice * 100}
-                        step={currentHeroProject.unitPrice}
-                        className="w-full touch-pan-y"
-                      />
+                      {(() => {
+                        const { minInvestment, maxInvestment, step } = calculateSliderRange(currentHeroProject);
+                        return (
+                          <Slider
+                            value={[heroInvestmentAmount]}
+                            onValueChange={handleSliderChange}
+                            min={minInvestment}
+                            max={maxInvestment}
+                            step={step}
+                            className="w-full touch-pan-y"
+                          />
+                        );
+                      })()}
                     </div>
                     
                     <div className="flex justify-between mt-1 text-xs text-white/60">
-                      <span>
-                        {formatCurrency(currentHeroProject.unitPrice * currentHeroProject.minInvestmentUnits)}
-                      </span>
-                      <span>
-                        {formatCurrency(currentHeroProject.unitPrice * 100)}
-                      </span>
+                      {(() => {
+                        const { minInvestment, maxInvestment } = calculateSliderRange(currentHeroProject);
+                        return (
+                          <>
+                            <span>{formatCurrency(minInvestment)}</span>
+                            <span>{formatCurrency(maxInvestment)}</span>
+                          </>
+                        );
+                      })()}
                     </div>
                   </div>
 
@@ -431,23 +449,31 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
                 </div>
                 
                 <div className="w-full py-2">
-                  <Slider
-                    value={[heroInvestmentAmount]}
-                    onValueChange={handleSliderChange}
-                    min={currentHeroProject.unitPrice * currentHeroProject.minInvestmentUnits}
-                    max={currentHeroProject.unitPrice * 100}
-                    step={currentHeroProject.unitPrice}
-                    className="w-full touch-pan-y"
-                  />
+                  {(() => {
+                    const { minInvestment, maxInvestment, step } = calculateSliderRange(currentHeroProject);
+                    return (
+                      <Slider
+                        value={[heroInvestmentAmount]}
+                        onValueChange={handleSliderChange}
+                        min={minInvestment}
+                        max={maxInvestment}
+                        step={step}
+                        className="w-full touch-pan-y"
+                      />
+                    );
+                  })()}
                 </div>
                 
                 <div className="flex justify-between mt-1 text-xs text-muted-foreground">
-                  <span>
-                    {formatCurrency(currentHeroProject.unitPrice * currentHeroProject.minInvestmentUnits)}
-                  </span>
-                  <span>
-                    {formatCurrency(currentHeroProject.unitPrice * 100)}
-                  </span>
+                  {(() => {
+                    const { minInvestment, maxInvestment } = calculateSliderRange(currentHeroProject);
+                    return (
+                      <>
+                        <span>{formatCurrency(minInvestment)}</span>
+                        <span>{formatCurrency(maxInvestment)}</span>
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
 
