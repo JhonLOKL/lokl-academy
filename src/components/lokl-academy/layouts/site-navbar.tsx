@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuthStore } from "@/store/auth-store";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 
 // Importar dinámicamente para evitar errores de hidratación
 const UserProfileWidget = dynamic(
@@ -15,6 +16,15 @@ const UserProfileWidget = dynamic(
 
 export function SiteNavbar() {
   const { token } = useAuthStore();
+  const router = useRouter();
+
+  const goToLogin = () => {
+    router.push("/login");
+  };
+
+  const goToRegister = () => {
+    router.push("/register");
+  };
   
   return (
     <Navbar
@@ -108,19 +118,18 @@ export function SiteNavbar() {
         token ? (
           <UserProfileWidget />
         ) : (
-          <div className="flex items-center space-x-4">
-            <Link
-              href="/login"
-              className="text-sm font-medium text-[#0F0F0F] transition-colors hover:text-[#5352F6]"
-            >
-              Inicia sesión
-            </Link>
-            <Link
-              href="/register"
-              className="rounded-md bg-[#5352F6] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#4A4AE5]"
-            >
-              Regístrate
-            </Link>
+          <div className="cursor-pointer flex gap-2 items-center">
+            <div onClick={() => goToLogin()} className="rounded-full bg-[#ECECFD] flex gap-1 items-end px-4 py-[13px]">
+              <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10.5 8.75C12.433 8.75 14 7.183 14 5.25C14 3.317 12.433 1.75 10.5 1.75C8.567 1.75 7 3.317 7 5.25C7 7.183 8.567 8.75 10.5 8.75Z" stroke="#2724F3" strokeWidth="1.5" />
+                <path d="M10.5 18.375C13.8827 18.375 16.625 16.808 16.625 14.875C16.625 12.942 13.8827 11.375 10.5 11.375C7.11726 11.375 4.375 12.942 4.375 14.875C4.375 16.808 7.11726 18.375 10.5 18.375Z" stroke="#2724F3" strokeWidth="1.5" />
+              </svg>
+              <h2 className="no-underline text-lg font-semibold text-[#1A17F9] font-epilogue leading-none text-nowrap">Iniciar sesión</h2>
+            </div>
+
+            <div onClick={() => goToRegister()} className="cursor-pointer rounded-full bg-[#EBEBEB] flex gap-1 items-end px-4 py-[16px]">
+              <h2 className="no-underline text-lg font-semibold font-epilogue leading-[initial]">Regístrate</h2>
+            </div>
           </div>
         )
       }
