@@ -5,15 +5,28 @@ import { Card } from '@/components/ui/card';
 import { CheckCircle, Shield, Users, Calendar, Check } from 'lucide-react';
 import { ImageWithFallback } from './image-with-fallback';
 
+type GtagFunction = {
+  (command: "js", date: Date): void;
+  (command: "config", id: string, params?: Record<string, unknown>): void;
+  (command: "event", action: string, parameters?: Record<string, unknown>): void;
+};
+
+interface WindowWithGtag extends Window {
+  gtag?: GtagFunction;
+}
+
 export default function FinalCTA() {
   const handleScheduleCall = () => {
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'schedule_call_click', {
-        'event_category': 'Lead Generation',
-        'event_label': 'CTA Schedule Call'
-      });
+    if (typeof window !== 'undefined') {
+      const w = window as WindowWithGtag;
+      if (w.gtag) {
+        w.gtag('event', 'schedule_call_click', {
+          'event_category': 'Lead Generation',
+          'event_label': 'CTA Schedule Call'
+        });
+      }
     }
-    window.open('https://calendly.com/lokl-inversion', '_blank');
+    window.open('https://calendly.com/lokl/proyectos', '_blank');
   };
 
   return (
