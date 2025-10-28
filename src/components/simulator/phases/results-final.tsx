@@ -37,17 +37,11 @@ export default function ResultsFinal({ project, simulationData }: ResultsFinalPr
   let rentabilityMax: number;
   
   if (hasValidRent) {
-    rentabilityMin = ((project.minRent * 12) / project.unitPrice) * 100;
-    rentabilityMax = ((project.maxRent * 12) / project.unitPrice) * 100;
+    rentabilityMin = project.minRent * 100;
+    rentabilityMax = project.maxRent * 100;
   } else {
-    if (project.subscriptionFeePercentage > 0) {
-      const annualRate = project.subscriptionFeePercentage * 12 * 100;
-      rentabilityMin = annualRate * 0.8;
-      rentabilityMax = annualRate * 1.2;
-    } else {
       rentabilityMin = 6.18;
       rentabilityMax = 14.26;
-    }
   }
 
   // Preparar datos para la gráfica
@@ -61,16 +55,16 @@ export default function ResultsFinal({ project, simulationData }: ResultsFinalPr
   return (
     <div className="space-y-6">
       {/* Header del proyecto con imagen */}
-      <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 h-64">
+      <div className="relative rounded-2xl h-64">
         <div className="absolute inset-0">
           <Image
             src={project.imageURL}
             alt={project.name}
             fill
-            className="object-cover opacity-40"
+            className="object-cover opacity-90 overflow-hidden rounded-2xl"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent rounded-2xl" />
         </div>
 
         <div className="relative z-10 p-6 h-full flex flex-col justify-end text-white">
