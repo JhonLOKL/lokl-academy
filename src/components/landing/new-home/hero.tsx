@@ -149,7 +149,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
           />
           Tu navegador no soporta videos HTML5.
         </video>
-      </div>
+      </div> 
 
       {/* Fondo con imágenes - Solo móvil */}
       <div className="absolute inset-0 md:hidden">
@@ -180,7 +180,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
       </div>
 
       {/* Overlay para contraste del texto */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/20"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/20 via-50% to-transparent"></div>
 
       {/* Contenido en 2 columnas */}
       <div className="relative z-10 mx-auto grid min-h-screen max-w-7xl grid-cols-1 items-center gap-8 px-6 py-10 md:grid-cols-12">
