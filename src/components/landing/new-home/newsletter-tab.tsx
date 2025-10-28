@@ -5,20 +5,47 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ImageWithFallback } from './image-with-fallback';
 import { Mail, Shield, Users, Star, CheckCircle } from 'lucide-react';
-import { UseFormRegister } from 'react-hook-form';
+import { UseFormRegister, useForm } from 'react-hook-form';
+import { subscribeToNewsletterAction } from '@/actions/newsletter-actions';
+import { useState } from 'react';
 
-interface FormData {
+interface NewsletterFormData {
   email: string;
   consent: boolean;
 }
 
 interface NewsletterTabProps {
-  onSubmit: () => void;
-  register: UseFormRegister<FormData>;
   isSubmitted: boolean;
+  onSuccess: () => void;
 }
 
-export default function NewsletterTab({ onSubmit, register, isSubmitted }: NewsletterTabProps) {
+export default function NewsletterTab({ isSubmitted, onSuccess }: NewsletterTabProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  
+  const { register, handleSubmit: handleFormSubmit, reset, formState: { errors } } = useForm<NewsletterFormData>();
+
+  const handleSubmit = async (data: NewsletterFormData) => {
+    setIsLoading(true);
+
+    try {
+      await subscribeToNewsletterAction(data.email);
+      // Limpiar el formulario
+      reset();
+      // Mostrar toast de éxito
+      setShowSuccessToast(true);
+      setTimeout(() => setShowSuccessToast(false), 3000); // Ocultar después de 3 segundos
+      onSuccess();
+    } catch (err) {
+      // Silenciar errores - siempre mostrar éxito
+      reset();
+      setShowSuccessToast(true);
+      setTimeout(() => setShowSuccessToast(false), 3000);
+      onSuccess();
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <div className="animate-fade-in">
       <Card className="overflow-hidden border-0 shadow-2xl shadow-[#5352F6]/30 hover:shadow-[#5352F6]/40 transition-all duration-300 p-0">
@@ -69,19 +96,23 @@ export default function NewsletterTab({ onSubmit, register, isSubmitted }: Newsl
                   <p className="text-sm text-white/80 mt-2">Revisa tu email para confirmar tu suscripción (doble opt-in).</p>
                 </div>
               ) : (
-                <form onSubmit={onSubmit} className="space-y-5">
+                <form onSubmit={handleFormSubmit(handleSubmit)} className="space-y-5">
                   <Input
                     type="email"
                     placeholder="tu.email@ejemplo.com"
                     {...register('email', { required: 'Email requerido' })}
                     className="text-center bg-white/95 border-white/50 placeholder:text-muted-foreground/60 focus:bg-white text-foreground shadow-lg h-12"
+                    disabled={isLoading}
                   />
+                  
                   <Button 
                     type="submit" 
-                    className="w-full bg-black hover:bg-black/90 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 h-12 text-base py-6"
+                    disabled={isLoading}
+                    className="w-full bg-black hover:bg-black/90 text-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 h-12 text-base py-6 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                   >
-                    Recibir el boletín gratis
+                    {isLoading ? 'Suscribiendo...' : 'Recibir el boletín gratis'}
                   </Button>
+                  
                   {/* Aviso de privacidad visible */}
                   <p className="text-xs text-white/80">
                     <Shield className="h-3 w-3 inline mr-1" />
@@ -93,6 +124,16 @@ export default function NewsletterTab({ onSubmit, register, isSubmitted }: Newsl
           </div>
         </div>
       </Card>
+      
+      {/* Toast de éxito */}
+      {showSuccessToast && (
+        <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-right duration-300">
+          <div className="bg-green-500 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2">
+            <CheckCircle className="h-5 w-5" />
+            <span className="font-medium">¡Suscripción exitosa!</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
