@@ -51,7 +51,7 @@ export default function SimulatorRedesigned({
   const [simulationError, setSimulationError] = useState<string | null>(null);
   const [hasSubmittedLead, setHasSubmittedLead] = useState(false);
   const [hasSimulatedWithData, setHasSimulatedWithData] = useState(false);
-  const [leadFormData, setLeadFormData] = useState<LeadFormData | null>(null);
+  const [, setLeadFormData] = useState<LeadFormData | null>(null);
 
   // Cargar proyectos disponibles
   useEffect(() => {
