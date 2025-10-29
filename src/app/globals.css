@@ -120,3 +120,71 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Relación de aspecto 9:16 para dispositivos móviles */
+@media (max-width: 640px) {
+  .mobile-aspect-ratio-container {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 177.78%; /* 16:9 = 56.25%, 9:16 = 177.78% */
+    overflow: hidden;
+  }
+  
+  .mobile-aspect-ratio-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  /* Mejoras para la visualización móvil */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari, Opera */
+  }
+}
+
+/* Animación de rebote horizontal para indicadores */
+@keyframes bounce-x {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+}
+
+.animate-bounce-x {
+  animation: bounce-x 1s infinite;
+}
+
+/* Anima la flecha izquierda en dirección opuesta */
+.animate-bounce-x:first-child {
+  animation: bounce-x 1s infinite reverse;
+}
+
+/* Estilo personalizado para la barra de desplazamiento */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}

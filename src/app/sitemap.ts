@@ -1,9 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { getAllCoursesAction } from "@/actions/course-action";
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.NODE_ENV === 'production' ? 'https://academy.lokl.life' : 'http://localhost:3000');
+const SITE_URL = 'https://lokl.life'
 // Usa la base pública ya existente de tu app/API
 const API_BASE = process.env.NEXT_PUBLIC_BASE_PATH || SITE_URL;
 const PAGE_SIZE = 10;
