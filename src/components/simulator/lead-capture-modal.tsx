@@ -22,16 +22,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { NestedSelect } from "@/components/ui/nested-select";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { LeadFormSchema, LeadFormData, HOW_DID_YOU_HEAR_OPTIONS } from "@/schemas/lead-schema";
+import { LeadFormSchema, LeadFormData, howDidYouHearAboutUsOptions } from "@/schemas/lead-schema";
 import Link from "next/link";
 
 interface LeadCaptureModalProps {
@@ -193,24 +187,16 @@ export default function LeadCaptureModal({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>¿Cómo nos conociste?</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    disabled={isSubmitting}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecciona una opción" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {HOW_DID_YOU_HEAR_OPTIONS.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    <NestedSelect
+                      options={howDidYouHearAboutUsOptions}
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      placeholder="Selecciona una opción"
+                      disabled={isSubmitting}
+                      className="w-full"
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
