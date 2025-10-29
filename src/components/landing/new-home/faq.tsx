@@ -13,71 +13,64 @@ export default function FAQ() {
 
   const categories = [
     { id: 'riesgos', label: 'Riesgos', color: 'bg-orange-100 text-orange-800 border-orange-200' },
-    { id: 'pagos', label: 'Pagos', color: 'bg-green-100 text-green-800 border-green-200' },
-    { id: 'impuestos', label: 'Impuestos', color: 'bg-blue-100 text-blue-800 border-blue-200' },
     { id: 'seguridad', label: 'Seguridad', color: 'bg-purple-100 text-purple-800 border-purple-200' },
     { id: 'funcionamiento', label: 'Funcionamiento', color: 'bg-teal-100 text-teal-800 border-teal-200' },
-    { id: 'liquidez', label: 'Liquidez', color: 'bg-yellow-100 text-yellow-800 border-yellow-200' }
+    { id: 'liquidez', label: 'Liquidez', color: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
+    { id: 'beneficios', label: 'Beneficios', color: 'bg-pink-100 text-pink-800 border-pink-200' },
+    { id: 'proyectos', label: 'Proyectos', color: 'bg-indigo-100 text-indigo-800 border-indigo-200' }
   ];
 
   const faqsData = [
     // Columna A
     {
-      id: 'seguridad-regulacion',
-      question: '¿Es seguro invertir con LOKL y quién nos regula?',
-      answer: 'LOKL opera bajo el marco legal colombiano para plataformas de financiación participativa. Estamos registrados ante la Cámara de Comercio y cumplimos con todas las regulaciones aplicables. Utilizamos encriptación SSL 256-bit, autenticación de dos factores y auditorías periódicas para proteger tu información y fondos.',
-      category: 'seguridad',
+      id: 'como-invertir',
+      question: '¿Cómo puedo invertir?',
+      answer: 'La inversión en LOKL es 100% digital y puedes comenzar siguiendo estos pasos:\n\n1. Regístrate en la plataforma\n2. Elige el proyecto Nido de Agua\n3. Define el monto de tu participación\n4. Llena tus datos personales y firma el contrato\n5. Paga tu membresía\n6. Revisa en tu perfil la participación\n\nPuedes pagar por PSE o tarjeta de crédito (nacional e internacional). Ten presente que si utilizas tarjeta de crédito tendrás un fee adicional de 2,5%.',
+      category: 'funcionamiento',
       column: 'A'
     },
     {
-      id: 'riesgos-mitigacion',
-      question: '¿Cuáles son los riesgos y cómo los mitigan?',
-      answer: 'Los principales riesgos incluyen: fluctuaciones del mercado inmobiliario, retrasos en construcción, y cambios económicos. Los mitigamos mediante: due diligence exhaustivo, diversificación de proyectos, seguros de cumplimiento, y seguimiento continuo con reportes mensuales.',
+      id: 'riesgos-proyectos',
+      question: '¿Qué riesgos tienen los proyectos en los que participo?',
+      answer: 'Los principales riesgos que manejamos son:\n\n• Riesgo de Construcción: Mitigado con estudios de suelos y estructurales que aseguran la viabilidad del proyecto.\n\n• Riesgo de Inversión: Si no alcanza el punto de equilibrio, el dinero se devuelve descontando costos transaccionales.\n\n• Riesgo Comercial: Contratos de operación con indicadores de éxito, metas comerciales y control de costos.\n\n• Riesgo de Valorización: Modelo de flujo de caja futuro con mercado secundario para potencial de compra.',
       category: 'riesgos',
       column: 'A'
     },
     {
-      id: 'liquidez-salida',
-      question: '¿Puedo salir del proyecto antes del plazo?',
-      answer: 'Las inversiones tienen plazos definidos (12-36 meses). Durante este período tu capital está comprometido. Ofrecemos un mercado secundario limitado donde puedes transferir tu participación a otros inversionistas, sujeto a disponibilidad y con posibles descuentos.',
-      category: 'liquidez',
+      id: 'beneficios-lokl',
+      question: '¿Cuáles son los beneficios de invertir con LOKL?',
+      answer: 'Los beneficios varían según el monto de inversión. Por ejemplo, si inviertes desde 15 millones tendrás: 10% de descuento en espacios operados por Nido de Agua, participación en loterías para noches y beneficios, ser el primero en listas de espera para nuevos proyectos, y acceso al mercado secundario.',
+      category: 'beneficios',
       column: 'A'
     },
     {
-      id: 'tarifas-costos',
-      question: '¿Qué tarifas y costos cobra LOKL?',
-      answer: 'Comisión de administración: 2% anual sobre capital invertido. Comisión de éxito: 20% sobre ganancias. Sin comisiones de entrada/salida. Transferencias ACH gratuitas. Todos los costos se detallan antes de invertir, sin sorpresas.',
-      category: 'pagos',
+      id: 'proyectos-exitosos',
+      question: '¿Qué proyectos exitosos han tenido?',
+      answer: 'Nuestro proyecto exitoso es Indie Universe, un coliving para creativos ubicado en el barrio Laureles - Medellín con proyecciones de retorno de +12% E.A. Hemos levantado +$3.500 millones COP y somos +500 inversionistas. Actualmente estamos en etapa 3, con un valor del Unit de $125.000, con posibilidad de invertir a través de mercado secundario.',
+      category: 'proyectos',
       column: 'A'
     },
 
     // Columna B
     {
-      id: 'monto-minimo',
-      question: '¿Cuánto puedo empezar a invertir?',
-      answer: 'Puedes empezar desde $1.300.000 COP mensuales. Esto te permite acceder a proyectos fraccionados de alta calidad que tradicionalmente requerían millones. No hay monto máximo, y puedes incrementar gradualmente según tu capacidad.',
+      id: 'reinversion-proyectos',
+      question: '¿Hay posibilidad de reinversión en otros proyectos?',
+      answer: 'Sí, puedes reinvertir en los proyectos utilizando tanto las ganancias generadas como tus ingresos adicionales. Uno de los beneficios de invertir con LOKL es que puedes reinvertir con el Unit al mismo precio al que inviertiste inicialmente.',
       category: 'funcionamiento',
       column: 'B'
     },
     {
-      id: 'calculo-retornos',
-      question: '¿Cómo calculan los retornos proyectados?',
-      answer: 'Utilizamos metodología DCF (Flujo de Caja Descontado) considerando: precio de compra, costos de desarrollo, cronograma de obra, precios de venta proyectados, gastos operativos, y factores de riesgo. Basamos proyecciones en data histórica del mercado inmobiliario.',
-      category: 'funcionamiento',
+      id: 'certificado-inversion',
+      question: '¿Cuál es el certificado de la inversión?',
+      answer: 'Tu inversión está respaldada por un contrato de mandato que te otorga derechos fiduciarios sobre el proyecto, es decir, obtienes una participación sobre este según el monto que inviertas.',
+      category: 'seguridad',
       column: 'B'
     },
     {
-      id: 'pagos-cobros',
-      question: '¿Cómo y cuándo pago o recibo dinero?',
-      answer: 'Pagos: transferencia bancaria o débito automático mensual. Retornos: se distribuyen al finalizar el proyecto (12-36 meses) o según cronograma específico. Todo vía transferencia ACH a tu cuenta registrada. Recibes notificación 48h antes de cada movimiento.',
-      category: 'pagos',
-      column: 'B'
-    },
-    {
-      id: 'impuestos-reportes',
-      question: '¿Cómo manejo impuestos y reportes?',
-      answer: 'Te enviamos certificado de retención en la fuente y resumen anual de ganancias. Las ganancias pueden estar sujetas a impuesto sobre renta. Recomendamos consultar un contador. Proporcionamos todos los documentos necesarios para tu declaración de renta.',
-      category: 'impuestos',
+      id: 'mercado-secundario',
+      question: '¿Qué es mercado secundario?',
+      answer: 'LOKL te ofrece vender tu participación a terceros interesados en invertir en el proyecto, lo que se conoce como mercado secundario. Puedes retirar tu inversión a través de la plataforma de LOKL luego del primer año sobre el cual habrás obtenido valorización, en caso que aún el proyecto se encuentre en fase de construcción, o valorización y rentabilidad en caso que el proyecto ya esté operando.',
+      category: 'liquidez',
       column: 'B'
     }
   ];
@@ -187,7 +180,7 @@ export default function FAQ() {
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground px-6 pb-6 pt-0">
-                    <div className="pl-8">
+                    <div className="pl-8 whitespace-pre-line">
                       {faq.answer}
                     </div>
                   </AccordionContent>
@@ -217,7 +210,7 @@ export default function FAQ() {
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground px-6 pb-6 pt-0">
-                    <div className="pl-8">
+                    <div className="pl-8 whitespace-pre-line">
                       {faq.answer}
                     </div>
                   </AccordionContent>

@@ -57,7 +57,8 @@ export default function Benefits() {
       title: "Impacto y comunidad",
       description:
         "Invertir con propósito es construir futuro. Invertimos donde el capital también construye comunidad y ecosistemas.",
-      ctaText: "Haz parte de la nueva forma de invertir",
+      // Antes: "Haz parte de la nueva forma de invertir"
+      ctaText: "Invierte con propósito",
       image: "/images/new-home/TECH_01.png",
       benefit: "Propósito"
     },
@@ -65,7 +66,8 @@ export default function Benefits() {
       title: "Accesible desde montos bajos",
       description:
         "La inversión no es un privilegio. Desde $1.000 USD puedes activar impacto real, sin deudas ni barreras.",
-      ctaText: "Crece con nosotros",
+      // Antes: "Crece con nosotros"
+      ctaText: "Empieza desde $1.000",
       image: "/images/new-home/Camilodolar.jpg",
       benefit: "Inclusivo"
     },
@@ -73,7 +75,8 @@ export default function Benefits() {
       title: "Rentabilidad que transforma",
       description:
         "Ganar sí, pero no a cualquier costo. Rentabilidad del 8% al 15% anual, con impacto real para todos.",
-      ctaText: "Calcula tu retorno financiero y social",
+      // Antes: "Calcula tu retorno financiero y social"
+      ctaText: "Mira tu retorno",
       image: "/images/new-home/TECH_03.png",
       benefit: "Sostenible"
     },
@@ -81,7 +84,8 @@ export default function Benefits() {
       title: "Seguridad y transparencia",
       description:
         "La confianza no se promete, se construye. Curaduría experta y seguimiento 100% abierto y en tiempo real.",
-      ctaText: "Conoce cómo protegemos tu inversión",
+      // Antes: "Conoce cómo protegemos tu inversión"
+      ctaText: "Tu inversión segura",
       image:
         "https://i.pinimg.com/1200x/d2/bb/76/d2bb767f2db2eec528f23ca43858901e.jpg",
       benefit: "Confiable"
@@ -90,11 +94,13 @@ export default function Benefits() {
       title: "Valor que vuelve a ti",
       description:
         "Aquí tu inversión también te transforma. Ganas por rentabilidad, impacto y experiencias únicas.",
-      ctaText: "Descubre todos los beneficios",
+      // Antes: "Descubre todos los beneficios"
+      ctaText: "Conoce tus beneficios",
       image: "/images/new-home/TECH_02.png",
       benefit: "Integral"
     },
   ];
+  
 
   return (
     <section
