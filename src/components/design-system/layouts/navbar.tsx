@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 
 export interface NavbarProps extends React.HTMLAttributes<HTMLElement> {
   logo?: React.ReactNode;
@@ -30,6 +31,7 @@ export function Navbar({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile(1024); // Usar breakpoint más alto para incluir tablets en landscape
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -53,6 +55,24 @@ export function Navbar({
     };
   }, []);
 
+  // Cerrar menú móvil cuando cambie la orientación o el tamaño de pantalla
+  useEffect(() => {
+    const handleResize = () => {
+      if (!isMobile) {
+        setIsMenuOpen(false);
+        setOpenDropdown(null);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
+  }, [isMobile]);
+
   return (
     <header
       className={cn(
@@ -68,8 +88,9 @@ export function Navbar({
               {logo || <span className="text-xl font-bold">LOKL</span>}
             </div>
             
-            <nav className="hidden md:block">
-              <ul className="flex space-x-8">
+            {!isMobile && (
+              <nav>
+                <ul className="flex space-x-8">
                 {items?.map((item, index) => (
                   <li key={index} className="relative">
                     {item.dropdown ? (
@@ -117,28 +138,33 @@ export function Navbar({
                     )}
                   </li>
                 ))}
-              </ul>
-            </nav>
+                </ul>
+              </nav>
+            )}
           </div>
           
-          <div className="hidden items-center md:flex">
-            {actions}
-          </div>
+          {!isMobile && (
+            <div className="flex items-center">
+              {actions}
+            </div>
+          )}
           
-          <button
-            className="inline-flex items-center justify-center rounded-md p-2 text-[#0F0F0F] md:hidden"
-            onClick={toggleMenu}
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {isMobile && (
+            <button
+              className="inline-flex items-center justify-center rounded-md p-2 text-[#0F0F0F]"
+              onClick={toggleMenu}
+              aria-label="Toggle menu"
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          )}
         </div>
       </div>
       
       {/* Mobile menu */}
-      {isMenuOpen && (
-        <div className="container mx-auto px-4 md:hidden">
-          <div className="space-y-1 pb-3 pt-2">
+      {isMobile && isMenuOpen && (
+        <div className="container mx-auto px-4 max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+          <div className="space-y-1 pb-6 pt-2">
             {items?.map((item, index) => (
               <div key={index}>
                 {item.dropdown ? (
@@ -192,7 +218,7 @@ export function Navbar({
             ))}
           </div>
           {actions && (
-            <div className="border-t border-[#E5E5E5] pb-3 pt-4">
+            <div className="border-t border-[#E5E5E5] pb-6 pt-4">
               <div className="space-y-2">
                 {actions}
               </div>
