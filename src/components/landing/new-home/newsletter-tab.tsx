@@ -118,7 +118,7 @@ export default function NewsletterTab({ isSubmitted, onSuccess }: NewsletterTabP
                   {/* Aviso de privacidad visible */}
                   <p className="text-xs text-white/80">
                     <Shield className="h-3 w-3 inline mr-1" />
-                    Doble opt-in. Baja en 1 clic. <a href="#" className="text-white underline hover:text-white/80">Ver política de privacidad</a>
+                    <a href="https://drive.google.com/file/d/1R6aOvsRjYVo-d398PskWJjwL4_WrY9PP/view" target="_blank" rel="noopener noreferrer" className="text-white underline hover:text-white/80">Términos y condiciones</a>
                   </p>
                 </form>
               )}

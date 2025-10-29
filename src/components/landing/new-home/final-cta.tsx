@@ -45,7 +45,7 @@ export default function FinalCTA() {
               Agenda una llamada con nuestro equipo
             </h2>
             <p className="text-white/90 text-base sm:text-lg md:text-xl max-w-2xl mx-auto">
-              Resuelve todas tus dudas en 15 minutos con un asesor especializado
+              Resuelve todas tus dudas en 45 minutos con un asesor especializado
             </p>
           </div>
 
@@ -143,7 +143,7 @@ export default function FinalCTA() {
                   </div>
                   <div className="flex items-center gap-1.5 md:gap-2">
                     <Calendar className="h-3 w-3 md:h-4 md:w-4 text-[#5352F6]" />
-                    <span className="text-xs md:text-sm text-muted-foreground">15 minutos</span>
+                    <span className="text-xs md:text-sm text-muted-foreground">45 minutos</span>
                   </div>
                 </div>
               </div>
