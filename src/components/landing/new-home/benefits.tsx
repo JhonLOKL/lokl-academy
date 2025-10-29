@@ -34,53 +34,54 @@ export default function Benefits() {
     };
   }, [api]);
 
-  // Prevenir scroll horizontal en el body cuando el carrusel está activo
+  // Mejorar la experiencia de scroll en móvil
   useEffect(() => {
-    const preventHorizontalScroll = (e: WheelEvent) => {
-      // Solo prevenir scroll horizontal, permitir vertical
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-        e.preventDefault();
-      }
-    };
-
-    const preventTouchScroll = (e: TouchEvent) => {
-      // Prevenir scroll horizontal en touch
-      if (e.touches.length === 1) {
-        const touch = e.touches[0];
-        const target = e.target as HTMLElement;
-        if (target.closest('.carousel-container')) {
-          // Permitir scroll solo dentro del carrusel
-          return;
+    const handleTouchMove = (e: TouchEvent) => {
+      const target = e.target as HTMLElement;
+      const carouselContainer = target.closest('.carousel-container');
+      
+      if (carouselContainer) {
+        // Permitir scroll horizontal dentro del carrusel
+        const carouselContent = carouselContainer.querySelector('.carousel-content');
+        if (carouselContent) {
+          const rect = carouselContent.getBoundingClientRect();
+          const touch = e.touches[0];
+          
+          // Solo prevenir si el touch está fuera del área del carrusel
+          if (touch.clientX < rect.left || touch.clientX > rect.right) {
+            e.preventDefault();
+          }
         }
       }
     };
 
-    // Agregar listeners para prevenir scroll horizontal
-    document.addEventListener('wheel', preventHorizontalScroll, { passive: false });
-    document.addEventListener('touchmove', preventTouchScroll, { passive: false });
+    // Usar passive: false solo cuando sea necesario
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
 
     return () => {
-      document.removeEventListener('wheel', preventHorizontalScroll);
-      document.removeEventListener('touchmove', preventTouchScroll);
+      document.removeEventListener('touchmove', handleTouchMove);
     };
   }, []);
   
   // Pausar la rotación cuando el usuario interactúa con el carrusel
-  const handleMouseEnter = () => {
+  const handleInteractionStart = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
   };
   
   // Reanudar la rotación cuando el usuario deja de interactuar
-  const handleMouseLeave = () => {
+  const handleInteractionEnd = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
     
-    intervalRef.current = setInterval(() => {
-      api?.scrollNext();
-    }, autoRotateInterval);
+    // Pequeño delay antes de reanudar para mejor UX
+    setTimeout(() => {
+      intervalRef.current = setInterval(() => {
+        api?.scrollNext();
+      }, autoRotateInterval);
+    }, 1000);
   };
   
   const benefits = [
@@ -134,10 +135,33 @@ export default function Benefits() {
   
 
   return (
-    <section
-      id="benefits"
-      className="py-8 sm:py-12 md:py-16 bg-[rgb(243,243,243)] overflow-x-hidden"
-    >
+    <>
+      <style jsx>{`
+        .carousel-container {
+          -webkit-overflow-scrolling: touch;
+          scroll-behavior: smooth;
+        }
+        
+        .carousel-content {
+          -webkit-overflow-scrolling: touch;
+          scroll-snap-type: x mandatory;
+        }
+        
+        .carousel-item {
+          scroll-snap-align: center;
+          scroll-snap-stop: always;
+        }
+        
+        @media (max-width: 768px) {
+          .carousel-container {
+            touch-action: pan-x;
+          }
+        }
+      `}</style>
+      <section
+        id="benefits"
+        className="py-8 sm:py-12 md:py-16 bg-[rgb(243,243,243)] overflow-x-hidden"
+      >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 overflow-x-hidden">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12">
@@ -156,23 +180,26 @@ export default function Benefits() {
           opts={{
             align: "center",
             loop: true,
-            containScroll: "trimSnaps"
+            containScroll: "trimSnaps",
+            dragFree: true,
+            skipSnaps: false,
+            inViewThreshold: 0.7
           }}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          onTouchStart={handleMouseEnter}
-          onTouchEnd={handleMouseLeave}
+          onMouseEnter={handleInteractionStart}
+          onMouseLeave={handleInteractionEnd}
+          onTouchStart={handleInteractionStart}
+          onTouchEnd={handleInteractionEnd}
           setApi={setApi}
           className="w-full overflow-hidden px-4 sm:px-4 -mx-4 sm:-mx-4 carousel-container"
         >
-          <CarouselContent className="-ml-2 sm:-ml-2 md:-ml-4 touch-pan-x">
+          <CarouselContent className="-ml-2 sm:-ml-2 md:-ml-4 touch-pan-x carousel-content">
             {benefits.map((benefit, index) => (
               <CarouselItem
                 key={index}
-                className="pl-2 sm:pl-2 md:pl-4 basis-[85%] sm:basis-[85%] md:basis-1/2 lg:basis-1/3"
+                className="pl-2 sm:pl-2 md:pl-4 basis-[85%] sm:basis-[85%] md:basis-1/2 lg:basis-1/3 carousel-item"
               >
                 <div 
-                  className="group h-full cursor-pointer" 
+                  className="group h-full cursor-pointer select-none" 
                   onClick={() => api?.scrollTo(index)}
                 >
                   {/* Tarjeta con imagen de fondo dominante */}
@@ -235,6 +262,7 @@ export default function Benefits() {
         </Carousel>
 
       </div>
-    </section>
+      </section>
+    </>
   );
 }
