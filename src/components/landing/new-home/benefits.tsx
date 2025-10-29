@@ -91,7 +91,7 @@ export default function Benefits() {
         "Invertir con propósito es construir futuro. Invertimos donde el capital también construye comunidad y ecosistemas.",
       // Antes: "Haz parte de la nueva forma de invertir"
       ctaText: "Invierte con propósito",
-      image: "/images/new-home/TECH_01.png",
+      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/benefit2.jpg",
       benefit: "Propósito"
     },
     {
@@ -100,7 +100,7 @@ export default function Benefits() {
         "La inversión no es un privilegio. Desde $1.000 USD puedes activar impacto real, sin deudas ni barreras.",
       // Antes: "Crece con nosotros"
       ctaText: "Empieza desde $1.000",
-      image: "/images/new-home/Camilodolar.jpg",
+      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/benefit1.jpg",
       benefit: "Inclusivo"
     },
     {
@@ -109,7 +109,7 @@ export default function Benefits() {
         "Ganar sí, pero no a cualquier costo. Rentabilidad del 8% al 15% anual, con impacto real para todos.",
       // Antes: "Calcula tu retorno financiero y social"
       ctaText: "Mira tu retorno",
-      image: "/images/new-home/TECH_03.png",
+      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/benefit2.jpg",
       benefit: "Sostenible"
     },
     {
@@ -128,7 +128,7 @@ export default function Benefits() {
         "Aquí tu inversión también te transforma. Ganas por rentabilidad, impacto y experiencias únicas.",
       // Antes: "Descubre todos los beneficios"
       ctaText: "Conoce tus beneficios",
-      image: "/images/new-home/TECH_02.png",
+      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/benefit3.jpg",
       benefit: "Integral"
     },
   ];

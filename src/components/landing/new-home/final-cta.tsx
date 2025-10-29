@@ -56,7 +56,7 @@ export default function FinalCTA() {
               {/* Columna izquierda - Foto del asesor */}
               <div className="relative h-[250px] sm:h-[300px] md:h-[350px] lg:h-full overflow-hidden group order-1 lg:order-1">
                 <ImageWithFallback
-                  src="/images/new-home/LAURA AI.png"
+                  src="https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Cta-final.jpg"
                   alt="Asesora especializada LOKL"
                   className="w-full h-full object-cover object-center sm:object-top transition-transform duration-700 group-hover:scale-105"
                 />
