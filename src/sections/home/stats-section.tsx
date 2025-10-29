@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { Users, TrendingUp, ArrowRight, Star, Calendar, Hotel, DollarSign } from 'lucide-react';
+import { Users, TrendingUp, ArrowRight, Star, Calendar, DollarSign } from 'lucide-react';
 
 export default function StatsSection() {
   const carouselRef = useRef<HTMLDivElement>(null);

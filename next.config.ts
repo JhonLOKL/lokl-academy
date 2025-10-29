@@ -1,4 +1,10 @@
 import type { NextConfig } from "next";
+import bundleAnalyzer from '@next/bundle-analyzer';
+
+// Bundle Analyzer para identificar dependencias pesadas
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+});
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -98,14 +104,12 @@ const nextConfig: NextConfig = {
     } : false,
   },
   // Optimizaciones de producción
-  swcMinify: true,
   reactStrictMode: true,
   poweredByHeader: false,
-  compress: true,
   eslint: {
     // Desactivar verificación de ESLint durante la compilación
     ignoreDuringBuilds: true,
   },
 };
 
-export default nextConfig;
+export default withBundleAnalyzer(nextConfig);
