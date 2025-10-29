@@ -22,6 +22,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
   const { setSelectedProject, setInvestmentAmount, setInstallments } = useSimulatorStore();
 
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
 
   // Filtrar proyectos activos (que no estén en "Etapa 0")
   const availableProjects = globalProjects.filter(p => p.phase !== "Etapa 0");
@@ -29,6 +30,11 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
   // Estado para el simulador del hero
   const [selectedHeroProjectId, setSelectedHeroProjectId] = useState<string>("");
   const [heroInvestmentAmount, setHeroInvestmentAmount] = useState(5310000);
+
+  // Marcar como montado después del primer render
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Inicializar el proyecto y monto cuando estén disponibles
   useEffect(() => {
@@ -413,7 +419,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
           </p>
 
           {/* Simulador funcional mobile */}
-          {availableProjects.length > 0 && selectedHeroProjectId && currentHeroProject ? (
+          {availableProjects.length > 0 && selectedHeroProjectId && currentHeroProject && isMounted ? (
             <div className="space-y-5">
               {/* Selector de Proyecto */}
               <div className="w-full">
@@ -503,7 +509,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
             "name": "LOKL - Inversiones inmobiliarias con propósito",
             "description": "Descubre cómo invertir en bienes raíces y proyectos hoteleros con LOKL. Crowdfunding inmobiliario accesible desde $1.3M mensuales.",
             "thumbnailUrl": "https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe_poster.jpg",
-            "uploadDate": new Date().toISOString(),
+            "uploadDate": "2025-10-28T00:00:00.000Z",
             "contentUrl": "https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe.mp4",
             "embedUrl": "https://lokl.life",
             "duration": "PT1M",
