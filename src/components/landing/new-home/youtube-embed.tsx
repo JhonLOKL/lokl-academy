@@ -70,6 +70,11 @@ export default function YouTubeEmbed({ videoId, onPlayStateChange }: YouTubeEmbe
   // Configurar listener para mensajes del iframe
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
+      // Solo procesar mensajes de YouTube que sean strings
+      if (typeof event.data !== 'string') {
+        return;
+      }
+
       try {
         const data = JSON.parse(event.data);
         // Detectar cuando el video termina o se pausa
@@ -85,9 +90,9 @@ export default function YouTubeEmbed({ videoId, onPlayStateChange }: YouTubeEmbe
             onPlayStateChange(true);
           }
         }
-      } catch (e) {
-        // Ignorar mensajes que no son JSON
-        console.error(e);
+      } catch {
+        // Ignorar silenciosamente mensajes que no son JSON válidos
+        return;
       }
     };
 
