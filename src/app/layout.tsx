@@ -8,7 +8,12 @@ import GAListener from "@/components/analytics/ga-listener";
 import UtmTracker from "@/components/analytics/utm-tracker";
 import { Toaster } from "@/components/design-system";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ 
+  subsets: ["latin"],
+  display: 'swap',
+  preload: true,
+  variable: '--font-inter',
+});
 
 export const metadata: Metadata = {
   title: {
@@ -115,11 +120,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
+      <head>
+        {/* Preconnect a recursos externos críticos */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://lokl-assets.s3.amazonaws.com" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+      </head>
       <body className={inter.className} suppressHydrationWarning>
-        {/* Google Tag Manager */}
+        {/* Google Tag Manager - Movido a lazyOnload para no bloquear */}
         <Script
           id="gtm-script"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         >
           {`
             try {
@@ -134,12 +147,12 @@ export default function RootLayout({
           `}
         </Script>
 
-        {/* Google Analytics */}
+        {/* Google Analytics - Movido a lazyOnload */}
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-88VH2CG9LP'}`}
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
-        <Script id="ga-config" strategy="afterInteractive">
+        <Script id="ga-config" strategy="lazyOnload">
           {`
             try {
               window.dataLayer = window.dataLayer || [];

@@ -209,6 +209,8 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
                     alt={`Proyecto ${project.name} - ${project.city} - LOKL`}
                     className="absolute inset-0 h-full w-full object-cover"
                     priority={index === 0}
+                    width={1920}
+                    height={1080}
                   />
                 </picture>
               </div>
