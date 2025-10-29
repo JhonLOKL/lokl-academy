@@ -33,6 +33,37 @@ export default function Benefits() {
       }
     };
   }, [api]);
+
+  // Prevenir scroll horizontal en el body cuando el carrusel está activo
+  useEffect(() => {
+    const preventHorizontalScroll = (e: WheelEvent) => {
+      // Solo prevenir scroll horizontal, permitir vertical
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        e.preventDefault();
+      }
+    };
+
+    const preventTouchScroll = (e: TouchEvent) => {
+      // Prevenir scroll horizontal en touch
+      if (e.touches.length === 1) {
+        const touch = e.touches[0];
+        const target = e.target as HTMLElement;
+        if (target.closest('.carousel-container')) {
+          // Permitir scroll solo dentro del carrusel
+          return;
+        }
+      }
+    };
+
+    // Agregar listeners para prevenir scroll horizontal
+    document.addEventListener('wheel', preventHorizontalScroll, { passive: false });
+    document.addEventListener('touchmove', preventTouchScroll, { passive: false });
+
+    return () => {
+      document.removeEventListener('wheel', preventHorizontalScroll);
+      document.removeEventListener('touchmove', preventTouchScroll);
+    };
+  }, []);
   
   // Pausar la rotación cuando el usuario interactúa con el carrusel
   const handleMouseEnter = () => {
@@ -105,9 +136,9 @@ export default function Benefits() {
   return (
     <section
       id="benefits"
-      className="py-8 sm:py-12 md:py-16 bg-[rgb(243,243,243)]"
+      className="py-8 sm:py-12 md:py-16 bg-[rgb(243,243,243)] overflow-x-hidden"
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 overflow-x-hidden">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12">
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
@@ -125,16 +156,16 @@ export default function Benefits() {
           opts={{
             align: "center",
             loop: true,
-            containScroll: false
+            containScroll: "trimSnaps"
           }}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onTouchStart={handleMouseEnter}
           onTouchEnd={handleMouseLeave}
           setApi={setApi}
-          className="w-full overflow-visible px-2 sm:px-4 -mx-2 sm:-mx-4"
+          className="w-full overflow-hidden px-2 sm:px-4 -mx-2 sm:-mx-4 carousel-container"
         >
-          <CarouselContent className="-ml-1 sm:-ml-2 md:-ml-4">
+          <CarouselContent className="-ml-1 sm:-ml-2 md:-ml-4 touch-pan-x">
             {benefits.map((benefit, index) => (
               <CarouselItem
                 key={index}
