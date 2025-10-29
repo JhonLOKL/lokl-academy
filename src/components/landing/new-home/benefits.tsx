@@ -163,13 +163,13 @@ export default function Benefits() {
           onTouchStart={handleMouseEnter}
           onTouchEnd={handleMouseLeave}
           setApi={setApi}
-          className="w-full overflow-hidden px-2 sm:px-4 -mx-2 sm:-mx-4 carousel-container"
+          className="w-full overflow-hidden px-4 sm:px-4 -mx-4 sm:-mx-4 carousel-container"
         >
-          <CarouselContent className="-ml-1 sm:-ml-2 md:-ml-4 touch-pan-x">
+          <CarouselContent className="-ml-2 sm:-ml-2 md:-ml-4 touch-pan-x">
             {benefits.map((benefit, index) => (
               <CarouselItem
                 key={index}
-                className="pl-1 sm:pl-2 md:pl-4 basis-[90%] sm:basis-[85%] md:basis-1/2 lg:basis-1/3"
+                className="pl-2 sm:pl-2 md:pl-4 basis-[85%] sm:basis-[85%] md:basis-1/2 lg:basis-1/3"
               >
                 <div 
                   className="group h-full cursor-pointer" 
