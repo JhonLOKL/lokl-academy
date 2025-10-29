@@ -5,17 +5,11 @@ import { Navbar } from "@/components/design-system";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuthStore } from "@/store/auth-store";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-
-// Importar dinámicamente para evitar errores de hidratación
-const UserProfileWidget = dynamic(
-  () => import("@/components/auth/auth-nav"),
-  { ssr: false }
-);
+import { ChartBarDecreasing } from "lucide-react";
 
 export function SiteNavbar() {
-  const { token } = useAuthStore();
+  const { token, user } = useAuthStore();
   const router = useRouter();
 
   const goToLogin = () => {
@@ -24,6 +18,10 @@ export function SiteNavbar() {
 
   const goToRegister = () => {
     router.push("/register");
+  };
+
+  const goToProfile = () => {
+    router.push("/dashboard");
   };
   
   return (
@@ -116,19 +114,62 @@ export function SiteNavbar() {
       ]}
       actions={
         token ? (
-          <UserProfileWidget />
+          <div className="flex items-center gap-4">
+            {/* Botón Dashboard */}
+            <Link 
+              href="/dashboard"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-[#F3F3F3] transition-colors"
+            >
+              <ChartBarDecreasing className="w-5 h-5 text-[#1C274C]" />
+              <span className="text-sm font-medium text-foreground hidden lg:block">Dashboard</span>
+            </Link>
+
+            {/* Separador vertical */}
+            <div className="h-8 w-px bg-gray-300"></div>
+
+            {/* Perfil del usuario */}
+            <div 
+              onClick={goToProfile} 
+              className="cursor-pointer flex items-center gap-3 pl-4 pr-1 py-1 rounded-full bg-[#E8E8E8] hover:bg-[#DCDCDC] transition-colors"
+            >
+              <span className="text-sm font-semibold text-foreground">
+                {user?.firstName && user?.lastName 
+                  ? `${user.firstName} ${user.lastName}` 
+                  : user?.firstName || 'Usuario'}
+              </span>
+              {user?.profilePhoto ? (
+                <Image
+                  src={user.profilePhoto}
+                  alt={`${user.firstName} ${user.lastName}`}
+                  width={40}
+                  height={40}
+                  className="rounded-full object-cover border-[3px] border-[#5352F6]"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-[#5352F6] flex items-center justify-center text-white font-semibold border-[3px] border-[#5352F6]">
+                  {user?.firstName?.[0]?.toUpperCase() || 'U'}
+                </div>
+              )}
+            </div>
+          </div>
         ) : (
-          <div className="cursor-pointer flex gap-2 items-center">
-            <div onClick={() => goToLogin()} className="rounded-full bg-[#ECECFD] flex gap-1 items-end px-4 py-[13px]">
-              <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <div className="flex gap-3 items-center">
+            <div 
+              onClick={() => goToLogin()} 
+              className="cursor-pointer rounded-full bg-[#ECECFD] hover:bg-[#DCDCFC] flex gap-2 items-center px-4 py-3 transition-colors"
+            >
+              <svg width="18" height="18" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M10.5 8.75C12.433 8.75 14 7.183 14 5.25C14 3.317 12.433 1.75 10.5 1.75C8.567 1.75 7 3.317 7 5.25C7 7.183 8.567 8.75 10.5 8.75Z" stroke="#2724F3" strokeWidth="1.5" />
                 <path d="M10.5 18.375C13.8827 18.375 16.625 16.808 16.625 14.875C16.625 12.942 13.8827 11.375 10.5 11.375C7.11726 11.375 4.375 12.942 4.375 14.875C4.375 16.808 7.11726 18.375 10.5 18.375Z" stroke="#2724F3" strokeWidth="1.5" />
               </svg>
-              <h2 className="no-underline text-lg font-semibold text-[#1A17F9] font-epilogue leading-none text-nowrap">Iniciar sesión</h2>
+              <span className="text-sm font-semibold text-[#1A17F9] leading-none">Iniciar sesión</span>
             </div>
 
-            <div onClick={() => goToRegister()} className="cursor-pointer rounded-full bg-[#EBEBEB] flex gap-1 items-end px-4 py-[16px]">
-              <h2 className="no-underline text-lg font-semibold font-epilogue leading-[initial]">Regístrate</h2>
+            <div 
+              onClick={() => goToRegister()} 
+              className="cursor-pointer rounded-full bg-[#EBEBEB] hover:bg-[#DCDCDC] flex items-center px-4 py-3 transition-colors"
+            >
+              <span className="text-sm font-semibold text-foreground leading-none">Regístrate</span>
             </div>
           </div>
         )
