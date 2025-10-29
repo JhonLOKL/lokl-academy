@@ -29,9 +29,7 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
       name: project.name.charAt(0).toUpperCase() + project.name.slice(1), // Capitalizar nombre
       location: `${project.city.charAt(0).toUpperCase() + project.city.slice(1)}, ${project.country.charAt(0).toUpperCase() + project.country.slice(1)}`,
       description: project.description,
-      image: project.name.toLowerCase().includes('indie') 
-        ? '/images/new-home/INDIE UNIVERSE.png' 
-        : project.imageURL,
+      image: project.imageURL,
       videoUrl: project.videoURL || 'https://www.youtube.com/watch?v=example',
       minRoi: project.minRent * 100,
       maxRoi: project.maxRent * 100,
