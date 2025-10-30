@@ -10,16 +10,121 @@ import {
   CarouselPrevious,
   CarouselApi,
 } from "@/components/ui/carousel";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 
 export default function Benefits() {
+  const isMobile = useIsMobile();
   const [api, setApi] = useState<CarouselApi>();
+  const [carouselIndex, setCarouselIndex] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Referencias para el manejo de gestos táctiles en móvil (igual que featured-projects)
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   
   // Configuración del intervalo de rotación automática (6 segundos)
   const autoRotateInterval = 6000;
+
+  const benefits = [
+    {
+      title: "Impacto y comunidad",
+      description:
+        "Invertir con propósito es construir futuro. Invertimos donde el capital también construye comunidad y ecosistemas.",
+      ctaText: "Invierte con propósito",
+      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/benefit2.jpg",
+      benefit: "Propósito"
+    },
+    {
+      title: "Accesible desde montos bajos",
+      description:
+        "La inversión no es un privilegio. Desde $1.000 USD puedes activar impacto real, sin deudas ni barreras.",
+      ctaText: "Empieza desde $1.000",
+      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/benefit1.jpg",
+      benefit: "Inclusivo"
+    },
+    {
+      title: "Rentabilidad que transforma",
+      description:
+        "Ganar sí, pero no a cualquier costo. Rentabilidad del 8% al 15% anual, con impacto real para todos.",
+      ctaText: "Mira tu retorno",
+      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/benefit2.jpg",
+      benefit: "Sostenible"
+    },
+    {
+      title: "Seguridad y transparencia",
+      description:
+        "La confianza no se promete, se construye. Curaduría experta y seguimiento 100% abierto y en tiempo real.",
+      ctaText: "Tu inversión segura",
+      image:
+        "https://i.pinimg.com/1200x/d2/bb/76/d2bb767f2db2eec528f23ca43858901e.jpg",
+      benefit: "Confiable"
+    },
+    {
+      title: "Valor que vuelve a ti",
+      description:
+        "Aquí tu inversión también te transforma. Ganas por rentabilidad, impacto y experiencias únicas.",
+      ctaText: "Conoce tus beneficios",
+      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/benefit3.jpg",
+      benefit: "Integral"
+    },
+  ];
+
+  // Manejo de gestos táctiles para móvil (igual que en featured-projects)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current - touchEndX.current > 75) {
+      // Swipe left
+      nextCarousel();
+    }
+
+    if (touchStartX.current - touchEndX.current < -75) {
+      // Swipe right
+      prevCarousel();
+    }
+  };
+
+  // Navegación del carrusel
+  const nextCarousel = () => {
+    setCarouselIndex((prev) => (prev + 1) % benefits.length);
+    // En desktop, usar API del carrusel
+    if (!isMobile && api) {
+      api.scrollNext();
+    }
+  };
+
+  const prevCarousel = () => {
+    setCarouselIndex((prev) => (prev - 1 + benefits.length) % benefits.length);
+    // En desktop, usar API del carrusel
+    if (!isMobile && api) {
+      api.scrollPrev();
+    }
+  };
+
+  // Obtener los beneficios visibles en el orden correcto (igual que featured-projects)
+  const getVisibleBenefitsInOrder = () => {
+    if (isMobile) {
+      // En móvil, mostrar solo el beneficio actual
+      return [{ benefit: benefits[carouselIndex], index: carouselIndex }];
+    }
+    
+    // En desktop, mostrar todos los beneficios
+    return benefits.map((benefit, index) => ({ benefit, index }));
+  };
+
+  const visibleBenefits = getVisibleBenefitsInOrder();
   
+  // Auto-rotación solo en desktop
   useEffect(() => {
-    if (!api) return;
+    if (!api || isMobile) return;
     
     // Iniciar la rotación automática
     intervalRef.current = setInterval(() => {
@@ -32,36 +137,7 @@ export default function Benefits() {
         clearInterval(intervalRef.current);
       }
     };
-  }, [api]);
-
-  // Mejorar la experiencia de scroll en móvil
-  useEffect(() => {
-    const handleTouchMove = (e: TouchEvent) => {
-      const target = e.target as HTMLElement;
-      const carouselContainer = target.closest('.carousel-container');
-      
-      if (carouselContainer) {
-        // Permitir scroll horizontal dentro del carrusel
-        const carouselContent = carouselContainer.querySelector('.carousel-content');
-        if (carouselContent) {
-          const rect = carouselContent.getBoundingClientRect();
-          const touch = e.touches[0];
-          
-          // Solo prevenir si el touch está fuera del área del carrusel
-          if (touch.clientX < rect.left || touch.clientX > rect.right) {
-            e.preventDefault();
-          }
-        }
-      }
-    };
-
-    // Usar passive: false solo cuando sea necesario
-    document.addEventListener('touchmove', handleTouchMove, { passive: false });
-
-    return () => {
-      document.removeEventListener('touchmove', handleTouchMove);
-    };
-  }, []);
+  }, [api, isMobile]);
   
   // Pausar la rotación cuando el usuario interactúa con el carrusel
   const handleInteractionStart = () => {
@@ -78,90 +154,35 @@ export default function Benefits() {
     
     // Pequeño delay antes de reanudar para mejor UX
     setTimeout(() => {
-      intervalRef.current = setInterval(() => {
-        api?.scrollNext();
-      }, autoRotateInterval);
+      if (!isMobile && api) {
+        intervalRef.current = setInterval(() => {
+          api.scrollNext();
+        }, autoRotateInterval);
+      }
     }, 1000);
   };
   
-  const benefits = [
-    {
-      title: "Impacto y comunidad",
-      description:
-        "Invertir con propósito es construir futuro. Invertimos donde el capital también construye comunidad y ecosistemas.",
-      // Antes: "Haz parte de la nueva forma de invertir"
-      ctaText: "Invierte con propósito",
-      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/benefit2.jpg",
-      benefit: "Propósito"
-    },
-    {
-      title: "Accesible desde montos bajos",
-      description:
-        "La inversión no es un privilegio. Desde $1.000 USD puedes activar impacto real, sin deudas ni barreras.",
-      // Antes: "Crece con nosotros"
-      ctaText: "Empieza desde $1.000",
-      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/benefit1.jpg",
-      benefit: "Inclusivo"
-    },
-    {
-      title: "Rentabilidad que transforma",
-      description:
-        "Ganar sí, pero no a cualquier costo. Rentabilidad del 8% al 15% anual, con impacto real para todos.",
-      // Antes: "Calcula tu retorno financiero y social"
-      ctaText: "Mira tu retorno",
-      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/benefit2.jpg",
-      benefit: "Sostenible"
-    },
-    {
-      title: "Seguridad y transparencia",
-      description:
-        "La confianza no se promete, se construye. Curaduría experta y seguimiento 100% abierto y en tiempo real.",
-      // Antes: "Conoce cómo protegemos tu inversión"
-      ctaText: "Tu inversión segura",
-      image:
-        "https://i.pinimg.com/1200x/d2/bb/76/d2bb767f2db2eec528f23ca43858901e.jpg",
-      benefit: "Confiable"
-    },
-    {
-      title: "Valor que vuelve a ti",
-      description:
-        "Aquí tu inversión también te transforma. Ganas por rentabilidad, impacto y experiencias únicas.",
-      // Antes: "Descubre todos los beneficios"
-      ctaText: "Conoce tus beneficios",
-      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/benefit3.jpg",
-      benefit: "Integral"
-    },
-  ];
-  
+  // Sincronizar carouselIndex con el API cuando cambie (solo desktop)
+  useEffect(() => {
+    if (!api || isMobile) return;
+    
+    const handleSelect = () => {
+      const selected = api.selectedScrollSnap();
+      setCarouselIndex(selected);
+    };
+    
+    api.on("select", handleSelect);
+    
+    return () => {
+      api.off("select", handleSelect);
+    };
+  }, [api, isMobile]);
 
   return (
-    <>
-      <style jsx>{`
-        .carousel-container {
-          -webkit-overflow-scrolling: touch;
-          scroll-behavior: smooth;
-        }
-        
-        .carousel-content {
-          -webkit-overflow-scrolling: touch;
-          scroll-snap-type: x mandatory;
-        }
-        
-        .carousel-item {
-          scroll-snap-align: center;
-          scroll-snap-stop: always;
-        }
-        
-        @media (max-width: 768px) {
-          .carousel-container {
-            touch-action: pan-x;
-          }
-        }
-      `}</style>
-      <section
-        id="benefits"
-        className="py-8 sm:py-12 md:py-16 bg-[rgb(243,243,243)] overflow-x-hidden"
-      >
+    <section
+      id="benefits"
+      className="py-8 sm:py-12 md:py-16 bg-[rgb(243,243,243)] overflow-x-hidden"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 overflow-x-hidden">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12">
@@ -175,94 +196,193 @@ export default function Benefits() {
           </p>
         </div>
 
-        {/* Benefits Carousel */}
-        <Carousel
-          opts={{
-            align: "center",
-            loop: true,
-            containScroll: "trimSnaps",
-            dragFree: true,
-            skipSnaps: false,
-            inViewThreshold: 0.7
-          }}
-          onMouseEnter={handleInteractionStart}
-          onMouseLeave={handleInteractionEnd}
-          onTouchStart={handleInteractionStart}
-          onTouchEnd={handleInteractionEnd}
-          setApi={setApi}
-          className="w-full overflow-hidden px-4 sm:px-4 -mx-4 sm:-mx-4 carousel-container"
-        >
-          <CarouselContent className="-ml-2 sm:-ml-2 md:-ml-4 touch-pan-x carousel-content">
-            {benefits.map((benefit, index) => (
-              <CarouselItem
-                key={index}
-                className="pl-2 sm:pl-2 md:pl-4 basis-[85%] sm:basis-[85%] md:basis-1/2 lg:basis-1/3 carousel-item"
+        {/* Benefits Container */}
+        <div className="relative">
+          {/* Navigation Buttons - Mobile (igual que featured-projects) */}
+          {isMobile && (
+            <>
+              <button
+                onClick={prevCarousel}
+                className="flex md:hidden absolute -left-4 top-1/2 -translate-y-1/2 z-40 w-10 h-10 items-center justify-center transition-all duration-300 hover:scale-110"
+                aria-label="Beneficio anterior"
               >
-                <div 
-                  className="group h-full cursor-pointer select-none" 
-                  onClick={() => api?.scrollTo(index)}
-                >
-                  {/* Tarjeta con imagen de fondo dominante */}
-                  <div className="relative h-[400px] sm:h-[450px] md:h-[550px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
-                    {/* Imagen de fondo a pantalla completa */}
+                <ChevronLeft className="w-6 h-6 text-black" />
+              </button>
+              <button
+                onClick={nextCarousel}
+                className="flex md:hidden absolute -right-4 top-1/2 -translate-y-1/2 z-40 w-10 h-10 items-center justify-center transition-all duration-300 hover:scale-110"
+                aria-label="Beneficio siguiente"
+              >
+                <ChevronRight className="w-6 h-6 text-black" />
+              </button>
+            </>
+          )}
+
+          {/* Móvil: Contenedor simple con swipe (igual que featured-projects) */}
+          {isMobile && (
+            <div ref={scrollContainerRef}>
+              <div className="flex items-stretch gap-4 max-w-7xl mx-auto justify-center">
+                {visibleBenefits.map(({ benefit, index }) => {
+                  return (
                     <div
-                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                      style={{
-                        backgroundImage: `url(${benefit.image})`,
-                      }}
-                    />
+                      key={index}
+                      className="transition-all duration-700 ease-in-out flex-shrink-0 w-full max-w-72 mx-auto z-20"
+                      onTouchStart={handleTouchStart}
+                      onTouchMove={handleTouchMove}
+                      onTouchEnd={handleTouchEnd}
+                    >
+                      {/* Tarjeta con imagen de fondo dominante */}
+                      <div className="group relative h-[400px] sm:h-[450px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] cursor-pointer">
+                        {/* Imagen de fondo a pantalla completa */}
+                        <div
+                          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                          style={{
+                            backgroundImage: `url(${benefit.image})`,
+                          }}
+                        />
 
-                    {/* Overlay gradiente para legibilidad */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/80 group-hover:from-black/30 group-hover:to-black/90 transition-all duration-500" />
+                        {/* Overlay gradiente para legibilidad */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/80 group-hover:from-black/30 group-hover:to-black/90 transition-all duration-500" />
 
-                    {/* Contenido sobre la imagen */}
-                    <div className="relative h-full flex flex-col justify-between p-4 sm:p-6 md:p-8">
-                      {/* Badge superior opcional */}
-                      <div className="self-start">
-                        <div className="inline-flex items-center gap-2 sm:gap-2.5 bg-white/20 backdrop-blur-md px-4 sm:px-5 py-2 sm:py-2.5 rounded-full border border-white/30">
-                          <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-[#5352F6] rounded-full animate-pulse" />
-                          <span className="text-white text-sm sm:text-base font-medium">
-                           {benefit.benefit}
-                          </span>
+                        {/* Contenido sobre la imagen */}
+                        <div className="relative h-full flex flex-col justify-between p-4 sm:p-6 md:p-8">
+                          {/* Badge superior opcional */}
+                          <div className="self-start">
+                            <div className="inline-flex items-center gap-2 sm:gap-2.5 bg-white/20 backdrop-blur-md px-4 sm:px-5 py-2 sm:py-2.5 rounded-full border border-white/30">
+                              <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-[#5352F6] rounded-full animate-pulse" />
+                              <span className="text-white text-sm sm:text-base font-medium">
+                               {benefit.benefit}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Contenido inferior */}
+                          <div className="space-y-3 sm:space-y-4">
+                            {/* Título */}
+                            <h3 className="text-white font-bold text-2xl sm:text-3xl md:text-4xl leading-tight drop-shadow-lg">
+                              {benefit.title}
+                            </h3>
+
+                            {/* Descripción */}
+                            <p className="text-white/90 text-base sm:text-lg md:text-xl leading-relaxed drop-shadow-md overflow-y-auto max-h-[120px] sm:max-h-[140px] md:max-h-[160px] lg:max-h-[180px] pr-1 sm:pr-2 scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent">
+                              {benefit.description}
+                            </p>
+
+                            {/* Botón CTA */}
+                            <Button className="w-full bg-white/95 hover:bg-white text-[#5352F6] border-0 rounded-xl sm:rounded-2xl px-4 sm:px-5 md:px-6 py-3 sm:py-4 md:py-5 font-medium transition-all duration-300 hover:scale-[1.02] hover:shadow-xl group/button backdrop-blur-sm text-xs sm:text-sm md:text-base min-h-[44px] sm:min-h-[48px] md:min-h-[52px]">
+                              <span className="flex items-center justify-center gap-2 text-center leading-tight px-2 break-words">
+                                {benefit.ctaText}
+                              </span>
+                            </Button>
+                          </div>
                         </div>
-                      </div>
 
-                      {/* Contenido inferior */}
-                      <div className="space-y-3 sm:space-y-4">
-                        {/* Título */}
-                        <h3 className="text-white font-bold text-2xl sm:text-3xl md:text-4xl leading-tight drop-shadow-lg">
-                          {benefit.title}
-                        </h3>
-
-                        {/* Descripción */}
-                        <p className="text-white/90 text-base sm:text-lg md:text-xl leading-relaxed drop-shadow-md overflow-y-auto max-h-[120px] sm:max-h-[140px] md:max-h-[160px] lg:max-h-[180px] pr-1 sm:pr-2 scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent">
-                          {benefit.description}
-                        </p>
-
-                        {/* Botón CTA */}
-                        <Button className="w-full bg-white/95 hover:bg-white text-[#5352F6] border-0 rounded-xl sm:rounded-2xl px-4 sm:px-5 md:px-6 py-3 sm:py-4 md:py-5 font-medium transition-all duration-300 hover:scale-[1.02] hover:shadow-xl group/button backdrop-blur-sm text-xs sm:text-sm md:text-base min-h-[44px] sm:min-h-[48px] md:min-h-[52px]">
-                          <span className="flex items-center justify-center gap-2 text-center leading-tight px-2 break-words">
-                            {benefit.ctaText}
-                          </span>
-                        </Button>
+                        {/* Brillo decorativo en hover */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-[#5352F6]/0 via-[#5352F6]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                       </div>
                     </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
-                    {/* Brillo decorativo en hover */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-[#5352F6]/0 via-[#5352F6]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-                  </div>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
+          {/* Desktop Carousel */}
+          {!isMobile && (
+            <Carousel
+              opts={{
+                align: "start",
+                loop: false,
+                skipSnaps: false,
+              }}
+              onMouseEnter={handleInteractionStart}
+              onMouseLeave={handleInteractionEnd}
+              setApi={setApi}
+              className="hidden md:block"
+            >
+              <CarouselContent className="-ml-4">
+                {benefits.map((benefit, index) => (
+                  <CarouselItem key={index} className="pl-4 basis-1/3">
+                    <div className="group h-full cursor-pointer select-none">
+                      {/* Tarjeta con imagen de fondo dominante */}
+                      <div className="relative h-[550px] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
+                        {/* Imagen de fondo a pantalla completa */}
+                        <div
+                          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                          style={{
+                            backgroundImage: `url(${benefit.image})`,
+                          }}
+                        />
 
-          {/* Navigation Arrows */}
-          <CarouselPrevious className="hidden md:flex -left-20 h-12 w-12 border-2 border-[#5352F6]/20 bg-white hover:bg-[#5352F6] hover:text-white hover:border-[#5352F6]" />
-          <CarouselNext className="hidden md:flex -right-20 h-12 w-12 border-2 border-[#5352F6]/20 bg-white hover:bg-[#5352F6] hover:text-white hover:border-[#5352F6]" />
-        </Carousel>
+                        {/* Overlay gradiente para legibilidad */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/80 group-hover:from-black/30 group-hover:to-black/90 transition-all duration-500" />
 
+                        {/* Contenido sobre la imagen */}
+                        <div className="relative h-full flex flex-col justify-between p-8">
+                          {/* Badge superior opcional */}
+                          <div className="self-start">
+                            <div className="inline-flex items-center gap-2.5 bg-white/20 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/30">
+                              <div className="w-2.5 h-2.5 bg-[#5352F6] rounded-full animate-pulse" />
+                              <span className="text-white text-base font-medium">
+                               {benefit.benefit}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Contenido inferior */}
+                          <div className="space-y-4">
+                            {/* Título */}
+                            <h3 className="text-white font-bold text-4xl leading-tight drop-shadow-lg">
+                              {benefit.title}
+                            </h3>
+
+                            {/* Descripción */}
+                            <p className="text-white/90 text-xl leading-relaxed drop-shadow-md overflow-y-auto max-h-[180px] pr-2 scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent">
+                              {benefit.description}
+                            </p>
+
+                            {/* Botón CTA */}
+                            <Button className="w-full bg-white/95 hover:bg-white text-[#5352F6] border-0 rounded-2xl px-6 py-5 font-medium transition-all duration-300 hover:scale-[1.02] hover:shadow-xl group/button backdrop-blur-sm text-base min-h-[52px]">
+                              <span className="flex items-center justify-center gap-2 text-center leading-tight px-2 break-words">
+                                {benefit.ctaText}
+                              </span>
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Brillo decorativo en hover */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-[#5352F6]/0 via-[#5352F6]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                      </div>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+
+              {/* Navigation Arrows */}
+              <CarouselPrevious className="hidden md:flex -left-20 h-12 w-12 border-2 border-[#5352F6]/20 bg-white hover:bg-[#5352F6] hover:text-white hover:border-[#5352F6]" />
+              <CarouselNext className="hidden md:flex -right-20 h-12 w-12 border-2 border-[#5352F6]/20 bg-white hover:bg-[#5352F6] hover:text-white hover:border-[#5352F6]" />
+            </Carousel>
+          )}
+
+          {/* Dots Indicator - Solo móvil */}
+          {isMobile && benefits.length > 1 && (
+            <div className="md:hidden flex justify-center gap-2 mt-8">
+              {benefits.map((_, index) => (
+                <button
+                  key={index}
+                  className={`h-2.5 rounded-full transition-all duration-300 touch-manipulation ${
+                    index === carouselIndex 
+                      ? 'bg-[#5352F6] w-10' 
+                      : 'bg-gray-300 hover:bg-gray-400 active:bg-gray-500 w-2.5'
+                  }`}
+                  onClick={() => setCarouselIndex(index)}
+                  aria-label={`Ir al beneficio ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-      </section>
-    </>
+    </section>
   );
 }

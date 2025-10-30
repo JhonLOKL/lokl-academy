@@ -58,7 +58,7 @@ export default function FinalCTA() {
                 <ImageWithFallback
                   src="https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Cta-final.jpg"
                   alt="Asesora especializada LOKL"
-                  className="w-full h-full object-cover object-center sm:object-top transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-full object-cover object-top landscape:object-center lg:object-center transition-transform duration-700 group-hover:scale-105"
                 />
                 {/* Overlay sutil */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#5352F6]/40 via-transparent to-transparent"></div>
