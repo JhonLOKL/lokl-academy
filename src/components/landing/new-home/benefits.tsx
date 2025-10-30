@@ -181,16 +181,16 @@ export default function Benefits() {
   return (
     <section
       id="benefits"
-      className="py-8 sm:py-12 md:py-16 bg-[rgb(243,243,243)] overflow-x-hidden"
+      className="py-8 sm:py-12 md:py-16 landscape:py-6 bg-[rgb(243,243,243)] overflow-x-hidden"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 overflow-x-hidden">
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-12">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 sm:mb-6 leading-tight">
+        <div className="text-center mb-8 sm:mb-12 landscape:mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl landscape:text-2xl landscape:sm:text-3xl font-bold text-foreground mb-4 sm:mb-6 landscape:mb-3 leading-tight">
             <span className="text-[#5352F6]">BENEFICIOS</span> de
             invertir con LOKL
           </h2>
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-2">
+          <p className="text-base sm:text-lg md:text-xl landscape:text-sm landscape:sm:text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed landscape:leading-snug px-2">
             Inversión inmobiliaria con propósito: rentabilidad financiera, impacto social
             y experiencias que transforman.
           </p>
@@ -226,13 +226,13 @@ export default function Benefits() {
                   return (
                     <div
                       key={index}
-                      className="transition-all duration-700 ease-in-out flex-shrink-0 w-full max-w-72 mx-auto z-20"
+                      className="transition-all duration-700 ease-in-out flex-shrink-0 w-full max-w-72 landscape:max-w-md mx-auto z-20"
                       onTouchStart={handleTouchStart}
                       onTouchMove={handleTouchMove}
                       onTouchEnd={handleTouchEnd}
                     >
                       {/* Tarjeta con imagen de fondo dominante */}
-                      <div className="group relative h-[400px] sm:h-[450px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] cursor-pointer">
+                      <div className="group relative h-[400px] sm:h-[450px] landscape:h-[320px] landscape:sm:h-[360px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] cursor-pointer">
                         {/* Imagen de fondo a pantalla completa */}
                         <div
                           className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
@@ -245,31 +245,31 @@ export default function Benefits() {
                         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/80 group-hover:from-black/30 group-hover:to-black/90 transition-all duration-500" />
 
                         {/* Contenido sobre la imagen */}
-                        <div className="relative h-full flex flex-col justify-between p-4 sm:p-6 md:p-8">
+                        <div className="relative h-full flex flex-col justify-between p-4 sm:p-6 md:p-8 landscape:p-3 landscape:sm:p-4">
                           {/* Badge superior opcional */}
                           <div className="self-start">
-                            <div className="inline-flex items-center gap-2 sm:gap-2.5 bg-white/20 backdrop-blur-md px-4 sm:px-5 py-2 sm:py-2.5 rounded-full border border-white/30">
-                              <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-[#5352F6] rounded-full animate-pulse" />
-                              <span className="text-white text-sm sm:text-base font-medium">
+                            <div className="inline-flex items-center gap-2 sm:gap-2.5 landscape:gap-1.5 bg-white/20 backdrop-blur-md px-4 sm:px-5 landscape:px-3 py-2 sm:py-2.5 landscape:py-1.5 rounded-full border border-white/30">
+                              <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 landscape:w-1.5 landscape:h-1.5 bg-[#5352F6] rounded-full animate-pulse" />
+                              <span className="text-white text-sm sm:text-base landscape:text-xs font-medium">
                                {benefit.benefit}
                               </span>
                             </div>
                           </div>
 
                           {/* Contenido inferior */}
-                          <div className="space-y-3 sm:space-y-4">
+                          <div className="space-y-3 sm:space-y-4 landscape:space-y-2">
                             {/* Título */}
-                            <h3 className="text-white font-bold text-2xl sm:text-3xl md:text-4xl leading-tight drop-shadow-lg">
+                            <h3 className="text-white font-bold text-2xl sm:text-3xl md:text-4xl landscape:text-xl landscape:sm:text-2xl leading-tight drop-shadow-lg">
                               {benefit.title}
                             </h3>
 
                             {/* Descripción */}
-                            <p className="text-white/90 text-base sm:text-lg md:text-xl leading-relaxed drop-shadow-md overflow-y-auto max-h-[120px] sm:max-h-[140px] md:max-h-[160px] lg:max-h-[180px] pr-1 sm:pr-2 scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent">
+                            <p className="text-white/90 text-base sm:text-lg md:text-xl landscape:text-sm landscape:sm:text-base leading-relaxed landscape:leading-snug drop-shadow-md overflow-y-auto max-h-[120px] sm:max-h-[140px] md:max-h-[160px] lg:max-h-[180px] landscape:max-h-[80px] landscape:sm:max-h-[100px] pr-1 sm:pr-2 scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent">
                               {benefit.description}
                             </p>
 
                             {/* Botón CTA */}
-                            <Button className="w-full bg-white/95 hover:bg-white text-[#5352F6] border-0 rounded-xl sm:rounded-2xl px-4 sm:px-5 md:px-6 py-3 sm:py-4 md:py-5 font-medium transition-all duration-300 hover:scale-[1.02] hover:shadow-xl group/button backdrop-blur-sm text-xs sm:text-sm md:text-base min-h-[44px] sm:min-h-[48px] md:min-h-[52px]">
+                            <Button className="w-full bg-white/95 hover:bg-white text-[#5352F6] border-0 rounded-xl sm:rounded-2xl landscape:rounded-lg px-4 sm:px-5 md:px-6 landscape:px-3 py-3 sm:py-4 md:py-5 landscape:py-2 font-medium transition-all duration-300 hover:scale-[1.02] hover:shadow-xl group/button backdrop-blur-sm text-xs sm:text-sm md:text-base landscape:text-xs min-h-[44px] sm:min-h-[48px] md:min-h-[52px] landscape:min-h-[36px]">
                               <span className="flex items-center justify-center gap-2 text-center leading-tight px-2 break-words">
                                 {benefit.ctaText}
                               </span>
@@ -302,10 +302,10 @@ export default function Benefits() {
             >
               <CarouselContent className="-ml-4">
                 {benefits.map((benefit, index) => (
-                  <CarouselItem key={index} className="pl-4 basis-1/3">
+                  <CarouselItem key={index} className="pl-4 basis-1/3 landscape:basis-1/2">
                     <div className="group h-full cursor-pointer select-none">
                       {/* Tarjeta con imagen de fondo dominante */}
-                      <div className="relative h-[550px] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
+                      <div className="relative h-[550px] landscape:h-[400px] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
                         {/* Imagen de fondo a pantalla completa */}
                         <div
                           className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
@@ -318,31 +318,31 @@ export default function Benefits() {
                         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/80 group-hover:from-black/30 group-hover:to-black/90 transition-all duration-500" />
 
                         {/* Contenido sobre la imagen */}
-                        <div className="relative h-full flex flex-col justify-between p-8">
+                        <div className="relative h-full flex flex-col justify-between p-8 landscape:p-5">
                           {/* Badge superior opcional */}
                           <div className="self-start">
-                            <div className="inline-flex items-center gap-2.5 bg-white/20 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/30">
-                              <div className="w-2.5 h-2.5 bg-[#5352F6] rounded-full animate-pulse" />
-                              <span className="text-white text-base font-medium">
+                            <div className="inline-flex items-center gap-2.5 landscape:gap-1.5 bg-white/20 backdrop-blur-md px-5 landscape:px-3 py-2.5 landscape:py-1.5 rounded-full border border-white/30">
+                              <div className="w-2.5 h-2.5 landscape:w-2 landscape:h-2 bg-[#5352F6] rounded-full animate-pulse" />
+                              <span className="text-white text-base landscape:text-sm font-medium">
                                {benefit.benefit}
                               </span>
                             </div>
                           </div>
 
                           {/* Contenido inferior */}
-                          <div className="space-y-4">
+                          <div className="space-y-4 landscape:space-y-2.5">
                             {/* Título */}
-                            <h3 className="text-white font-bold text-4xl leading-tight drop-shadow-lg">
+                            <h3 className="text-white font-bold text-4xl landscape:text-2xl leading-tight drop-shadow-lg">
                               {benefit.title}
                             </h3>
 
                             {/* Descripción */}
-                            <p className="text-white/90 text-xl leading-relaxed drop-shadow-md overflow-y-auto max-h-[180px] pr-2 scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent">
+                            <p className="text-white/90 text-xl landscape:text-base leading-relaxed landscape:leading-snug drop-shadow-md overflow-y-auto max-h-[180px] landscape:max-h-[100px] pr-2 scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent">
                               {benefit.description}
                             </p>
 
                             {/* Botón CTA */}
-                            <Button className="w-full bg-white/95 hover:bg-white text-[#5352F6] border-0 rounded-2xl px-6 py-5 font-medium transition-all duration-300 hover:scale-[1.02] hover:shadow-xl group/button backdrop-blur-sm text-base min-h-[52px]">
+                            <Button className="w-full bg-white/95 hover:bg-white text-[#5352F6] border-0 rounded-2xl landscape:rounded-xl px-6 landscape:px-4 py-5 landscape:py-3 font-medium transition-all duration-300 hover:scale-[1.02] hover:shadow-xl group/button backdrop-blur-sm text-base landscape:text-sm min-h-[52px] landscape:min-h-[40px]">
                               <span className="flex items-center justify-center gap-2 text-center leading-tight px-2 break-words">
                                 {benefit.ctaText}
                               </span>
@@ -366,14 +366,14 @@ export default function Benefits() {
 
           {/* Dots Indicator - Solo móvil */}
           {isMobile && benefits.length > 1 && (
-            <div className="md:hidden flex justify-center gap-2 mt-8">
+            <div className="md:hidden flex justify-center gap-2 mt-8 landscape:mt-4">
               {benefits.map((_, index) => (
                 <button
                   key={index}
-                  className={`h-2.5 rounded-full transition-all duration-300 touch-manipulation ${
+                  className={`h-2.5 landscape:h-2 rounded-full transition-all duration-300 touch-manipulation ${
                     index === carouselIndex 
-                      ? 'bg-[#5352F6] w-10' 
-                      : 'bg-gray-300 hover:bg-gray-400 active:bg-gray-500 w-2.5'
+                      ? 'bg-[#5352F6] w-10 landscape:w-8' 
+                      : 'bg-gray-300 hover:bg-gray-400 active:bg-gray-500 w-2.5 landscape:w-2'
                   }`}
                   onClick={() => setCarouselIndex(index)}
                   aria-label={`Ir al beneficio ${index + 1}`}
