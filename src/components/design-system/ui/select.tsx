@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { Check, ChevronDown, ChevronUp } from "lucide-react";
@@ -23,6 +25,7 @@ const SelectTrigger = React.forwardRef<
       error && "border-[#FF3B30] focus-visible:ring-[#FF3B30]",
       className
     )}
+    suppressHydrationWarning
     {...props}
   >
     {children}
