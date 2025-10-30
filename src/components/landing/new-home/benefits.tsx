@@ -302,7 +302,7 @@ export default function Benefits() {
             >
               <CarouselContent className="-ml-4">
                 {benefits.map((benefit, index) => (
-                  <CarouselItem key={index} className="pl-4 basis-1/3 landscape:basis-1/2">
+                  <CarouselItem key={index} className="pl-4 basis-1/3">
                     <div className="group h-full cursor-pointer select-none">
                       {/* Tarjeta con imagen de fondo dominante */}
                       <div className="relative h-[550px] landscape:h-[400px] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
