@@ -141,7 +141,7 @@ export default function YouTubeEmbed({ videoId, onPlayStateChange }: YouTubeEmbe
         <iframe
           ref={iframeRef}
           className="w-full h-full absolute inset-0 rounded-xl"
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=0&enablejsapi=1&controls=1&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&origin=${encodeURIComponent(window.location.origin)}`}
+          src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=0&enablejsapi=1&controls=1&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&origin=${encodeURIComponent(window.location.origin)}`}
           title="YouTube video player"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen

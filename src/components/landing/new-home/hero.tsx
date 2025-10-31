@@ -318,9 +318,9 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
           <div className="hidden md:block md:col-span-5">
             <div className="rounded-2xl p-6 shadow-2xl ring-1 ring-white/20 bg-white/15 backdrop-blur-xl backdrop-saturate-150 max-w-sm mx-auto">
               {/* Título del teaser */}
-              <h3 className="text-xl font-semibold text-white mb-1">
+              <h2 className="text-xl font-semibold text-white mb-1">
                 Proyección rápida
-              </h3>
+              </h2>
               <p className="text-sm text-white/70 mb-6">
                 Simula tu inversión en segundos
               </p>
@@ -413,9 +413,9 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
       <div className="md:hidden bg-background py-8 px-6">
         <div className="max-w-sm mx-auto">
           {/* Título del simulador mobile */}
-          <h3 className="text-xl font-semibold text-foreground mb-1">
+          <h2 className="text-xl font-semibold text-foreground mb-1">
             Proyección rápida
-          </h3>
+          </h2>
           <p className="text-sm text-muted-foreground mb-6">
             Simula tu inversión en segundos
           </p>
@@ -510,7 +510,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
             "@type": "VideoObject",
             "name": "LOKL - Inversiones inmobiliarias con propósito",
             "description": "Descubre cómo invertir en bienes raíces y proyectos hoteleros con LOKL. Crowdfunding inmobiliario accesible desde $1.3M mensuales.",
-            "thumbnailUrl": "https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe_poster.jpg",
+            "thumbnailUrl": "https://lokl-assets.s3.us-east-1.amazonaws.com/home/hero-img-1.jpg",
             "uploadDate": "2025-10-28T00:00:00.000Z",
             "contentUrl": "https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe.mp4",
             "embedUrl": "https://lokl.life",
