@@ -218,11 +218,16 @@ export default function StatsSection() {
           {[0, 1, 2, 3].map((index) => (
             <button
               key={index}
-              className={`w-2 h-2 rounded-full transition-all ${
-                currentIndex === index ? 'bg-white w-6' : 'bg-white/40'
+              className={`min-w-[44px] min-h-[44px] rounded-full transition-all flex items-center justify-center ${
+                currentIndex === index ? 'bg-white/20' : 'bg-transparent'
               }`}
               onClick={() => setCurrentIndex(index)}
-            />
+              aria-label={`Ir a la estadística ${index + 1}`}
+            >
+              <span className={`rounded-full transition-all ${
+                currentIndex === index ? 'bg-white w-6 h-2' : 'bg-white/40 w-2 h-2'
+              }`}></span>
+            </button>
           ))}
         </div>
       </div>

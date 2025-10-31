@@ -729,14 +729,16 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
               {projects.map((_, index) => (
                 <button
                   key={index}
-                  className={`h-2.5 rounded-full transition-all duration-300 touch-manipulation ${
-                    index === carouselIndex 
-                      ? 'bg-primary w-10' 
-                      : 'bg-gray-300 hover:bg-gray-400 active:bg-gray-500 w-2.5'
-                  }`}
+                  className="min-w-[44px] min-h-[44px] rounded-full transition-all duration-300 touch-manipulation flex items-center justify-center"
                   onClick={() => setCarouselIndex(index)}
                   aria-label={`Ir al proyecto ${index + 1}`}
-                />
+                >
+                  <span className={`h-2.5 rounded-full transition-all duration-300 ${
+                    index === carouselIndex 
+                      ? 'bg-primary w-10' 
+                      : 'bg-gray-300 w-2.5'
+                  }`}></span>
+                </button>
               ))}
             </div>
           )}
