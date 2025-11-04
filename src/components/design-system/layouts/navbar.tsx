@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-is-mobile";
@@ -110,31 +111,56 @@ export function Navbar({
                         {openDropdown === index && (
                           <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
                             {item.dropdown.map((dropdownItem, dropdownIndex) => (
-                              <a
-                                key={dropdownIndex}
-                                href={dropdownItem.href}
-                                target={dropdownItem.external ? "_blank" : undefined}
-                                rel={dropdownItem.external ? "noopener noreferrer" : undefined}
-                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#5352F6] transition-colors"
-                              >
-                                {dropdownItem.label}
-                              </a>
+                              dropdownItem.external ? (
+                                <a
+                                  key={dropdownIndex}
+                                  href={dropdownItem.href}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#5352F6] transition-colors"
+                                >
+                                  {dropdownItem.label}
+                                </a>
+                              ) : (
+                                <Link
+                                  key={dropdownIndex}
+                                  href={dropdownItem.href}
+                                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#5352F6] transition-colors"
+                                  onClick={() => setOpenDropdown(null)}
+                                >
+                                  {dropdownItem.label}
+                                </Link>
+                              )
                             ))}
                           </div>
                         )}
                       </div>
                     ) : (
-                      <a
-                        href={item.href}
-                        target={item.external ? "_blank" : undefined}
-                        rel={item.external ? "noopener noreferrer" : undefined}
-                        className={cn(
-                          "text-sm font-medium transition-colors hover:text-[#5352F6]",
-                          item.active ? "text-[#5352F6]" : "text-[#0F0F0F]"
-                        )}
-                      >
-                        {item.label}
-                      </a>
+                      item.external ? (
+                        <a
+                          href={item.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={cn(
+                            "text-sm font-medium transition-colors hover:text-[#5352F6]",
+                            item.active ? "text-[#5352F6]" : "text-[#0F0F0F]"
+                          )}
+                        >
+                          {item.label}
+                        </a>
+                      ) : (
+                        item.href ? (
+                          <Link
+                            href={item.href}
+                            className={cn(
+                              "text-sm font-medium transition-colors hover:text-[#5352F6]",
+                              item.active ? "text-[#5352F6]" : "text-[#0F0F0F]"
+                            )}
+                          >
+                            {item.label}
+                          </Link>
+                        ) : null
+                      )
                     )}
                   </li>
                 ))}
@@ -186,33 +212,64 @@ export function Navbar({
                     {openDropdown === index && (
                       <div className="ml-4 mt-1 space-y-1">
                         {item.dropdown.map((dropdownItem, dropdownIndex) => (
-                          <a
-                            key={dropdownIndex}
-                            href={dropdownItem.href}
-                            target={dropdownItem.external ? "_blank" : undefined}
-                            rel={dropdownItem.external ? "noopener noreferrer" : undefined}
-                            className="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-[#F5F5F5] hover:text-[#5352F6]"
-                          >
-                            {dropdownItem.label}
-                          </a>
+                          dropdownItem.external ? (
+                            <a
+                              key={dropdownIndex}
+                              href={dropdownItem.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-[#F5F5F5] hover:text-[#5352F6]"
+                            >
+                              {dropdownItem.label}
+                            </a>
+                          ) : (
+                            <Link
+                              key={dropdownIndex}
+                              href={dropdownItem.href}
+                              className="block rounded-md px-3 py-2 text-sm text-gray-600 hover:bg-[#F5F5F5] hover:text-[#5352F6]"
+                              onClick={() => {
+                                setOpenDropdown(null);
+                                setIsMenuOpen(false);
+                              }}
+                            >
+                              {dropdownItem.label}
+                            </Link>
+                          )
                         ))}
                       </div>
                     )}
                   </div>
                 ) : (
-                  <a
-                    href={item.href}
-                    target={item.external ? "_blank" : undefined}
-                    rel={item.external ? "noopener noreferrer" : undefined}
-                    className={cn(
-                      "block rounded-md px-3 py-2 text-base font-medium",
-                      item.active
-                        ? "bg-[#F5F5F5] text-[#5352F6]"
-                        : "text-[#0F0F0F] hover:bg-[#F5F5F5] hover:text-[#5352F6]"
-                    )}
-                  >
-                    {item.label}
-                  </a>
+                  item.external ? (
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={cn(
+                        "block rounded-md px-3 py-2 text-base font-medium",
+                        item.active
+                          ? "bg-[#F5F5F5] text-[#5352F6]"
+                          : "text-[#0F0F0F] hover:bg-[#F5F5F5] hover:text-[#5352F6]"
+                      )}
+                    >
+                      {item.label}
+                    </a>
+                  ) : (
+                    item.href ? (
+                      <Link
+                        href={item.href}
+                        className={cn(
+                          "block rounded-md px-3 py-2 text-base font-medium",
+                          item.active
+                            ? "bg-[#F5F5F5] text-[#5352F6]"
+                            : "text-[#0F0F0F] hover:bg-[#F5F5F5] hover:text-[#5352F6]"
+                        )}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {item.label}
+                      </Link>
+                    ) : null
+                  )
                 )}
               </div>
             ))}
