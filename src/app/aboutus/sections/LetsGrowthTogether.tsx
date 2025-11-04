@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 export default function LetsGrowthTogether() {
   return (
-    <header className="relative w-full h-[100vh] max-h-[100vh] md:max-h-[740px] md:h-[100vh] overflow-hidden">
+    <div className="relative w-full h-[100vh] max-h-[100vh] md:max-h-[740px] md:h-[100vh] overflow-hidden">
           {/* Background Image */}
           <Image
             src="/images/about-us/img-lets-growth.jpg"
@@ -45,7 +45,7 @@ export default function LetsGrowthTogether() {
       <div className="absolute bottom-8 right-8 text-white text-xl md:text-3xl lg:text-4xl font-light tracking-wider">
         NOSOTROS
       </div>
-    </header>
+    </div>
   );
 }
 

@@ -1,6 +1,12 @@
 import React from 'react';
 import { Metadata } from 'next';
-import AboutUsClient from './about-us-client';
+import LetsGrowthTogether from './sections/LetsGrowthTogether';
+import TimeLine from './sections/TimeLine';
+import WeAreDifferent from './sections/WeAreDifferent';
+import OurTeam from './sections/OurTeam';
+import FrequentlyQs from './sections/FrequentlyQs';
+import Supplierbar from './sections/Supplierbar';
+import StatsBarWithData from './components/StatsBarWithData';
 
 // Metadatos para SEO
 export const metadata: Metadata = {
@@ -67,6 +73,36 @@ export const metadata: Metadata = {
 };
 
 export default function AboutUsPage() {
-  return <AboutUsClient />;
+  return (
+    <main>
+      <header>
+        <LetsGrowthTogether />
+      </header>
+      
+      <section>
+        <TimeLine />
+      </section>
+      
+      <section className="w-full">
+        <StatsBarWithData />
+      </section>
+      
+      <article className="md:mt-0">
+        <WeAreDifferent />
+      </article>
+      
+      <section>
+        <OurTeam />
+      </section>
+     
+      <section>
+        <FrequentlyQs />
+      </section>
+      
+      <aside className="mt-16">
+        <Supplierbar />
+      </aside>
+    </main>
+  );
 }
 
