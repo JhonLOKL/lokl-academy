@@ -76,8 +76,7 @@ export function SiteNavbar() {
               <span>Nosotros</span>
             </div>
           ), 
-          href: "https://lokl.life/aboutus",
-          external: true
+          href: "/aboutus"
         },
         { 
           label: (

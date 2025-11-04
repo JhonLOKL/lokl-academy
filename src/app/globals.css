@@ -188,3 +188,143 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.5);
 }
+
+/* Estilos para react-tabs */
+.react-tabs {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.react-tabs__tab-list {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  list-style: none;
+}
+
+.react-tabs__tab {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+}
+
+.react-tabs__tab--selected {
+  color: #A5A4FF;
+}
+
+.react-tabs__tab--disabled {
+  cursor: default;
+  color: #aaa;
+}
+
+.react-tabs__tab:focus {
+  outline: none;
+}
+
+.react-tabs__tab-panel {
+  display: none;
+}
+
+.react-tabs__tab-panel--selected {
+  display: block;
+}
+
+/* Estilos para react-accessible-accordion */
+.accordion {
+  border: none;
+}
+
+.accordion__item {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.accordion__button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  padding: 1rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.accordion__button:hover {
+  background-color: #f5f5f5;
+}
+
+.accordion__button:focus {
+  outline: 2px solid #5452F6;
+  outline-offset: 2px;
+}
+
+.accordion__panel {
+  padding: 1rem 0;
+  animation: fadein 0.35s ease-in;
+}
+
+.accordion__panel[hidden] {
+  display: none;
+}
+
+@keyframes fadein {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Fade animations for sections */
+.fade-in {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.fade-out {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Wrapper utilities */
+.wrapper-lokl {
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Font classes for compatibility */
+.primaryFont {
+  font-family: var(--font-sans);
+}
+
+.secondaryFont {
+  font-family: var(--font-mono);
+}
+
+.numberFont {
+  font-family: var(--font-mono);
+}
+
+/* Swiper custom pagination bullets */
+.gray-bullet {
+  background-color: #d1d5db !important;
+  opacity: 0.5;
+}
+
+.gray-bullet.swiper-pagination-bullet-active {
+  background-color: #5452F6 !important;
+  opacity: 1;
+}
