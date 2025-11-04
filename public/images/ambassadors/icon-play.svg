@@ -1,0 +1,29 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="playGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="0" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.5"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Círculo exterior -->
+  <circle cx="40" cy="40" r="35" fill="white" opacity="0.2"/>
+  <circle cx="40" cy="40" r="32" fill="white" opacity="0.3"/>
+  
+  <!-- Círculo principal -->
+  <circle cx="40" cy="40" r="28" fill="white" filter="url(#playGlow)"/>
+  
+  <!-- Triángulo de play -->
+  <path 
+    d="M 32 28 L 32 52 L 52 40 Z" 
+    fill="#5352F6"
+  />
+</svg>
+

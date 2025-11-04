@@ -107,8 +107,7 @@ export function SiteNavbar() {
               <span>Embajadores</span>
             </div>
           ), 
-          href: "https://lokl.life/ambassadors",
-          external: true
+          href: "/ambassadors"
         },
         
       ]}
