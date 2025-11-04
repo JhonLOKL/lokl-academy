@@ -207,46 +207,47 @@ export default function FrequentlyQs() {
             </div>
           )}
 
-          {/* TabPanels for Desktop - optionsMatch1 (4 tabs) */}
-          {!isMobileScreen && optionsMatch1 && (
-              <>
-                <TabPanel className="">
+          {/* TabPanels for Desktop */}
+          {!isMobileScreen && (
+            <>
+              {optionsMatch1 ? (
+                <>
+                  <TabPanel className="">
+                    <div className="text-3xl font-bold mb-4">
+                      ¿Cómo puedo invertir?
+                    </div>
 
-                  <div className="text-3xl font-bold mb-4">
-                    ¿Cómo puedo invertir?
-                  </div>
+                    <div className="">
+                      <p className="font-medium text-base leading-loose">
+                        La membresía en Lokl es 100% digital y puedes comenzar tu participación siguiendo los siguientes pasos:
+                      </p>
 
-                  <div className="">
-                    <p className="font-medium text-base leading-loose">
-                      La membresía en Lokl es 100% digital y puedes comenzar tu participación siguiendo los siguientes pasos:
-                    </p>
+                      <br />
 
-                    <br />
+                      <ul className='list-decimal ml-4  font-medium text-base leading-loose'>
+                        <li>Registrate</li>
+                        <li>Elige el proyecto Nido de Agua</li> 
+                        <li>Define el monto de tu participación</li>
+                        <li>Llena tus datos personales y firma el contrato</li>
+                        <li>Paga tu membresía</li>
+                        <li>Revisa en tu perfil la participación</li> 
+                      </ul>
 
-                    <ul className='list-decimal ml-4  font-medium text-base leading-loose'>
-                      <li>Registrate</li>
-                      <li>Elige el proyecto Nido de Agua</li> 
-                      <li>Define el monto de tu participación</li>
-                      <li>Llena tus datos personales y firma el contrato</li>
-                      <li>Paga tu membresía</li>
-                      <li>Revisa en tu perfil la participación</li> 
-                    </ul>
+                      <br />
 
-                    <br />
+                      <p className="font-medium text-base leading-7">
+                         A partir del {formatNextDate()} el precio del Unit subira. Tu inversión la puedes realizar en este medio: <a className='hover:text-[#4F4CF1]' href="/nido">https://www.lokl.life/nido</a>.
+                        <br /> <br /> La puedes realizar por medio del sitio web y puedes pagar por PSE o Tarjeta de crédito tanto nacional como internacional. Ten presente que si utilizas tarjeta de crédito tendrás un fee adicional de 2,5% .
+                      </p>
+                    </div>
 
-                    <p className="font-medium text-base leading-7">
-                       A partir del {formatNextDate()} el precio del Unit subira. Tu inversión la puedes realizar en este medio: <a className='hover:text-[#4F4CF1]' href="/nido">https://www.lokl.life/nido</a>.
-                      <br /> <br /> La puedes realizar por medio del sitio web y puedes pagar por PSE o Tarjeta de crédito tanto nacional como internacional. Ten presente que si utilizas tarjeta de crédito tendrás un fee adicional de 2,5% .
-                    </p>
-                  </div>
+                  </TabPanel>
+                  
+                  <TabPanel className="">
 
-                </TabPanel>
-                
-                <TabPanel className="">
-
-                  <div className='text-xl font-bold text-[#4F4CF1] mb-12'>
-                    ¿Qué riesgos tienen los proyectos en los que participo?
-                  </div>
+                    <div className='text-xl font-bold text-[#4F4CF1] mb-12'>
+                      ¿Qué riesgos tienen los proyectos en los que participo?
+                    </div>
                 
                   <Accordion 
                     onChange={handleAccordionChange} 
@@ -370,42 +371,38 @@ export default function FrequentlyQs() {
                   
                   </Accordion>
                 
-                </TabPanel>
-                
-                <TabPanel className="">
-                
-                  <div className="text-xl font-bold mb-12">
-                    ¿Hay posibilidad de reinversión en otros proyectos?    
-                  </div>
+                  </TabPanel>
                   
-                  <p className='leading-loose'>
-                    Sí, puedes reinvertir en los proyectos 😍 utilizando tanto las ganancias generadas como tus ingresos adicionales. 💰Uno de los beneficios de invertir con Lokl es que puedes reinvertir con el Unit al mismo precio 💵al que inviertiste inicialmente.
-                  </p>
-                
-                </TabPanel>
-                
-                <TabPanel className="">
+                  <TabPanel className="">
                   
-                  <div className="text-xl font-bold mb-4">
-                    ¿Cuál es el certificado de la inversión?
-                  </div>
+                    <div className="text-xl font-bold mb-12">
+                      ¿Hay posibilidad de reinversión en otros proyectos?    
+                    </div>
+                    
+                    <p className='leading-loose'>
+                      Sí, puedes reinvertir en los proyectos 😍 utilizando tanto las ganancias generadas como tus ingresos adicionales. 💰Uno de los beneficios de invertir con Lokl es que puedes reinvertir con el Unit al mismo precio 💵al que inviertiste inicialmente.
+                    </p>
                   
-                  <p className='leading-loose'>
-                    Tu inversión está respaldada por un contrato de mandato que te otorga derechos fiduciarios sobre el proyecto, es decir, tu obtienes una participación sobre este, según el monto que inviertas.
-                  </p>
+                  </TabPanel>
+                  
+                  <TabPanel className="">
+                    
+                    <div className="text-xl font-bold mb-4">
+                      ¿Cuál es el certificado de la inversión?
+                    </div>
+                    
+                    <p className='leading-loose'>
+                      Tu inversión está respaldada por un contrato de mandato que te otorga derechos fiduciarios sobre el proyecto, es decir, tu obtienes una participación sobre este, según el monto que inviertas.
+                    </p>
 
-                </TabPanel>
-              </>
-          )}
-
-          {/* TabPanels for Desktop - optionsMatch2 (3 tabs) */}
-          {!isMobileScreen && optionsMatch2 && (
-              <>
-                <TabPanel className="">
-
-                  <div className="text-xl font-bold mb-4">
-                    ¿Cuáles son los beneficios de invertir con Lokl?
-                  </div>
+                  </TabPanel>
+                </>
+              ) : optionsMatch2 ? (
+                <>
+                  <TabPanel className="">
+                    <div className="text-xl font-bold mb-4">
+                      ¿Cuáles son los beneficios de invertir con Lokl?
+                    </div>
 
                   <div className="leading-loose">
                     En nuestra sección 💻: <a className='hover:text-[#AAA9FF]' href="/nido">https://www.lokl.life/nido</a> encuentras la sección de tipos de inversionistas donde se muestra los beneficios 🤩 según montos de inversión. Por ejemplo, si inviertes desde 15 Millones tendrás: 
@@ -429,46 +426,46 @@ export default function FrequentlyQs() {
                     Mercado secundario
                   </div>
 
-                </TabPanel>
-                
-                <TabPanel className="">
-
-                  <div className="text-xl font-bold mb-4">
-                    ¿Qué proyectos exitosos han tenido?
-                  </div>
-              
-                  <p className='leading-loose'>
-                    Nuestro proyecto exitoso  es Indie Universe, un coliving para creativos  ubicado en el barrio Laureles - Medellín con proyecciones de retorno de +12 E.A. Hemos levantado + $3.500 Millones COP 💵 y somos + de 500 inversionistas 👥. Actualmente estamos en etapa 3, con un valor del Unit de 125.000, con posibilidad de invertir a través de mercado secundario. Puedes conocer más detalles en: <a className='hover:text-[#AAA9FF]' href="https://docs.google.com/forms/d/e/1FAIpQLSfcOYjUM0EYyehLHiKj2aOSyUAL7pC56gWOHz5cR77DiJzYHw/viewform?usp=pp_url">Indie Universe</a>
-                  </p>
-                
-                </TabPanel>
-                
-                <TabPanel className="">
-
-                  <div className="text-xl font-bold mb-4">
-                    ¿Qué es mercado secundario?
-                  </div>
+                  </TabPanel>
                   
-                  <p className='leading-loose'>
-                    LOKL te ofrece vender 💵 tu participación a terceros interesados en invertir en el proyecto , lo que se conoce como mercado secundario. Puedes retirar tu inversión a través de la plataforma de LOKL  💻luego del primer año sobre la cuál habrás obtenido valorización 📈, en caso que aún el proyecto se encuentre en fase de construcción o valorización y rentabilidad en caso que el proyecto ya esté operando.
-                  </p>
+                  <TabPanel className="">
 
-                  <br />
+                    <div className="text-xl font-bold mb-4">
+                      ¿Qué proyectos exitosos han tenido?
+                    </div>
+                
+                    <p className='leading-loose'>
+                      Nuestro proyecto exitoso  es Indie Universe, un coliving para creativos  ubicado en el barrio Laureles - Medellín con proyecciones de retorno de +12 E.A. Hemos levantado + $3.500 Millones COP 💵 y somos + de 500 inversionistas 👥. Actualmente estamos en etapa 3, con un valor del Unit de 125.000, con posibilidad de invertir a través de mercado secundario. Puedes conocer más detalles en: <a className='hover:text-[#AAA9FF]' href="https://docs.google.com/forms/d/e/1FAIpQLSfcOYjUM0EYyehLHiKj2aOSyUAL7pC56gWOHz5cR77DiJzYHw/viewform?usp=pp_url">Indie Universe</a>
+                    </p>
+                  
+                  </TabPanel>
+                  
+                  <TabPanel className="">
 
-                  <p className='leading-loose'>
-                    Puedes conocer más de los beneficios en: <a className='hover:text-[#AAA9FF]' href="https://www.lokl.life/nido">https://www.lokl.life/nido</a>
-                  </p>
-                
-                </TabPanel>
-                
-              </>
+                    <div className="text-xl font-bold mb-4">
+                      ¿Qué es mercado secundario?
+                    </div>
+                    
+                    <p className='leading-loose'>
+                      LOKL te ofrece vender 💵 tu participación a terceros interesados en invertir en el proyecto , lo que se conoce como mercado secundario. Puedes retirar tu inversión a través de la plataforma de LOKL  💻luego del primer año sobre la cuál habrás obtenido valorización 📈, en caso que aún el proyecto se encuentre en fase de construcción o valorización y rentabilidad en caso que el proyecto ya esté operando.
+                    </p>
+
+                    <br />
+
+                    <p className='leading-loose'>
+                      Puedes conocer más de los beneficios en: <a className='hover:text-[#AAA9FF]' href="https://www.lokl.life/nido">https://www.lokl.life/nido</a>
+                    </p>
+                  
+                  </TabPanel>
+                </>
+              ) : null}
+            </>
           )}
 
-          {/* TabPanels for Mobile - optionsMatchMobile (7 tabs) */}
-          {isMobileScreen && optionsMatchMobile && (
+          {/* TabPanels for Mobile (7 tabs) - Always render when mobile */}
+          {isMobileScreen && (
               <>
                 <TabPanel className="">
-
                   <div className="text-xl font-bold mb-4">
                     ¿Cómo puedo invertir?
                   </div>
@@ -708,7 +705,6 @@ export default function FrequentlyQs() {
                   </p>
                 
                 </TabPanel>
-                
               </>
           )}
 
