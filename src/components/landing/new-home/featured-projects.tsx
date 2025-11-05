@@ -18,6 +18,7 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
   const [selectedProject, setSelectedProject] = useState<number | null>(null); // null = estado inicial
   const [isVideoPlaying, setIsVideoPlaying] = useState(false); // Estado para controlar la reproducción del video
   const [currentVideoUrl, setCurrentVideoUrl] = useState<string>(''); // URL del video actual
+  const [showInvestors, setShowInvestors] = useState(true); // Estado para alternar entre inversionistas y precio
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -221,6 +222,18 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
     };
   }, [isVideoPlaying]);
 
+  // Efecto para alternar entre inversionistas y precio en las tarjetas
+  useEffect(() => {
+    // Resetear al estado inicial cuando cambia el proyecto seleccionado o el carrusel
+    setShowInvestors(true);
+    
+    const interval = setInterval(() => {
+      setShowInvestors((prev) => !prev);
+    }, 3000); // Cambiar cada 3 segundos
+
+    return () => clearInterval(interval);
+  }, [selectedProject, carouselIndex]);
+
   return (
     <section className="py-12 md:py-16 bg-[rgb(243,243,243)]">
       <div className="max-w-7xl mx-auto px-3 sm:px-6">
@@ -236,23 +249,25 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
 
         {/* Stacked Cards Container */}
         <div className="relative perspective-1000 overflow-hidden">
-          {/* Navigation Buttons - Desktop (siempre visibles) - Con estilo de tarjeta principal */}
-          <>
-            <button
-              onClick={prevCarousel}
-              className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-40 w-12 h-12 bg-black/60 hover:bg-black/70 backdrop-blur-sm rounded-full shadow-xl items-center justify-center transition-all duration-300 hover:scale-110"
-              aria-label="Proyecto anterior"
-            >
-              <ChevronLeft className="w-6 h-6 text-white animate-pulse" />
-            </button>
-            <button
-              onClick={nextCarousel}
-              className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-40 w-12 h-12 bg-black/60 hover:bg-black/70 backdrop-blur-sm rounded-full shadow-xl items-center justify-center transition-all duration-300 hover:scale-110"
-              aria-label="Proyecto siguiente"
-            >
-              <ChevronRight className="w-6 h-6 text-white animate-pulse" />
-            </button>
-          </>
+          {/* Navigation Buttons - Desktop (ocultos cuando hay selección para evitar que se vean moviendo) */}
+          {selectedProject === null && (
+            <>
+              <button
+                onClick={prevCarousel}
+                className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-black/60 hover:bg-black/70 backdrop-blur-sm rounded-full shadow-xl items-center justify-center transition-all duration-300 hover:scale-110"
+                aria-label="Proyecto anterior"
+              >
+                <ChevronLeft className="w-6 h-6 text-white animate-pulse" />
+              </button>
+              <button
+                onClick={nextCarousel}
+                className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-black/60 hover:bg-black/70 backdrop-blur-sm rounded-full shadow-xl items-center justify-center transition-all duration-300 hover:scale-110"
+                aria-label="Proyecto siguiente"
+              >
+                <ChevronRight className="w-6 h-6 text-white animate-pulse" />
+              </button>
+            </>
+          )}
 
           {/* Navigation Buttons - Mobile (solo cuando no hay selección) */}
           {isMobile && selectedProject === null && (
@@ -326,9 +341,9 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                     transition-all duration-700 ease-in-out flex-shrink-0
                     ${hideInMobile ? 'hidden md:block' : ''}
                     ${isSelected 
-                      ? 'w-full md:flex-1 z-30' 
+                      ? 'w-full md:w-[calc(100%-400px)] lg:w-[calc(100%-464px)] z-30' 
                       : hasSelection 
-                        ? 'md:w-24 lg:w-28 z-10 md:hover:w-28 lg:hover:w-32' 
+                        ? 'md:w-48 lg:w-56 z-10 md:hover:w-52 lg:hover:w-60 cursor-pointer' 
                         : isMobile 
                           ? 'w-full max-w-72 mx-auto z-20' 
                           : 'w-[calc(33.333%-1rem)] z-20 snap-center'
@@ -336,8 +351,11 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                     ${!hasSelection ? 'cursor-pointer' : ''}
                   `}
                   onClick={() => {
-                    // Solo permitir selección si no hay proyecto seleccionado
-                    if (!hasSelection) {
+                    // Si hay un proyecto seleccionado y se hace clic en una tarjeta lateral, seleccionar ese proyecto
+                    if (hasSelection && !isSelected) {
+                      setSelectedProject(index);
+                    } else if (!hasSelection) {
+                      // Si no hay selección, seleccionar el proyecto
                       setSelectedProject(index);
                     }
                   }}
@@ -351,20 +369,23 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                       ? 'bg-gradient-to-br from-foreground via-foreground to-gray-900' 
                       : 'bg-white'
                     } 
-                    rounded-3xl shadow-2xl overflow-hidden h-full
+                    rounded-3xl shadow-2xl overflow-hidden
+                    ${!hasSelection ? 'h-[500px] lg:h-[650px]' : 'h-full'}
                     ${!isSelected && hasSelection && 'hover:shadow-3xl'}
                   `}>
-                    <div className={`grid grid-cols-1 ${isSelected ? 'lg:grid-cols-2' : ''} h-full`}>
+                    <div className={`grid grid-cols-1 ${isSelected ? 'lg:grid-cols-2' : ''} ${isSelected ? 'min-h-[600px] lg:min-h-[700px]' : 'h-full'}`}>
                       {/* Left Side - Image (Siempre visible) */}
-                      <div className="relative group/image h-full">
+                      <div className={`relative group/image w-full ${isSelected ? 'min-h-[600px] lg:min-h-[700px]' : !hasSelection ? 'h-full' : 'min-h-[500px] lg:min-h-[650px]'} overflow-hidden`}>
                         <ImageWithFallback 
                           src={project.image} 
                           alt={project.name}
-                          className="w-full h-full object-cover min-h-[500px] lg:min-h-[650px] max-h-[550px] lg:max-h-[700px]"
+                          className="w-full h-full object-cover"
+                          width={800}
+                          height={600}
                         />
                         
                         {/* Overlay oscuro - Menos intenso en móvil */}
-                        <div className={`absolute inset-0 ${isSelected ? 'bg-black/10' : isMobile ? 'bg-black/5' : 'bg-black/30'}`}></div>
+                        <div className={`absolute inset-0 ${isSelected ? 'bg-black/10' : hasSelection && !isSelected ? 'bg-black/40' : isMobile ? 'bg-black/5' : 'bg-black/30'}`}></div>
 
                         {/* Eliminado el overlay con flechas para tarjetas laterales */}
 
@@ -376,6 +397,20 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                             </Badge>
                             {project.status !== 'Próximamente' && (
                               <Badge className="bg-primary text-white text-xs font-semibold px-4 py-1.5 shadow-lg">
+                                {project.minRoi}-{project.maxRoi}% ROI
+                              </Badge>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Badges para tarjetas laterales cuando hay selección */}
+                        {hasSelection && !isSelected && (
+                          <div className="absolute top-4 left-4 flex flex-col gap-2 z-50">
+                            <Badge className={`${project.statusColor} text-white text-sm font-semibold px-3 py-1.5 shadow-lg`}>
+                              {project.status}
+                            </Badge>
+                            {project.status !== 'Próximamente' && (
+                              <Badge className="bg-primary text-white text-sm font-semibold px-3 py-1.5 shadow-lg">
                                 {project.minRoi}-{project.maxRoi}% ROI
                               </Badge>
                             )}
@@ -417,12 +452,78 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                                 </h3>
 
                                 {/* Ubicación */}
-                                <div className="flex items-center gap-2 mb-4">
+                                <div className="flex items-center gap-2 mb-3">
                                   <MapPin className="w-4 h-4 drop-shadow-md" />
                                   <span className="text-base drop-shadow-lg text-shadow-sm">
                                     {project.location}
                                   </span>
                                 </div>
+
+                                {/* Información rotativa: Inversionistas o Precio del Unit (tamaño pequeño) */}
+                                {(() => {
+                                  const hasInvestors = project.totalInvestors !== undefined && project.totalInvestors > 0;
+                                  const hasUnits = project.units !== undefined && project.units > 0;
+                                  
+                                  if (!hasInvestors && !hasUnits) return null;
+                                  
+                                  // Si solo tiene una opción, mostrar esa
+                                  if (hasInvestors && !hasUnits) {
+                                    return (
+                                      <div className="mb-3 min-h-[30px] flex items-center">
+                                        <div className="flex flex-col">
+                                          <span className="text-lg font-semibold drop-shadow-md text-shadow">
+                                            {project.totalInvestors.toLocaleString('es-CO')}
+                                          </span>
+                                          <span className="text-xs text-white/80 drop-shadow-sm">
+                                            Inversionistas
+                                          </span>
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+                                  
+                                  if (!hasInvestors && hasUnits) {
+                                    return (
+                                      <div className="mb-3 min-h-[30px] flex items-center">
+                                        <div className="flex flex-col">
+                                          <span className="text-lg font-semibold drop-shadow-md text-shadow">
+                                            ${project.units.toLocaleString('es-CO')}
+                                          </span>
+                                          <span className="text-xs text-white/80 drop-shadow-sm">
+                                            Precio por Unit
+                                          </span>
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+                                  
+                                  // Si tiene ambas, alternar
+                                  return (
+                                    <div className="mb-3 min-h-[30px] flex items-center">
+                                      <div className="transition-all duration-500 ease-in-out">
+                                        {showInvestors ? (
+                                          <div className="flex flex-col">
+                                            <span className="text-lg font-semibold drop-shadow-md text-shadow">
+                                              {project.totalInvestors.toLocaleString('es-CO')}
+                                            </span>
+                                            <span className="text-xs text-white/80 drop-shadow-sm">
+                                              Inversionistas
+                                            </span>
+                                          </div>
+                                        ) : (
+                                          <div className="flex flex-col">
+                                            <span className="text-lg font-semibold drop-shadow-md text-shadow">
+                                              ${project.units.toLocaleString('es-CO')}
+                                            </span>
+                                            <span className="text-xs text-white/80 drop-shadow-sm">
+                                              Precio por Unit
+                                            </span>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  );
+                                })()}
 
                                 {/* CUPOS DISPONIBLES - Reducido */}
                                 <div className="mb-4">
@@ -475,10 +576,76 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                                 </h3>
 
                                 {/* Ubicación */}
-                                <div className="flex items-center gap-2 mb-8">
+                                <div className="flex items-center gap-2 mb-6">
                                   <MapPin className="w-5 h-5" />
                                   <span className="text-base lg:text-lg">{project.location}</span>
                                 </div>
+
+                                {/* Información rotativa: Inversionistas o Precio del Unit (tamaño pequeño) */}
+                                {(() => {
+                                  const hasInvestors = project.totalInvestors !== undefined && project.totalInvestors > 0;
+                                  const hasUnits = project.units !== undefined && project.units > 0;
+                                  
+                                  if (!hasInvestors && !hasUnits) return null;
+                                  
+                                  // Si solo tiene una opción, mostrar esa
+                                  if (hasInvestors && !hasUnits) {
+                                    return (
+                                      <div className="mb-6 min-h-[40px] flex items-center">
+                                        <div className="flex flex-col">
+                                          <span className="text-xl sm:text-2xl font-semibold leading-none">
+                                            {project.totalInvestors.toLocaleString('es-CO')}
+                                          </span>
+                                          <span className="text-sm text-white/80">
+                                            Inversionistas
+                                          </span>
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+                                  
+                                  if (!hasInvestors && hasUnits) {
+                                    return (
+                                      <div className="mb-6 min-h-[40px] flex items-center">
+                                        <div className="flex flex-col">
+                                          <span className="text-xl sm:text-2xl font-semibold leading-none">
+                                            ${project.units.toLocaleString('es-CO')}
+                                          </span>
+                                          <span className="text-sm text-white/80">
+                                            Precio por Unit
+                                          </span>
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+                                  
+                                  // Si tiene ambas, alternar
+                                  return (
+                                    <div className="mb-6 min-h-[40px] flex items-center">
+                                      <div className="transition-all duration-500 ease-in-out">
+                                        {showInvestors ? (
+                                          <div className="flex flex-col">
+                                            <span className="text-xl sm:text-2xl font-semibold leading-none">
+                                              {project.totalInvestors.toLocaleString('es-CO')}
+                                            </span>
+                                            <span className="text-sm text-white/80">
+                                              Inversionistas
+                                            </span>
+                                          </div>
+                                        ) : (
+                                          <div className="flex flex-col">
+                                            <span className="text-xl sm:text-2xl font-semibold leading-none">
+                                              ${project.units.toLocaleString('es-CO')}
+                                            </span>
+                                            <span className="text-sm text-white/80">
+                                              Precio por Unit
+                                            </span>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  );
+                                })()}
 
                                 {/* CUPOS DISPONIBLES - Reducido */}
                                 <div className="mb-4 min-h-[80px] sm:min-h-[85px] lg:min-h-[90px]">
@@ -510,6 +677,129 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                                 {/* Espaciador con misma altura que sección de cupos */}
                                 <div className="mb-4 min-h-[80px] sm:min-h-[85px] lg:min-h-[90px]">
                                   <Badge className="bg-white/20 text-white text-base px-6 py-3 w-fit backdrop-blur-sm">
+                                    Únete a la lista de espera
+                                  </Badge>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Contenido para tarjetas laterales cuando hay selección */}
+                        {hasSelection && !isSelected && (
+                          <div className="absolute inset-0 flex flex-col justify-end p-5 lg:p-6 text-white bg-gradient-to-t from-black/70 via-black/40 to-transparent z-50">
+                            {project.status !== 'Próximamente' ? (
+                              <>
+                                {/* Nombre del proyecto */}
+                                <h3 className="text-xl lg:text-2xl font-bold mb-3 leading-tight drop-shadow-lg line-clamp-2">
+                                  {project.name}
+                                </h3>
+
+                                {/* Ubicación */}
+                                <div className="flex items-center gap-2 mb-4">
+                                  <MapPin className="w-4 h-4 lg:w-5 lg:h-5 drop-shadow-md flex-shrink-0" />
+                                  <span className="text-sm lg:text-base drop-shadow-lg line-clamp-1">
+                                    {project.location}
+                                  </span>
+                                </div>
+
+                                {/* Información rotativa: Inversionistas o Precio del Unit */}
+                                {(() => {
+                                  const hasInvestors = project.totalInvestors !== undefined && project.totalInvestors > 0;
+                                  const hasUnits = project.units !== undefined && project.units > 0;
+                                  
+                                  if (!hasInvestors && !hasUnits) return null;
+                                  
+                                  // Si solo tiene una opción, mostrar esa
+                                  if (hasInvestors && !hasUnits) {
+                                    return (
+                                      <div className="mb-4 min-h-[40px] flex items-center">
+                                        <div className="flex flex-col">
+                                          <span className="text-lg lg:text-xl font-bold drop-shadow-lg">
+                                            {project.totalInvestors.toLocaleString('es-CO')}
+                                          </span>
+                                          <span className="text-xs lg:text-sm text-white/90 drop-shadow-md">
+                                            Inversionistas
+                                          </span>
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+                                  
+                                  if (!hasInvestors && hasUnits) {
+                                    return (
+                                      <div className="mb-4 min-h-[40px] flex items-center">
+                                        <div className="flex flex-col">
+                                          <span className="text-lg lg:text-xl font-bold drop-shadow-lg">
+                                            ${project.units.toLocaleString('es-CO')}
+                                          </span>
+                                          <span className="text-xs lg:text-sm text-white/90 drop-shadow-md">
+                                            Precio por Unit
+                                          </span>
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+                                  
+                                  // Si tiene ambas, alternar
+                                  return (
+                                    <div className="mb-4 min-h-[40px] flex items-center">
+                                      <div className="transition-all duration-500 ease-in-out">
+                                        {showInvestors ? (
+                                          <div className="flex flex-col">
+                                            <span className="text-lg lg:text-xl font-bold drop-shadow-lg">
+                                              {project.totalInvestors.toLocaleString('es-CO')}
+                                            </span>
+                                            <span className="text-xs lg:text-sm text-white/90 drop-shadow-md">
+                                              Inversionistas
+                                            </span>
+                                          </div>
+                                        ) : (
+                                          <div className="flex flex-col">
+                                            <span className="text-lg lg:text-xl font-bold drop-shadow-lg">
+                                              ${project.units.toLocaleString('es-CO')}
+                                            </span>
+                                            <span className="text-xs lg:text-sm text-white/90 drop-shadow-md">
+                                              Precio por Unit
+                                            </span>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  );
+                                })()}
+
+                                {/* CUPOS DISPONIBLES */}
+                                <div className="mb-3">
+                                  <div className="flex items-baseline gap-1.5 mb-1.5">
+                                    <span className="text-2xl lg:text-3xl font-bold leading-none drop-shadow-lg">
+                                      {project.availableSpots}
+                                    </span>
+                                    <span className="text-lg lg:text-xl font-bold opacity-80 leading-none drop-shadow-md">
+                                      /{project.totalSpots}
+                                    </span>
+                                  </div>
+                                  <p className="text-sm lg:text-base font-semibold drop-shadow-lg">Cupos Disponibles</p>
+                                </div>
+                              </>
+                            ) : (
+                              <>
+                                {/* Nombre del proyecto */}
+                                <h3 className="text-xl lg:text-2xl font-bold mb-3 leading-tight drop-shadow-lg line-clamp-2">
+                                  {project.name}
+                                </h3>
+
+                                {/* Ubicación */}
+                                <div className="flex items-center gap-2 mb-4">
+                                  <MapPin className="w-4 h-4 lg:w-5 lg:h-5 drop-shadow-md flex-shrink-0" />
+                                  <span className="text-sm lg:text-base drop-shadow-lg line-clamp-1">
+                                    {project.location}
+                                  </span>
+                                </div>
+
+                                {/* Badge de Próximamente */}
+                                <div className="mb-3">
+                                  <Badge className="bg-white/20 text-white text-sm lg:text-base px-4 py-2 w-fit backdrop-blur-sm shadow-lg">
                                     Únete a la lista de espera
                                   </Badge>
                                 </div>
