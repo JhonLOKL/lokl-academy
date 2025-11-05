@@ -30,8 +30,6 @@ const FinalCTASection = dynamic(() => import("./final-cta-section"), {
   loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
 });
 
-import "@/components/home/animations.css";
-
 export default function HomePageClient() {
   const [showWhatIsLokl, setShowWhatIsLokl] = useState(false);
 

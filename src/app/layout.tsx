@@ -124,8 +124,14 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://lokl-assets.s3.amazonaws.com" />
+        <link rel="preconnect" href="https://lokl-academy.s3.us-east-1.amazonaws.com" />
+        
+        {/* DNS Prefetch para analytics y recursos externos */}
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+        <link rel="dns-prefetch" href="https://i.ytimg.com" />
+        <link rel="dns-prefetch" href="https://img.youtube.com" />
       </head>
       <body className={inter.className} suppressHydrationWarning>
         {/* Google Tag Manager - Movido a lazyOnload para no bloquear */}

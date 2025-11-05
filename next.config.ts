@@ -8,6 +8,24 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 const nextConfig: NextConfig = {
   /* config options here */
+  // Optimizaciones experimentales para CSS y rendimiento
+  experimental: {
+    optimizePackageImports: [
+      'react-phone-number-input',
+      'react-tabs',
+      'react-accessible-accordion',
+      'lucide-react',
+      '@radix-ui/react-accordion',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-select',
+      '@radix-ui/react-tabs',
+      'framer-motion',
+      'recharts',
+    ],
+    // Mejora la compilación de CSS
+    optimizeCss: true,
+  },
   images: {
     remotePatterns: [
       {

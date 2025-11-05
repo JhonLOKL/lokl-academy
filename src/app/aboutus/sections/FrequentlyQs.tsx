@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemPanel } from 'react-accessible-accordion';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
-import 'react-tabs/style/react-tabs.css';
 import Image from 'next/image';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { formatNextDate } from '@/helpers/functions';

@@ -3,8 +3,6 @@
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PhoneInput from "react-phone-number-input";
-import "react-phone-number-input/style.css";
-import "../phone-input-styles.css";
 import {
   Form,
   FormControl,
