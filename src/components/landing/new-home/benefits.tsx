@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import {
   Carousel,
   CarouselContent,
@@ -28,7 +27,7 @@ export default function Benefits() {
       description:
         "Invertir con propósito es construir futuro. Invertimos donde el capital también construye comunidad y ecosistemas.",
       ctaText: "Invierte con propósito",
-      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/benefit2.jpg",
+      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Benefit_5.png",
       benefit: "Propósito"
     },
     {
@@ -36,7 +35,7 @@ export default function Benefits() {
       description:
         "La inversión no es un privilegio. Desde $1.000 USD puedes activar impacto real, sin deudas ni barreras.",
       ctaText: "Empieza desde $1.000",
-      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/benefit1.jpg",
+      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Benefit_1.png",
       benefit: "Inclusivo"
     },
     {
@@ -44,7 +43,7 @@ export default function Benefits() {
       description:
         "Ganar sí, pero no a cualquier costo. Rentabilidad del 8% al 15% anual, con impacto real para todos.",
       ctaText: "Mira tu retorno",
-      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/benefit2.jpg",
+      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Benefit_2.png",
       benefit: "Sostenible"
     },
     {
@@ -61,7 +60,7 @@ export default function Benefits() {
       description:
         "Aquí tu inversión también te transforma. Ganas por rentabilidad, impacto y experiencias únicas.",
       ctaText: "Conoce tus beneficios",
-      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/benefit3.jpg",
+      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Benefit_4.png",
       benefit: "Integral"
     },
   ];
@@ -214,7 +213,7 @@ export default function Benefits() {
                       onTouchEnd={handleTouchEnd}
                     >
                       {/* Tarjeta con imagen de fondo dominante */}
-                      <div className="group relative h-[400px] sm:h-[450px] landscape:h-[320px] landscape:sm:h-[360px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] cursor-pointer">
+                      <div className="group relative h-[550px] sm:h-[600px] landscape:h-[450px] landscape:sm:h-[500px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] cursor-pointer">
                         {/* Imagen de fondo a pantalla completa - Optimizada con Next.js Image */}
                         <Image
                           src={benefit.image}
@@ -230,17 +229,7 @@ export default function Benefits() {
                         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/80 group-hover:from-black/30 group-hover:to-black/90 transition-all duration-500 z-10" />
 
                         {/* Contenido sobre la imagen */}
-                        <div className="relative h-full flex flex-col justify-between p-4 sm:p-6 md:p-8 landscape:p-3 landscape:sm:p-4 z-20">
-                          {/* Badge superior opcional */}
-                          <div className="self-start">
-                            <div className="inline-flex items-center gap-2 sm:gap-2.5 landscape:gap-1.5 bg-white/20 backdrop-blur-md px-4 sm:px-5 landscape:px-3 py-2 sm:py-2.5 landscape:py-1.5 rounded-full border border-white/30">
-                              <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 landscape:w-1.5 landscape:h-1.5 bg-[#5352F6] rounded-full animate-pulse" />
-                              <span className="text-white text-sm sm:text-base landscape:text-xs font-medium">
-                               {benefit.benefit}
-                              </span>
-                            </div>
-                          </div>
-
+                        <div className="relative h-full flex flex-col justify-end p-4 sm:p-6 md:p-8 landscape:p-3 landscape:sm:p-4 z-20">
                           {/* Contenido inferior */}
                           <div className="space-y-3 sm:space-y-4 landscape:space-y-2">
                             {/* Título */}
@@ -252,13 +241,6 @@ export default function Benefits() {
                             <p className="text-white/90 text-base sm:text-lg md:text-xl landscape:text-sm landscape:sm:text-base leading-relaxed landscape:leading-snug drop-shadow-md overflow-y-auto max-h-[120px] sm:max-h-[140px] md:max-h-[160px] lg:max-h-[180px] landscape:max-h-[80px] landscape:sm:max-h-[100px] pr-1 sm:pr-2 scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent">
                               {benefit.description}
                             </p>
-
-                            {/* Botón CTA */}
-                            <Button className="w-full bg-white/95 hover:bg-white text-[#5352F6] border-0 rounded-xl sm:rounded-2xl landscape:rounded-lg px-4 sm:px-5 md:px-6 landscape:px-3 py-3 sm:py-4 md:py-5 landscape:py-2 font-medium transition-all duration-300 hover:scale-[1.02] hover:shadow-xl group/button backdrop-blur-sm text-xs sm:text-sm md:text-base landscape:text-xs min-h-[44px] sm:min-h-[48px] md:min-h-[52px] landscape:min-h-[36px]">
-                              <span className="flex items-center justify-center gap-2 text-center leading-tight px-2 break-words">
-                                {benefit.ctaText}
-                              </span>
-                            </Button>
                           </div>
                         </div>
 
@@ -288,7 +270,7 @@ export default function Benefits() {
                   <CarouselItem key={index} className="pl-4 basis-1/3">
                     <div className="group h-full cursor-pointer select-none">
                       {/* Tarjeta con imagen de fondo dominante */}
-                      <div className="relative h-[550px] landscape:h-[400px] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
+                      <div className="relative h-[700px] landscape:h-[550px] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
                         {/* Imagen de fondo a pantalla completa - Optimizada con Next.js Image */}
                         <Image
                           src={benefit.image}
@@ -304,17 +286,7 @@ export default function Benefits() {
                         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/80 group-hover:from-black/30 group-hover:to-black/90 transition-all duration-500 z-10" />
 
                         {/* Contenido sobre la imagen */}
-                        <div className="relative h-full flex flex-col justify-between p-8 landscape:p-5 z-20">
-                          {/* Badge superior opcional */}
-                          <div className="self-start">
-                            <div className="inline-flex items-center gap-2.5 landscape:gap-1.5 bg-white/20 backdrop-blur-md px-5 landscape:px-3 py-2.5 landscape:py-1.5 rounded-full border border-white/30">
-                              <div className="w-2.5 h-2.5 landscape:w-2 landscape:h-2 bg-[#5352F6] rounded-full animate-pulse" />
-                              <span className="text-white text-base landscape:text-sm font-medium">
-                               {benefit.benefit}
-                              </span>
-                            </div>
-                          </div>
-
+                        <div className="relative h-full flex flex-col justify-end p-8 landscape:p-5 z-20">
                           {/* Contenido inferior */}
                           <div className="space-y-4 landscape:space-y-2.5">
                             {/* Título */}
@@ -326,13 +298,6 @@ export default function Benefits() {
                             <p className="text-white/90 text-xl landscape:text-base leading-relaxed landscape:leading-snug drop-shadow-md overflow-y-auto max-h-[180px] landscape:max-h-[100px] pr-2 scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent">
                               {benefit.description}
                             </p>
-
-                            {/* Botón CTA */}
-                            <Button className="w-full bg-white/95 hover:bg-white text-[#5352F6] border-0 rounded-2xl landscape:rounded-xl px-6 landscape:px-4 py-5 landscape:py-3 font-medium transition-all duration-300 hover:scale-[1.02] hover:shadow-xl group/button backdrop-blur-sm text-base landscape:text-sm min-h-[52px] landscape:min-h-[40px]">
-                              <span className="flex items-center justify-center gap-2 text-center leading-tight px-2 break-words">
-                                {benefit.ctaText}
-                              </span>
-                            </Button>
                           </div>
                         </div>
 

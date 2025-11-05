@@ -237,7 +237,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
             </p>
 
             {/* "Invierte" / micro-beneficios */}
-            <div className="mt-5 grid grid-cols-2 gap-2 w-fit">
+            <div className="mt-5 flex flex-wrap gap-2 w-fit">
               <span className="rounded-full bg-white/10 px-3 py-1 text-sm text-center whitespace-nowrap">
                 <span className="text-[rgba(255,255,255,1)] font-bold">
                   Diversificación
