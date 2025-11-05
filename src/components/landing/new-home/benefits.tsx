@@ -7,8 +7,6 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
   CarouselApi,
 } from "@/components/ui/carousel";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -18,15 +16,11 @@ export default function Benefits() {
   const isMobile = useIsMobile();
   const [api, setApi] = useState<CarouselApi>();
   const [carouselIndex, setCarouselIndex] = useState(0);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   
   // Referencias para el manejo de gestos táctiles en móvil (igual que featured-projects)
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  
-  // Configuración del intervalo de rotación automática (6 segundos)
-  const autoRotateInterval = 6000;
 
   const benefits = [
     {
@@ -95,18 +89,24 @@ export default function Benefits() {
 
   // Navegación del carrusel
   const nextCarousel = () => {
-    setCarouselIndex((prev) => (prev + 1) % benefits.length);
-    // En desktop, usar API del carrusel
-    if (!isMobile && api) {
-      api.scrollNext();
+    if (isMobile) {
+      setCarouselIndex((prev) => (prev + 1) % benefits.length);
+    } else {
+      // En desktop con loop, solo usar API
+      if (api) {
+        api.scrollNext();
+      }
     }
   };
 
   const prevCarousel = () => {
-    setCarouselIndex((prev) => (prev - 1 + benefits.length) % benefits.length);
-    // En desktop, usar API del carrusel
-    if (!isMobile && api) {
-      api.scrollPrev();
+    if (isMobile) {
+      setCarouselIndex((prev) => (prev - 1 + benefits.length) % benefits.length);
+    } else {
+      // En desktop con loop, solo usar API
+      if (api) {
+        api.scrollPrev();
+      }
     }
   };
 
@@ -123,53 +123,14 @@ export default function Benefits() {
 
   const visibleBenefits = getVisibleBenefitsInOrder();
   
-  // Auto-rotación solo en desktop
-  useEffect(() => {
-    if (!api || isMobile) return;
-    
-    // Iniciar la rotación automática
-    intervalRef.current = setInterval(() => {
-      api.scrollNext();
-    }, autoRotateInterval);
-    
-    // Limpiar el intervalo cuando el componente se desmonte
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [api, isMobile]);
-  
-  // Pausar la rotación cuando el usuario interactúa con el carrusel
-  const handleInteractionStart = () => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
-  };
-  
-  // Reanudar la rotación cuando el usuario deja de interactuar
-  const handleInteractionEnd = () => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
-    
-    // Pequeño delay antes de reanudar para mejor UX
-    setTimeout(() => {
-      if (!isMobile && api) {
-        intervalRef.current = setInterval(() => {
-          api.scrollNext();
-        }, autoRotateInterval);
-      }
-    }, 1000);
-  };
-  
-  // Sincronizar carouselIndex con el API cuando cambie (solo desktop)
+  // Sincronizar carouselIndex con el API cuando cambie (solo desktop con loop)
   useEffect(() => {
     if (!api || isMobile) return;
     
     const handleSelect = () => {
       const selected = api.selectedScrollSnap();
-      setCarouselIndex(selected);
+      // Con loop, el índice puede ser mayor que benefits.length, así que usamos módulo
+      setCarouselIndex(selected % benefits.length);
     };
     
     api.on("select", handleSelect);
@@ -177,14 +138,14 @@ export default function Benefits() {
     return () => {
       api.off("select", handleSelect);
     };
-  }, [api, isMobile]);
+  }, [api, isMobile, benefits.length]);
 
   return (
     <section
       id="benefits"
-      className="py-8 sm:py-12 md:py-16 landscape:py-6 bg-[rgb(243,243,243)] overflow-x-hidden"
+      className="py-8 sm:py-12 md:py-16 landscape:py-6 bg-[rgb(243,243,243)]"
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 overflow-x-hidden">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12 landscape:mb-6">
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl landscape:text-2xl landscape:sm:text-3xl font-bold text-foreground mb-4 sm:mb-6 landscape:mb-3 leading-tight">
@@ -198,23 +159,43 @@ export default function Benefits() {
         </div>
 
         {/* Benefits Container */}
-        <div className="relative">
-          {/* Navigation Buttons - Mobile (igual que featured-projects) */}
+        <div className="relative md:px-8 lg:px-10 xl:px-12">
+          {/* Navigation Buttons - Móvil */}
           {isMobile && (
             <>
               <button
                 onClick={prevCarousel}
-                className="flex md:hidden absolute -left-4 top-1/2 -translate-y-1/2 z-40 w-10 h-10 items-center justify-center transition-all duration-300 hover:scale-110"
+                className="absolute -left-4 top-1/2 -translate-y-1/2 z-40 w-10 h-10 flex items-center justify-center transition-all duration-300 hover:scale-110"
                 aria-label="Beneficio anterior"
               >
                 <ChevronLeft className="w-6 h-6 text-black" />
               </button>
               <button
                 onClick={nextCarousel}
-                className="flex md:hidden absolute -right-4 top-1/2 -translate-y-1/2 z-40 w-10 h-10 items-center justify-center transition-all duration-300 hover:scale-110"
+                className="absolute -right-4 top-1/2 -translate-y-1/2 z-40 w-10 h-10 flex items-center justify-center transition-all duration-300 hover:scale-110"
                 aria-label="Beneficio siguiente"
               >
                 <ChevronRight className="w-6 h-6 text-black" />
+              </button>
+            </>
+          )}
+
+          {/* Navigation Buttons - Desktop */}
+          {!isMobile && (
+            <>
+              <button
+                onClick={prevCarousel}
+                className="hidden md:flex absolute -left-6 lg:-left-8 xl:-left-10 top-1/2 -translate-y-1/2 z-50 w-12 h-12 lg:w-14 lg:h-14 items-center justify-center bg-white rounded-full shadow-lg border-2 border-[#5352F6]/20 hover:bg-[#5352F6] hover:border-[#5352F6] transition-all duration-300 hover:scale-110 group"
+                aria-label="Beneficio anterior"
+              >
+                <ChevronLeft className="w-6 h-6 lg:w-7 lg:h-7 text-black group-hover:text-white transition-colors duration-300" />
+              </button>
+              <button
+                onClick={nextCarousel}
+                className="hidden md:flex absolute -right-6 lg:-right-8 xl:-right-10 top-1/2 -translate-y-1/2 z-50 w-12 h-12 lg:w-14 lg:h-14 items-center justify-center bg-white rounded-full shadow-lg border-2 border-[#5352F6]/20 hover:bg-[#5352F6] hover:border-[#5352F6] transition-all duration-300 hover:scale-110 group"
+                aria-label="Beneficio siguiente"
+              >
+                <ChevronRight className="w-6 h-6 lg:w-7 lg:h-7 text-black group-hover:text-white transition-colors duration-300" />
               </button>
             </>
           )}
@@ -296,11 +277,9 @@ export default function Benefits() {
             <Carousel
               opts={{
                 align: "start",
-                loop: false,
+                loop: true,
                 skipSnaps: false,
               }}
-              onMouseEnter={handleInteractionStart}
-              onMouseLeave={handleInteractionEnd}
               setApi={setApi}
               className="hidden md:block"
             >
@@ -364,32 +343,9 @@ export default function Benefits() {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-
-              {/* Navigation Arrows */}
-              <CarouselPrevious className="hidden md:flex -left-20 h-12 w-12 border-2 border-[#5352F6]/20 bg-white hover:bg-[#5352F6] hover:text-white hover:border-[#5352F6]" />
-              <CarouselNext className="hidden md:flex -right-20 h-12 w-12 border-2 border-[#5352F6]/20 bg-white hover:bg-[#5352F6] hover:text-white hover:border-[#5352F6]" />
             </Carousel>
           )}
 
-          {/* Dots Indicator - Solo móvil */}
-          {isMobile && benefits.length > 1 && (
-            <div className="md:hidden flex justify-center gap-2 mt-8 landscape:mt-4">
-              {benefits.map((_, index) => (
-                <button
-                  key={index}
-                  className="min-w-[44px] min-h-[44px] rounded-full transition-all duration-300 touch-manipulation flex items-center justify-center"
-                  onClick={() => setCarouselIndex(index)}
-                  aria-label={`Ir al beneficio ${index + 1}`}
-                >
-                  <span className={`h-2.5 landscape:h-2 rounded-full transition-all duration-300 ${
-                    index === carouselIndex 
-                      ? 'bg-[#5352F6] w-10 landscape:w-8' 
-                      : 'bg-gray-300 w-2.5 landscape:w-2'
-                  }`}></span>
-                </button>
-              ))}
-            </div>
-          )}
         </div>
       </div>
     </section>
