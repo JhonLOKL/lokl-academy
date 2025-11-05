@@ -76,7 +76,7 @@ export function SiteNavbar() {
               <span>Nosotros</span>
             </div>
           ), 
-          href: "/aboutus"
+          href: "/about-us"
         },
         { 
           label: (

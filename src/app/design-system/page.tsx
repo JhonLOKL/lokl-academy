@@ -82,7 +82,7 @@ export default function DesignSystemPage() {
         items={[
           { label: "Proyectos", href: "https://lokl.life/" },
           { label: "Contáctanos", href: "https://api.whatsapp.com/send/?phone=573017328112" },
-          { label: "Nosotros", href: "https://lokl.life/aboutus" },
+          { label: "Nosotros", href: "https://lokl.life/about-us" },
           { label: "Embajadores", href: "https://lokl.life/ambassadors" },
         ]}
         actions={

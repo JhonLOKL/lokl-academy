@@ -121,6 +121,16 @@ const nextConfig: NextConfig = {
       exclude: ['error', 'warn'],
     } : false,
   },
+  // Redirects para URLs antiguas
+  async redirects() {
+    return [
+      {
+        source: '/aboutus',
+        destination: '/about-us',
+        permanent: true,
+      },
+    ];
+  },
   // Optimizaciones de producción
   reactStrictMode: true,
   poweredByHeader: false,
