@@ -57,6 +57,10 @@ export default function HomePageClient() {
       </section>
 
       <section className="w-full">
+        <FeaturedProjectsSection />
+      </section>
+
+      <section className="w-full">
         <BenefitsSection />
       </section>
 
@@ -67,10 +71,6 @@ export default function HomePageClient() {
       <article className="w-full">
         <Simulator/>
       </article>
-
-      <section className="w-full">
-        <FeaturedProjectsSection />
-      </section>
 
       <section className="w-full">
         <TestimonialsSection />

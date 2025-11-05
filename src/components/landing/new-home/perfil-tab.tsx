@@ -14,12 +14,13 @@ export default function PerfilTab() {
             {/* Columna izquierda - Imagen */}
             <div className="relative h-[500px] lg:h-auto overflow-hidden group">
               <ImageWithFallback
-                src="https://i.pinimg.com/1200x/93/2f/41/932f41b14a353b32c0c180a65ca55b8c.jpg"
+                src="https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Discover.jpg"
                 alt="Descubre tu perfil de inversionista"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              {/* Overlay con gradiente */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#5352F6]/90 via-[#5352F6]/50 to-[#5352F6]/20"></div>
+              
+              {/* Overlay solo en la parte inferior para el texto */}
+              <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-black/70 via-black/50 to-transparent"></div>
               
               {/* Texto sobre la imagen - Parte inferior */}
               <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
