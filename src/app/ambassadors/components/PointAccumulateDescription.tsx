@@ -100,18 +100,18 @@ const PointAccumulateDescription: React.FC = () => {
         </div>
 
         <motion.div
-          className="md:w-1/2 flex flex-col md:flex-row items-center md:text-xl md:ml-28 md:items-start text-center md:text-left gap-4 md:gap-6 flex-wrap"
+          className="md:w-1/2 flex flex-col items-center md:text-xl md:ml-28 md:items-start text-center md:text-left gap-4 md:gap-6"
           initial={{ opacity: 0, x: 25 }}
           animate={isVisible ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <div className="text-white font-light px-5 py-4 text-base md:text-xl border border-white rounded-xl w-[280px] md:w-auto text-center">
+          <div className="text-white font-light px-5 py-4 text-base md:text-xl border border-white rounded-xl w-[350px] md:w-[350px] text-center whitespace-nowrap">
             Estadías en <span className="font-semibold">proyectos únicos</span>
           </div>
-          <div className="text-white px-5 py-4 text-base md:text-xl font-light border border-white rounded-xl w-[280px] md:w-auto text-center">
+          <div className="text-white px-5 py-4 text-base md:text-xl font-light border border-white rounded-xl w-[350px] md:w-[350px] text-center whitespace-nowrap">
             Bonos de <span className="font-semibold">inversión</span> adicionales
           </div>
-          <div className="text-white px-5 py-4 text-base md:text-xl font-light border border-white rounded-xl w-[280px] md:w-auto text-center">
+          <div className="text-white px-5 py-4 text-base md:text-xl font-light border border-white rounded-xl w-[350px] md:w-[350px] text-center whitespace-nowrap">
             <span className="font-semibold">Asesorías</span> personalizadas
           </div>
         </motion.div>
