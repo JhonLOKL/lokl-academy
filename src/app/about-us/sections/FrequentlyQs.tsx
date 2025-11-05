@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { Accordion, AccordionItem, AccordionItemButton, AccordionItemPanel } from 'react-accessible-accordion';
+import * as Accordion from '@radix-ui/react-accordion';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 import Image from 'next/image';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
@@ -45,9 +45,6 @@ export default function FrequentlyQs() {
     if (optionsMatch2) setTabOptions(optionsList);
   };
 
-  const handleAccordionChange = (index: string[]) => {
-    setActiveItems(index);
-  };
 
   const panelVariants = {
     open: { opacity: 1, height: "auto" },
@@ -247,28 +244,27 @@ export default function FrequentlyQs() {
                       ¿Qué riesgos tienen los proyectos en los que participo?
                     </div>
                 
-                  <Accordion 
-                    onChange={handleAccordionChange} 
-                    allowMultipleExpanded={true}
-                    allowZeroExpanded={true}
+                  <Accordion.Root 
+                    type="multiple"
+                    value={activeItems}
+                    onValueChange={setActiveItems}
+                    className="w-full"
                   >
                     
-                    <AccordionItem className="w-full my-2" uuid="item1">
-                      <AccordionItemButton className="flex justify-between font-bold py-2 rounded-md">
-
-                        <div className="">Riesgo de Construcción </div>
-
-                        <Image 
-                          className={activeItems.includes('item1') ? "rotate-180 transition-all duration-500 ease-in-out" : ''} 
-                          src="/images/arrow-down.svg" 
-                          alt="arrow-down"
-                          width={24}
-                          height={24}
-                        />
-
-                      </AccordionItemButton>
-                      <AccordionItemPanel className="w-10/12 leading-loose">
-
+                    <Accordion.Item className="w-full my-2 border-b border-gray-200" value="item1">
+                      <Accordion.Header>
+                        <Accordion.Trigger className="flex justify-between items-center w-full font-bold py-2 rounded-md bg-transparent border-none cursor-pointer text-left">
+                          <div className="">Riesgo de Construcción </div>
+                          <Image 
+                            className={`transition-all duration-500 ease-in-out ${activeItems.includes('item1') ? "rotate-180" : ''}`} 
+                            src="/images/arrow-down.svg" 
+                            alt="arrow-down"
+                            width={24}
+                            height={24}
+                          />
+                        </Accordion.Trigger>
+                      </Accordion.Header>
+                      <Accordion.Content className="w-10/12 leading-loose overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <motion.div
                           className="accordion-content"
                           variants={panelVariants}
@@ -279,23 +275,23 @@ export default function FrequentlyQs() {
                         >
                           ¿Qué pasa si hay problemas de viabilidad técnica? El equipo desarrollador del proyecto, antes de levantamiento de capital presenta estudios de suelos y estructurales que aseguran la viabilidad del proyecto.
                         </motion.div>
-
-                      </AccordionItemPanel>
-                    </AccordionItem>
+                      </Accordion.Content>
+                    </Accordion.Item>
                     
-                    <AccordionItem className="w-full my-2" uuid="item2">
-                      <AccordionItemButton className="flex justify-between font-bold py-2 rounded-md">
-                        <div>Riesgo de inversión </div>
-
-                        <Image 
-                          className={activeItems.includes('item2') ? "rotate-180 transition-all duration-500 ease-in-out" : ''} 
-                          src="/images/arrow-down.svg" 
-                          alt="arrow-down"
-                          width={24}
-                          height={24}
-                        />
-                      </AccordionItemButton>
-                      <AccordionItemPanel className="w-10/12 leading-loose">
+                    <Accordion.Item className="w-full my-2 border-b border-gray-200" value="item2">
+                      <Accordion.Header>
+                        <Accordion.Trigger className="flex justify-between items-center w-full font-bold py-2 rounded-md bg-transparent border-none cursor-pointer text-left">
+                          <div>Riesgo de inversión </div>
+                          <Image 
+                            className={`transition-all duration-500 ease-in-out ${activeItems.includes('item2') ? "rotate-180" : ''}`} 
+                            src="/images/arrow-down.svg" 
+                            alt="arrow-down"
+                            width={24}
+                            height={24}
+                          />
+                        </Accordion.Trigger>
+                      </Accordion.Header>
+                      <Accordion.Content className="w-10/12 leading-loose overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <motion.div
                           className="accordion-content"
                           variants={panelVariants}
@@ -306,68 +302,64 @@ export default function FrequentlyQs() {
                         >
                           Si la inversión no alcanza su punto de equilibrio, el dinero será devuelto por parte de la fiducia. Cabe aclarar que el dinero será devuelto descontando costos transaccionales. 
                         </motion.div>
-                      </AccordionItemPanel>
-                    </AccordionItem>
+                      </Accordion.Content>
+                    </Accordion.Item>
                     
-                    <AccordionItem className="w-full my-2" uuid="item3">
-                      <AccordionItemButton className="flex justify-between font-bold py-2 rounded-md">
-                      
-                        <div>Riesgo Comercial 🏨</div>
-
-                        <Image 
-                          className={activeItems.includes('item3') ? "rotate-180 transition-all duration-500 ease-in-out" : ''} 
-                          src="/images/arrow-down.svg" 
-                          alt="arrow-down"
-                          width={24}
-                          height={24}
-                        />
-                      
-                      </AccordionItemButton>
-                      <AccordionItemPanel className="w-10/12 leading-loose">
-                      
+                    <Accordion.Item className="w-full my-2 border-b border-gray-200" value="item3">
+                      <Accordion.Header>
+                        <Accordion.Trigger className="flex justify-between items-center w-full font-bold py-2 rounded-md bg-transparent border-none cursor-pointer text-left">
+                          <div>Riesgo Comercial 🏨</div>
+                          <Image 
+                            className={`transition-all duration-500 ease-in-out ${activeItems.includes('item3') ? "rotate-180" : ''}`} 
+                            src="/images/arrow-down.svg" 
+                            alt="arrow-down"
+                            width={24}
+                            height={24}
+                          />
+                        </Accordion.Trigger>
+                      </Accordion.Header>
+                      <Accordion.Content className="w-10/12 leading-loose overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <motion.div
                           className="accordion-content"
                           variants={panelVariants}
                           initial="closed"
-                          animate={activeItems.includes("item1") ? "open" : "closed"}
+                          animate={activeItems.includes("item3") ? "open" : "closed"}
                           exit="closed"
                           transition={{ duration: 0.5, ease: "easeInOut" }}
                         >
                           En la operación del inmueble. Contratos de operación con indicadores de éxito, metas comerciales y control de costo. Estudio de mercado con proyecciones a futuro. 
                         </motion.div>
-                      
-                      </AccordionItemPanel>
-                    </AccordionItem>
+                      </Accordion.Content>
+                    </Accordion.Item>
                     
-                    <AccordionItem className="w-full my-2" uuid="item4">
-                      <AccordionItemButton className="flex justify-between font-bold py-2 rounded-md">
-
-                        <div>Riesgo de valorización 📈</div>
-
-                        <Image 
-                          className={activeItems.includes('item4') ? "rotate-180 transition-all duration-500 ease-in-out" : ''} 
-                          src="/images/arrow-down.svg" 
-                          alt="arrow-down"
-                          width={24}
-                          height={24}
-                        />
-
-                      </AccordionItemButton>
-                      <AccordionItemPanel className="w-10/12 leading-loose">
+                    <Accordion.Item className="w-full my-2 border-b border-gray-200" value="item4">
+                      <Accordion.Header>
+                        <Accordion.Trigger className="flex justify-between items-center w-full font-bold py-2 rounded-md bg-transparent border-none cursor-pointer text-left">
+                          <div>Riesgo de valorización 📈</div>
+                          <Image 
+                            className={`transition-all duration-500 ease-in-out ${activeItems.includes('item4') ? "rotate-180" : ''}`} 
+                            src="/images/arrow-down.svg" 
+                            alt="arrow-down"
+                            width={24}
+                            height={24}
+                          />
+                        </Accordion.Trigger>
+                      </Accordion.Header>
+                      <Accordion.Content className="w-10/12 leading-loose overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <motion.div
                           className="accordion-content"
                           variants={panelVariants}
                           initial="closed"
-                          animate={activeItems.includes("item1") ? "open" : "closed"}
+                          animate={activeItems.includes("item4") ? "open" : "closed"}
                           exit="closed"
                           transition={{ duration: 0.5, ease: "easeInOut" }}
                         >
                           Se utiliza un modelo de flujo de caja futuro, el mercado secundario permite potencial de compra frente a nuevos inversionistas que deseen invertir en el proyecto. 
                         </motion.div>
-                      </AccordionItemPanel>
-                    </AccordionItem>
+                      </Accordion.Content>
+                    </Accordion.Item>
                   
-                  </Accordion>
+                  </Accordion.Root>
                 
                   </TabPanel>
                   
@@ -500,27 +492,27 @@ export default function FrequentlyQs() {
                     ¿Qué riesgos tienen los proyectos en los que invierto?
                   </div>
                 
-                  <Accordion 
-                    onChange={handleAccordionChange}
-                    allowMultipleExpanded={true}
-                    allowZeroExpanded={true}
+                  <Accordion.Root 
+                    type="multiple"
+                    value={activeItems}
+                    onValueChange={setActiveItems}
+                    className="w-full"
                   >
                     
-                    <AccordionItem className="w-full my-2" uuid="item1">
-                      <AccordionItemButton className="flex justify-between font-bold py-2 rounded-md">
-
-                        <div className="">Riesgo de Construcción </div>
-
-                        <Image 
-                          className={activeItems.includes('item1') ? "rotate-180" : ''} 
-                          src="/images/arrow-down.svg" 
-                          alt="arrow-down"
-                          width={24}
-                          height={24}
-                        />
-
-                      </AccordionItemButton>
-                      <AccordionItemPanel className="">
+                    <Accordion.Item className="w-full my-2 border-b border-gray-200" value="item1">
+                      <Accordion.Header>
+                        <Accordion.Trigger className="flex justify-between items-center w-full font-bold py-2 rounded-md bg-transparent border-none cursor-pointer text-left">
+                          <div className="">Riesgo de Construcción </div>
+                          <Image 
+                            className={`transition-all duration-500 ease-in-out ${activeItems.includes('item1') ? "rotate-180" : ''}`} 
+                            src="/images/arrow-down.svg" 
+                            alt="arrow-down"
+                            width={24}
+                            height={24}
+                          />
+                        </Accordion.Trigger>
+                      </Accordion.Header>
+                      <Accordion.Content className="overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <motion.div
                           className="accordion-content"
                           variants={panelVariants}
@@ -531,92 +523,91 @@ export default function FrequentlyQs() {
                         >
                           ¿Qué pasa si hay problemas de viabilidad técnica? El equipo desarrollador del proyecto, antes de levantamiento de capital presenta estudios de suelos y estructurales que aseguran la viabilidad del proyecto.
                         </motion.div>
-                      </AccordionItemPanel>
-                    </AccordionItem>
+                      </Accordion.Content>
+                    </Accordion.Item>
                     
-                    <AccordionItem className="w-full my-2" uuid="item2">
-                      <AccordionItemButton className="flex justify-between font-bold py-2 rounded-md">
-                        <div>Riesgo de inversión </div>
-
-                        <Image 
-                          className={activeItems.includes('item2') ? "rotate-180" : ''} 
-                          src="/images/arrow-down.svg" 
-                          alt="arrow-down"
-                          width={24}
-                          height={24}
-                        />
-                      </AccordionItemButton>
-                      <AccordionItemPanel className="">
+                    <Accordion.Item className="w-full my-2 border-b border-gray-200" value="item2">
+                      <Accordion.Header>
+                        <Accordion.Trigger className="flex justify-between items-center w-full font-bold py-2 rounded-md bg-transparent border-none cursor-pointer text-left">
+                          <div>Riesgo de inversión </div>
+                          <Image 
+                            className={`transition-all duration-500 ease-in-out ${activeItems.includes('item2') ? "rotate-180" : ''}`} 
+                            src="/images/arrow-down.svg" 
+                            alt="arrow-down"
+                            width={24}
+                            height={24}
+                          />
+                        </Accordion.Trigger>
+                      </Accordion.Header>
+                      <Accordion.Content className="overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <motion.div
                           className="accordion-content"
                           variants={panelVariants}
                           initial="closed"
-                          animate={activeItems.includes("item1") ? "open" : "closed"}
+                          animate={activeItems.includes("item2") ? "open" : "closed"}
                           exit="closed"
                           transition={{ duration: 0.5, ease: "easeInOut" }}
                         >
                           Si la inversión no alcanza su punto de equilibrio, el dinero será devuelto por parte de la fiducia. Cabe aclarar que el dinero será devuelto descontando costos transaccionales. 
                         </motion.div>
-                      </AccordionItemPanel>
-                    </AccordionItem>
+                      </Accordion.Content>
+                    </Accordion.Item>
                     
-                    <AccordionItem className="w-full my-2" uuid="item3">
-                      <AccordionItemButton className="flex justify-between font-bold py-2 rounded-md">
-                      
-                        <div>Riesgo Comercial </div>
-
-                        <Image 
-                          className={activeItems.includes('item3') ? "rotate-180" : ''} 
-                          src="/images/arrow-down.svg" 
-                          alt="arrow-down"
-                          width={24}
-                          height={24}
-                        />
-                      
-                      </AccordionItemButton>
-                      <AccordionItemPanel className="">
+                    <Accordion.Item className="w-full my-2 border-b border-gray-200" value="item3">
+                      <Accordion.Header>
+                        <Accordion.Trigger className="flex justify-between items-center w-full font-bold py-2 rounded-md bg-transparent border-none cursor-pointer text-left">
+                          <div>Riesgo Comercial </div>
+                          <Image 
+                            className={`transition-all duration-500 ease-in-out ${activeItems.includes('item3') ? "rotate-180" : ''}`} 
+                            src="/images/arrow-down.svg" 
+                            alt="arrow-down"
+                            width={24}
+                            height={24}
+                          />
+                        </Accordion.Trigger>
+                      </Accordion.Header>
+                      <Accordion.Content className="overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <motion.div
                           className="accordion-content"
                           variants={panelVariants}
                           initial="closed"
-                          animate={activeItems.includes("item1") ? "open" : "closed"}
+                          animate={activeItems.includes("item3") ? "open" : "closed"}
                           exit="closed"
                           transition={{ duration: 0.5, ease: "easeInOut" }}
                         >
                           En la operación del inmueble. Contratos de operación con indicadores de éxito, metas comerciales y control de costo. Estudio de mercado con proyecciones a futuro. 
                         </motion.div>
-                      </AccordionItemPanel>
-                    </AccordionItem>
+                      </Accordion.Content>
+                    </Accordion.Item>
                     
-                    <AccordionItem className="w-full my-2" uuid="item4">
-                      <AccordionItemButton className="flex justify-between font-bold py-2 rounded-md">
-
-                        <div>Riesgo de valorización </div>
-
-                        <Image 
-                          className={activeItems.includes('item4') ? "rotate-180" : ''} 
-                          src="/images/arrow-down.svg" 
-                          alt="arrow-down"
-                          width={24}
-                          height={24}
-                        />
-
-                      </AccordionItemButton>
-                      <AccordionItemPanel className="">
+                    <Accordion.Item className="w-full my-2 border-b border-gray-200" value="item4">
+                      <Accordion.Header>
+                        <Accordion.Trigger className="flex justify-between items-center w-full font-bold py-2 rounded-md bg-transparent border-none cursor-pointer text-left">
+                          <div>Riesgo de valorización </div>
+                          <Image 
+                            className={`transition-all duration-500 ease-in-out ${activeItems.includes('item4') ? "rotate-180" : ''}`} 
+                            src="/images/arrow-down.svg" 
+                            alt="arrow-down"
+                            width={24}
+                            height={24}
+                          />
+                        </Accordion.Trigger>
+                      </Accordion.Header>
+                      <Accordion.Content className="overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
                         <motion.div
                           className="accordion-content"
                           variants={panelVariants}
                           initial="closed"
-                          animate={activeItems.includes("item1") ? "open" : "closed"}
+                          animate={activeItems.includes("item4") ? "open" : "closed"}
                           exit="closed"
                           transition={{ duration: 0.5, ease: "easeInOut" }}
                         >
                           Se utiliza un modelo de flujo de caja futuro, el mercado secundario permite potencial de compra frente a nuevos inversionistas que deseen invertir en el proyecto. 
                         </motion.div>
-                      </AccordionItemPanel>
-                    </AccordionItem>
+                      </Accordion.Content>
+                    </Accordion.Item>
                   
-                  </Accordion>
+                  </Accordion.Root>
                 
                 </TabPanel>
                 
