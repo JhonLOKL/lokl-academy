@@ -117,6 +117,8 @@ export default function ResultsFinal({ project, simulationData }: ResultsFinalPr
                 src="https://lokl-assets.s3.amazonaws.com/about-us/pipe.jpg"
                 alt="Felipe Restrepo - Asesor LOKL"
                 fill
+                sizes="80px"
+                quality={85}
                 className="object-cover"
               />
             </div>

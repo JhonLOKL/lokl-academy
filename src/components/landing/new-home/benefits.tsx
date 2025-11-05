@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -233,19 +234,22 @@ export default function Benefits() {
                     >
                       {/* Tarjeta con imagen de fondo dominante */}
                       <div className="group relative h-[400px] sm:h-[450px] landscape:h-[320px] landscape:sm:h-[360px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] cursor-pointer">
-                        {/* Imagen de fondo a pantalla completa */}
-                        <div
-                          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                          style={{
-                            backgroundImage: `url(${benefit.image})`,
-                          }}
+                        {/* Imagen de fondo a pantalla completa - Optimizada con Next.js Image */}
+                        <Image
+                          src={benefit.image}
+                          alt={benefit.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          className="object-cover transition-transform duration-700 group-hover:scale-110"
+                          priority={index === 0}
+                          quality={85}
                         />
 
                         {/* Overlay gradiente para legibilidad */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/80 group-hover:from-black/30 group-hover:to-black/90 transition-all duration-500" />
+                        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/80 group-hover:from-black/30 group-hover:to-black/90 transition-all duration-500 z-10" />
 
                         {/* Contenido sobre la imagen */}
-                        <div className="relative h-full flex flex-col justify-between p-4 sm:p-6 md:p-8 landscape:p-3 landscape:sm:p-4">
+                        <div className="relative h-full flex flex-col justify-between p-4 sm:p-6 md:p-8 landscape:p-3 landscape:sm:p-4 z-20">
                           {/* Badge superior opcional */}
                           <div className="self-start">
                             <div className="inline-flex items-center gap-2 sm:gap-2.5 landscape:gap-1.5 bg-white/20 backdrop-blur-md px-4 sm:px-5 landscape:px-3 py-2 sm:py-2.5 landscape:py-1.5 rounded-full border border-white/30">
@@ -278,7 +282,7 @@ export default function Benefits() {
                         </div>
 
                         {/* Brillo decorativo en hover */}
-                        <div className="absolute inset-0 bg-gradient-to-tr from-[#5352F6]/0 via-[#5352F6]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                        <div className="absolute inset-0 bg-gradient-to-tr from-[#5352F6]/0 via-[#5352F6]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-[15]" />
                       </div>
                     </div>
                   );
@@ -306,19 +310,22 @@ export default function Benefits() {
                     <div className="group h-full cursor-pointer select-none">
                       {/* Tarjeta con imagen de fondo dominante */}
                       <div className="relative h-[550px] landscape:h-[400px] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
-                        {/* Imagen de fondo a pantalla completa */}
-                        <div
-                          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                          style={{
-                            backgroundImage: `url(${benefit.image})`,
-                          }}
+                        {/* Imagen de fondo a pantalla completa - Optimizada con Next.js Image */}
+                        <Image
+                          src={benefit.image}
+                          alt={benefit.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="object-cover transition-transform duration-700 group-hover:scale-110"
+                          priority={index < 3}
+                          quality={85}
                         />
 
                         {/* Overlay gradiente para legibilidad */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/80 group-hover:from-black/30 group-hover:to-black/90 transition-all duration-500" />
+                        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/80 group-hover:from-black/30 group-hover:to-black/90 transition-all duration-500 z-10" />
 
                         {/* Contenido sobre la imagen */}
-                        <div className="relative h-full flex flex-col justify-between p-8 landscape:p-5">
+                        <div className="relative h-full flex flex-col justify-between p-8 landscape:p-5 z-20">
                           {/* Badge superior opcional */}
                           <div className="self-start">
                             <div className="inline-flex items-center gap-2.5 landscape:gap-1.5 bg-white/20 backdrop-blur-md px-5 landscape:px-3 py-2.5 landscape:py-1.5 rounded-full border border-white/30">
@@ -351,7 +358,7 @@ export default function Benefits() {
                         </div>
 
                         {/* Brillo decorativo en hover */}
-                        <div className="absolute inset-0 bg-gradient-to-tr from-[#5352F6]/0 via-[#5352F6]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                        <div className="absolute inset-0 bg-gradient-to-tr from-[#5352F6]/0 via-[#5352F6]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-[15]" />
                       </div>
                     </div>
                   </CarouselItem>

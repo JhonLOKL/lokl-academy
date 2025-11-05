@@ -57,6 +57,11 @@ export default function NewsletterTab({ isSubmitted, onSuccess }: NewsletterTabP
               src="https://lokl-assets.s3.us-east-1.amazonaws.com/home/newsletter.png"
               alt="Newsletter LOKL"
               className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
+              width={600}
+              height={600}
+              priority={false}
+              quality={85}
+              sizes="(max-width: 1024px) 100vw, 50vw"
             />
             {/* <div className="absolute inset-0 bg-gradient-to-t from-[#5352F6]/90 via-[#5352F6]/50 to-[#5352F6]/20"></div> */}
           </div>

@@ -10,6 +10,9 @@ interface ImageWithFallbackProps {
   width?: number;
   height?: number;
   fill?: boolean;
+  priority?: boolean;
+  quality?: number;
+  sizes?: string;
 }
 
 export const ImageWithFallback = ({ 
@@ -18,7 +21,10 @@ export const ImageWithFallback = ({
   className, 
   width = 800, 
   height = 600,
-  fill = false 
+  fill = false,
+  priority = false,
+  quality = 85,
+  sizes
 }: ImageWithFallbackProps) => {
   const [imgSrc, setImgSrc] = useState(src);
 
@@ -30,6 +36,9 @@ export const ImageWithFallback = ({
       height={fill ? undefined : height}
       fill={fill}
       className={className}
+      priority={priority}
+      quality={quality}
+      sizes={sizes}
       onError={() => {
         setImgSrc("https://via.placeholder.com/800x600?text=Imagen+no+disponible");
       }}
