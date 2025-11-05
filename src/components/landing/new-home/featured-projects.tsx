@@ -21,6 +21,8 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
   const [showInvestors, setShowInvestors] = useState(true); // Estado para alternar entre inversionistas y precio
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
+  const touchMoved = useRef<boolean>(false);
+  const swipeExecuted = useRef<boolean>(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Usar datos de la API si están disponibles
@@ -158,22 +160,49 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
   // Manejo de gestos táctiles para móvil
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
+    touchMoved.current = false;
+    swipeExecuted.current = false;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
     touchEndX.current = e.touches[0].clientX;
+    // Marcar que hubo movimiento si la diferencia es mayor a 10px
+    const delta = Math.abs(touchStartX.current - touchEndX.current);
+    if (delta > 10) {
+      touchMoved.current = true;
+    }
   };
 
-  const handleTouchEnd = () => {
-    if (touchStartX.current - touchEndX.current > 75) {
-      // Swipe left
-      nextCarousel();
+  const handleTouchEnd = (e?: React.TouchEvent) => {
+    // Solo navegar si hubo un movimiento significativo (swipe real)
+    // Si fue un tap simple (touchMoved = false), no hacer nada aquí
+    // El onClick se encargará de seleccionar el proyecto
+    if (!touchMoved.current) {
+      touchMoved.current = false;
+      return;
     }
 
-    if (touchStartX.current - touchEndX.current < -75) {
-      // Swipe right
+    const delta = touchStartX.current - touchEndX.current;
+    if (delta > 75) {
+      // Swipe left - prevenir que el onClick se ejecute
+      swipeExecuted.current = true;
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      nextCarousel();
+    } else if (delta < -75) {
+      // Swipe right - prevenir que el onClick se ejecute
+      swipeExecuted.current = true;
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
       prevCarousel();
     }
+    
+    // Resetear el flag de movimiento, pero mantener swipeExecuted para que onClick lo verifique
+    touchMoved.current = false;
   };
 
   // Efecto para hacer scroll automático en móvil cuando cambia el carouselIndex (solo para desktop)
@@ -328,7 +357,12 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
           >
             <div className={`flex ${selectedProject !== null ? 'items-start' : 'items-stretch'} ${selectedProject !== null ? 'gap-2' : 'gap-4 md:gap-6'} ${selectedProject === null ? 'md:px-0' : ''} max-w-7xl mx-auto ${selectedProject !== null ? 'justify-center md:justify-between' : isMobile ? 'justify-center' : 'justify-start md:justify-between'}`}>
             {visibleProjects.map(({ project, index }) => {
-              const isSelected = selectedProject === index;
+              // El index viene de getVisibleProjectsInOrder() y debería ser correcto
+              // Pero para estar seguros, verificamos que el proyecto en ese índice sea el correcto
+              const actualIndex = projects[index]?.id === project.id ? index : projects.findIndex(p => p.id === project.id);
+              const finalIndex = actualIndex !== -1 ? actualIndex : index;
+              
+              const isSelected = selectedProject === finalIndex;
               const hasSelection = selectedProject !== null;
               
               // En móvil, si hay selección, solo mostrar el proyecto seleccionado
@@ -336,7 +370,7 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
               
               return (
                 <div
-                  key={index}
+                  key={`${finalIndex}-${project.id}`}
                   className={`
                     transition-all duration-700 ease-in-out flex-shrink-0
                     ${hideInMobile ? 'hidden md:block' : ''}
@@ -350,18 +384,31 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                     }
                     ${!hasSelection ? 'cursor-pointer' : ''}
                   `}
-                  onClick={() => {
+                  onClick={(e) => {
+                    // Si hubo un swipe real, el handleTouchEnd ya manejó la navegación
+                    // No ejecutar el onClick si se ejecutó un swipe
+                    if (swipeExecuted.current) {
+                      swipeExecuted.current = false;
+                      return;
+                    }
+                    
                     // Si hay un proyecto seleccionado y se hace clic en una tarjeta lateral, seleccionar ese proyecto
                     if (hasSelection && !isSelected) {
-                      setSelectedProject(index);
+                      setSelectedProject(finalIndex);
                     } else if (!hasSelection) {
-                      // Si no hay selección, seleccionar el proyecto
-                      setSelectedProject(index);
+                      // Si no hay selección, seleccionar el proyecto usando el índice correcto
+                      setSelectedProject(finalIndex);
+                      // Actualizar carouselIndex para mantener consistencia en móvil
+                      if (isMobile) {
+                        setCarouselIndex(finalIndex);
+                      }
                     }
                   }}
                   onTouchStart={!hasSelection ? handleTouchStart : undefined}
                   onTouchMove={!hasSelection ? handleTouchMove : undefined}
-                  onTouchEnd={!hasSelection ? handleTouchEnd : undefined}
+                  onTouchEnd={!hasSelection ? (e) => {
+                    handleTouchEnd(e);
+                  } : undefined}
                 >
                   {/* Card */}
                   <div className={`
