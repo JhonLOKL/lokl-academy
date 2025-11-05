@@ -41,13 +41,14 @@ export default function OurTeam() {
       }
     );
 
-    if (teamRef.current) {
-      observer.observe(teamRef.current);
+    const currentRef = teamRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-      if (teamRef.current) {
-        observer.unobserve(teamRef.current);
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
   }, []);

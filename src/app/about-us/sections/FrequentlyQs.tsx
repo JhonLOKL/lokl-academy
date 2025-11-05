@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Accordion, AccordionItem, AccordionItemButton, AccordionItemPanel } from 'react-accessible-accordion';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 import Image from 'next/image';
@@ -9,20 +9,20 @@ import { formatNextDate } from '@/helpers/functions';
 import { motion } from "framer-motion";
 
 export default function FrequentlyQs() {
-  const optionsList = [
+  const optionsList = useMemo(() => [
     "Inversión",
     "Riesgos",
     "Reinversión",
     "Certificado",
-  ];
+  ], []);
 
-  const optionsListSecond = [
+  const optionsListSecond = useMemo(() => [
     "Beneficios",
     "Proyectos",
     "Mercado secundario",
-  ];
+  ], []);
 
-  const optionsListMobile = [
+  const optionsListMobile = useMemo(() => [
     "Inversión",
     "Riesgos",
     "Reinversión",
@@ -30,7 +30,7 @@ export default function FrequentlyQs() {
     "Beneficios",
     "Proyectos",
     "Mercado secundario",
-  ];
+  ], []);
 
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [tabOptions, setTabOptions] = useState(optionsList);
@@ -38,7 +38,6 @@ export default function FrequentlyQs() {
 
   const optionsMatch1 = tabOptions.every((element, index) => element === optionsList[index]);
   const optionsMatch2 = tabOptions.every((element, index) => element === optionsListSecond[index]);
-  const optionsMatchMobile = tabOptions.every((element, index) => element === optionsListMobile[index]);
 
   const changeTabs = () => {
     setActiveTabIndex(0);
@@ -63,7 +62,7 @@ export default function FrequentlyQs() {
       setActiveTabIndex(0);
     }
     // No restablecemos tabOptions en escritorio para preservar el estado del usuario
-  }, [isMobileScreen]);
+  }, [isMobileScreen, optionsListMobile]);
 
   return (
     <section id="pqrs" className='min-h-[300px] md:min-h-[400px] px-4 md:px-0 wrapper-lokl'>

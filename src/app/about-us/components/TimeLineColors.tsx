@@ -40,13 +40,14 @@ export function TimeLineColors() {
       }
     );
 
-    if (timelineRef.current) {
-      observer.observe(timelineRef.current);
+    const currentRef = timelineRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-      if (timelineRef.current) {
-        observer.unobserve(timelineRef.current);
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
   }, []);

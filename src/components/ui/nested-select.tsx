@@ -63,39 +63,12 @@ export function NestedSelect({
   };
 
   // Función para manejar el clic en una sub-opción
-  const handleSubOptionClick = (subOption: OptionType, parentOption: OptionType) => {
+  const handleSubOptionClick = (subOption: OptionType) => {
     setSelectedValue(subOption.value);
     onValueChange?.(subOption.value);
     setIsOpen(false);
   };
 
-  // Función para aplanar todas las opciones para búsqueda
-  const getAllOptions = (): Array<{ value: string; label: string; isSubOption: boolean; parentLabel?: string }> => {
-    const allOptions: Array<{ value: string; label: string; isSubOption: boolean; parentLabel?: string }> = [];
-    
-    options.forEach(option => {
-      allOptions.push({
-        value: option.value,
-        label: option.label,
-        isSubOption: false,
-      });
-      
-      if (option.children) {
-        option.children.forEach(child => {
-          allOptions.push({
-            value: child.value,
-            label: child.label,
-            isSubOption: true,
-            parentLabel: option.label,
-          });
-        });
-      }
-    });
-    
-    return allOptions;
-  };
-
-  const allOptions = getAllOptions();
 
   return (
     <div className={cn("relative", className)}>
@@ -148,7 +121,7 @@ export function NestedSelect({
                       <button
                         key={subOption.value}
                         type="button"
-                        onClick={() => handleSubOptionClick(subOption, option)}
+                        onClick={() => handleSubOptionClick(subOption)}
                         className={cn(
                           "flex w-full items-center rounded-sm px-2 py-2 text-left text-sm text-gray-700 hover:bg-gray-100",
                           selectedValue === subOption.value && "bg-blue-50 text-blue-900"

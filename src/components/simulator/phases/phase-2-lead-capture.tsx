@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { NestedSelect } from "@/components/ui/nested-select";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { LeadFormSchema, LeadFormData, howDidYouHearAboutUsOptions, OptionType } from "@/schemas/lead-schema";
+import { LeadFormSchema, LeadFormData, howDidYouHearAboutUsOptions } from "@/schemas/lead-schema";
 import Link from "next/link";
 import { User, Phone, Mail, Users } from "lucide-react";
 
