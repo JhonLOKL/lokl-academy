@@ -12,7 +12,9 @@ export default function HowItWorks() {
       icon: UserPlus,
       cardStyle: 'white', // Tarjeta blanca
       badge: 'Fácil y rápido',
-      badgeIcon: Zap
+      badgeIcon: Zap,
+      href: '/register',
+      target: '_self'
     },
     {
       number: '2',
@@ -22,7 +24,9 @@ export default function HowItWorks() {
       icon: Search,
       cardStyle: 'dark', // Tarjeta negra
       badge: 'Sin compromiso',
-      badgeIcon: Sparkles
+      badgeIcon: Sparkles,
+      href: 'https://lokl.life/project/nido-de-agua',
+      target: '_blank'
     },
     {
       number: '3',
@@ -32,32 +36,30 @@ export default function HowItWorks() {
       icon: TrendingUp,
       cardStyle: 'primary', // Tarjeta azul
       badge: 'Rentabilidad alta',
-      badgeIcon: CheckCircle2
+      badgeIcon: CheckCircle2,
+      href: '#',
+      target: '_self'
     }
   ];
 
   return (
     <section id="como-funciona" className="py-20 md:py-28 bg-[#F3F3F3] relative overflow-hidden">
-      {/* Decoraciones de fondo mejoradas */}
+      {/* Decoraciones de fondo optimizadas para móvil */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Gradiente superior mejorado */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#5352F6]/8 via-transparent to-[#5352F6]/8" />
         
-        {/* Círculos decorativos con blur y efectos mejorados */}
-        <div className="absolute top-20 -left-20 w-[500px] h-[500px] bg-gradient-to-br from-[#5352F6]/15 to-[#5352F6]/5 rounded-full blur-[140px] animate-pulse" style={{ animationDuration: '4s' }} />
-        <div className="absolute bottom-40 -right-20 w-[450px] h-[450px] bg-gradient-to-tl from-[#5352F6]/15 to-[#5352F6]/5 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '5s', animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/3 w-[350px] h-[350px] bg-[#5352F6]/8 rounded-full blur-[100px]" />
+        {/* Círculos decorativos - reducidos en móvil */}
+        <div className="absolute top-20 -left-20 w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-gradient-to-br from-[#5352F6]/10 to-[#5352F6]/3 md:from-[#5352F6]/15 md:to-[#5352F6]/5 rounded-full blur-[80px] md:blur-[140px]" />
+        <div className="absolute bottom-40 -right-20 w-[250px] h-[250px] md:w-[450px] md:h-[450px] bg-gradient-to-tl from-[#5352F6]/10 to-[#5352F6]/3 md:from-[#5352F6]/15 md:to-[#5352F6]/5 rounded-full blur-[70px] md:blur-[120px]" />
         
-        {/* Patrón de puntos mejorado */}
-        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle, currentColor 1.5px, transparent 1.5px)', backgroundSize: '32px 32px' }} />
-        
-        {/* Grid sutil de fondo */}
-        <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: 'linear-gradient(rgba(83, 82, 246, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(83, 82, 246, 0.1) 1px, transparent 1px)', backgroundSize: '64px 64px' }} />
+        {/* Patrón de puntos - más sutil en móvil */}
+        <div className="hidden md:block absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle, currentColor 1.5px, transparent 1.5px)', backgroundSize: '32px 32px' }} />
       </div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header premium mejorado */}
-        <div className="text-center mb-24 md:mb-32">
+        <div className="text-center mb-12 md:mb-20 lg:mb-32">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3">
             <span className="text-foreground">¿CÓMO </span>
             <span className="text-[#5352F6]">FUNCIONA?</span>
@@ -67,74 +69,69 @@ export default function HowItWorks() {
           </p>
         </div>
 
-                 {/* Patrón escalonado diagonal premium mejorado */}
-         <div className="relative min-h-[1400px] md:min-h-[1500px] lg:min-h-[1300px]">
+        {/* Layout responsive: Stack en móvil, diagonal en desktop */}
+        <div className="flex flex-col gap-8 md:gap-12 lg:relative lg:min-h-[1300px]">
           {steps.map((step, index) => {
             const IconComponent = step.icon;
-                         // Posicionamiento escalonado diagonal
-             const positions = [
-               'top-0 left-0 lg:left-8',
-               'top-[28rem] md:top-[32rem] right-0 lg:top-[26rem] lg:right-8',
-               'top-[56rem] md:top-[64rem] left-0 lg:top-[52rem] lg:left-8'
-             ];
+            
+            // Posicionamiento escalonado diagonal solo en desktop
+            const positions = [
+              'lg:absolute lg:top-0 lg:left-8',
+              'lg:absolute lg:top-[26rem] lg:right-8',
+              'lg:absolute lg:top-[52rem] lg:left-8'
+            ];
 
-            // Estilos dinámicos premium mejorados
+            // Estilos dinámicos optimizados
             const getCardStyles = () => {
               switch(step.cardStyle) {
                 case 'white':
                   return {
-                    container: 'bg-white backdrop-blur-2xl border-2 border-gray-200 shadow-[0_10px_40px_rgb(0,0,0,0.1),0_2px_8px_rgb(0,0,0,0.06)]',
+                    container: 'bg-white border-2 border-gray-200 shadow-lg md:shadow-[0_10px_40px_rgb(0,0,0,0.1),0_2px_8px_rgb(0,0,0,0.06)]',
                     titleMain: 'text-gray-900',
                     titleHighlight: 'text-[#5352F6]',
                     description: 'text-gray-600',
-                    iconBg: 'bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 shadow-lg',
+                    iconBg: 'bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 shadow-md md:shadow-lg',
                     iconColor: 'text-gray-700',
-                    iconRing: 'ring-2 ring-gray-200/50',
-                    numberBg: 'bg-gradient-to-br from-[#5352F6] via-[#5352F6] to-[#5352F6]/90 shadow-lg shadow-[#5352F6]/30',
+                    iconRing: 'md:ring-2 md:ring-gray-200/50',
+                    numberBg: 'bg-gradient-to-br from-[#5352F6] via-[#5352F6] to-[#5352F6]/90 shadow-md shadow-[#5352F6]/20 md:shadow-lg md:shadow-[#5352F6]/30',
                     numberColor: 'text-white',
-                    hoverEffect: 'hover:shadow-[0_20px_60px_rgb(0,0,0,0.15),0_4px_12px_rgb(0,0,0,0.1)] hover:border-gray-300 hover:-translate-y-2',
-                    glow: 'group-hover:shadow-[0_0_30px_rgba(83,82,246,0.15)]',
-                    badgeBg: 'bg-[#5352F6]/10 border-[#5352F6]/20 text-[#5352F6]',
-                    badgeGlow: '',
+                    hoverEffect: 'md:hover:shadow-[0_20px_60px_rgb(0,0,0,0.15),0_4px_12px_rgb(0,0,0,0.1)] md:hover:border-gray-300 md:hover:-translate-y-2',
+                    glow: 'md:group-hover:shadow-[0_0_30px_rgba(83,82,246,0.15)]',
                     decorativeGradient: 'from-[#5352F6]/5 to-transparent'
                   };
                 case 'dark':
                   return {
-                    container: 'bg-gradient-to-br from-gray-900 via-gray-900 to-gray-950 backdrop-blur-2xl border-2 border-gray-700/60 shadow-[0_10px_50px_rgb(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)_inset]',
+                    container: 'bg-gradient-to-br from-gray-900 via-gray-900 to-gray-950 border-2 border-gray-700/60 shadow-lg md:shadow-[0_10px_50px_rgb(0,0,0,0.5)]',
                     titleMain: 'text-white',
                     titleHighlight: 'text-[#5352F6]',
                     description: 'text-gray-300',
-                    iconBg: 'bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 shadow-2xl',
+                    iconBg: 'bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 shadow-xl md:shadow-2xl',
                     iconColor: 'text-gray-100',
-                    iconRing: 'ring-2 ring-gray-600/40',
-                    numberBg: 'bg-gradient-to-br from-gray-700 via-gray-600 to-gray-700 shadow-xl shadow-gray-900/50',
+                    iconRing: 'md:ring-2 md:ring-gray-600/40',
+                    numberBg: 'bg-gradient-to-br from-gray-700 via-gray-600 to-gray-700 shadow-lg shadow-gray-900/30 md:shadow-xl md:shadow-gray-900/50',
                     numberColor: 'text-gray-100',
-                    hoverEffect: 'hover:shadow-[0_20px_80px_rgb(0,0,0,0.7),0_0_0_1px_rgba(255,255,255,0.1)_inset] hover:border-gray-600 hover:-translate-y-2',
-                    glow: 'group-hover:shadow-[0_0_40px_rgba(83,82,246,0.2)]',
-                    badgeBg: 'bg-gray-800/80 border-gray-600/50 text-gray-200',
-                    badgeGlow: 'shadow-lg shadow-gray-900/50',
+                    hoverEffect: 'md:hover:shadow-[0_20px_80px_rgb(0,0,0,0.7)] md:hover:border-gray-600 md:hover:-translate-y-2',
+                    glow: 'md:group-hover:shadow-[0_0_40px_rgba(83,82,246,0.2)]',
                     decorativeGradient: 'from-[#5352F6]/10 to-transparent'
                   };
                 case 'primary':
                   return {
-                    container: 'bg-gradient-to-br from-[#5352F6] via-[#5352F6] to-[#4241d4] backdrop-blur-2xl border-2 border-[#5352F6]/40 shadow-[0_10px_50px_rgba(83,82,246,0.4),0_0_0_1px_rgba(255,255,255,0.1)_inset]',
+                    container: 'bg-gradient-to-br from-[#5352F6] via-[#5352F6] to-[#4241d4] border-2 border-[#5352F6]/40 shadow-lg shadow-[#5352F6]/20 md:shadow-[0_10px_50px_rgba(83,82,246,0.4)]',
                     titleMain: 'text-white',
                     titleHighlight: 'text-white font-extrabold drop-shadow-lg',
                     description: 'text-white/95',
-                    iconBg: 'bg-white/20 backdrop-blur-xl shadow-2xl',
+                    iconBg: 'bg-white/20 shadow-xl md:shadow-2xl',
                     iconColor: 'text-white drop-shadow-lg',
-                    iconRing: 'ring-2 ring-white/30',
-                    numberBg: 'bg-white/25 backdrop-blur-md shadow-2xl shadow-[#5352F6]/50',
+                    iconRing: 'md:ring-2 md:ring-white/30',
+                    numberBg: 'bg-white/25 shadow-xl shadow-[#5352F6]/30 md:shadow-2xl md:shadow-[#5352F6]/50',
                     numberColor: 'text-white',
-                    hoverEffect: 'hover:shadow-[0_25px_80px_rgba(83,82,246,0.6),0_0_0_1px_rgba(255,255,255,0.2)_inset] hover:scale-[1.02] hover:-translate-y-3',
-                    glow: 'group-hover:shadow-[0_0_60px_rgba(83,82,246,0.5)]',
-                    badgeBg: 'bg-white/20 border-white/30 text-white',
-                    badgeGlow: 'shadow-lg shadow-[#5352F6]/30',
+                    hoverEffect: 'md:hover:shadow-[0_25px_80px_rgba(83,82,246,0.6)] md:hover:scale-[1.02] md:hover:-translate-y-3',
+                    glow: 'md:group-hover:shadow-[0_0_60px_rgba(83,82,246,0.5)]',
                     decorativeGradient: 'from-white/10 to-transparent'
                   };
                 default:
                   return {
-                    container: 'bg-card/80 backdrop-blur-xl border-2 border-border/50 shadow-lg',
+                    container: 'bg-card/80 border-2 border-border/50 shadow-lg',
                     titleMain: 'text-foreground',
                     titleHighlight: 'text-[#5352F6]',
                     description: 'text-muted-foreground',
@@ -143,10 +140,8 @@ export default function HowItWorks() {
                     iconRing: '',
                     numberBg: 'bg-gradient-to-br from-[#5352F6]/10 to-[#5352F6]/5',
                     numberColor: 'text-[#5352F6]',
-                    hoverEffect: 'hover:shadow-xl hover:border-border',
+                    hoverEffect: 'md:hover:shadow-xl md:hover:border-border',
                     glow: '',
-                    badgeBg: 'bg-[#5352F6]/10 border-[#5352F6]/20 text-[#5352F6]',
-                    badgeGlow: '',
                     decorativeGradient: 'from-[#5352F6]/5 to-transparent'
                   };
               }
@@ -157,9 +152,9 @@ export default function HowItWorks() {
             return (
               <div 
                 key={step.number} 
-                className={`absolute w-full max-w-xl lg:max-w-2xl group ${positions[index]}`}
+                className={`w-full max-w-xl mx-auto lg:max-w-2xl group ${positions[index]}`}
               >
-                {/* Líneas conectoras mejoradas con animación y glow */}
+                {/* Líneas conectoras - solo en desktop */}
                 {index < steps.length - 1 && (
                   <div className="hidden lg:block absolute -bottom-24 left-1/2 transform -translate-x-1/2 z-0">
                     {/* Línea principal con gradiente y glow */}
@@ -179,111 +174,121 @@ export default function HowItWorks() {
                   </div>
                 )}
 
-                {/* Glow de fondo mejorado */}
-                <div className={`absolute inset-0 rounded-[2.5rem] ${styles.glow} transition-all duration-500 opacity-0 group-hover:opacity-100 blur-xl`} />
+                {/* Glow de fondo - reducido en móvil */}
+                <div className={`hidden md:block absolute inset-0 rounded-[2.5rem] ${styles.glow} transition-all duration-500 opacity-0 group-hover:opacity-100 blur-xl`} />
 
-                {/* Tarjeta premium con glassmorphism mejorado */}
-                <div className={`${styles.container} ${styles.hoverEffect} rounded-[2.5rem] p-10 md:p-12 lg:p-16 transition-all duration-500 relative overflow-hidden`}>
+                {/* Link que cubre toda la tarjeta en desktop */}
+                {step.href && step.href !== '#' && (
+                  <a 
+                    href={step.href} 
+                    target={step.target} 
+                    rel={step.target === '_blank' ? 'noopener noreferrer' : undefined}
+                    className="hidden md:block absolute inset-0 z-30 rounded-2xl md:rounded-[2.5rem]"
+                    aria-label={`Ir a ${step.titleBold}`}
+                  />
+                )}
+
+                {/* Tarjeta optimizada para móvil */}
+                <div className={`${styles.container} ${styles.hoverEffect} rounded-2xl md:rounded-[2.5rem] p-6 md:p-10 lg:p-16 transition-all duration-300 md:duration-500 relative overflow-hidden will-change-transform`}>
                   
-                  {/* Efectos de fondo internos mejorados */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${styles.decorativeGradient} pointer-events-none`} />
-                  <div className={`absolute top-0 right-0 w-48 h-48 bg-gradient-to-br ${styles.decorativeGradient} rounded-full blur-3xl`} />
-                  <div className={`absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tl ${styles.decorativeGradient} rounded-full blur-2xl`} />
+                  {/* Efectos de fondo internos - reducidos en móvil */}
+                  <div className={`hidden md:block absolute inset-0 bg-gradient-to-br ${styles.decorativeGradient} pointer-events-none`} />
+                  <div className={`hidden md:block absolute top-0 right-0 w-48 h-48 bg-gradient-to-br ${styles.decorativeGradient} rounded-full blur-3xl`} />
+                  <div className={`hidden md:block absolute bottom-0 left-0 w-40 h-40 bg-gradient-to-tl ${styles.decorativeGradient} rounded-full blur-2xl`} />
                   
-                  {/* Badge de número premium mejorado con ring y glow */}
-                  <div className="absolute -top-4 -right-4 z-20">
-                    <div className={`w-20 h-20 rounded-full ${styles.numberBg} flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 ${styles.iconRing}`}>
-                      <span className={`${styles.numberColor} font-extrabold text-2xl`}>{step.number}</span>
+                  {/* Badge de número optimizado */}
+                  <div className="absolute -top-3 -right-3 md:-top-4 md:-right-4 z-20">
+                    <div className={`w-16 h-16 md:w-20 md:h-20 rounded-full ${styles.numberBg} flex items-center justify-center md:group-hover:scale-110 md:group-hover:rotate-12 transition-all duration-300 md:duration-500 ${styles.iconRing}`}>
+                      <span className={`${styles.numberColor} font-extrabold text-xl md:text-2xl`}>{step.number}</span>
                     </div>
-                    {/* Ring decorativo animado */}
-                    <div className="absolute inset-0 rounded-full ring-2 ring-transparent group-hover:ring-[#5352F6]/30 transition-all duration-300 animate-pulse" style={{ animationDuration: '3s' }} />
                   </div>
 
                   {/* Layout horizontal mejorado */}
-                  <div className="flex flex-col relative z-10 mt-6 bg-[rgba(74,35,35,0)]">
+                  <div className="flex flex-col relative z-10 mt-4 md:mt-6">
                     
                     {/* Ícono y título en la misma fila */}
-                    <div className="flex flex-row gap-4 md:gap-6 items-center mb-6">
-                      {/* Ícono premium con animación mejorada */}
+                    <div className="flex flex-row gap-3 md:gap-6 items-center mb-4 md:mb-6">
+                      {/* Ícono optimizado */}
                       <div className="relative flex-shrink-0">
-                        <div className={`w-20 h-20 lg:w-24 lg:h-24 ${styles.iconBg} ${styles.iconRing} rounded-[1.5rem] flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 relative overflow-hidden`}>
-                          {/* Gradient overlay animado */}
-                          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                          <IconComponent className={`w-10 h-10 lg:w-12 lg:h-12 ${styles.iconColor} group-hover:scale-110 transition-transform duration-300 relative z-10`} />
-                          {/* Shine effect interno */}
-                          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 translate-x-[-100%] group-hover:translate-x-[100%]" style={{ transition: 'all 1s ease-in-out' }} />
+                        <div className={`w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 ${styles.iconBg} ${styles.iconRing} rounded-xl md:rounded-[1.5rem] flex items-center justify-center md:group-hover:scale-110 md:group-hover:rotate-6 transition-all duration-300 md:duration-500 relative overflow-hidden`}>
+                          {/* Gradient overlay animado - solo desktop */}
+                          <div className="hidden md:block absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                          <IconComponent className={`w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 ${styles.iconColor} md:group-hover:scale-110 transition-transform duration-300 relative z-10`} />
                         </div>
-                        {/* Círculo decorativo externo con pulso */}
-                        <div className="absolute -inset-2 rounded-[1.5rem] border-2 border-transparent group-hover:border-[#5352F6]/20 transition-all duration-500 opacity-0 group-hover:opacity-100 bg-[rgba(95,20,20,0)]" />
                       </div>
 
-                      {/* Título con animación en hover mejorado */}
-                      <h3 className="text-2xl md:text-3xl lg:text-4xl leading-tight group-hover:translate-x-2 transition-transform duration-300 flex-1">
-                        {step.number === '1' ? (
-                          <a href="/register" className="hover:opacity-80 transition-opacity">
-                            <span className={`font-normal ${styles.titleMain}`}>
-                              {step.titleItalic.replace(/^\d+\.\s*/, '')}
+                      {/* Título optimizado con subrayado completo */}
+                      <div className="flex-1">
+                        <h3 className="text-xl md:text-2xl lg:text-4xl leading-tight md:group-hover:translate-x-2 transition-transform duration-300">
+                          {step.href && step.href !== '#' ? (
+                            <a 
+                              href={step.href} 
+                              target={step.target} 
+                              rel={step.target === '_blank' ? 'noopener noreferrer' : undefined}
+                              className={`md:pointer-events-none inline-block pb-1 md:pb-2 border-b-2 md:border-b-[3px] ${
+                                step.cardStyle === 'white' 
+                                  ? 'border-[#5352F6]' 
+                                  : step.cardStyle === 'dark'
+                                  ? 'border-[#5352F6]'
+                                  : 'border-white'
+                              } hover:opacity-80 transition-opacity`}
+                            >
+                              <span className={`font-normal ${styles.titleMain}`}>
+                                {step.titleItalic.replace(/^\d+\.\s*/, '')}
+                              </span>
+                              {' '}
+                              <span className={`font-bold ${styles.titleHighlight}`}>
+                                {step.titleBold}
+                              </span>
+                            </a>
+                          ) : (
+                            <span className={`inline-block pb-1 md:pb-2 border-b-2 md:border-b-[3px] ${
+                              step.cardStyle === 'white' 
+                                ? 'border-[#5352F6]' 
+                                : step.cardStyle === 'dark'
+                                ? 'border-[#5352F6]'
+                                : 'border-white'
+                            }`}>
+                              <span className={`font-normal ${styles.titleMain}`}>
+                                {step.titleItalic.replace(/^\d+\.\s*/, '')}
+                              </span>
+                              {' '}
+                              <span className={`font-bold ${styles.titleHighlight}`}>
+                                {step.titleBold}
+                              </span>
                             </span>
-                            {' '}
-                            <span className={`font-bold ${styles.titleHighlight}`}>
-                              {step.titleBold}
-                            </span>
-                          </a>
-                        ) : step.number === '2' ? (
-                          <a href="https://lokl.life/project/nido-de-agua" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
-                            <span className={`font-normal ${styles.titleMain}`}>
-                              {step.titleItalic.replace(/^\d+\.\s*/, '')}
-                            </span>
-                            {' '}
-                            <span className={`font-bold ${styles.titleHighlight}`}>
-                              {step.titleBold}
-                            </span>
-                          </a>
-                        ) : (
-                          <>
-                            <span className={`font-normal ${styles.titleMain}`}>
-                              {step.titleItalic.replace(/^\d+\.\s*/, '')}
-                            </span>
-                            {' '}
-                            <span className={`font-bold ${styles.titleHighlight}`}>
-                              {step.titleBold}
-                            </span>
-                          </>
-                        )}
-                      </h3>
+                          )}
+                        </h3>
+                      </div>
                     </div>
 
-                    {/* Descripción mejorada - Abajo con más espacio */}
-                    <div className="space-y-6">
-                      <p className={`text-lg lg:text-xl leading-relaxed ${styles.description} max-w-3xl`}>
+                    {/* Descripción optimizada */}
+                    <div className="space-y-4 md:space-y-6">
+                      <p className={`text-base md:text-lg lg:text-xl leading-relaxed ${styles.description} max-w-3xl`}>
                         {step.description}
                       </p>
 
-                      {/* Línea decorativa inferior mejorada con gradiente */}
-                      <div className="pt-2">
-                        <div className="h-1.5 w-0 group-hover:w-32 bg-gradient-to-r from-[#5352F6] via-[#5352F6]/80 to-[#5352F6]/50 rounded-full transition-all duration-700 shadow-lg shadow-[#5352F6]/30" />
+                      {/* Línea decorativa inferior - solo desktop */}
+                      <div className="hidden md:block pt-2">
+                        <div className="h-1.5 w-0 group-hover:w-32 bg-gradient-to-r from-[#5352F6] via-[#5352F6]/80 to-[#5352F6]/50 rounded-full transition-all duration-700" />
                       </div>
-
-
                     </div>
-
-
                   </div>
 
-                  {/* Efecto de brillo animado en hover mejorado */}
-                  <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-br from-white/15 via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                  {/* Efectos de hover - solo desktop */}
+                  <div className="hidden md:block absolute inset-0 rounded-[2.5rem] bg-gradient-to-br from-white/15 via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                   
-                  {/* Shine effect que recorre la tarjeta mejorado */}
-                  <div className="absolute inset-0 rounded-[2.5rem] overflow-hidden">
+                  {/* Shine effect - solo desktop */}
+                  <div className="hidden md:block absolute inset-0 rounded-[2.5rem] overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1500" />
                   </div>
 
-                  {/* Partículas decorativas (solo visible en hover) */}
-                  <div className="absolute top-1/4 right-1/4 w-2 h-2 rounded-full bg-[#5352F6]/40 opacity-0 group-hover:opacity-100 transition-all duration-300 delay-100 blur-sm" />
-                  <div className="absolute bottom-1/3 left-1/3 w-1.5 h-1.5 rounded-full bg-[#5352F6]/30 opacity-0 group-hover:opacity-100 transition-all duration-300 delay-200 blur-sm" />
+                  {/* Partículas decorativas - solo desktop */}
+                  <div className="hidden md:block absolute top-1/4 right-1/4 w-2 h-2 rounded-full bg-[#5352F6]/40 opacity-0 group-hover:opacity-100 transition-all duration-300 delay-100 blur-sm" />
+                  <div className="hidden md:block absolute bottom-1/3 left-1/3 w-1.5 h-1.5 rounded-full bg-[#5352F6]/30 opacity-0 group-hover:opacity-100 transition-all duration-300 delay-200 blur-sm" />
                   
-                  {/* Borde interno con brillo */}
-                  <div className="absolute inset-0 rounded-[2.5rem] border border-white/0 group-hover:border-white/10 transition-all duration-500 pointer-events-none" />
+                  {/* Borde interno - solo desktop */}
+                  <div className="hidden md:block absolute inset-0 rounded-[2.5rem] border border-white/0 group-hover:border-white/10 transition-all duration-500 pointer-events-none" />
                 </div>
               </div>
             );
