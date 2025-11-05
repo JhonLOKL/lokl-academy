@@ -7,8 +7,7 @@ import { Autoplay, Navigation } from 'swiper/modules';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import PointAccumulateDescription from '../components/PointAccumulateDescription';
-import 'swiper/css/navigation';
-import 'swiper/css';
+// CSS de Swiper movido a globals.css para optimizar la carga
 
 export default function AmbassadorBenefits() {
   const [isVisible, setIsVisible] = useState(false);

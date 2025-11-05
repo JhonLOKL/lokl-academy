@@ -6,8 +6,7 @@ import { Autoplay } from 'swiper/modules';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
-// Import Swiper styles
-import 'swiper/css';
+// CSS de Swiper movido a globals.css para optimizar la carga
 
 // Date's events
 const events = [

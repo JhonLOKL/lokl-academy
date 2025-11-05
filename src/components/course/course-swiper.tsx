@@ -4,10 +4,7 @@ import React, { ReactNode } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, A11y } from 'swiper/modules';
 
-// Importar estilos de Swiper
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+// CSS de Swiper movido a globals.css para optimizar la carga y reducir la cadena de solicitudes críticas
 
 interface CourseSwiperProps {
   children: ReactNode[];

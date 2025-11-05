@@ -5,7 +5,7 @@ import AllyIconCard from '../components/AllyIconCard';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import { motion } from 'framer-motion';
-import 'swiper/css';
+// CSS de Swiper movido a globals.css para optimizar la carga
 
 const icons = [
   { icon: '/images/about-us/img-logo-forbes.png', alt: 'Forbes' },

@@ -8,9 +8,7 @@ import { ContentBlock, Author } from "@/lib/blog/schema";
 import { BlogTags, AuthorProfile, LoklCTABanner } from "./index";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, A11y, Autoplay } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
+// CSS de Swiper movido a globals.css para optimizar la carga y reducir la cadena de solicitudes críticas
 import { ChevronLeft, ChevronRight, Copy, Check, Star, ChevronUp, ChevronDown } from "lucide-react";
 import { LineChart } from "@/components/design-system/ui/charts/line-chart";
 import { BarChart } from "@/components/design-system/ui/charts/bar-chart";

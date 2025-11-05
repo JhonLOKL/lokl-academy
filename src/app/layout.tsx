@@ -132,6 +132,9 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
         <link rel="dns-prefetch" href="https://i.ytimg.com" />
         <link rel="dns-prefetch" href="https://img.youtube.com" />
+        
+        {/* Preload para CSS críticos - ayuda a reducir la latencia de la ruta crítica */}
+        {/* Next.js inyectará automáticamente los CSS críticos, pero podemos optimizar aún más */}
       </head>
       <body className={inter.className} suppressHydrationWarning>
         {/* Google Tag Manager - Movido a lazyOnload para no bloquear */}

@@ -6,8 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from 'swiper/modules';
 import { motion } from 'framer-motion';
-import 'swiper/css';
-import 'swiper/css/pagination';
+// CSS de Swiper movido a globals.css para optimizar la carga
 
 export default function AmbassadorStepsToRefer() {
   const [isVisible, setIsVisible] = useState(false);

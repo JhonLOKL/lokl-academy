@@ -7,9 +7,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { CardCarrouselDifferent } from '../components/CardCarrouselDifferent';
 
-// Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/pagination';
+// CSS de Swiper movido a globals.css para optimizar la carga
 
 export default function WeAreDifferent() {
   const [isVisible, setIsVisible] = useState(false);

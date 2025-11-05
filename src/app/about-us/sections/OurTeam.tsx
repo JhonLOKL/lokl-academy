@@ -6,9 +6,7 @@ import { Pagination, Autoplay } from 'swiper/modules';
 import { motion } from 'framer-motion';
 import { Cardsteam } from '../components/Cardsteam';
 
-// Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/pagination';
+// CSS de Swiper movido a globals.css para optimizar la carga
 
 export default function OurTeam() {
   const teamMembers = [

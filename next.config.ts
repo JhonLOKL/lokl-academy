@@ -21,8 +21,10 @@ const nextConfig: NextConfig = {
       '@radix-ui/react-tabs',
       'framer-motion',
       'recharts',
+      'swiper',
     ],
-    // Mejora la compilación de CSS
+    // Mejora la compilación de CSS - reduce la cantidad de archivos CSS generados
+    // y optimiza la carga para reducir la cadena de solicitudes críticas
     optimizeCss: true,
   },
   images: {
