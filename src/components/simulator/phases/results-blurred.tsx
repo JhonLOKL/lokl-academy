@@ -24,19 +24,13 @@ export default function ResultsBlurred({ project, simulationData }: ResultsBlurr
   
   let rentabilityMin: number;
   let rentabilityMax: number;
-  
+
   if (hasValidRent) {
-    rentabilityMin = ((project.minRent * 12) / project.unitPrice) * 100;
-    rentabilityMax = ((project.maxRent * 12) / project.unitPrice) * 100;
+    rentabilityMin = project.minRent * 100;
+    rentabilityMax = project.maxRent * 100;
   } else {
-    if (project.subscriptionFeePercentage > 0) {
-      const annualRate = project.subscriptionFeePercentage * 12 * 100;
-      rentabilityMin = annualRate * 0.8;
-      rentabilityMax = annualRate * 1.2;
-    } else {
-      rentabilityMin = 6.18;
-      rentabilityMax = 14.26;
-    }
+    rentabilityMin = 6.18;
+    rentabilityMax = 14.26;
   }
 
   return (
