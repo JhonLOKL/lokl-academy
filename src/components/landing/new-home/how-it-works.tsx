@@ -69,8 +69,9 @@ export default function HowItWorks() {
           </p>
         </div>
 
-        {/* Layout responsive: Stack en móvil, grid horizontal en desktop */}
-        <div className="flex flex-col gap-8 md:gap-6 lg:grid lg:grid-cols-3 lg:gap-6 lg:max-w-7xl lg:mx-auto">
+        {/* Layout responsive con estructura escalonada */}
+        <div className="relative flex flex-col gap-8 md:gap-10 lg:gap-12 lg:max-w-5xl lg:mx-auto">
+          <div className="hidden lg:block absolute left-1/2 top-0 h-full w-px bg-gradient-to-b from-transparent via-gray-300/60 to-transparent pointer-events-none" />
           {steps.map((step, index) => {
             const IconComponent = step.icon;
 
@@ -141,11 +142,23 @@ export default function HowItWorks() {
             };
 
             const styles = getCardStyles();
+            const isEven = index % 2 === 0;
+            const layout = isEven
+              ? {
+                wrapper: 'lg:flex lg:justify-start',
+                card: 'lg:mr-auto lg:max-w-xl',
+                timelineDot: '-translate-x-1/2'
+              }
+              : {
+                wrapper: 'lg:flex lg:justify-end',
+                card: 'lg:ml-auto lg:max-w-xl',
+                timelineDot: '-translate-x-1/2'
+              };
 
             return (
               <div 
                 key={step.number} 
-                className="w-full group"
+                className={`relative w-full group ${layout.wrapper}`}
               >
                 {/* Glow de fondo - reducido en móvil */}
                 <div className={`hidden md:block absolute inset-0 rounded-2xl ${styles.glow} transition-all duration-500 opacity-0 group-hover:opacity-100 blur-xl`} />
@@ -162,7 +175,7 @@ export default function HowItWorks() {
                 )}
 
                 {/* Tarjeta optimizada para móvil */}
-                <div className={`${styles.container} ${styles.hoverEffect} rounded-2xl p-5 md:p-6 lg:p-8 transition-all duration-300 md:duration-500 relative overflow-hidden will-change-transform`}>
+                <div className={`${styles.container} ${styles.hoverEffect} ${layout.card} rounded-2xl p-5 md:p-6 lg:p-8 transition-all duration-300 md:duration-500 relative overflow-hidden will-change-transform`}>
                   
                   {/* Efectos de fondo internos - reducidos en móvil */}
                   <div className={`hidden md:block absolute inset-0 bg-gradient-to-br ${styles.decorativeGradient} pointer-events-none`} />
