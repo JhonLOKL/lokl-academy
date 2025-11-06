@@ -395,7 +395,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
                     onClick={handleViewFullProjection}
                     className="block w-full rounded-xl bg-[#5352F6] px-4 py-3 text-center font-medium text-white hover:bg-[#5352F6]/90 focus:outline-none focus:ring-2 focus:ring-[#5352F6]/30 transition-all shadow-lg hover:shadow-xl"
                   >
-                    Ver proyección completa
+                    Simular inversión
                   </button>
                 </div>
               ) : (
