@@ -277,20 +277,20 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
         </div>
 
         {/* Stacked Cards Container */}
-        <div className="relative perspective-1000 overflow-hidden">
+        <div className="relative perspective-1000 overflow-visible">
           {/* Navigation Buttons - Desktop (ocultos cuando hay selección para evitar que se vean moviendo) */}
           {selectedProject === null && (
             <>
               <button
                 onClick={prevCarousel}
-                className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-black/60 hover:bg-black/70 backdrop-blur-sm rounded-full shadow-xl items-center justify-center transition-all duration-300 hover:scale-110"
+                className="hidden md:flex absolute -left-8 lg:-left-12 xl:-left-16 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-black/60 hover:bg-black/70 backdrop-blur-sm rounded-full shadow-xl items-center justify-center transition-all duration-300 hover:scale-110"
                 aria-label="Proyecto anterior"
               >
                 <ChevronLeft className="w-6 h-6 text-white animate-pulse" />
               </button>
               <button
                 onClick={nextCarousel}
-                className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-black/60 hover:bg-black/70 backdrop-blur-sm rounded-full shadow-xl items-center justify-center transition-all duration-300 hover:scale-110"
+                className="hidden md:flex absolute -right-8 lg:-right-12 xl:-right-16 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-black/60 hover:bg-black/70 backdrop-blur-sm rounded-full shadow-xl items-center justify-center transition-all duration-300 hover:scale-110"
                 aria-label="Proyecto siguiente"
               >
                 <ChevronRight className="w-6 h-6 text-white animate-pulse" />
@@ -384,7 +384,7 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                     }
                     ${!hasSelection ? 'cursor-pointer' : ''}
                   `}
-                  onClick={(e) => {
+                  onClick={() => {
                     // Si hubo un swipe real, el handleTouchEnd ya manejó la navegación
                     // No ejecutar el onClick si se ejecutó un swipe
                     if (swipeExecuted.current) {
