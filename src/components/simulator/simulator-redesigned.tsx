@@ -21,10 +21,12 @@ import ResultsFinal from "./phases/results-final";
 
 interface SimulatorRedesignedProps {
   simulatorName?: string;
+  hideRightColumnUntilSimulation?: boolean;
 }
 
 export default function SimulatorRedesigned({
   simulatorName = "Simulador General",
+  hideRightColumnUntilSimulation = false,
 }: SimulatorRedesignedProps) {
   const {
     availableProjects,
@@ -329,7 +331,11 @@ export default function SimulatorRedesigned({
       </div>
 
       {/* Contenido de fases */}
-      <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto">
+      <div className={`grid gap-8 max-w-7xl mx-auto ${
+        hideRightColumnUntilSimulation && currentPhase !== 3 
+          ? "md:grid-cols-1" 
+          : "md:grid-cols-2"
+      }`}>
         {/* Columna Izquierda */}
         <div>
           {currentPhase === 1 && (
@@ -372,25 +378,27 @@ export default function SimulatorRedesigned({
         </div>
 
         {/* Columna Derecha */}
-        <div>
-          {currentPhase === 1 && selectedProject && (
-            <ProjectPreview project={selectedProject} />
-          )}
+        {(!hideRightColumnUntilSimulation || currentPhase === 3) && (
+          <div>
+            {currentPhase === 1 && selectedProject && (
+              <ProjectPreview project={selectedProject} />
+            )}
 
-          {currentPhase === 2 && selectedProject && simulationData && (
-            <ResultsBlurred
-              project={selectedProject}
-              simulationData={simulationData}
-            />
-          )}
+            {currentPhase === 2 && selectedProject && simulationData && (
+              <ResultsBlurred
+                project={selectedProject}
+                simulationData={simulationData}
+              />
+            )}
 
-          {currentPhase === 3 && selectedProject && simulationData && (
-            <ResultsFinal
-              project={selectedProject}
-              simulationData={simulationData}
-            />
-          )}
-        </div>
+            {currentPhase === 3 && selectedProject && simulationData && (
+              <ResultsFinal
+                project={selectedProject}
+                simulationData={simulationData}
+              />
+            )}
+          </div>
+        )}
       </div>
 
       {/* Error message */}
