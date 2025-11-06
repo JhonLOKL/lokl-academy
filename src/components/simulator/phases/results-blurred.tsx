@@ -42,7 +42,7 @@ export default function ResultsBlurred({ project, simulationData }: ResultsBlurr
             src={project.imageURL}
             alt={project.name}
             fill
-            className="object-cover opacity-40"
+            className="object-cover"
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent" />
