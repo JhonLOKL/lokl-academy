@@ -75,7 +75,7 @@ export default function Benefits() {
   return (
     <section
       id="benefits"
-      className="py-8 sm:py-12 md:py-16 landscape:py-6 bg-background"
+        className="py-12 sm:py-16 md:py-20 landscape:py-8 bg-background"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         {/* Header */}
@@ -92,26 +92,6 @@ export default function Benefits() {
 
         {/* Benefits Container */}
         <div className="relative md:px-8 lg:px-10 xl:px-12">
-          {/* Navigation Buttons - Móvil */}
-          {isMobile && (
-            <>
-              <button
-                onClick={prevCarousel}
-                className="absolute left-2 top-1/2 -translate-y-1/2 z-40 w-10 h-10 flex items-center justify-center transition-all duration-300 hover:scale-110"
-                aria-label="Beneficio anterior"
-              >
-                <ChevronLeft className="w-6 h-6 text-black" />
-              </button>
-              <button
-                onClick={nextCarousel}
-                className="absolute right-2 top-1/2 -translate-y-1/2 z-40 w-10 h-10 flex items-center justify-center transition-all duration-300 hover:scale-110"
-                aria-label="Beneficio siguiente"
-              >
-                <ChevronRight className="w-6 h-6 text-black" />
-              </button>
-            </>
-          )}
-
           {/* Navigation Buttons - Desktop */}
           {!isMobile && (
             <>
