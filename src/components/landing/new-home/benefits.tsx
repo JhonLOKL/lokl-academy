@@ -81,8 +81,8 @@ export default function Benefits() {
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16 landscape:mb-8">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3">
-            <span className="text-foreground">¿CÓMO </span>
-            <span className="text-[#5352F6]">FUNCIONA?</span>
+            <span className="text-foreground">Beneficios </span>
+            <span className="text-[#5352F6]">de invertir con LOKL</span>
           </h2>
           <p className="text-base sm:text-lg md:text-xl landscape:text-sm landscape:sm:text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed landscape:leading-snug px-2">
             Inversión inmobiliaria con propósito: rentabilidad financiera, impacto social
