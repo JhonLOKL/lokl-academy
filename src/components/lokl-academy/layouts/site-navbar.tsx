@@ -21,7 +21,7 @@ export function SiteNavbar() {
   };
 
   const goToProfile = () => {
-    router.push("https://lokl.life/dashboard/income");
+    router.push("https://lokl.life/dashboard/perfil");
   };
   
   return (
