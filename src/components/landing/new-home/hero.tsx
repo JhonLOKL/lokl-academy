@@ -26,6 +26,12 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
   // Filtrar proyectos activos (que no estén en "Etapa 0")
   const availableProjects = globalProjects.filter(p => p.phase !== "Etapa 0");
 
+  // Imágenes para el hero móvil
+  const mobileHeroImages = [
+    "https://lokl-assets.s3.us-east-1.amazonaws.com/home/Hero-indie-movil.png",
+    "https://lokl-assets.s3.us-east-1.amazonaws.com/home/Hero-nido-movil.png"
+  ];
+
   // Estado para el simulador del hero
   const [selectedHeroProjectId, setSelectedHeroProjectId] = useState<string>("");
   const [heroInvestmentAmount, setHeroInvestmentAmount] = useState(5310000);
@@ -45,18 +51,18 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
   // Obtener el proyecto actualmente seleccionado
   const currentHeroProject = availableProjects.find(p => p.id === selectedHeroProjectId) || availableProjects[0];
 
-  // Rotación automática de proyectos cada 5 segundos
+  // Rotación automática de imágenes móviles cada 5 segundos
   useEffect(() => {
-    if (availableProjects.length === 0) return;
+    if (mobileHeroImages.length === 0) return;
     
     const interval = setInterval(() => {
       setCurrentProjectIndex(
-        (prev) => (prev + 1) % availableProjects.length,
+        (prev) => (prev + 1) % mobileHeroImages.length,
       );
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [availableProjects.length]);
+  }, [mobileHeroImages.length]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("es-CO", {
@@ -188,10 +194,10 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
 
         {/* Fondo con imágenes - Solo móvil - ocupa toda la altura de viewport */}
         <div className="absolute inset-0 md:hidden h-screen">
-          {availableProjects.length > 0 ? (
-            availableProjects.map((project, index) => (
+          {mobileHeroImages.length > 0 ? (
+            mobileHeroImages.map((imageUrl, index) => (
               <div
-                key={project.id}
+                key={index}
                 aria-hidden="true"
                 className={`absolute inset-0 transition-opacity duration-1000 ${
                   index === currentProjectIndex
@@ -201,8 +207,8 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
               >
                 <picture>
                   <LazyImage
-                    src={project.imageURL}
-                    alt={`Proyecto ${project.name} - ${project.city} - LOKL`}
+                    src={imageUrl}
+                    alt={`Hero móvil ${index + 1} - LOKL`}
                     className="absolute inset-0 h-full w-full object-cover"
                     priority={index === 0}
                     width={1920}
@@ -219,12 +225,15 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
         {/* Overlay para contraste del texto */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/20 via-50% to-transparent"></div>
 
+        {/* Overlay con opacidad en todo el hero - Solo móvil */}
+        <div className="absolute inset-0 md:hidden bg-black/25 pointer-events-none z-[5]"></div>
+
         {/* Contenido en 2 columnas - Desktop, 1 columna Mobile - Centrado verticalmente */}
         <div className="relative z-10 mx-auto flex items-center h-full max-w-7xl px-6">
           <div className="grid grid-cols-1 w-full gap-8 md:grid-cols-12">
           {/* Columna IZQUIERDA: texto */}
           <div className="md:col-span-7">
-            <h1 className="leading-[0.85] font-semibold md:text-6xl text-[48px] text-left text-[rgb(255,248,248)] max-w-xl">
+            <h1 className="leading-[1.1] md:leading-[0.85] font-semibold md:text-6xl text-4xl text-left text-[rgb(255,248,248)] max-w-xl">
               Invierte en bienes raíces con propósito y construye tu futuro
             </h1>
 
