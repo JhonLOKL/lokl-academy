@@ -75,14 +75,14 @@ export default function Benefits() {
   return (
     <section
       id="benefits"
-        className="py-12 sm:py-16 md:py-20 landscape:py-8 bg-background"
+      className="py-20 sm:py-28 md:py-32 lg:py-36 landscape:py-12 bg-background"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16 landscape:mb-8">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl landscape:text-2xl landscape:sm:text-3xl font-bold text-foreground mb-4 sm:mb-6 landscape:mb-3 leading-tight">
-            <span className="text-[#5352F6]">BENEFICIOS</span> de
-            invertir con LOKL
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3">
+            <span className="text-foreground">¿CÓMO </span>
+            <span className="text-[#5352F6]">FUNCIONA?</span>
           </h2>
           <p className="text-base sm:text-lg md:text-xl landscape:text-sm landscape:sm:text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed landscape:leading-snug px-2">
             Inversión inmobiliaria con propósito: rentabilidad financiera, impacto social
