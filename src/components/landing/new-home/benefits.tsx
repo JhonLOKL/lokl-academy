@@ -75,11 +75,11 @@ export default function Benefits() {
   return (
     <section
       id="benefits"
-      className="py-8 sm:py-12 md:py-16 landscape:py-6 bg-[rgb(243,243,243)]"
+      className="py-8 sm:py-12 md:py-16 landscape:py-6 bg-background"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-12 landscape:mb-6">
+        <div className="text-center mb-12 sm:mb-16 landscape:mb-8">
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl landscape:text-2xl landscape:sm:text-3xl font-bold text-foreground mb-4 sm:mb-6 landscape:mb-3 leading-tight">
             <span className="text-[#5352F6]">BENEFICIOS</span> de
             invertir con LOKL
@@ -153,7 +153,7 @@ export default function Benefits() {
                 >
                   <div className="group h-full cursor-pointer select-none">
                     {/* Tarjeta con imagen de fondo dominante */}
-                    <div className={`relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] ${
+                    <div className={`relative rounded-2xl sm:rounded-3xl overflow-hidden transition-all duration-500 shadow-lg md:shadow-none md:hover:shadow-none ${
                       isMobile 
                         ? "h-[550px] sm:h-[600px] landscape:h-[450px] landscape:sm:h-[500px]" 
                         : "h-[700px] landscape:h-[550px]"
@@ -164,7 +164,7 @@ export default function Benefits() {
                         alt={benefit.title}
                         fill
                         sizes="(max-width: 768px) 85vw, (max-width: 1200px) 50vw, 33vw"
-                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        className="object-cover transition-transform duration-700"
                         priority={index < 3}
                         quality={85}
                       />
