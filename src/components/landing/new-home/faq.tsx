@@ -26,56 +26,122 @@ export default function FAQ() {
   ];
 
   const faqsData = [
-    // Columna A
+    // ... tus FAQs existentes ...
+
+    // Nuevas FAQs - Columna A
     {
-      id: 'como-invertir',
-      question: '¿Cómo puedo invertir?',
-      answer: 'La inversión en LOKL es 100% digital y puedes comenzar siguiendo estos pasos:\n\n1. Regístrate en la plataforma\n2. Elige el proyecto Nido de Agua\n3. Define el monto de tu participación\n4. Llena tus datos personales y firma el contrato\n5. Paga tu membresía\n6. Revisa en tu perfil la participación\n\nPuedes pagar por PSE o tarjeta de crédito (nacional e internacional). Ten presente que si utilizas tarjeta de crédito tendrás un fee adicional de 2,5%.',
-      category: 'funcionamiento',
-      column: 'A'
-    },
-    {
-      id: 'riesgos-proyectos',
-      question: '¿Qué riesgos tienen los proyectos en los que participo?',
-      answer: 'Los principales riesgos que manejamos son:\n\n• Riesgo de Construcción: Mitigado con estudios de suelos y estructurales que aseguran la viabilidad del proyecto.\n\n• Riesgo de Inversión: Si no alcanza el punto de equilibrio, el dinero se devuelve descontando costos transaccionales.\n\n• Riesgo Comercial: Contratos de operación con indicadores de éxito, metas comerciales y control de costos.\n\n• Riesgo de Valorización: Modelo de flujo de caja futuro con mercado secundario para potencial de compra.',
+      id: 'riesgos-inversion-inmobiliaria',
+      question: '¿Qué riesgos existen en una inversión inmobiliaria?',
+      answer: 'Todo activo conlleva riesgo de mercado, ejecución y liquidez. En LOKL priorizamos proyectos verificados y divulgamos todos los riesgos antes de invertir para que tomes decisiones informadas.',
       category: 'riesgos',
       column: 'A'
     },
     {
-      id: 'beneficios-lokl',
-      question: '¿Cuáles son los beneficios de invertir con LOKL?',
-      answer: 'Los beneficios varían según el monto de inversión. Por ejemplo, si inviertes desde 15 millones tendrás: 10% de descuento en espacios operados por Nido de Agua, participación en loterías para noches y beneficios, ser el primero en listas de espera para nuevos proyectos, y acceso al mercado secundario.',
-      category: 'beneficios',
+      id: 'puedo-perder-inversion',
+      question: '¿Puedo perder parte o la totalidad de mi inversión?',
+      answer: 'Sí. No hay garantías en ninguna inversión; por eso promovemos la diversificación y la educación financiera para que puedas tomar decisiones más informadas y reducir tu exposición al riesgo.',
+      category: 'riesgos',
       column: 'A'
     },
     {
-      id: 'proyectos-exitosos',
-      question: '¿Qué proyectos exitosos han tenido?',
-      answer: 'Nuestro proyecto exitoso es Indie Universe, un coliving para creativos ubicado en el barrio Laureles - Medellín con proyecciones de retorno de +12% E.A. Hemos levantado +$3.500 millones COP y somos +500 inversionistas. Actualmente estamos en etapa 3, con un valor del Unit de $125.000, con posibilidad de invertir a través de mercado secundario.',
-      category: 'proyectos',
+      id: 'evaluacion-riesgo-proyecto',
+      question: '¿Cómo evalúan el riesgo de cada proyecto?',
+      answer: 'Aplicamos una curaduría estandarizada que incluye: due diligence legal, técnica y financiera, además de análisis de demanda del mercado. Cada proyecto pasa por filtros rigurosos antes de ser publicado.',
+      category: 'riesgos',
+      column: 'A'
+    },
+    {
+      id: 'proteccion-datos',
+      question: '¿Cómo protegen mis datos personales?',
+      answer: 'Cumplimos con estándares internacionales de seguridad y políticas de privacidad. Utilizamos cifrado de datos y accesos restringidos. Solo áreas autorizadas bajo acuerdos de confidencialidad tienen acceso a tu información.',
+      category: 'seguridad',
+      column: 'A'
+    },
+    {
+      id: 'pago-seguro',
+      question: '¿Mi pago es seguro?',
+      answer: 'Sí, utilizamos pasarelas de pago certificadas y sistemas de conciliación. Nunca solicitamos claves por fuera de la plataforma. Si detectas actividad sospechosa, cambia tu contraseña inmediatamente y repórtalo por soporte.',
+      category: 'seguridad',
+      column: 'A'
+    },
+    {
+      id: 'panel-inversionista',
+      question: '¿Qué es el panel del inversionista?',
+      answer: 'Es tu tablero personal donde encuentras todos los documentos del proyecto, el estado actual, comunicaciones oficiales, cronograma de pagos y reportes de avance. Es tu centro de control para dar seguimiento a tus inversiones.',
+      category: 'funcionamiento',
+      column: 'A'
+    },
+    {
+      id: 'seleccion-proyectos',
+      question: '¿Cómo seleccionan los proyectos?',
+      answer: 'Tenemos un pipeline propio de proyectos que pasan por filtros de curaduría técnica, legal y financiera. Evaluamos la trayectoria del desarrollador/operador, antecedentes, contratos, equipo y métricas de ejecución.',
+      category: 'funcionamiento',
+      column: 'A'
+    },
+    {
+      id: 'documentos-inversion',
+      question: '¿Qué documentos recibo al invertir?',
+      answer: 'Recibes el contrato o boletos de participación, anexos correspondientes y certificaciones del esquema del proyecto. Todos los documentos están disponibles en tu panel del inversionista.',
+      category: 'funcionamiento',
       column: 'A'
     },
 
-    // Columna B
+    // Nuevas FAQs - Columna B
     {
-      id: 'reinversion-proyectos',
-      question: '¿Hay posibilidad de reinversión en otros proyectos?',
-      answer: 'Sí, puedes reinvertir en los proyectos utilizando tanto las ganancias generadas como tus ingresos adicionales. Uno de los beneficios de invertir con LOKL es que puedes reinvertir con el Unit al mismo precio al que inviertiste inicialmente.',
-      category: 'funcionamiento',
-      column: 'B'
-    },
-    {
-      id: 'certificado-inversion',
-      question: '¿Cuál es el certificado de la inversión?',
-      answer: 'Tu inversión está respaldada por un contrato de mandato que te otorga derechos fiduciarios sobre el proyecto, es decir, obtienes una participación sobre este según el monto que inviertas.',
-      category: 'seguridad',
-      column: 'B'
-    },
-    {
-      id: 'mercado-secundario',
-      question: '¿Qué es mercado secundario?',
-      answer: 'LOKL te ofrece vender tu participación a terceros interesados en invertir en el proyecto, lo que se conoce como mercado secundario. Puedes retirar tu inversión a través de la plataforma de LOKL luego del primer año sobre el cual habrás obtenido valorización, en caso que aún el proyecto se encuentre en fase de construcción, o valorización y rentabilidad en caso que el proyecto ya esté operando.',
+      id: 'cuando-salir-inversion',
+      question: '¿Cuándo puedo salir de una inversión?',
+      answer: 'Puedes solicitar la salida a través del mercado secundario después del primer año, si está habilitado para el proyecto. La liquidez depende de que haya compradores interesados. Revisa la sección "Liquidez" en la ficha del proyecto.',
       category: 'liquidez',
+      column: 'B'
+    },
+    {
+      id: 'liquidez-inversiones',
+      question: '¿Qué tan líquidas son estas inversiones?',
+      answer: 'Son menos líquidas que instrumentos bursátiles tradicionales. Considera tu horizonte de inversión al participar. Si no hay demanda en el mercado secundario, debes esperar las ventanas de liquidez o el vencimiento del proyecto.',
+      category: 'liquidez',
+      column: 'B'
+    },
+    {
+      id: 'solicitar-cesion',
+      question: '¿Cómo solicito la cesión de mi participación?',
+      answer: 'Solicítalo a través de la mesa de ayuda. Validaremos los requisitos y las contrapartes interesadas. El proceso se gestiona completamente por la plataforma de LOKL.',
+      category: 'liquidez',
+      column: 'B'
+    },
+    {
+      id: 'por-que-invertir-lokl',
+      question: '¿Por qué invertir con LOKL?',
+      answer: 'Ofrecemos curaduría de oportunidades inmobiliarias de calidad, transparencia total en el proceso, acompañamiento experto, acceso a proyectos reales, comunidad de inversionistas, educación financiera y seguimiento centralizado.',
+      category: 'beneficios',
+      column: 'B'
+    },
+    {
+      id: 'valor-adicional',
+      question: '¿Qué valor obtengo además del potencial retorno?',
+      answer: 'Acceso a proyectos inmobiliarios exclusivos, comunidad de inversionistas, educación financiera a través de LOKL Academy, seguimiento centralizado en tu panel, y la posibilidad de invertir con propósito generando impacto local.',
+      category: 'beneficios',
+      column: 'B'
+    },
+    {
+      id: 'diversificar-portafolio',
+      question: '¿Puedo diversificar mi portafolio?',
+      answer: 'Sí, puedes invertir en varios proyectos simultáneamente. Recomendamos diversificar por vertical (hospitalidad, vivienda, renta corta), ubicación geográfica y plazo de inversión para reducir tu riesgo.',
+      category: 'beneficios',
+      column: 'B'
+    },
+    {
+      id: 'tipos-proyectos',
+      question: '¿Qué tipos de proyectos presentan?',
+      answer: 'Presentamos proyectos de hospitalidad, vivienda, renta corta y desarrollos inmobiliarios seleccionados. Cada proyecto pasa por nuestra rigurosa curaduría antes de ser publicado en la plataforma.',
+      category: 'proyectos',
+      column: 'B'
+    },
+
+    {
+      id: 'como-elegir-proyecto',
+      question: '¿Cómo elijo el proyecto adecuado para mí?',
+      answer: 'Define tu horizonte de inversión, nivel de riesgo que toleras y objetivos financieros. Usa el test de perfil inversionista en LOKL Academy, compara proyectos con nuestro simulador y revisa los documentos clave en el data room.',
+      category: 'proyectos',
       column: 'B'
     }
   ];
