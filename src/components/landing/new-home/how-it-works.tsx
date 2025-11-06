@@ -61,8 +61,8 @@ export default function HowItWorks() {
         {/* Header premium mejorado */}
         <div className="text-center mb-8 md:mb-12 lg:mb-16">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3">
-            <span className="text-foreground">¿CÓMO </span>
-            <span className="text-[#5352F6]">FUNCIONA?</span>
+            <span className="text-foreground">¿Cómo </span>
+            <span className="text-[#5352F6]">funciona?</span>
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
             Tres simples pasos para comenzar a invertir en proyectos inmobiliarios
