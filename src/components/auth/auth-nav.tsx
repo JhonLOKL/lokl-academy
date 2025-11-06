@@ -20,7 +20,7 @@ export default function AuthNav() {
     <div className="flex items-center gap-4">
       {token ? (
         <>
-          <Link href="/dashboard">
+          <Link href="https://lokl.life/dashboard">
             <Button variant="secondary" className="text-sm">
               Mi cuenta
             </Button>
