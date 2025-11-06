@@ -237,7 +237,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
               Invierte en bienes raíces con propósito y construye tu futuro
             </h1>
 
-            <p className="mt-4 max-w-xl text-lg text-white/90"> 
+            <p className="mt-6 md:mt-4 max-w-xl text-lg text-white/90"> 
               Proyectos creativos y sostenibles que generan empleo local y valor real para las nuevas generaciones.
             </p>
 
@@ -267,7 +267,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
 
             {/* Proyecto destacado rotativo - fuera de tarjeta */}
             {availableProjects.length > 0 && (
-              <div className="mt-6">
+              <div className="mt-10 md:mt-6">
                 <div
                   key={currentProjectIndex}
                   className="animate-in fade-in duration-500"
@@ -292,7 +292,31 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
             )}
 
             {/* CTAs */}
-            <div className="mt-6 flex flex-wrap gap-3">
+            {/* Mobile: botón de ancho completo + enlace de texto debajo */}
+            <div className="mt-10 flex flex-col gap-4 md:hidden">
+              <a
+                href="#featured-projects"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document
+                    .getElementById("featured-projects")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="w-full rounded-xl bg-[#5352F6] px-5 py-3 font-medium text-white text-center hover:bg-[#5352F6]/90 focus:outline-none focus:ring-2 focus:ring-[#5352F6]/30"
+              >
+                Ver proyectos
+              </a>
+              <a
+                href="#que-es-lokl"
+                onClick={handleWhatIsClick}
+                className="mt-2 text-center text-white/90 hover:text-white underline-offset-2 hover:underline"
+              >
+                ¿Qué es LOKL?
+              </a>
+            </div>
+
+            {/* Desktop/Tablet: botones originales en fila */}
+            <div className="mt-6 hidden md:flex flex-wrap gap-3">
               <a
                 href="#featured-projects"
                 onClick={(e) => {
