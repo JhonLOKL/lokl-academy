@@ -6,6 +6,8 @@ import NewHeroSection from "./new-hero-section";
 import StatsSection from "./stats-section";
 import WhatIsLokl from "@/components/home/WhatIsLokl";
 import Simulator from "@/components/simulator/simulator";
+import { useEffect } from "react";
+import { getProjectCardsAction } from "@/actions/project-actions";
 
 const BenefitsSection = dynamic(() => import("./benefits-section"), { 
   loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
@@ -32,6 +34,11 @@ const FinalCTASection = dynamic(() => import("./final-cta-section"), {
 
 export default function HomePageClient() {
   const [showWhatIsLokl, setShowWhatIsLokl] = useState(false);
+
+  // Prefetch de Project Cards al montar la página (primer consumidor)
+  useEffect(() => {
+    void getProjectCardsAction();
+  }, []);
 
   const handleWhatIsClick = () => {
     setShowWhatIsLokl(true);

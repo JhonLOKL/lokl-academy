@@ -6,44 +6,11 @@ import { getProjectCardsAction } from "@/actions/project-actions";
 import { useProjectStore } from "@/store/project-store";
 
 export default function FeaturedProjectsSection() {
-  const { projects, isLoading, error, setLoading, setProjects, setError } = useProjectStore();
+  const { projects, isLoading, error } = useProjectStore();
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      // Si ya hay proyectos cargados, no hacer nada
-      if (projects.length > 0) {
-        console.log("Proyectos ya cargados:", projects.length);
-        return;
-      }
-
-      // Si ya está cargando, no hacer nada
-      if (isLoading) {
-        console.log("Ya está cargando...");
-        return;
-      }
-
-      console.log("Fetching proyectos...");
-      setLoading(true);
-
-      try {
-        const response = await getProjectCardsAction();
-        
-        if (!response.success) {
-          console.error("Error al cargar proyectos:", response.error);
-          setError(response.error || "Error al cargar proyectos");
-        } else {
-          console.log("Proyectos cargados exitosamente:", response.projects?.length || 0);
-          setProjects(response.projects || []);
-        }
-      } catch (err) {
-        console.error("Error en fetchProjects:", err);
-        setError(err instanceof Error ? err.message : "Error desconocido");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProjects();
+    // Dejar que la acción gestione loading/cache internamente
+    void getProjectCardsAction();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
