@@ -268,8 +268,9 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
       <div className="max-w-7xl mx-auto px-3 sm:px-6">
         {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-            <span className="text-primary">Proyectos</span> destacados
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3">
+            <span className="text-foreground">Proyectos </span>
+            <span className="text-[#5352F6]">destacados</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Descubre oportunidades de inversión curadas por nuestro equipo de expertos
