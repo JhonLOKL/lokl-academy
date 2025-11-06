@@ -23,6 +23,8 @@ export const getProjectCardsAction = async (): Promise<ProjectCardsResponse> => 
         
         // Actualizar el store con los proyectos
         store.setProjects(projects);
+        // Marcar fin de carga
+        store.setLoading(false);
         
         return {
             success: true,

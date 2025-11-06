@@ -48,6 +48,10 @@ export default function HomePageClient() {
         <NewHeroSection onWhatIsClick={handleWhatIsClick} />
       </section>
 
+      <article className="w-full block md:hidden">
+        <Simulator hideRightColumn={true}/>
+      </article>
+
       <section className="w-full">
         <WhatIsLokl isVisible={showWhatIsLokl} />
       </section>
@@ -68,7 +72,7 @@ export default function HomePageClient() {
         <HowItWorksSection />
       </article>
 
-      <article className="w-full">
+      <article className="w-full hidden md:block">
         <Simulator/>
       </article>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSimulatorStore } from "@/store/simulator-store";
 import { useAuthStore } from "@/store/auth-store";
 import { useUtmStore } from "@/store/utm-store";
@@ -21,10 +21,12 @@ import ResultsFinal from "./phases/results-final";
 
 interface SimulatorRedesignedProps {
   simulatorName?: string;
+  hideRightColumn?: boolean;
 }
 
 export default function SimulatorRedesigned({
   simulatorName = "Simulador General",
+  hideRightColumn,
 }: SimulatorRedesignedProps) {
   const {
     availableProjects,
@@ -52,8 +54,29 @@ export default function SimulatorRedesigned({
   const [hasSubmittedLead, setHasSubmittedLead] = useState(false);
   const [hasSimulatedWithData, setHasSimulatedWithData] = useState(false);
   const [, setLeadFormData] = useState<LeadFormData | null>(null);
+  const [hasEnteredViewport, setHasEnteredViewport] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
-  // Cargar proyectos disponibles
+  // Detectar cuando el simulador entra al viewport para diferir la carga de proyectos
+  useEffect(() => {
+    const element = containerRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasEnteredViewport(true);
+          observer.disconnect();
+        }
+      },
+      { root: null, threshold: 0.1 }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  // Cargar proyectos disponibles cuando el simulador sea visible
   useEffect(() => {
     const loadProjects = async () => {
       setLoadingProjects(true);
@@ -71,13 +94,19 @@ export default function SimulatorRedesigned({
         setProjectsError(
           error instanceof Error ? error.message : "Error al cargar proyectos"
         );
+      } finally {
+        setLoadingProjects(false);
       }
     };
+
+    if (!hasEnteredViewport) {
+      return;
+    }
 
     if (availableProjects.length === 0 && !isLoadingProjects) {
       loadProjects();
     }
-  }, [availableProjects.length, isLoadingProjects, setAvailableProjects, setLoadingProjects, setProjectsError]);
+  }, [hasEnteredViewport, availableProjects.length, isLoadingProjects, setAvailableProjects, setLoadingProjects, setProjectsError]);
 
   // Handlers
   const handleProjectChange = (projectId: string) => {
@@ -317,7 +346,7 @@ export default function SimulatorRedesigned({
   };
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div ref={containerRef} className="container mx-auto px-4 py-12">
       {/* Header */}
       <div className="text-center mb-12">
         <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -372,7 +401,7 @@ export default function SimulatorRedesigned({
         </div>
 
         {/* Columna Derecha */}
-        <div>
+        <div className={hideRightColumn && currentPhase !== 3 ? "hidden" : ""}>
           {currentPhase === 1 && selectedProject && (
             <ProjectPreview project={selectedProject} />
           )}
