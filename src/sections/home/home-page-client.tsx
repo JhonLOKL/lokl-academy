@@ -48,7 +48,7 @@ export default function HomePageClient() {
         <NewHeroSection onWhatIsClick={handleWhatIsClick} />
       </section>
 
-      <article className="w-full block md:hidden">
+      <article id="simulador-mobile" className="w-full block md:hidden">
         <Simulator hideRightColumn={true}/>
       </article>
 
@@ -72,7 +72,7 @@ export default function HomePageClient() {
         <HowItWorksSection />
       </article>
 
-      <article className="w-full hidden md:block">
+      <article id="simulador-desktop" className="w-full hidden md:block">
         <Simulator/>
       </article>
 

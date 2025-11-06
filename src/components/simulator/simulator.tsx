@@ -29,7 +29,7 @@ export default function Simulator({
   }, [project, selectedProject, setSelectedProject]);
 
   return (
-    <div id="simulador" className="scroll-mt-20 bg-gradient-to-b from-slate-50 to-white">
+    <div className="scroll-mt-20 bg-gradient-to-b from-slate-50 to-white">
       <SimulatorRedesigned simulatorName={simulatorName} hideRightColumn={hideRightColumn} />
     </div>
   );

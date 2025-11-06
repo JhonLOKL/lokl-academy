@@ -22,7 +22,6 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
   const { setSelectedProject, setInvestmentAmount, setInstallments } = useSimulatorStore();
 
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
-  const [isMounted, setIsMounted] = useState(false);
 
   // Filtrar proyectos activos (que no estén en "Etapa 0")
   const availableProjects = globalProjects.filter(p => p.phase !== "Etapa 0");
@@ -31,10 +30,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
   const [selectedHeroProjectId, setSelectedHeroProjectId] = useState<string>("");
   const [heroInvestmentAmount, setHeroInvestmentAmount] = useState(5310000);
 
-  // Marcar como montado después del primer render
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  
 
   // Inicializar el proyecto y monto cuando estén disponibles
   useEffect(() => {
@@ -132,20 +128,20 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
       installments: 1,
     });
 
-    // Hacer scroll al simulador
-    const simulatorElement = document.getElementById("simulador");
-    if (simulatorElement) {
-      simulatorElement.scrollIntoView({ behavior: "smooth", block: "start" });
-    } else {
-      // Si no existe todavía (por ejemplo, si aún no se ha renderizado)
-      // intentar después de un pequeño delay
-      setTimeout(() => {
-        const element = document.getElementById("simulador");
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }, 100);
-    }
+    // Hacer scroll al simulador correcto (desktop vs mobile)
+    const isDesktop = typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches;
+    const targetId = isDesktop ? 'simulador-desktop' : 'simulador-mobile';
+
+    const tryScroll = (attemptsLeft: number) => {
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (attemptsLeft > 0) {
+        setTimeout(() => tryScroll(attemptsLeft - 1), 200);
+      }
+    };
+
+    tryScroll(5);
   };
 
   const handleWhatIsClick = () => {
