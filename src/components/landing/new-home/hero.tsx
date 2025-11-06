@@ -409,6 +409,98 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
         </div>
       </div>
 
+      {/* Simulador Mobile - Sin tarjeta, directo sobre fondo */}
+      <div className="md:hidden bg-background py-8 px-6">
+        <div className="max-w-sm mx-auto">
+          {/* Título del simulador mobile */}
+          <h2 className="text-xl font-semibold text-foreground mb-1">
+            Proyección rápida
+          </h2>
+          <p className="text-sm text-muted-foreground mb-6">
+            Simula tu inversión en segundos
+          </p>
+
+          {/* Simulador funcional mobile */}
+          {availableProjects.length > 0 && selectedHeroProjectId && currentHeroProject && isMounted ? (
+            <div className="space-y-5">
+              {/* Selector de Proyecto */}
+              <div className="w-full">
+                <label className="text-sm text-foreground block mb-2 font-medium">
+                  Proyecto
+                </label>
+                <Select
+                  value={selectedHeroProjectId}
+                  onValueChange={handleHeroProjectChange}
+                >
+                  <SelectTrigger className="w-full bg-white !text-black">
+                    <SelectValue placeholder="Selecciona un proyecto" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableProjects.map((project) => (
+                      <SelectItem key={project.id} value={project.id}>
+                        {project.name} - {project.city}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Barra deslizable para monto de inversión */}
+              <div className="w-full">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-sm text-foreground font-medium">
+                    Valor a invertir
+                  </label>
+                  <span className="text-sm font-semibold text-[#5352F6]">
+                    {formatCurrency(heroInvestmentAmount)}
+                  </span>
+                </div>
+                
+                <div className="w-full py-2">
+                  {(() => {
+                    const { minInvestment, maxInvestment, step } = calculateSliderRange(currentHeroProject);
+                    return (
+                      <Slider
+                        value={[heroInvestmentAmount]}
+                        onValueChange={handleSliderChange}
+                        min={minInvestment}
+                        max={maxInvestment}
+                        step={step}
+                        className="w-full touch-pan-y"
+                      />
+                    );
+                  })()}
+                </div>
+                
+                <div className="flex justify-between mt-1 text-xs text-muted-foreground">
+                  {(() => {
+                    const { minInvestment, maxInvestment } = calculateSliderRange(currentHeroProject);
+                    return (
+                      <>
+                        <span>{formatCurrency(minInvestment)}</span>
+                        <span>{formatCurrency(maxInvestment)}</span>
+                      </>
+                    );
+                  })()}
+                </div>
+              </div>
+
+              {/* CTA */}
+              <button
+                onClick={handleViewFullProjection}
+                className="block w-full rounded-xl bg-[#5352F6] px-4 py-3 text-center font-medium text-white hover:bg-[#5352F6]/90 focus:outline-none focus:ring-2 focus:ring-[#5352F6]/30 transition-all shadow-lg hover:shadow-xl"
+              >
+                Ver proyección completa
+              </button>
+            </div>
+          ) : (
+            <div className="text-center text-muted-foreground py-8">
+              Cargando simulador...
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Schema JSON-LD para SEO del video */}
       <script
         type="application/ld+json"
