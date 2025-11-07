@@ -198,7 +198,7 @@ export default function Phase3Summary({
           </div>
         </div>
 
-        {/* (Forma de Pago movida junto a Units arriba) */}
+          {/* (Forma de Pago movida junto a Units arriba) */}
 
         {/* Botón Recalcular */}
         <Button
@@ -214,7 +214,7 @@ export default function Phase3Summary({
           ) : (
             <>
               <RefreshCw className="w-4 h-4 mr-2" />
-              Recalcular proyección
+              Resimular inversión
             </>
           )}
         </Button>

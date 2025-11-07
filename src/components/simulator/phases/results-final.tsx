@@ -23,9 +23,10 @@ const ProjectionChart = dynamic(() => import("./projection-chart"), {
 interface ResultsFinalProps {
   project: ProjectCard;
   simulationData: SimulationData;
+  bannerComponent?: React.ReactNode;
 }
 
-export default function ResultsFinal({ project, simulationData }: ResultsFinalProps) {
+export default function ResultsFinal({ project, simulationData, bannerComponent }: ResultsFinalProps) {
   // Calcular rentabilidad con validación
   const hasValidRent = project.minRent > 0 && project.maxRent > 0 && project.unitPrice > 0;
   
@@ -106,6 +107,13 @@ export default function ResultsFinal({ project, simulationData }: ResultsFinalPr
           </div>
         </div>
       </div>
+
+      {/* Banner de niveles - Solo mobile, después de gráfica */}
+      {bannerComponent && (
+        <div className="md:hidden">
+          {bannerComponent}
+        </div>
+      )}
 
       {/* Card de asesor */}
       <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-200">

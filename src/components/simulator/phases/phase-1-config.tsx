@@ -256,7 +256,7 @@ export default function Phase1Config({
                 Calculando...
               </>
             ) : (
-              "Calcular Retorno"
+              "Simular inversión"
             )}
           </Button>
         </>

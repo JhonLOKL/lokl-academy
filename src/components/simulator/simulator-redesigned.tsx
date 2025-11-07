@@ -18,6 +18,7 @@ import Phase2LeadCapture from "./phases/phase-2-lead-capture";
 import ResultsBlurred from "./phases/results-blurred";
 import Phase3Summary from "./phases/phase-3-summary";
 import ResultsFinal from "./phases/results-final";
+import InvestorLevelsBanner from "./investor-levels-banner";
 
 interface SimulatorRedesignedProps {
   simulatorName?: string;
@@ -410,8 +411,21 @@ export default function SimulatorRedesigned({
         </p>
       </div>
 
+      {/* Banner de niveles de inversionista - Desktop: antes de columnas */}
+      {selectedProject && (
+        <div className="hidden md:block">
+          <InvestorLevelsBanner
+            currentUnits={Math.round(investmentAmount / (selectedProject.unitPrice || 1))}
+            onUnitsChange={(units) => {
+              const newAmount = units * selectedProject.unitPrice;
+              setInvestmentAmount(newAmount);
+            }}
+          />
+        </div>
+      )}
+
       {/* Contenido de fases */}
-      <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto">
+      <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto" data-simulator-section>
         {/* Columna Izquierda */}
         <div>
           {currentPhase === 1 && (
@@ -470,10 +484,32 @@ export default function SimulatorRedesigned({
             <ResultsFinal
               project={selectedProject}
               simulationData={simulationData}
+              bannerComponent={
+                <InvestorLevelsBanner
+                  currentUnits={Math.round(investmentAmount / selectedProject.unitPrice)}
+                  onUnitsChange={(units) => {
+                    const newAmount = units * selectedProject.unitPrice;
+                    setInvestmentAmount(newAmount);
+                  }}
+                />
+              }
             />
           )}
         </div>
       </div>
+
+      {/* Banner de niveles de inversionista - Mobile: después de columnas (solo fases 1 y 2) */}
+      {selectedProject && currentPhase !== 3 && (
+        <div className="md:hidden max-w-7xl mx-auto mt-8">
+          <InvestorLevelsBanner
+            currentUnits={Math.round(investmentAmount / (selectedProject.unitPrice || 1))}
+            onUnitsChange={(units) => {
+              const newAmount = units * selectedProject.unitPrice;
+              setInvestmentAmount(newAmount);
+            }}
+          />
+        </div>
+      )}
 
       {/* Error message */}
       {simulationError && (
