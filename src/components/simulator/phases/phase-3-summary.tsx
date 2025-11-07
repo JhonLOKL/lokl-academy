@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { ProjectCard } from "@/schemas/project-card-schema";
 import { SimulationData } from "@/schemas/simulator-schema";
 import { Building2, DollarSign, CreditCard, TrendingUp, RefreshCw } from "lucide-react";
@@ -13,6 +14,7 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 interface Phase3SummaryProps {
   project: ProjectCard;
@@ -47,9 +49,24 @@ export default function Phase3Summary({
     }).format(value);
   };
 
-  const minInvestment = project.unitPrice * project.minInvestmentUnits;
-  const maxInvestment = 500000000;
+  // Control por units (UI) -> conversión a COP (store/API)
+  const unitPrice = project.unitPrice;
+  const minUnits = project.minInvestmentUnits;
+  const maxUnits = 500;
+  const currentUnits = Math.min(
+    maxUnits,
+    Math.max(minUnits, Math.round(investmentAmount / unitPrice))
+  );
+
+  const minInvestment = unitPrice * minUnits;
+  const maxInvestment = unitPrice * maxUnits;
   const maxInstallments = project.maxInvestmentQuota || 1;
+
+  // Estado local para escritura fluida en el input de units
+  const [unitsInput, setUnitsInput] = useState<string>("");
+  useEffect(() => {
+    setUnitsInput(String(currentUnits));
+  }, [currentUnits]);
 
   return (
     <div className="space-y-6 bg-[#5352F6] rounded-2xl p-8 text-white">
@@ -88,51 +105,100 @@ export default function Phase3Summary({
           </Select>
         </div>
 
-        {/* Monto a Invertir */}
+        {/* Units a invertir (conversión a COP) */}
         <div className="space-y-2">
           <Label className="flex items-center justify-between text-white/90 text-xs">
             <span className="flex items-center gap-2">
               <DollarSign className="w-3.5 h-3.5" />
-              Monto a Invertir
+              Units a invertir
             </span>
-            <span className="font-bold text-sm">{formatCurrency(investmentAmount)}</span>
+            <span className="font-bold text-sm">{formatCurrency(currentUnits * unitPrice)}</span>
           </Label>
           <Slider
-            value={[investmentAmount]}
-            onValueChange={([value]) => onInvestmentChange(value)}
-            min={minInvestment}
-            max={maxInvestment}
-            step={project.unitPrice}
+            value={[currentUnits]}
+            onValueChange={([units]) => onInvestmentChange(units * unitPrice)}
+            min={minUnits}
+            max={maxUnits}
+            step={1}
             className="py-1"
           />
           <div className="flex justify-between text-[10px] text-white/50">
-            <span>{formatCurrency(minInvestment)}</span>
-            <span>{formatCurrency(maxInvestment)}</span>
+            <span>{minUnits} units</span>
+            <span>{maxUnits} units</span>
+          </div>
+
+          {/* Input de Units */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+            <div className="space-y-1">
+              <Label className="flex items-center gap-2 text-white/90 text-xs">
+                <DollarSign className="w-3.5 h-3.5" />
+                Units
+              </Label>
+              <Input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={unitsInput}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  if (v === "") {
+                    setUnitsInput("");
+                    return;
+                  }
+                  if (/^\d+$/.test(v)) {
+                    setUnitsInput(v);
+                  }
+                }}
+                onBlur={() => {
+                  const parsed = parseInt(unitsInput || String(minUnits), 10);
+                  const clamped = Math.max(
+                    minUnits,
+                    Math.min(maxUnits, Number.isNaN(parsed) ? minUnits : parsed)
+                  );
+                  onInvestmentChange(clamped * unitPrice);
+                  setUnitsInput(String(clamped));
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    const parsed = parseInt(unitsInput || String(minUnits), 10);
+                    const clamped = Math.max(
+                      minUnits,
+                      Math.min(maxUnits, Number.isNaN(parsed) ? minUnits : parsed)
+                    );
+                    onInvestmentChange(clamped * unitPrice);
+                    setUnitsInput(String(clamped));
+                  }
+                }}
+                className="h-9 w-full px-3 py-1 text-sm leading-none bg-white/20 border-white/30 text-white placeholder:text-white/60"
+              />
+            </div>
+
+            {/* Forma de Pago */}
+            <div className="space-y-1">
+              <Label className="flex items-center gap-2 text-white/90 text-xs">
+                <CreditCard className="w-3.5 h-3.5" />
+                Forma de Pago
+              </Label>
+              <Select
+                value={installments.toString()}
+                onValueChange={(value) => onInstallmentsChange(parseInt(value))}
+              >
+                <SelectTrigger className="bg-white/20 border-white/30 text-white hover:bg-white/25 h-9 w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: maxInstallments }, (_, i) => i + 1).map((num) => (
+                    <SelectItem key={num} value={num.toString()}>
+                      {num === 1 ? "Pago único" : `${num} cuotas`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
 
-        {/* Forma de Pago */}
-        <div className="space-y-2">
-          <Label className="flex items-center gap-2 text-white/90 text-xs">
-            <CreditCard className="w-3.5 h-3.5" />
-            Forma de Pago
-          </Label>
-          <Select
-            value={installments.toString()}
-            onValueChange={(value) => onInstallmentsChange(parseInt(value))}
-          >
-            <SelectTrigger className="bg-white/20 border-white/30 text-white hover:bg-white/25 h-10">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {Array.from({ length: maxInstallments }, (_, i) => i + 1).map((num) => (
-                <SelectItem key={num} value={num.toString()}>
-                  {num === 1 ? "Pago único" : `${num} cuotas`}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        {/* (Forma de Pago movida junto a Units arriba) */}
 
         {/* Botón Recalcular */}
         <Button

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { ProjectCard } from "@/schemas/project-card-schema";
 import {
   Select,
@@ -12,6 +13,7 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Building2, DollarSign, CreditCard } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 interface Phase1ConfigProps {
   selectedProject: ProjectCard | null;
@@ -48,11 +50,30 @@ export default function Phase1Config({
     }).format(value);
   };
 
-  const minInvestment = selectedProject
-    ? selectedProject.unitPrice * selectedProject.minInvestmentUnits
-    : 0;
-  const maxInvestment = 500000000;
   const maxInstallments = selectedProject?.maxInvestmentQuota || 1;
+
+  // Selector en unidades (UI) -> se convierte a dinero (store/API)
+  const unitPrice = selectedProject?.unitPrice ?? 1;
+  const minUnits = selectedProject ? selectedProject.minInvestmentUnits : 0;
+  const maxUnits = 500;
+  const currentUnits = selectedProject
+    ? Math.min(
+        maxUnits,
+        Math.max(minUnits, Math.round(investmentAmount / unitPrice))
+      )
+    : 0;
+
+  // Estado local del campo de texto para permitir escritura fluida
+  const [unitsInput, setUnitsInput] = useState<string>("");
+
+  // Sincronizar cuando cambie el valor desde el slider/store o el proyecto
+  useEffect(() => {
+    if (selectedProject) {
+      setUnitsInput(String(currentUnits));
+    } else {
+      setUnitsInput("");
+    }
+  }, [currentUnits, selectedProject]);
 
   return (
     <div className="space-y-6 bg-[#5352F6] rounded-2xl p-8 text-white">
@@ -107,55 +128,103 @@ export default function Phase1Config({
 
       {selectedProject && (
         <>
-          {/* Monto a Invertir */}
+          {/* Unidades a Invertir (se muestra COP equivalente) */}
           <div className="space-y-3">
             <Label className="flex items-center justify-between text-white/90">
               <span className="flex items-center gap-2">
                 <DollarSign className="w-4 h-4" />
-                Monto a Invertir (COP)
+                Unidades a invertir
               </span>
-              <span className="text-lg font-bold">
-                {formatCurrency(investmentAmount)}
-              </span>
+              <span className="text-lg font-bold">{formatCurrency(currentUnits * unitPrice)}</span>
             </Label>
             <Slider
-              value={[investmentAmount]}
-              onValueChange={([value]) => onInvestmentChange(value)}
-              min={minInvestment}
-              max={maxInvestment}
-              step={selectedProject.unitPrice}
+              value={[currentUnits]}
+              onValueChange={([units]) => onInvestmentChange(units * unitPrice)}
+              min={minUnits}
+              max={maxUnits}
+              step={1}
               className="py-2"
             />
             <div className="flex justify-between text-xs text-white/60">
-              <span>{formatCurrency(minInvestment)}</span>
-              <span>{formatCurrency(maxInvestment)}</span>
+              <span>{minUnits} units</span>
+              <span>{maxUnits} units</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+              {/* Columna: Units input */}
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2 text-white/90">
+                  <DollarSign className="w-4 h-4" />
+                  Unidades
+                </Label>
+                <div>
+                  <Input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={unitsInput}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      if (v === "") {
+                        setUnitsInput("");
+                        return;
+                      }
+                      if (/^\d+$/.test(v)) {
+                        setUnitsInput(v);
+                      }
+                    }}
+                    onBlur={() => {
+                      const parsed = parseInt(unitsInput || String(minUnits), 10);
+                      const clamped = Math.max(
+                        minUnits,
+                        Math.min(maxUnits, Number.isNaN(parsed) ? minUnits : parsed)
+                      );
+                      onInvestmentChange(clamped * unitPrice);
+                      setUnitsInput(String(clamped));
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        const parsed = parseInt(unitsInput || String(minUnits), 10);
+                        const clamped = Math.max(
+                          minUnits,
+                          Math.min(maxUnits, Number.isNaN(parsed) ? minUnits : parsed)
+                        );
+                        onInvestmentChange(clamped * unitPrice);
+                        setUnitsInput(String(clamped));
+                      }
+                    }}
+                    className="h-9 w-full px-3 py-1 text-sm leading-none bg-white/20 border-white/30 text-white placeholder:text-white/60"
+                  />
+                </div>
+              </div>
+
+              {/* Columna: Forma de Pago */}
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2 text-white/90">
+                  <CreditCard className="w-4 h-4" />
+                  Forma de Pago
+                </Label>
+                <Select
+                  value={installments.toString()}
+                  onValueChange={(value) => onInstallmentsChange(parseInt(value))}
+                >
+                  <SelectTrigger className="bg-white/20 border-white/30 text-white hover:bg-white/25 h-12 w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: maxInstallments }, (_, i) => i + 1).map(
+                      (num) => (
+                        <SelectItem key={num} value={num.toString()}>
+                          {num === 1 ? "Pago único" : `${num} cuotas`}
+                        </SelectItem>
+                      )
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 
-          {/* Forma de Pago */}
-          <div className="space-y-2">
-            <Label className="flex items-center gap-2 text-white/90">
-              <CreditCard className="w-4 h-4" />
-              Forma de Pago
-            </Label>
-            <Select
-              value={installments.toString()}
-              onValueChange={(value) => onInstallmentsChange(parseInt(value))}
-            >
-              <SelectTrigger className="bg-white/20 border-white/30 text-white hover:bg-white/25 h-12">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {Array.from({ length: maxInstallments }, (_, i) => i + 1).map(
-                  (num) => (
-                    <SelectItem key={num} value={num.toString()}>
-                      {num === 1 ? "Pago único" : `${num} cuotas`}
-                    </SelectItem>
-                  )
-                )}
-              </SelectContent>
-            </Select>
-          </div>
+          {/* Forma de Pago movida junto a Units */}
 
           {/* Resumen Rápido */}
           <div className="bg-white/10 rounded-xl p-4 space-y-2">
