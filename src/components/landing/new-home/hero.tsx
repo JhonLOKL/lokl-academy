@@ -414,27 +414,37 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
                     </Select>
                   </div>
 
-                  {/* Barra deslizable para monto de inversión */}
+                  {/* Barra deslizable para monto de inversión en units */}
                   <div className="w-full">
                     <div className="flex items-center justify-between mb-2">
                       <label className="text-sm text-white/90">
-                        Valor a invertir
+                        Units a invertir
                       </label>
-                      <span className="text-sm font-semibold text-white">
-                        {formatCurrency(heroInvestmentAmount)}
-                      </span>
+                      <div className="text-right">
+                        <span className="text-sm font-semibold text-white block">
+                          {Math.round(heroInvestmentAmount / currentHeroProject.unitPrice)} units
+                        </span>
+                        <span className="text-xs text-white/70">
+                          {formatCurrency(heroInvestmentAmount)}
+                        </span>
+                      </div>
                     </div>
                     
                     <div className="w-full py-2">
                       {(() => {
-                        const { minInvestment, maxInvestment, step } = calculateSliderRange(currentHeroProject);
+                        const minUnits = currentHeroProject.minInvestmentUnits;
+                        const maxUnits = 500;
+                        const currentUnits = Math.round(heroInvestmentAmount / currentHeroProject.unitPrice);
+                        
                         return (
                           <Slider
-                            value={[heroInvestmentAmount]}
-                            onValueChange={handleSliderChange}
-                            min={minInvestment}
-                            max={maxInvestment}
-                            step={step}
+                            value={[currentUnits]}
+                            onValueChange={([units]) => {
+                              setHeroInvestmentAmount(units * currentHeroProject.unitPrice);
+                            }}
+                            min={minUnits}
+                            max={maxUnits}
+                            step={1}
                             className="w-full touch-pan-y"
                           />
                         );
@@ -442,15 +452,8 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
                     </div>
                     
                     <div className="flex justify-between mt-1 text-xs text-white/60">
-                      {(() => {
-                        const { minInvestment, maxInvestment } = calculateSliderRange(currentHeroProject);
-                        return (
-                          <>
-                            <span>{formatCurrency(minInvestment)}</span>
-                            <span>{formatCurrency(maxInvestment)}</span>
-                          </>
-                        );
-                      })()}
+                      <span>{currentHeroProject.minInvestmentUnits} units</span>
+                      <span>500 units</span>
                     </div>
                   </div>
 
