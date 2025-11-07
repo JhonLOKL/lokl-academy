@@ -11,7 +11,6 @@ export default function FeaturedProjectsSection() {
   useEffect(() => {
     // Dejar que la acción gestione loading/cache internamente
     void getProjectCardsAction();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
