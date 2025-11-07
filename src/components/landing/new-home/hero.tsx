@@ -238,7 +238,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
             </h1>
 
             <p className="mt-6 md:mt-4 max-w-xl text-lg text-white/90"> 
-              Proyectos creativos y sostenibles que generan empleo local y valor real para las nuevas generaciones.
+              Accede a oportunidades inmobiliarias reales y vive la experiencia de invertir con confianza.
             </p>
 
             {/* "Invierte" / micro-beneficios */}
