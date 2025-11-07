@@ -1,9 +1,36 @@
 "use client";
 
+import type { MouseEvent } from "react";
 import { UserPlus, Search, TrendingUp, Sparkles, Zap, CheckCircle2 } from 'lucide-react';
 
+type Step = {
+  number: string;
+  titleItalic: string;
+  titleBold: string;
+  description: string;
+  icon: typeof UserPlus;
+  cardStyle: "white" | "dark" | "primary" | string;
+  badge?: string;
+  badgeIcon?: typeof Sparkles;
+  href?: string;
+  target?: "_self" | "_blank";
+  onClick?: (event: MouseEvent<HTMLAnchorElement>) => void;
+};
+
 export default function HowItWorks() {
-  const steps = [
+  const scrollToProjects = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+
+    const section = document.getElementById("featured-projects");
+
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      window.location.hash = "featured-projects";
+    }
+  };
+
+  const steps: Step[] = [
     {
       number: '1',
       titleItalic: '1. REGÍSTRATE EN',
@@ -25,8 +52,9 @@ export default function HowItWorks() {
       cardStyle: 'dark', // Tarjeta negra
       badge: 'Sin compromiso',
       badgeIcon: Sparkles,
-      href: 'https://lokl.life/project/nido-de-agua',
-      target: '_blank'
+      href: '#featured-projects',
+      target: '_self',
+      onClick: scrollToProjects
     },
     {
       number: '3',
@@ -37,8 +65,9 @@ export default function HowItWorks() {
       cardStyle: 'primary', // Tarjeta azul
       badge: 'Rentabilidad alta',
       badgeIcon: CheckCircle2,
-      href: '/blog',
-      target: '_self'
+      href: '#featured-projects',
+      target: '_self',
+      onClick: scrollToProjects
     }
   ];
 
@@ -171,6 +200,7 @@ export default function HowItWorks() {
                       href={step.href} 
                       target={step.target} 
                       rel={step.target === '_blank' ? 'noopener noreferrer' : undefined}
+                      onClick={step.onClick}
                       className="hidden md:block absolute inset-0 z-30 rounded-2xl"
                       aria-label={`Ir a ${step.titleBold}`}
                     />
@@ -203,6 +233,7 @@ export default function HowItWorks() {
                               href={step.href} 
                               target={step.target} 
                               rel={step.target === '_blank' ? 'noopener noreferrer' : undefined}
+                              onClick={step.onClick}
                               className={`md:pointer-events-none inline-block pb-1 border-b-2 ${
                                 step.cardStyle === 'white' 
                                   ? 'border-[#5352F6]' 
