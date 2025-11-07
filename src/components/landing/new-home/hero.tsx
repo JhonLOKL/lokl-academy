@@ -150,14 +150,49 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
     tryScroll(5);
   };
 
-  const handleWhatIsClick = () => {
+  const handleWhatIsClick = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
     if (onWhatIsClick) {
       onWhatIsClick();
-    } else {
-      document
-        .getElementById("que-es-lokl")
-        ?.scrollIntoView({ behavior: "smooth" });
+      return;
     }
+
+    if (typeof window === 'undefined') return;
+    const target = document.getElementById("que-es-lokl");
+    if (!target) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+
+    if (prefersReducedMotion) {
+      target.scrollIntoView({ behavior: 'auto', block: 'start' });
+      return;
+    }
+
+    if (!isMobile) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+
+    // Mobile: scroll suave con offset y easing
+    const headerOffset = 72; // pequeño offset para evitar solaparse con header
+    const startY = window.pageYOffset;
+    const targetY = target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+    const distance = targetY - startY;
+    const duration = 600; // ms
+    const startTime = performance.now();
+
+    const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+    const step = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = easeInOutCubic(progress);
+      window.scrollTo(0, startY + distance * eased);
+      if (progress < 1) requestAnimationFrame(step);
+    };
+
+    requestAnimationFrame(step);
   };
 
   return (
