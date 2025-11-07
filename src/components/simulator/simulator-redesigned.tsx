@@ -5,7 +5,7 @@ import { useSimulatorStore } from "@/store/simulator-store";
 import { useAuthStore } from "@/store/auth-store";
 import { useUtmStore } from "@/store/utm-store";
 import { getProjectCardsAction } from "@/actions/project-actions";
-import { createSimulationAction, saveSimulationAction } from "@/actions/simulator-actions";
+import { createSimulationAction, saveSimulationAction, createQuiivenContactAction, sendFirstMessageAction } from "@/actions/simulator-actions";
 import { upsertLeadAction } from "@/actions/user-action";
 import { SimulationData } from "@/schemas/simulator-schema";
 import { LeadFormData } from "@/schemas/lead-schema";
@@ -312,7 +312,7 @@ export default function SimulatorRedesigned({
       const nameParts = userData.name.split(' ');
       const firstName = nameParts[0] || '';
 
-      // Preparar datos para upsertLeadAction
+      // 1. Guardar lead en CRM (upsertLeadAction)
       const leadData = {
         email: userData.email,
         firstName: firstName,
@@ -335,6 +335,59 @@ export default function SimulatorRedesigned({
         console.log('✅ Lead guardado exitosamente en primera simulación');
       } else {
         console.error('❌ Error al guardar lead:', response.message);
+      }
+
+      // 2. Enviar datos a Quiiven (solo si hay datos de simulación)
+      if (simulationData && selectedProject) {
+        const quiivenData = {
+          name: userData.name,
+          email: userData.email,
+          investmentValue: investmentAmount.toString(),
+          shares: simulationData.unitsAmount,
+          numberInstallments: installments === 1 ? 0 : installments,
+          phone: userData.phone || '',
+          termsAccepted: true,
+          leadOrigin: userData.leadOrigin || 'Simulador',
+          utmSource,
+          utmMedium,
+          utmCampaign,
+          utmTerm,
+          utmContent,
+        };
+
+        console.log('Enviando datos a Quiiven:', quiivenData);
+        const quiivenResponse = await createQuiivenContactAction(quiivenData);
+        
+        if (quiivenResponse.success) {
+          console.log('✅ Contacto creado exitosamente en Quiiven');
+        } else {
+          console.error('❌ Error al crear contacto en Quiiven:', quiivenResponse.error);
+        }
+
+        // 3. Enviar mensaje de WhatsApp (solo si hay teléfono)
+        if (userData.phone) {
+          const whatsappData = {
+            name: userData.name,
+            projectId: selectedProject.id,
+            email: userData.email,
+            numberToSend: userData.phone,
+          };
+
+          console.log('📱 Enviando mensaje de WhatsApp:', whatsappData);
+          const whatsappResponse = await sendFirstMessageAction(whatsappData);
+          
+          if (whatsappResponse.success) {
+            if (whatsappResponse.skipped) {
+              console.log('⏱️ Mensaje de WhatsApp omitido:', whatsappResponse.message);
+            } else {
+              console.log('✅ Mensaje de WhatsApp enviado exitosamente');
+            }
+          } else {
+            console.error('❌ Error al enviar mensaje de WhatsApp:', whatsappResponse.error);
+          }
+        } else {
+          console.log('⚠️ No se envió mensaje de WhatsApp: teléfono no disponible');
+        }
       }
     } catch (error) {
       console.error('❌ Error en onFirstSimulationWithData:', error);
