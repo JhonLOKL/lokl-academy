@@ -163,19 +163,18 @@ export default function HowItWorks() {
                 {/* Glow de fondo - reducido en móvil */}
                 <div className={`hidden md:block absolute inset-0 rounded-2xl ${styles.glow} transition-all duration-500 opacity-0 group-hover:opacity-100 blur-xl`} />
 
-                {/* Link que cubre toda la tarjeta en desktop */}
-                {step.href && step.href !== '#' && (
-                  <a 
-                    href={step.href} 
-                    target={step.target} 
-                    rel={step.target === '_blank' ? 'noopener noreferrer' : undefined}
-                    className="hidden md:block absolute inset-0 z-30 rounded-2xl"
-                    aria-label={`Ir a ${step.titleBold}`}
-                  />
-                )}
-
                 {/* Tarjeta optimizada para móvil */}
                 <div className={`${styles.container} ${styles.hoverEffect} ${layout.card} rounded-2xl p-5 md:p-6 lg:p-8 transition-all duration-300 md:duration-500 relative overflow-hidden will-change-transform`}>
+                  {/* Link que cubre solo la tarjeta en desktop */}
+                  {step.href && step.href !== '#' && (
+                    <a 
+                      href={step.href} 
+                      target={step.target} 
+                      rel={step.target === '_blank' ? 'noopener noreferrer' : undefined}
+                      className="hidden md:block absolute inset-0 z-30 rounded-2xl"
+                      aria-label={`Ir a ${step.titleBold}`}
+                    />
+                  )}
                   
                   {/* Efectos de fondo internos - reducidos en móvil */}
                   <div className={`hidden md:block absolute inset-0 bg-gradient-to-br ${styles.decorativeGradient} pointer-events-none`} />
