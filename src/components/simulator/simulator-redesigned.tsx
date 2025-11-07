@@ -121,50 +121,6 @@ export default function SimulatorRedesigned({
     }
   }, [hasEnteredViewport, availableProjects.length, isLoadingProjects, setAvailableProjects, setLoadingProjects, setProjectsError]);
 
-  // Detectar si se viene desde el hero con una simulación ya calculada
-  useEffect(() => {
-    const checkForHeroSimulation = async () => {
-      // Solo ejecutar si hay proyecto y monto seleccionados, y no hemos simulado aún
-      if (
-        selectedProject &&
-        investmentAmount > 0 &&
-        !simulationData &&
-        !isSimulating &&
-        currentPhase === 1 &&
-        !prefetchedSimulationData
-      ) {
-        console.log('Detectada simulación desde hero, calculando automáticamente...');
-        
-        setIsSimulating(true);
-        setSimulationError(null);
-
-        try {
-          const installmentsToSend = installments === 1 ? 0 : installments;
-          const response = await createSimulationAction({
-            projectId: selectedProject.id,
-            investmentValue: investmentAmount,
-            installmentsNumber: installmentsToSend,
-          });
-
-          if (response.success && response.data) {
-            setSimulationData(response.data);
-            // Ir directo a fase 3 (resultados finales)
-            setCurrentPhase(3);
-            setHasSimulatedWithData(true);
-          }
-        } catch (error) {
-          console.error('Error al calcular simulación desde hero:', error);
-        } finally {
-          setIsSimulating(false);
-        }
-      }
-    };
-
-    // Pequeño delay para asegurar que el scroll se complete antes de calcular
-    const timeoutId = setTimeout(checkForHeroSimulation, 500);
-    return () => clearTimeout(timeoutId);
-  }, [selectedProject, investmentAmount, installments, simulationData, isSimulating, currentPhase, prefetchedSimulationData]);
-
   // Handlers
   const handleProjectChange = (projectId: string) => {
     const project = availableProjects.find((p) => p.id === projectId);
