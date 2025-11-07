@@ -180,7 +180,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
             aria-label="Video de fondo mostrando proyectos inmobiliarios LOKL"
           >
             <source 
-              src="https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe.mp4" 
+              src="https://lokl-assets.s3.us-east-1.amazonaws.com/home/hero.mp4" 
               type="video/mp4"
             />
             <track
