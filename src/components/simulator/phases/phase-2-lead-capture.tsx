@@ -60,7 +60,7 @@ export default function Phase2LeadCaptureComponent({
       </div>
 
       {/* Opción de Login */}
-      <div className="bg-white/10 rounded-xl p-4 text-center">
+      {/* <div className="bg-white/10 rounded-xl p-4 text-center">
         <p className="text-sm text-white/80 mb-3">¿Ya tienes una cuenta?</p>
         <Link
           href="/login?redirect=%2F%23simulador"
@@ -76,16 +76,16 @@ export default function Phase2LeadCaptureComponent({
             Iniciar sesión
           </Button>
         </Link>
-      </div>
+      </div> */}
 
-      <div className="relative">
+      {/* <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t border-white/30" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
           <span className="bg-[#5352F6] px-2 text-white/60">O completa tus datos</span>
         </div>
-      </div>
+      </div> */}
 
       {/* Formulario */}
       <Form {...form}>

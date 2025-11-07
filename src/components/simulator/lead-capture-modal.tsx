@@ -74,7 +74,7 @@ export default function LeadCaptureModal({
         </DialogHeader>
 
         {/* Opción de iniciar sesión */}
-        <div className="bg-muted/50 p-4 rounded-lg border">
+{/*         <div className="bg-muted/50 p-4 rounded-lg border">
           <p className="text-sm text-muted-foreground mb-2">
             ¿Ya tienes una cuenta?
           </p>
@@ -89,9 +89,9 @@ export default function LeadCaptureModal({
               Iniciar sesión
             </Button>
           </Link>
-        </div>
+        </div> */}
 
-        <div className="relative">
+        {/* <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t" />
           </div>
@@ -100,7 +100,7 @@ export default function LeadCaptureModal({
               O completa tus datos
             </span>
           </div>
-        </div>
+        </div> */}
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
