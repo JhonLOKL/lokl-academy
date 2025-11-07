@@ -201,7 +201,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
       className="relative text-white"
     >
       {/* Contenedor del Hero con imagen de fondo */}
-      <div className="relative h-screen md:min-h-screen overflow-hidden">
+      <div className="relative min-h-[100dvh] md:min-h-screen overflow-hidden">
         {/* Video de fondo - Solo desktop */}
         <div className="absolute inset-0 hidden md:block overflow-hidden">
           <video
@@ -264,7 +264,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
         <div className="absolute inset-0 md:hidden bg-black/25 pointer-events-none z-[5]"></div>
 
         {/* Contenido en 2 columnas - Desktop, 1 columna Mobile - Centrado verticalmente */}
-        <div className="relative z-10 mx-auto flex items-center h-full max-w-7xl px-6">
+        <div className="relative z-10 mx-auto flex items-start md:items-center max-w-7xl px-6 pt-28 pb-24 landscape:pt-32 landscape:pb-28 md:pt-0 md:pb-0 md:h-full">
           <div className="grid grid-cols-1 w-full gap-8 md:grid-cols-12">
           {/* Columna IZQUIERDA: texto */}
           <div className="md:col-span-7">

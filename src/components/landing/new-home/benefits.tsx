@@ -173,10 +173,10 @@ export default function Benefits() {
                           </h3>
 
                           {/* Descripción */}
-                          <p className={`text-white/90 leading-relaxed landscape:leading-snug drop-shadow-md overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent ${
+                          <p className={`text-white/90 leading-relaxed landscape:leading-snug drop-shadow-md ${
                             isMobile 
-                              ? "text-base sm:text-lg landscape:text-sm landscape:sm:text-base max-h-[120px] sm:max-h-[140px] landscape:max-h-[80px] landscape:sm:max-h-[100px]" 
-                              : "text-xl landscape:text-base max-h-[180px] landscape:max-h-[100px]"
+                              ? "text-base sm:text-lg landscape:text-sm landscape:sm:text-base" 
+                              : "text-xl landscape:text-base"
                           }`}>
                             {benefit.description}
                           </p>
