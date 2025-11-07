@@ -11,6 +11,7 @@ export default function FAQ() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const [isMounted, setIsMounted] = useState(false);
+  const [showAllMobile, setShowAllMobile] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -155,6 +156,7 @@ export default function FAQ() {
 
   const columnA = filteredFAQs.filter(faq => faq.column === 'A');
   const columnB = filteredFAQs.filter(faq => faq.column === 'B');
+  const mobileDisplayedFAQs = showAllMobile ? filteredFAQs : filteredFAQs.slice(0, 5);
 
   const toggleExpandAll = () => {
     if (expandedItems.length === filteredFAQs.length) {
@@ -228,21 +230,20 @@ export default function FAQ() {
           </div>
         </div>
 
-        {/* Two Column Layout */}
+        {/* Mobile list with Show More */}
         {isMounted ? (
-          <div className="grid lg:grid-cols-2 gap-6 md:gap-8 mb-12">
-            {/* Column A */}
-            <div>
-              <Accordion 
-                type="multiple" 
+          <>
+            <div className="md:hidden mb-8">
+              <Accordion
+                type="multiple"
                 value={expandedItems}
                 onValueChange={setExpandedItems}
                 className="space-y-4"
               >
-                {columnA.map((faq) => (
-                  <AccordionItem 
-                    key={faq.id} 
-                    value={faq.id} 
+                {mobileDisplayedFAQs.map((faq) => (
+                  <AccordionItem
+                    key={faq.id}
+                    value={faq.id}
                     className="border rounded-lg bg-card shadow-sm hover:shadow-md transition-shadow"
                   >
                     <AccordionTrigger className="text-left hover:no-underline px-6 py-4 [&[data-state=open]>svg]:rotate-180">
@@ -259,38 +260,80 @@ export default function FAQ() {
                   </AccordionItem>
                 ))}
               </Accordion>
+              {filteredFAQs.length > 5 && (
+                <Button
+                  variant="secondary"
+                  className="w-full mt-6"
+                  onClick={() => setShowAllMobile((v) => !v)}
+                >
+                  {showAllMobile ? 'Ver menos' : `Ver más (${filteredFAQs.length - 5})`}
+                </Button>
+              )}
             </div>
 
-            {/* Column B */}
-            <div>
-              <Accordion 
-                type="multiple" 
-                value={expandedItems}
-                onValueChange={setExpandedItems}
-                className="space-y-4"
-              >
-                {columnB.map((faq) => (
-                  <AccordionItem 
-                    key={faq.id} 
-                    value={faq.id} 
-                    className="border rounded-lg bg-card shadow-sm hover:shadow-md transition-shadow"
-                  >
-                    <AccordionTrigger className="text-left hover:no-underline px-6 py-4 [&[data-state=open]>svg]:rotate-180">
-                      <div className="flex items-start gap-3">
-                        <HelpCircle className="h-5 w-5 text-[#5352F6] mt-0.5 flex-shrink-0" />
-                        <span className="font-medium">{faq.question}</span>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground px-6 pb-6 pt-0">
-                      <div className="pl-8 whitespace-pre-line">
-                        {faq.answer}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
+            {/* Two Column Layout for md+ */}
+            <div className="hidden md:grid lg:grid-cols-2 gap-6 md:gap-8 mb-12">
+              {/* Column A */}
+              <div>
+                <Accordion 
+                  type="multiple" 
+                  value={expandedItems}
+                  onValueChange={setExpandedItems}
+                  className="space-y-4"
+                >
+                  {columnA.map((faq) => (
+                    <AccordionItem 
+                      key={faq.id} 
+                      value={faq.id} 
+                      className="border rounded-lg bg-card shadow-sm hover:shadow-md transition-shadow"
+                    >
+                      <AccordionTrigger className="text-left hover:no-underline px-6 py-4 [&[data-state=open]>svg]:rotate-180">
+                        <div className="flex items-start gap-3">
+                          <HelpCircle className="h-5 w-5 text-[#5352F6] mt-0.5 flex-shrink-0" />
+                          <span className="font-medium">{faq.question}</span>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground px-6 pb-6 pt-0">
+                        <div className="pl-8 whitespace-pre-line">
+                          {faq.answer}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </div>
+
+              {/* Column B */}
+              <div>
+                <Accordion 
+                  type="multiple" 
+                  value={expandedItems}
+                  onValueChange={setExpandedItems}
+                  className="space-y-4"
+                >
+                  {columnB.map((faq) => (
+                    <AccordionItem 
+                      key={faq.id} 
+                      value={faq.id} 
+                      className="border rounded-lg bg-card shadow-sm hover:shadow-md transition-shadow"
+                    >
+                      <AccordionTrigger className="text-left hover:no-underline px-6 py-4 [&[data-state=open]>svg]:rotate-180">
+                        <div className="flex items-start gap-3">
+                          <HelpCircle className="h-5 w-5 text-[#5352F6] mt-0.5 flex-shrink-0" />
+                          <span className="font-medium">{faq.question}</span>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground px-6 pb-6 pt-0">
+                        <div className="pl-8 whitespace-pre-line">
+                          {faq.answer}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </div>
             </div>
-          </div>
+          </>
         ) : (
           <div className="grid lg:grid-cols-2 gap-6 md:gap-8 mb-12">
             <div className="space-y-4">
