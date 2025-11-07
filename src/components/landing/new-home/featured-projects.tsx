@@ -19,11 +19,38 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
   const [isVideoPlaying, setIsVideoPlaying] = useState(false); // Estado para controlar la reproducción del video
   const [currentVideoUrl, setCurrentVideoUrl] = useState<string>(''); // URL del video actual
   const [showInvestors, setShowInvestors] = useState(true); // Estado para alternar entre inversionistas y precio
+  const [hoverEnabled, setHoverEnabled] = useState(true);
+  const hoverTimeoutRef = useRef<number | null>(null);
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
   const touchMoved = useRef<boolean>(false);
   const swipeExecuted = useRef<boolean>(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current !== null) {
+        window.clearTimeout(hoverTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const scheduleHoverEnable = () => {
+    if (hoverTimeoutRef.current !== null) {
+      window.clearTimeout(hoverTimeoutRef.current);
+    }
+
+    hoverTimeoutRef.current = window.setTimeout(() => {
+      setHoverEnabled(true);
+      hoverTimeoutRef.current = null;
+    }, 800);
+  };
+
+  const handleCloseSelection = () => {
+    setSelectedProject(null);
+    setHoverEnabled(false);
+    scheduleHoverEnable();
+  };
 
   // Usar datos de la API si están disponibles
   const projects = projectsData && projectsData.length > 0 ? 
@@ -363,11 +390,12 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
               const actualIndex = projects[index]?.id === project.id ? index : projects.findIndex(p => p.id === project.id);
               const finalIndex = actualIndex !== -1 ? actualIndex : index;
               
+              const hasManualSelection = selectedProject !== null;
               const isSelected = selectedProject === finalIndex;
-              const hasSelection = selectedProject !== null;
+              const hasActiveProject = hasManualSelection;
               
               // En móvil, si hay selección, solo mostrar el proyecto seleccionado
-              const hideInMobile = isMobile && hasSelection && !isSelected;
+              const hideInMobile = isMobile && hasActiveProject && !isSelected;
               
               return (
                 <div
@@ -377,13 +405,15 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                     ${hideInMobile ? 'hidden md:block' : ''}
                     ${isSelected 
                       ? 'w-full md:w-[calc(100%-400px)] lg:w-[calc(100%-464px)] z-30' 
-                      : hasSelection 
-                        ? 'md:w-48 lg:w-56 z-10 md:hover:w-52 lg:hover:w-60 cursor-pointer' 
+                      : hasActiveProject 
+                        ? hasManualSelection
+                          ? 'md:w-48 lg:w-56 z-10 cursor-pointer'
+                          : 'md:w-48 lg:w-56 z-10 md:hover:w-52 lg:hover:w-60 cursor-pointer'
                         : isMobile 
                           ? 'w-full max-w-72 mx-auto z-20' 
                           : 'w-[calc(33.333%-1rem)] z-20 snap-center'
                     }
-                    ${!hasSelection ? 'cursor-pointer' : ''}
+                    ${!hasManualSelection ? 'cursor-pointer' : ''}
                   `}
                   onClick={() => {
                     // Si hubo un swipe real, el handleTouchEnd ya manejó la navegación
@@ -394,9 +424,9 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                     }
                     
                     // Si hay un proyecto seleccionado y se hace clic en una tarjeta lateral, seleccionar ese proyecto
-                    if (hasSelection && !isSelected) {
+                    if (hasManualSelection && selectedProject !== finalIndex) {
                       setSelectedProject(finalIndex);
-                    } else if (!hasSelection) {
+                    } else if (!hasManualSelection) {
                       // Si no hay selección, seleccionar el proyecto usando el índice correcto
                       setSelectedProject(finalIndex);
                       // Actualizar carouselIndex para mantener consistencia en móvil
@@ -405,10 +435,13 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                       }
                     }
                   }}
-                  onTouchStart={!hasSelection ? handleTouchStart : undefined}
-                  onTouchMove={!hasSelection ? handleTouchMove : undefined}
-                  onTouchEnd={!hasSelection ? (e) => {
+                  onTouchStart={!hasManualSelection ? handleTouchStart : undefined}
+                  onTouchMove={!hasManualSelection ? handleTouchMove : undefined}
+                  onTouchEnd={!hasManualSelection ? (e) => {
                     handleTouchEnd(e);
+                  } : undefined}
+                  onMouseEnter={!isMobile && !hasManualSelection && hoverEnabled ? () => {
+                    setSelectedProject(finalIndex);
                   } : undefined}
                 >
                   {/* Card */}
@@ -418,12 +451,12 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                       : 'bg-white'
                     } 
                     rounded-3xl shadow-2xl overflow-hidden
-                    ${!hasSelection ? 'h-[500px] lg:h-[650px]' : 'h-full'}
-                    ${!isSelected && hasSelection && 'hover:shadow-3xl'}
+                    ${!hasActiveProject ? 'h-[500px] lg:h-[650px]' : 'h-full'}
+                    ${!isSelected && hasActiveProject && !hasManualSelection && 'hover:shadow-3xl'}
                   `}>
                     <div className={`grid grid-cols-1 ${isSelected ? 'lg:grid-cols-2' : ''} ${isSelected ? 'min-h-[600px] lg:min-h-[700px]' : 'h-full'}`}>
                       {/* Left Side - Image (Siempre visible) */}
-                      <div className={`relative group/image w-full ${isSelected ? 'min-h-[600px] lg:min-h-[700px]' : !hasSelection ? 'h-full' : 'min-h-[500px] lg:min-h-[650px]'} overflow-hidden`}>
+                      <div className={`relative group/image w-full ${isSelected ? 'min-h-[600px] lg:min-h-[700px]' : !hasActiveProject ? 'h-full' : 'min-h-[500px] lg:min-h-[650px]'} overflow-hidden`}>
                         <ImageWithFallback 
                           src={project.image} 
                           alt={project.name}
@@ -433,12 +466,12 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                         />
                         
                         {/* Overlay oscuro - Menos intenso en móvil */}
-                        <div className={`absolute inset-0 ${isSelected ? 'bg-black/10' : hasSelection && !isSelected ? 'bg-black/40' : isMobile ? 'bg-black/5' : 'bg-black/30'}`}></div>
+                        <div className={`absolute inset-0 ${isSelected ? 'bg-black/10' : hasActiveProject && !isSelected ? 'bg-black/40' : isMobile ? 'bg-black/5' : 'bg-black/30'}`}></div>
 
                         {/* Eliminado el overlay con flechas para tarjetas laterales */}
 
                         {/* Badges - Top Left */}
-                        {(!hasSelection || isSelected) && (
+                        {(!hasActiveProject || isSelected) && (
                           <div className="absolute top-4 left-4 flex flex-col gap-2">
                             <Badge className={`${project.statusColor} text-white text-xs font-semibold px-4 py-1.5 shadow-lg`}>
                               {project.status}
@@ -452,7 +485,7 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                         )}
 
                         {/* Badges para tarjetas laterales cuando hay selección */}
-                        {hasSelection && !isSelected && (
+                        {hasActiveProject && !isSelected && (
                           <div className="absolute top-4 left-4 flex flex-col gap-2 z-50">
                             <Badge className={`${project.statusColor} text-white text-sm font-semibold px-3 py-1.5 shadow-lg`}>
                               {project.status}
@@ -490,7 +523,7 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                         )}
 
                         {/* Info prominente - En estado inicial (sin selección) - Versión móvil */}
-                        {!hasSelection && isMobile && (
+                        {!hasActiveProject && isMobile && (
                           <div className="md:hidden absolute inset-0 flex flex-col justify-end p-5 text-white bg-gradient-to-t from-black/70 via-black/40 to-transparent">
                             {project.status !== 'Próximamente' ? (
                               <>
@@ -614,7 +647,7 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                         )}
 
                         {/* Info prominente - En estado inicial (sin selección) - Versión desktop */}
-                        {!hasSelection && (
+                        {!hasActiveProject && (
                           <div className="hidden md:flex absolute inset-0 flex-col justify-end p-6 lg:p-8 text-white">
                             {project.status !== 'Próximamente' ? (
                               <>
@@ -734,7 +767,7 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                         )}
 
                         {/* Contenido para tarjetas laterales cuando hay selección */}
-                        {hasSelection && !isSelected && (
+                        {hasActiveProject && !isSelected && (
                           <div className="absolute inset-0 flex flex-col justify-end p-5 lg:p-6 text-white bg-gradient-to-t from-black/70 via-black/40 to-transparent z-50">
                             {project.status !== 'Próximamente' ? (
                               <>
@@ -866,7 +899,7 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                             <button 
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setSelectedProject(null);
+                                handleCloseSelection();
                               }}
                               className="absolute top-4 right-4 z-50 w-10 h-10 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110"
                             >
@@ -922,7 +955,7 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                             <button 
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setSelectedProject(null);
+                                handleCloseSelection();
                               }}
                               className="absolute top-4 right-4 z-50 w-10 h-10 bg-gray-100 hover:bg-gray-200 text-foreground rounded-full flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110"
                             >
