@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSimulatorStore } from "@/store/simulator-store";
 import { useAuthStore } from "@/store/auth-store";
 import { useUtmStore } from "@/store/utm-store";
 import { getProjectCardsAction } from "@/actions/project-actions";
-import { createSimulationAction, saveSimulationAction } from "@/actions/simulator-actions";
+import { createSimulationAction, saveSimulationAction, createQuiivenContactAction, sendFirstMessageAction } from "@/actions/simulator-actions";
 import { upsertLeadAction } from "@/actions/user-action";
 import { SimulationData } from "@/schemas/simulator-schema";
 import { LeadFormData } from "@/schemas/lead-schema";
@@ -21,10 +21,12 @@ import ResultsFinal from "./phases/results-final";
 
 interface SimulatorRedesignedProps {
   simulatorName?: string;
+  hideRightColumn?: boolean;
 }
 
 export default function SimulatorRedesigned({
   simulatorName = "Simulador General",
+  hideRightColumn,
 }: SimulatorRedesignedProps) {
   const {
     availableProjects,
@@ -52,8 +54,29 @@ export default function SimulatorRedesigned({
   const [hasSubmittedLead, setHasSubmittedLead] = useState(false);
   const [hasSimulatedWithData, setHasSimulatedWithData] = useState(false);
   const [, setLeadFormData] = useState<LeadFormData | null>(null);
+  const [hasEnteredViewport, setHasEnteredViewport] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
-  // Cargar proyectos disponibles
+  // Detectar cuando el simulador entra al viewport para diferir la carga de proyectos
+  useEffect(() => {
+    const element = containerRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasEnteredViewport(true);
+          observer.disconnect();
+        }
+      },
+      { root: null, threshold: 0.1 }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  // Cargar proyectos disponibles cuando el simulador sea visible
   useEffect(() => {
     const loadProjects = async () => {
       setLoadingProjects(true);
@@ -71,13 +94,19 @@ export default function SimulatorRedesigned({
         setProjectsError(
           error instanceof Error ? error.message : "Error al cargar proyectos"
         );
+      } finally {
+        setLoadingProjects(false);
       }
     };
+
+    if (!hasEnteredViewport) {
+      return;
+    }
 
     if (availableProjects.length === 0 && !isLoadingProjects) {
       loadProjects();
     }
-  }, [availableProjects.length, isLoadingProjects, setAvailableProjects, setLoadingProjects, setProjectsError]);
+  }, [hasEnteredViewport, availableProjects.length, isLoadingProjects, setAvailableProjects, setLoadingProjects, setProjectsError]);
 
   // Handlers
   const handleProjectChange = (projectId: string) => {
@@ -283,7 +312,7 @@ export default function SimulatorRedesigned({
       const nameParts = userData.name.split(' ');
       const firstName = nameParts[0] || '';
 
-      // Preparar datos para upsertLeadAction
+      // 1. Guardar lead en CRM (upsertLeadAction)
       const leadData = {
         email: userData.email,
         firstName: firstName,
@@ -307,6 +336,59 @@ export default function SimulatorRedesigned({
       } else {
         console.error('❌ Error al guardar lead:', response.message);
       }
+
+      // 2. Enviar datos a Quiiven (solo si hay datos de simulación)
+      if (simulationData && selectedProject) {
+        const quiivenData = {
+          name: userData.name,
+          email: userData.email,
+          investmentValue: investmentAmount.toString(),
+          shares: simulationData.unitsAmount,
+          numberInstallments: installments === 1 ? 0 : installments,
+          phone: userData.phone || '',
+          termsAccepted: true,
+          leadOrigin: userData.leadOrigin || 'Simulador',
+          utmSource,
+          utmMedium,
+          utmCampaign,
+          utmTerm,
+          utmContent,
+        };
+
+        console.log('Enviando datos a Quiiven:', quiivenData);
+        const quiivenResponse = await createQuiivenContactAction(quiivenData);
+        
+        if (quiivenResponse.success) {
+          console.log('✅ Contacto creado exitosamente en Quiiven');
+        } else {
+          console.error('❌ Error al crear contacto en Quiiven:', quiivenResponse.error);
+        }
+
+        // 3. Enviar mensaje de WhatsApp (solo si hay teléfono)
+        if (userData.phone) {
+          const whatsappData = {
+            name: userData.name,
+            projectId: selectedProject.id,
+            email: userData.email,
+            numberToSend: userData.phone,
+          };
+
+          console.log('📱 Enviando mensaje de WhatsApp:', whatsappData);
+          const whatsappResponse = await sendFirstMessageAction(whatsappData);
+          
+          if (whatsappResponse.success) {
+            if (whatsappResponse.skipped) {
+              console.log('⏱️ Mensaje de WhatsApp omitido:', whatsappResponse.message);
+            } else {
+              console.log('✅ Mensaje de WhatsApp enviado exitosamente');
+            }
+          } else {
+            console.error('❌ Error al enviar mensaje de WhatsApp:', whatsappResponse.error);
+          }
+        } else {
+          console.log('⚠️ No se envió mensaje de WhatsApp: teléfono no disponible');
+        }
+      }
     } catch (error) {
       console.error('❌ Error en onFirstSimulationWithData:', error);
     }
@@ -317,7 +399,7 @@ export default function SimulatorRedesigned({
   };
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div ref={containerRef} className="container mx-auto px-4 py-12">
       {/* Header */}
       <div className="text-center mb-12">
         <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -372,7 +454,7 @@ export default function SimulatorRedesigned({
         </div>
 
         {/* Columna Derecha */}
-        <div>
+        <div className={hideRightColumn && currentPhase !== 3 ? "hidden" : ""}>
           {currentPhase === 1 && selectedProject && (
             <ProjectPreview project={selectedProject} />
           )}

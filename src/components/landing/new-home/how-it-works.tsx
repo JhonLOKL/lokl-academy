@@ -1,9 +1,36 @@
 "use client";
 
+import type { MouseEvent } from "react";
 import { UserPlus, Search, TrendingUp, Sparkles, Zap, CheckCircle2 } from 'lucide-react';
 
+type Step = {
+  number: string;
+  titleItalic: string;
+  titleBold: string;
+  description: string;
+  icon: typeof UserPlus;
+  cardStyle: "white" | "dark" | "primary" | string;
+  badge?: string;
+  badgeIcon?: typeof Sparkles;
+  href?: string;
+  target?: "_self" | "_blank";
+  onClick?: (event: MouseEvent<HTMLAnchorElement>) => void;
+};
+
 export default function HowItWorks() {
-  const steps = [
+  const scrollToProjects = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+
+    const section = document.getElementById("featured-projects");
+
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      window.location.hash = "featured-projects";
+    }
+  };
+
+  const steps: Step[] = [
     {
       number: '1',
       titleItalic: '1. REGÍSTRATE EN',
@@ -25,8 +52,9 @@ export default function HowItWorks() {
       cardStyle: 'dark', // Tarjeta negra
       badge: 'Sin compromiso',
       badgeIcon: Sparkles,
-      href: 'https://lokl.life/project/nido-de-agua',
-      target: '_blank'
+      href: '#featured-projects',
+      target: '_self',
+      onClick: scrollToProjects
     },
     {
       number: '3',
@@ -37,8 +65,9 @@ export default function HowItWorks() {
       cardStyle: 'primary', // Tarjeta azul
       badge: 'Rentabilidad alta',
       badgeIcon: CheckCircle2,
-      href: '/blog',
-      target: '_self'
+      href: '#featured-projects',
+      target: '_self',
+      onClick: scrollToProjects
     }
   ];
 
@@ -61,16 +90,17 @@ export default function HowItWorks() {
         {/* Header premium mejorado */}
         <div className="text-center mb-8 md:mb-12 lg:mb-16">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3">
-            <span className="text-foreground">¿CÓMO </span>
-            <span className="text-[#5352F6]">FUNCIONA?</span>
+            <span className="text-foreground">¿Cómo </span>
+            <span className="text-[#5352F6]">funciona?</span>
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
             Tres simples pasos para comenzar a invertir en proyectos inmobiliarios
           </p>
         </div>
 
-        {/* Layout responsive: Stack en móvil, grid horizontal en desktop */}
-        <div className="flex flex-col gap-8 md:gap-6 lg:grid lg:grid-cols-3 lg:gap-6 lg:max-w-7xl lg:mx-auto">
+        {/* Layout responsive con estructura escalonada */}
+        <div className="relative flex flex-col gap-8 md:gap-10 lg:gap-12 lg:max-w-5xl lg:mx-auto">
+          <div className="hidden lg:block absolute left-1/2 top-0 h-full w-px bg-gradient-to-b from-transparent via-gray-300/60 to-transparent pointer-events-none" />
           {steps.map((step, index) => {
             const IconComponent = step.icon;
 
@@ -141,28 +171,40 @@ export default function HowItWorks() {
             };
 
             const styles = getCardStyles();
+            const isEven = index % 2 === 0;
+            const layout = isEven
+              ? {
+                wrapper: 'lg:flex lg:justify-start',
+                card: 'lg:mr-auto lg:max-w-xl',
+                timelineDot: '-translate-x-1/2'
+              }
+              : {
+                wrapper: 'lg:flex lg:justify-end',
+                card: 'lg:ml-auto lg:max-w-xl',
+                timelineDot: '-translate-x-1/2'
+              };
 
             return (
               <div 
                 key={step.number} 
-                className="w-full group"
+                className={`relative w-full group ${layout.wrapper}`}
               >
                 {/* Glow de fondo - reducido en móvil */}
                 <div className={`hidden md:block absolute inset-0 rounded-2xl ${styles.glow} transition-all duration-500 opacity-0 group-hover:opacity-100 blur-xl`} />
 
-                {/* Link que cubre toda la tarjeta en desktop */}
-                {step.href && step.href !== '#' && (
-                  <a 
-                    href={step.href} 
-                    target={step.target} 
-                    rel={step.target === '_blank' ? 'noopener noreferrer' : undefined}
-                    className="hidden md:block absolute inset-0 z-30 rounded-2xl"
-                    aria-label={`Ir a ${step.titleBold}`}
-                  />
-                )}
-
                 {/* Tarjeta optimizada para móvil */}
-                <div className={`${styles.container} ${styles.hoverEffect} rounded-2xl p-5 md:p-6 lg:p-8 transition-all duration-300 md:duration-500 relative overflow-hidden will-change-transform`}>
+                <div className={`${styles.container} ${styles.hoverEffect} ${layout.card} rounded-2xl p-5 md:p-6 lg:p-8 transition-all duration-300 md:duration-500 relative overflow-hidden will-change-transform`}>
+                  {/* Link que cubre solo la tarjeta en desktop */}
+                  {step.href && step.href !== '#' && (
+                    <a 
+                      href={step.href} 
+                      target={step.target} 
+                      rel={step.target === '_blank' ? 'noopener noreferrer' : undefined}
+                      onClick={step.onClick}
+                      className="hidden md:block absolute inset-0 z-30 rounded-2xl"
+                      aria-label={`Ir a ${step.titleBold}`}
+                    />
+                  )}
                   
                   {/* Efectos de fondo internos - reducidos en móvil */}
                   <div className={`hidden md:block absolute inset-0 bg-gradient-to-br ${styles.decorativeGradient} pointer-events-none`} />
@@ -191,6 +233,7 @@ export default function HowItWorks() {
                               href={step.href} 
                               target={step.target} 
                               rel={step.target === '_blank' ? 'noopener noreferrer' : undefined}
+                              onClick={step.onClick}
                               className={`md:pointer-events-none inline-block pb-1 border-b-2 ${
                                 step.cardStyle === 'white' 
                                   ? 'border-[#5352F6]' 

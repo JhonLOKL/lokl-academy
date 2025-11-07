@@ -268,8 +268,9 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
       <div className="max-w-7xl mx-auto px-3 sm:px-6">
         {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-            <span className="text-primary">Proyectos</span> destacados
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3">
+            <span className="text-foreground">Proyectos </span>
+            <span className="text-[#5352F6]">destacados</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Descubre oportunidades de inversión curadas por nuestro equipo de expertos
@@ -277,23 +278,23 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
         </div>
 
         {/* Stacked Cards Container */}
-        <div className="relative perspective-1000 overflow-hidden">
+        <div className="relative perspective-1000 overflow-visible">
           {/* Navigation Buttons - Desktop (ocultos cuando hay selección para evitar que se vean moviendo) */}
           {selectedProject === null && (
             <>
               <button
                 onClick={prevCarousel}
-                className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-black/60 hover:bg-black/70 backdrop-blur-sm rounded-full shadow-xl items-center justify-center transition-all duration-300 hover:scale-110"
+                className="hidden md:flex absolute -left-8 lg:-left-12 xl:-left-16 top-1/2 -translate-y-1/2 z-30 w-12 h-12 lg:w-14 lg:h-14 items-center justify-center bg-white rounded-full shadow-lg border-2 border-[#5352F6]/20 hover:bg-[#5352F6] hover:border-[#5352F6] transition-all duration-300 hover:scale-110 group"
                 aria-label="Proyecto anterior"
               >
-                <ChevronLeft className="w-6 h-6 text-white animate-pulse" />
+                <ChevronLeft className="w-6 h-6 lg:w-7 lg:h-7 text-black group-hover:text-white transition-colors duration-300" />
               </button>
               <button
                 onClick={nextCarousel}
-                className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-black/60 hover:bg-black/70 backdrop-blur-sm rounded-full shadow-xl items-center justify-center transition-all duration-300 hover:scale-110"
+                className="hidden md:flex absolute -right-8 lg:-right-12 xl:-right-16 top-1/2 -translate-y-1/2 z-30 w-12 h-12 lg:w-14 lg:h-14 items-center justify-center bg-white rounded-full shadow-lg border-2 border-[#5352F6]/20 hover:bg-[#5352F6] hover:border-[#5352F6] transition-all duration-300 hover:scale-110 group"
                 aria-label="Proyecto siguiente"
               >
-                <ChevronRight className="w-6 h-6 text-white animate-pulse" />
+                <ChevronRight className="w-6 h-6 lg:w-7 lg:h-7 text-black group-hover:text-white transition-colors duration-300" />
               </button>
             </>
           )}
@@ -384,7 +385,7 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                     }
                     ${!hasSelection ? 'cursor-pointer' : ''}
                   `}
-                  onClick={(e) => {
+                  onClick={() => {
                     // Si hubo un swipe real, el handleTouchEnd ya manejó la navegación
                     // No ejecutar el onClick si se ejecutó un swipe
                     if (swipeExecuted.current) {

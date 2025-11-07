@@ -22,19 +22,21 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
   const { setSelectedProject, setInvestmentAmount, setInstallments } = useSimulatorStore();
 
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
-  const [isMounted, setIsMounted] = useState(false);
 
   // Filtrar proyectos activos (que no estén en "Etapa 0")
   const availableProjects = globalProjects.filter(p => p.phase !== "Etapa 0");
+
+  // Imágenes para el hero móvil
+  const mobileHeroImages = [
+    "https://lokl-assets.s3.us-east-1.amazonaws.com/home/Hero-indie-movil.png",
+    "https://lokl-assets.s3.us-east-1.amazonaws.com/home/Hero-nido-movil.png"
+  ];
 
   // Estado para el simulador del hero
   const [selectedHeroProjectId, setSelectedHeroProjectId] = useState<string>("");
   const [heroInvestmentAmount, setHeroInvestmentAmount] = useState(5310000);
 
-  // Marcar como montado después del primer render
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  
 
   // Inicializar el proyecto y monto cuando estén disponibles
   useEffect(() => {
@@ -49,18 +51,18 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
   // Obtener el proyecto actualmente seleccionado
   const currentHeroProject = availableProjects.find(p => p.id === selectedHeroProjectId) || availableProjects[0];
 
-  // Rotación automática de proyectos cada 5 segundos
+  // Rotación automática de imágenes móviles cada 5 segundos
   useEffect(() => {
-    if (availableProjects.length === 0) return;
+    if (mobileHeroImages.length === 0) return;
     
     const interval = setInterval(() => {
       setCurrentProjectIndex(
-        (prev) => (prev + 1) % availableProjects.length,
+        (prev) => (prev + 1) % mobileHeroImages.length,
       );
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [availableProjects.length]);
+  }, [mobileHeroImages.length]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("es-CO", {
@@ -132,30 +134,65 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
       installments: 1,
     });
 
-    // Hacer scroll al simulador
-    const simulatorElement = document.getElementById("simulador");
-    if (simulatorElement) {
-      simulatorElement.scrollIntoView({ behavior: "smooth", block: "start" });
-    } else {
-      // Si no existe todavía (por ejemplo, si aún no se ha renderizado)
-      // intentar después de un pequeño delay
-      setTimeout(() => {
-        const element = document.getElementById("simulador");
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }, 100);
-    }
+    // Hacer scroll al simulador correcto (desktop vs mobile)
+    const isDesktop = typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches;
+    const targetId = isDesktop ? 'simulador-desktop' : 'simulador-mobile';
+
+    const tryScroll = (attemptsLeft: number) => {
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (attemptsLeft > 0) {
+        setTimeout(() => tryScroll(attemptsLeft - 1), 200);
+      }
+    };
+
+    tryScroll(5);
   };
 
-  const handleWhatIsClick = () => {
+  const handleWhatIsClick = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
     if (onWhatIsClick) {
       onWhatIsClick();
-    } else {
-      document
-        .getElementById("que-es-lokl")
-        ?.scrollIntoView({ behavior: "smooth" });
+      return;
     }
+
+    if (typeof window === 'undefined') return;
+    const target = document.getElementById("que-es-lokl");
+    if (!target) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+
+    if (prefersReducedMotion) {
+      target.scrollIntoView({ behavior: 'auto', block: 'start' });
+      return;
+    }
+
+    if (!isMobile) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+
+    // Mobile: scroll suave con offset y easing
+    const headerOffset = 72; // pequeño offset para evitar solaparse con header
+    const startY = window.pageYOffset;
+    const targetY = target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+    const distance = targetY - startY;
+    const duration = 600; // ms
+    const startTime = performance.now();
+
+    const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+    const step = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = easeInOutCubic(progress);
+      window.scrollTo(0, startY + distance * eased);
+      if (progress < 1) requestAnimationFrame(step);
+    };
+
+    requestAnimationFrame(step);
   };
 
   return (
@@ -178,7 +215,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
             aria-label="Video de fondo mostrando proyectos inmobiliarios LOKL"
           >
             <source 
-              src="https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe.mp4" 
+              src="https://lokl-assets.s3.us-east-1.amazonaws.com/home/hero.mp4" 
               type="video/mp4"
             />
             <track
@@ -192,10 +229,10 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
 
         {/* Fondo con imágenes - Solo móvil - ocupa toda la altura de viewport */}
         <div className="absolute inset-0 md:hidden h-screen">
-          {availableProjects.length > 0 ? (
-            availableProjects.map((project, index) => (
+          {mobileHeroImages.length > 0 ? (
+            mobileHeroImages.map((imageUrl, index) => (
               <div
-                key={project.id}
+                key={index}
                 aria-hidden="true"
                 className={`absolute inset-0 transition-opacity duration-1000 ${
                   index === currentProjectIndex
@@ -205,8 +242,8 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
               >
                 <picture>
                   <LazyImage
-                    src={project.imageURL}
-                    alt={`Proyecto ${project.name} - ${project.city} - LOKL`}
+                    src={imageUrl}
+                    alt={`Hero móvil ${index + 1} - LOKL`}
                     className="absolute inset-0 h-full w-full object-cover"
                     priority={index === 0}
                     width={1920}
@@ -223,21 +260,24 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
         {/* Overlay para contraste del texto */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/20 via-50% to-transparent"></div>
 
+        {/* Overlay con opacidad en todo el hero - Solo móvil */}
+        <div className="absolute inset-0 md:hidden bg-black/25 pointer-events-none z-[5]"></div>
+
         {/* Contenido en 2 columnas - Desktop, 1 columna Mobile - Centrado verticalmente */}
         <div className="relative z-10 mx-auto flex items-center h-full max-w-7xl px-6">
           <div className="grid grid-cols-1 w-full gap-8 md:grid-cols-12">
           {/* Columna IZQUIERDA: texto */}
           <div className="md:col-span-7">
-            <h1 className="leading-[0.85] font-semibold md:text-6xl text-[48px] text-left text-[rgb(255,248,248)] max-w-xl">
+            <h1 className="leading-[1.1] md:leading-[0.85] font-semibold md:text-6xl text-4xl text-left text-[rgb(255,248,248)] max-w-xl">
               Invierte en bienes raíces con propósito y construye tu futuro
             </h1>
 
-            <p className="mt-4 max-w-xl text-lg text-white/90"> 
-              Proyectos creativos y sostenibles que generan empleo local y valor real para las nuevas generaciones.
+            <p className="mt-6 md:mt-4 max-w-xl text-lg text-white/90"> 
+              Accede a oportunidades inmobiliarias reales y vive la experiencia de invertir con confianza.
             </p>
 
             {/* "Invierte" / micro-beneficios */}
-            <div className="mt-5 flex flex-wrap gap-2 w-fit">
+            <div className="mt-5 hidden md:flex flex-wrap gap-2 w-fit">
               <span className="rounded-full bg-white/10 px-3 py-1 text-sm text-center whitespace-nowrap">
                 <span className="text-[rgba(255,255,255,1)] font-bold">
                   Diversificación
@@ -262,7 +302,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
 
             {/* Proyecto destacado rotativo - fuera de tarjeta */}
             {availableProjects.length > 0 && (
-              <div className="mt-6">
+              <div className="mt-10 md:mt-6">
                 <div
                   key={currentProjectIndex}
                   className="animate-in fade-in duration-500"
@@ -287,7 +327,31 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
             )}
 
             {/* CTAs */}
-            <div className="mt-6 flex flex-wrap gap-3">
+            {/* Mobile: botón de ancho completo + enlace de texto debajo */}
+            <div className="mt-10 flex flex-col gap-4 md:hidden">
+              <a
+                href="#featured-projects"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document
+                    .getElementById("featured-projects")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="w-full rounded-xl bg-[#5352F6] px-5 py-3 font-medium text-white text-center hover:bg-[#5352F6]/90 focus:outline-none focus:ring-2 focus:ring-[#5352F6]/30"
+              >
+                Ver proyectos
+              </a>
+              <a
+                href="#que-es-lokl"
+                onClick={handleWhatIsClick}
+                className="mt-2 text-center text-white/90 hover:text-white underline-offset-2 hover:underline"
+              >
+                ¿Qué es LOKL?
+              </a>
+            </div>
+
+            {/* Desktop/Tablet: botones originales en fila */}
+            <div className="mt-6 hidden md:flex flex-wrap gap-3">
               <a
                 href="#featured-projects"
                 onClick={(e) => {
@@ -395,7 +459,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
                     onClick={handleViewFullProjection}
                     className="block w-full rounded-xl bg-[#5352F6] px-4 py-3 text-center font-medium text-white hover:bg-[#5352F6]/90 focus:outline-none focus:ring-2 focus:ring-[#5352F6]/30 transition-all shadow-lg hover:shadow-xl"
                   >
-                    Ver proyección completa
+                    Simular inversión
                   </button>
                 </div>
               ) : (
@@ -406,98 +470,6 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
             </div>
           </div>
           </div>
-        </div>
-      </div>
-
-      {/* Simulador Mobile - Sin tarjeta, directo sobre fondo */}
-      <div className="md:hidden bg-background py-8 px-6">
-        <div className="max-w-sm mx-auto">
-          {/* Título del simulador mobile */}
-          <h2 className="text-xl font-semibold text-foreground mb-1">
-            Proyección rápida
-          </h2>
-          <p className="text-sm text-muted-foreground mb-6">
-            Simula tu inversión en segundos
-          </p>
-
-          {/* Simulador funcional mobile */}
-          {availableProjects.length > 0 && selectedHeroProjectId && currentHeroProject && isMounted ? (
-            <div className="space-y-5">
-              {/* Selector de Proyecto */}
-              <div className="w-full">
-                <label className="text-sm text-foreground block mb-2 font-medium">
-                  Proyecto
-                </label>
-                <Select
-                  value={selectedHeroProjectId}
-                  onValueChange={handleHeroProjectChange}
-                >
-                  <SelectTrigger className="w-full bg-white !text-black">
-                    <SelectValue placeholder="Selecciona un proyecto" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {availableProjects.map((project) => (
-                      <SelectItem key={project.id} value={project.id}>
-                        {project.name} - {project.city}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Barra deslizable para monto de inversión */}
-              <div className="w-full">
-                <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm text-foreground font-medium">
-                    Valor a invertir
-                  </label>
-                  <span className="text-sm font-semibold text-[#5352F6]">
-                    {formatCurrency(heroInvestmentAmount)}
-                  </span>
-                </div>
-                
-                <div className="w-full py-2">
-                  {(() => {
-                    const { minInvestment, maxInvestment, step } = calculateSliderRange(currentHeroProject);
-                    return (
-                      <Slider
-                        value={[heroInvestmentAmount]}
-                        onValueChange={handleSliderChange}
-                        min={minInvestment}
-                        max={maxInvestment}
-                        step={step}
-                        className="w-full touch-pan-y"
-                      />
-                    );
-                  })()}
-                </div>
-                
-                <div className="flex justify-between mt-1 text-xs text-muted-foreground">
-                  {(() => {
-                    const { minInvestment, maxInvestment } = calculateSliderRange(currentHeroProject);
-                    return (
-                      <>
-                        <span>{formatCurrency(minInvestment)}</span>
-                        <span>{formatCurrency(maxInvestment)}</span>
-                      </>
-                    );
-                  })()}
-                </div>
-              </div>
-
-              {/* CTA */}
-              <button
-                onClick={handleViewFullProjection}
-                className="block w-full rounded-xl bg-[#5352F6] px-4 py-3 text-center font-medium text-white hover:bg-[#5352F6]/90 focus:outline-none focus:ring-2 focus:ring-[#5352F6]/30 transition-all shadow-lg hover:shadow-xl"
-              >
-                Ver proyección completa
-              </button>
-            </div>
-          ) : (
-            <div className="text-center text-muted-foreground py-8">
-              Cargando simulador...
-            </div>
-          )}
         </div>
       </div>
 

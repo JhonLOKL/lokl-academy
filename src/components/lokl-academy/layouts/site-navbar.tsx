@@ -21,7 +21,7 @@ export function SiteNavbar() {
   };
 
   const goToProfile = () => {
-    router.push("/dashboard");
+    router.push("https://lokl.life/dashboard/perfil");
   };
   
   return (
@@ -76,7 +76,7 @@ export function SiteNavbar() {
               <span>Nosotros</span>
             </div>
           ), 
-          href: "/about-us"
+          href: "https://lokl.life/aboutus"
         },
         { 
           label: (
@@ -104,7 +104,7 @@ export function SiteNavbar() {
               <span>Embajadores</span>
             </div>
           ), 
-          href: "/ambassadors"
+          href: "https://lokl.life/ambassadors"
         },
         
       ]}
@@ -113,7 +113,7 @@ export function SiteNavbar() {
           <div className="flex items-center gap-4">
             {/* Botón Dashboard */}
             <Link 
-              href="/dashboard"
+              href="https://lokl.life/dashboard/income"
               className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-[#F3F3F3] transition-colors"
             >
               <ChartBarDecreasing className="w-5 h-5 text-[#1C274C]" />

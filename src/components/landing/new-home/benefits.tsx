@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import {
   Carousel,
@@ -14,12 +14,6 @@ import { useIsMobile } from "@/hooks/use-is-mobile";
 export default function Benefits() {
   const isMobile = useIsMobile();
   const [api, setApi] = useState<CarouselApi>();
-  const [carouselIndex, setCarouselIndex] = useState(0);
-  
-  // Referencias para el manejo de gestos táctiles en móvil (igual que featured-projects)
-  const touchStartX = useRef<number>(0);
-  const touchEndX = useRef<number>(0);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const benefits = [
     {
@@ -65,91 +59,30 @@ export default function Benefits() {
     },
   ];
 
-  // Manejo de gestos táctiles para móvil (igual que en featured-projects)
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = () => {
-    if (touchStartX.current - touchEndX.current > 75) {
-      // Swipe left
-      nextCarousel();
-    }
-
-    if (touchStartX.current - touchEndX.current < -75) {
-      // Swipe right
-      prevCarousel();
-    }
-  };
-
   // Navegación del carrusel
   const nextCarousel = () => {
-    if (isMobile) {
-      setCarouselIndex((prev) => (prev + 1) % benefits.length);
-    } else {
-      // En desktop con loop, solo usar API
-      if (api) {
-        api.scrollNext();
-      }
+    if (api) {
+      api.scrollNext();
     }
   };
 
   const prevCarousel = () => {
-    if (isMobile) {
-      setCarouselIndex((prev) => (prev - 1 + benefits.length) % benefits.length);
-    } else {
-      // En desktop con loop, solo usar API
-      if (api) {
-        api.scrollPrev();
-      }
+    if (api) {
+      api.scrollPrev();
     }
   };
-
-  // Obtener los beneficios visibles en el orden correcto (igual que featured-projects)
-  const getVisibleBenefitsInOrder = () => {
-    if (isMobile) {
-      // En móvil, mostrar solo el beneficio actual
-      return [{ benefit: benefits[carouselIndex], index: carouselIndex }];
-    }
-    
-    // En desktop, mostrar todos los beneficios
-    return benefits.map((benefit, index) => ({ benefit, index }));
-  };
-
-  const visibleBenefits = getVisibleBenefitsInOrder();
-  
-  // Sincronizar carouselIndex con el API cuando cambie (solo desktop con loop)
-  useEffect(() => {
-    if (!api || isMobile) return;
-    
-    const handleSelect = () => {
-      const selected = api.selectedScrollSnap();
-      // Con loop, el índice puede ser mayor que benefits.length, así que usamos módulo
-      setCarouselIndex(selected % benefits.length);
-    };
-    
-    api.on("select", handleSelect);
-    
-    return () => {
-      api.off("select", handleSelect);
-    };
-  }, [api, isMobile, benefits.length]);
 
   return (
     <section
       id="benefits"
-      className="py-8 sm:py-12 md:py-16 landscape:py-6 bg-[rgb(243,243,243)]"
+      className="py-20 sm:py-28 md:py-32 lg:py-36 landscape:py-12 bg-background"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-12 landscape:mb-6">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl landscape:text-2xl landscape:sm:text-3xl font-bold text-foreground mb-4 sm:mb-6 landscape:mb-3 leading-tight">
-            <span className="text-[#5352F6]">BENEFICIOS</span> de
-            invertir con LOKL
+        <div className="text-center mb-12 sm:mb-16 landscape:mb-8">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3">
+            <span className="text-foreground">Beneficios </span>
+            <span className="text-[#5352F6]">de invertir con LOKL</span>
           </h2>
           <p className="text-base sm:text-lg md:text-xl landscape:text-sm landscape:sm:text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed landscape:leading-snug px-2">
             Inversión inmobiliaria con propósito: rentabilidad financiera, impacto social
@@ -159,26 +92,6 @@ export default function Benefits() {
 
         {/* Benefits Container */}
         <div className="relative md:px-8 lg:px-10 xl:px-12">
-          {/* Navigation Buttons - Móvil */}
-          {isMobile && (
-            <>
-              <button
-                onClick={prevCarousel}
-                className="absolute -left-4 top-1/2 -translate-y-1/2 z-40 w-10 h-10 flex items-center justify-center transition-all duration-300 hover:scale-110"
-                aria-label="Beneficio anterior"
-              >
-                <ChevronLeft className="w-6 h-6 text-black" />
-              </button>
-              <button
-                onClick={nextCarousel}
-                className="absolute -right-4 top-1/2 -translate-y-1/2 z-40 w-10 h-10 flex items-center justify-center transition-all duration-300 hover:scale-110"
-                aria-label="Beneficio siguiente"
-              >
-                <ChevronRight className="w-6 h-6 text-black" />
-              </button>
-            </>
-          )}
-
           {/* Navigation Buttons - Desktop */}
           {!isMobile && (
             <>
@@ -199,117 +112,85 @@ export default function Benefits() {
             </>
           )}
 
-          {/* Móvil: Contenedor simple con swipe (igual que featured-projects) */}
-          {isMobile && (
-            <div ref={scrollContainerRef}>
-              <div className="flex items-stretch gap-4 max-w-7xl mx-auto justify-center">
-                {visibleBenefits.map(({ benefit, index }) => {
-                  return (
-                    <div
-                      key={index}
-                      className="transition-all duration-700 ease-in-out flex-shrink-0 w-full max-w-72 landscape:max-w-md mx-auto z-20"
-                      onTouchStart={handleTouchStart}
-                      onTouchMove={handleTouchMove}
-                      onTouchEnd={handleTouchEnd}
-                    >
-                      {/* Tarjeta con imagen de fondo dominante */}
-                      <div className="group relative h-[550px] sm:h-[600px] landscape:h-[450px] landscape:sm:h-[500px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] cursor-pointer">
-                        {/* Imagen de fondo a pantalla completa - Optimizada con Next.js Image */}
-                        <Image
-                          src={benefit.image}
-                          alt={benefit.title}
-                          fill
-                          sizes="(max-width: 768px) 100vw, 33vw"
-                          className="object-cover transition-transform duration-700 group-hover:scale-110"
-                          priority={index === 0}
-                          quality={85}
-                        />
+          {/* Carousel unificado para móvil y desktop */}
+          <Carousel
+            opts={{
+              align: "center",
+              loop: true,
+              skipSnaps: false,
+            }}
+            setApi={setApi}
+            className="w-full"
+          >
+            <CarouselContent className={isMobile ? "-ml-2" : "-ml-4"}>
+              {benefits.map((benefit, index) => (
+                <CarouselItem 
+                  key={index} 
+                  className={isMobile 
+                    ? "pl-2 basis-[85%] sm:basis-[80%]" 
+                    : "pl-4 basis-1/3"
+                  }
+                >
+                  <div className="group h-full cursor-pointer select-none">
+                    {/* Tarjeta con imagen de fondo dominante */}
+                    <div className={`relative rounded-2xl sm:rounded-3xl overflow-hidden transition-all duration-500 shadow-lg md:shadow-none md:hover:shadow-none ${
+                      isMobile 
+                        ? "h-[550px] sm:h-[600px] landscape:h-[450px] landscape:sm:h-[500px]" 
+                        : "h-[700px] landscape:h-[550px]"
+                    }`}>
+                      {/* Imagen de fondo a pantalla completa - Optimizada con Next.js Image */}
+                      <Image
+                        src={benefit.image}
+                        alt={benefit.title}
+                        fill
+                        sizes="(max-width: 768px) 85vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover transition-transform duration-700"
+                        priority={index < 3}
+                        quality={85}
+                      />
 
-                        {/* Overlay gradiente para legibilidad */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/80 group-hover:from-black/30 group-hover:to-black/90 transition-all duration-500 z-10" />
+                      {/* Overlay gradiente para legibilidad */}
+                      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/80 group-hover:from-black/30 group-hover:to-black/90 transition-all duration-500 z-10" />
 
-                        {/* Contenido sobre la imagen */}
-                        <div className="relative h-full flex flex-col justify-end p-4 sm:p-6 md:p-8 landscape:p-3 landscape:sm:p-4 z-20">
-                          {/* Contenido inferior */}
-                          <div className="space-y-3 sm:space-y-4 landscape:space-y-2">
-                            {/* Título */}
-                            <h3 className="text-white font-bold text-2xl sm:text-3xl md:text-4xl landscape:text-xl landscape:sm:text-2xl leading-tight drop-shadow-lg">
-                              {benefit.title}
-                            </h3>
+                      {/* Contenido sobre la imagen */}
+                      <div className={`relative h-full flex flex-col justify-end z-20 ${
+                        isMobile 
+                          ? "p-4 sm:p-6 landscape:p-3 landscape:sm:p-4" 
+                          : "p-8 landscape:p-5"
+                      }`}>
+                        {/* Contenido inferior */}
+                        <div className={isMobile 
+                          ? "space-y-3 sm:space-y-4 landscape:space-y-2" 
+                          : "space-y-4 landscape:space-y-2.5"
+                        }>
+                          {/* Título */}
+                          <h3 className={`text-white font-bold leading-tight drop-shadow-lg ${
+                            isMobile 
+                              ? "text-2xl sm:text-3xl landscape:text-xl landscape:sm:text-2xl" 
+                              : "text-4xl landscape:text-2xl"
+                          }`}>
+                            {benefit.title}
+                          </h3>
 
-                            {/* Descripción */}
-                            <p className="text-white/90 text-base sm:text-lg md:text-xl landscape:text-sm landscape:sm:text-base leading-relaxed landscape:leading-snug drop-shadow-md overflow-y-auto max-h-[120px] sm:max-h-[140px] md:max-h-[160px] lg:max-h-[180px] landscape:max-h-[80px] landscape:sm:max-h-[100px] pr-1 sm:pr-2 scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent">
-                              {benefit.description}
-                            </p>
-                          </div>
+                          {/* Descripción */}
+                          <p className={`text-white/90 leading-relaxed landscape:leading-snug drop-shadow-md overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent ${
+                            isMobile 
+                              ? "text-base sm:text-lg landscape:text-sm landscape:sm:text-base max-h-[120px] sm:max-h-[140px] landscape:max-h-[80px] landscape:sm:max-h-[100px]" 
+                              : "text-xl landscape:text-base max-h-[180px] landscape:max-h-[100px]"
+                          }`}>
+                            {benefit.description}
+                          </p>
                         </div>
-
-                        {/* Brillo decorativo en hover */}
-                        <div className="absolute inset-0 bg-gradient-to-tr from-[#5352F6]/0 via-[#5352F6]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-[15]" />
                       </div>
+
+                      {/* Brillo decorativo en hover */}
+                      <div className="absolute inset-0 bg-gradient-to-tr from-[#5352F6]/0 via-[#5352F6]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-[15]" />
                     </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Desktop Carousel */}
-          {!isMobile && (
-            <Carousel
-              opts={{
-                align: "start",
-                loop: true,
-                skipSnaps: false,
-              }}
-              setApi={setApi}
-              className="hidden md:block"
-            >
-              <CarouselContent className="-ml-4">
-                {benefits.map((benefit, index) => (
-                  <CarouselItem key={index} className="pl-4 basis-1/3">
-                    <div className="group h-full cursor-pointer select-none">
-                      {/* Tarjeta con imagen de fondo dominante */}
-                      <div className="relative h-[700px] landscape:h-[550px] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
-                        {/* Imagen de fondo a pantalla completa - Optimizada con Next.js Image */}
-                        <Image
-                          src={benefit.image}
-                          alt={benefit.title}
-                          fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          className="object-cover transition-transform duration-700 group-hover:scale-110"
-                          priority={index < 3}
-                          quality={85}
-                        />
-
-                        {/* Overlay gradiente para legibilidad */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/30 to-black/80 group-hover:from-black/30 group-hover:to-black/90 transition-all duration-500 z-10" />
-
-                        {/* Contenido sobre la imagen */}
-                        <div className="relative h-full flex flex-col justify-end p-8 landscape:p-5 z-20">
-                          {/* Contenido inferior */}
-                          <div className="space-y-4 landscape:space-y-2.5">
-                            {/* Título */}
-                            <h3 className="text-white font-bold text-4xl landscape:text-2xl leading-tight drop-shadow-lg">
-                              {benefit.title}
-                            </h3>
-
-                            {/* Descripción */}
-                            <p className="text-white/90 text-xl landscape:text-base leading-relaxed landscape:leading-snug drop-shadow-md overflow-y-auto max-h-[180px] landscape:max-h-[100px] pr-2 scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-transparent">
-                              {benefit.description}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Brillo decorativo en hover */}
-                        <div className="absolute inset-0 bg-gradient-to-tr from-[#5352F6]/0 via-[#5352F6]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-[15]" />
-                      </div>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
-          )}
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
 
         </div>
       </div>

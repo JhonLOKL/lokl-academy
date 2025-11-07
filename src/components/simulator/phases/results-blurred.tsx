@@ -24,19 +24,13 @@ export default function ResultsBlurred({ project, simulationData }: ResultsBlurr
   
   let rentabilityMin: number;
   let rentabilityMax: number;
-  
+
   if (hasValidRent) {
-    rentabilityMin = ((project.minRent * 12) / project.unitPrice) * 100;
-    rentabilityMax = ((project.maxRent * 12) / project.unitPrice) * 100;
+    rentabilityMin = project.minRent * 100;
+    rentabilityMax = project.maxRent * 100;
   } else {
-    if (project.subscriptionFeePercentage > 0) {
-      const annualRate = project.subscriptionFeePercentage * 12 * 100;
-      rentabilityMin = annualRate * 0.8;
-      rentabilityMax = annualRate * 1.2;
-    } else {
-      rentabilityMin = 6.18;
-      rentabilityMax = 14.26;
-    }
+    rentabilityMin = 6.18;
+    rentabilityMax = 14.26;
   }
 
   return (
@@ -48,7 +42,7 @@ export default function ResultsBlurred({ project, simulationData }: ResultsBlurr
             src={project.imageURL}
             alt={project.name}
             fill
-            className="object-cover opacity-40"
+            className="object-cover"
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent" />

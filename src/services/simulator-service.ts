@@ -9,6 +9,15 @@ import {
   SaveSimulationInput,
   SaveSimulationApiResponseSchema,
 } from "@/schemas/save-simulation-schema";
+import {
+  QuiivenContactInput,
+  QuiivenContactInputSchema,
+} from "@/schemas/quiiven-schema";
+import {
+  WhatsAppMessageInput,
+  WhatsAppMessageInputSchema,
+} from "@/schemas/whatsapp-message-schema";
+import { urls } from "@/config/urls";
 
 export const createSimulationService = async (
   input: SimulationInput
@@ -65,3 +74,103 @@ export const saveSimulationService = async (
   }
 };
 
+/**
+ * Servicio para crear un contacto en Quiiven a través del webhook de n8n
+ * @param input - Datos del contacto
+ * @returns Respuesta del webhook
+ */
+export const createQuiivenContactService = async (
+  input: QuiivenContactInput
+) => {
+  try {
+    // Validar los datos de entrada
+    const validatedInput = QuiivenContactInputSchema.parse(input);
+
+    // Crear la fecha con el formato requerido
+    const date = new Date();
+    const offset = date.getTimezoneOffset() * 60000;
+    const localDate = new Date(date.getTime() - offset);
+    const createdAt = localDate.toISOString().replace("T", " ").replace("Z", "");
+
+    // Preparar el payload para el webhook
+    const payload = {
+      name: validatedInput.name,
+      email: validatedInput.email,
+      investmentValue: validatedInput.investmentValue,
+      shares: validatedInput.shares,
+      numberInstallments: validatedInput.numberInstallments,
+      phone: validatedInput.phone,
+      leadOrigin: validatedInput.leadOrigin,
+      createdAt,
+      utmSource: validatedInput.utmSource,
+      utmMedium: validatedInput.utmMedium,
+      utmCampaign: validatedInput.utmCampaign,
+      utmTerm: validatedInput.utmTerm,
+      utmContent: validatedInput.utmContent,
+    };
+
+    // Hacer la petición al webhook de n8n
+    const response = await axios.post(
+      "https://lokl.app.n8n.cloud/webhook/loklnidodeagua",
+      payload
+    );
+
+    return {
+      success: true,
+      message: "Contacto creado exitosamente en Quiiven",
+      data: response.data,
+    };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error("Error en el webhook de Quiiven:", error.response?.data);
+      throw new Error(
+        error.response?.data?.message || "Error al crear el contacto en Quiiven"
+      );
+    }
+    console.error("Error al crear contacto en Quiiven:", error);
+    throw error;
+  }
+};
+
+/**
+ * Servicio para enviar el primer mensaje de WhatsApp con imagen
+ * @param input - Datos del mensaje (nombre, proyecto, email, teléfono)
+ * @returns Respuesta del servicio de chat
+ */
+export const sendFirstMessageService = async (
+  input: WhatsAppMessageInput
+) => {
+  try {
+    // Validar los datos de entrada
+    const validatedInput = WhatsAppMessageInputSchema.parse(input);
+
+    // Preparar el payload
+    const payload = {
+      name: validatedInput.name,
+      projectId: validatedInput.projectId,
+      email: validatedInput.email,
+      numberToSend: validatedInput.numberToSend,
+    };
+
+    // Hacer la petición a la API de chat
+    const response = await axios.post(
+      `${urls.NEW_API_URL}chat/sendMessageWithImage`,
+      payload
+    );
+
+    return {
+      success: true,
+      message: "Mensaje enviado exitosamente",
+      data: response.data,
+    };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error("Error al enviar mensaje de WhatsApp:", error.response?.data);
+      throw new Error(
+        error.response?.data?.message || "Error al enviar el mensaje de WhatsApp"
+      );
+    }
+    console.error("Error al enviar mensaje de WhatsApp:", error);
+    throw error;
+  }
+};

@@ -3,6 +3,8 @@
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
+import "../phone-input-styles.css";
 import {
   Form,
   FormControl,
@@ -48,10 +50,10 @@ export default function Phase2LeadCaptureComponent({
   const isSubmitting = form.formState.isSubmitting;
 
   return (
-    <div className="space-y-6 bg-[#5352F6] rounded-2xl p-8 text-white">
+    <div className="space-y-6 bg-[#5352F6] rounded-2xl p-4 sm:p-6 md:p-8 text-white max-w-full overflow-hidden">
       {/* Header */}
       <div className="text-center">
-        <h3 className="text-2xl font-bold mb-2">¡Un paso más para ver tu proyección!</h3>
+        <h3 className="text-xl sm:text-2xl font-bold mb-2">¡Un paso más para ver tu proyección!</h3>
         <p className="text-white/80 text-sm">
           Déjanos tus datos y accede a tu simulación personalizada
         </p>
@@ -89,7 +91,7 @@ export default function Phase2LeadCaptureComponent({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
           {/* Nombre y Apellido */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <FormField
               control={form.control}
               name="firstName"
@@ -143,15 +145,17 @@ export default function Phase2LeadCaptureComponent({
                   Teléfono
                 </FormLabel>
                 <FormControl>
-                  <PhoneInput
-                    {...field}
-                    defaultCountry="CO"
-                    international
-                    countryCallingCodeEditable={false}
-                    disabled={isSubmitting}
-                    className="flex h-11 w-full rounded-md border border-white/30 bg-white/20 px-3 py-2 text-sm text-white placeholder:text-white/50"
-                    placeholder="Ej: +57 300 123 4567"
-                  />
+                  <div className="w-full max-w-full overflow-hidden">
+                    <PhoneInput
+                      {...field}
+                      defaultCountry="CO"
+                      international
+                      countryCallingCodeEditable={false}
+                      disabled={isSubmitting}
+                      className="phone-input-custom flex h-11 w-full max-w-full rounded-md border border-white/30 bg-white/20 px-3 py-2 text-sm text-white placeholder:text-white/50"
+                      placeholder="Ej: 300 123 4567"
+                    />
+                  </div>
                 </FormControl>
                 {fieldState.error && (
                   <p className="text-sm font-medium text-red-200">
