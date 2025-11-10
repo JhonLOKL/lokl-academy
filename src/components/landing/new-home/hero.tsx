@@ -356,7 +356,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
             aria-label="Video de fondo mostrando proyectos inmobiliarios LOKL"
           >
             <source 
-              src="https://lokl-assets.s3.us-east-1.amazonaws.com/home/hero.mp4" 
+              src="https://lokl-assets.s3.us-east-1.amazonaws.com/home/Hero_Video.mp4" 
               type="video/mp4"
             />
             <track
@@ -410,7 +410,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
           {/* Columna IZQUIERDA: texto */}
           <div className="md:col-span-7">
             <h1 className="leading-[1.1] md:leading-[0.85] font-semibold md:text-6xl text-4xl text-left text-[rgb(255,248,248)] max-w-xl">
-              Invierte en bienes raíces con propósito y construye tu futuro
+              Inversiones inmobiliarias rentables
             </h1>
 
             <p className="mt-6 md:mt-4 max-w-xl text-lg text-white/90"> 
