@@ -343,14 +343,14 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
     >
       {/* Contenedor del Hero con imagen de fondo */}
       <div className="relative min-h-[100dvh] md:min-h-screen overflow-hidden">
-        {/* Video de fondo - Solo desktop */}
+        {/* Video de fondo - Solo desktop con lazy loading optimizado */}
         <div className="absolute inset-0 hidden md:block overflow-hidden">
           <video
             autoPlay
             muted
             loop
             playsInline
-            preload="metadata"
+            preload="none"
             className="absolute inset-0 w-full h-full object-cover"
             poster="https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe_poster.jpg"
             aria-label="Video de fondo mostrando proyectos inmobiliarios LOKL"

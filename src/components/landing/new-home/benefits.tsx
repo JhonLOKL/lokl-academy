@@ -153,8 +153,9 @@ export default function Benefits() {
                         fill
                         sizes="(max-width: 768px) 85vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover transition-transform duration-700"
-                        priority={index < 3}
-                        quality={85}
+                        priority={index < 2}
+                        quality={index < 2 ? 85 : 75}
+                        loading={index < 2 ? "eager" : "lazy"}
                       />
 
                       {/* Overlay gradiente para legibilidad */}

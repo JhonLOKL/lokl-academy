@@ -44,7 +44,7 @@ export default function LazyImage({
           }
         });
       },
-      { rootMargin: "200px" } // Cargar imágenes cuando estén a 200px de entrar en la pantalla
+      { rootMargin: "100px" } // Optimizado: 100px reduce carga anticipada innecesaria
     );
 
     const currentElement = document.getElementById(`lazy-img-${src.replace(/[^a-zA-Z0-9]/g, "-")}`);

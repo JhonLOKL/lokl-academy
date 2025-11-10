@@ -128,21 +128,23 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <head>
-        {/* Preconnect a recursos externos críticos */}
+        {/* Preconnect SOLO a recursos MÁS críticos - optimizado para LCP */}
+        <link rel="preconnect" href="https://lokl-assets.s3.us-east-1.amazonaws.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://lokl-assets.s3.amazonaws.com" />
-        <link rel="preconnect" href="https://lokl-academy.s3.us-east-1.amazonaws.com" />
         
-        {/* DNS Prefetch para analytics y recursos externos */}
+        {/* DNS Prefetch para recursos secundarios - no bloquean renderizado */}
+        <link rel="dns-prefetch" href="https://lokl-academy.s3.us-east-1.amazonaws.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-        <link rel="dns-prefetch" href="https://images.unsplash.com" />
-        <link rel="dns-prefetch" href="https://i.ytimg.com" />
-        <link rel="dns-prefetch" href="https://img.youtube.com" />
         
-        {/* Preload para CSS críticos - ayuda a reducir la latencia de la ruta crítica */}
-        {/* Next.js inyectará automáticamente los CSS críticos, pero podemos optimizar aún más */}
+        {/* Preload hero poster para mejorar LCP */}
+        <link 
+          rel="preload" 
+          as="image" 
+          href="https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe_poster.jpg"
+          fetchPriority="high"
+        />
       </head>
       <body className={inter.className} suppressHydrationWarning>
         {/* Google Tag Manager - Movido a lazyOnload para no bloquear */}
