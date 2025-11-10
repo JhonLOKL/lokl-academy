@@ -19,25 +19,25 @@ export default function Benefits() {
     {
       title: "Impacto y comunidad",
       description:
-        "Invertir con propósito es construir futuro. Invertimos donde el capital también construye comunidad y ecosistemas.",
+        "Inversión inmobiliaria con propósito: proyectos reales que crean valor, empleo y tejido local.",
       ctaText: "Invierte con propósito",
-      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Benefit_5.png",
+      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Benefit-01.png",
       benefit: "Propósito"
     },
     {
-      title: "Accesible desde montos bajos",
+      title: "Accesibilidad",
       description:
-        "La inversión no es un privilegio. Desde $1.000 USD puedes activar impacto real, sin deudas ni barreras.",
+        "Montos flexibles y procesos simples para diversificar tu patrimonio sin barreras.",
       ctaText: "Empieza desde $1.000",
-      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Benefit_1.png",
+      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Benefit-02.png",
       benefit: "Inclusivo"
     },
     {
-      title: "Rentabilidad que transforma",
+      title: "Rentabilidad",
       description:
-        "Ganar sí, pero no a cualquier costo. Rentabilidad del 8% al 15% anual, con impacto real para todos.",
+        "Potencial de retorno con seguimiento transparente y gestión experta del activo.",
       ctaText: "Mira tu retorno",
-      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Benefit_2.png",
+      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Benefit-03.png",
       benefit: "Sostenible"
     },
     {
@@ -46,16 +46,24 @@ export default function Benefits() {
         "La confianza no se promete, se construye. Curaduría experta y seguimiento 100% abierto y en tiempo real.",
       ctaText: "Tu inversión segura",
       image:
-        "https://i.pinimg.com/1200x/d2/bb/76/d2bb767f2db2eec528f23ca43858901e.jpg",
+        "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Benefit-04.png",
       benefit: "Confiable"
     },
     {
       title: "Valor que vuelve a ti",
       description:
-        "Aquí tu inversión también te transforma. Ganas por rentabilidad, impacto y experiencias únicas.",
+        "Inversión inmobiliaria con propósito: proyectos reales que crean valor, empleo y tejido local..",
       ctaText: "Conoce tus beneficios",
-      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Benefit_4.png",
+      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Benefit-05.png",
       benefit: "Integral"
+    },
+    {
+      title: "Educación",
+      description:
+        "Aprende a invertir mejor: test de perfil, guías, cursos y webinars en vivo.",
+      ctaText: "Aprende a invertir",
+      image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Benefit-06.png",
+      benefit: "Formación"
     },
   ];
 
