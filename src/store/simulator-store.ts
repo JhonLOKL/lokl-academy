@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { ProjectCard } from '@/schemas/project-card-schema';
+import { SimulationData as ApiSimulationData } from '@/schemas/simulator-schema';
 
 export interface SimulationData {
   selectedProject: ProjectCard | null;
@@ -12,12 +13,14 @@ export interface SimulationData {
 }
 
 interface SimulatorState extends SimulationData {
+  prefetchedSimulationData: ApiSimulationData | null;
   setSelectedProject: (project: ProjectCard | null) => void;
   setInvestmentAmount: (amount: number) => void;
   setInstallments: (installments: number) => void;
   setAvailableProjects: (projects: ProjectCard[]) => void;
   setLoadingProjects: (loading: boolean) => void;
   setProjectsError: (error: string | null) => void;
+  setPrefetchedSimulationData: (data: any | null) => void;
   resetSimulation: () => void;
   saveSimulationState: () => void; // Guardar estado para persistencia temporal
   hasPersistedState: () => boolean; // Verificar si hay estado guardado
@@ -36,6 +39,7 @@ export const useSimulatorStore = create<SimulatorState>()(
   persist(
     (set, get) => ({
       ...initialState,
+      prefetchedSimulationData: null,
 
       setSelectedProject: (project) => set({ 
         selectedProject: project,
@@ -69,7 +73,9 @@ export const useSimulatorStore = create<SimulatorState>()(
       
       setProjectsError: (error) => set({ projectsError: error, isLoadingProjects: false }),
 
-      resetSimulation: () => set(initialState),
+      setPrefetchedSimulationData: (data) => set({ prefetchedSimulationData: data }),
+
+      resetSimulation: () => set({ ...initialState, prefetchedSimulationData: null }),
 
       saveSimulationState: () => {
         // El estado ya se guarda automáticamente con persist

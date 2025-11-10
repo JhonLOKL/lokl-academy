@@ -428,7 +428,7 @@ function TestimonialCard({ testimonial, onVideoPlayStateChange }: TestimonialCar
   }
 
   return (
-    <div className="flex-shrink-0 w-80 h-80 overflow-hidden group">
+    <div className="flex-shrink-0 w-80 sm:w-[38rem] md:w-[42rem] h-80 overflow-hidden group">
       <Card className="w-full h-full p-5 border border-gray-200 bg-white hover:shadow-xl transition-all duration-300 flex flex-col">
         <div className="flex items-start mb-4">
           <div className="flex items-center gap-3">
