@@ -31,6 +31,14 @@ export const metadata: Metadata = {
     telephone: false,
   },
   metadataBase: new URL("https://academy.lokl.life"),
+  icons: {
+    icon: [
+      { url: '/icon.png', type: 'image/png' }
+    ],
+    apple: [
+      { url: '/apple-icon.png', type: 'image/png' }
+    ],
+  },
   alternates: {
     canonical: "/",
     languages: {
