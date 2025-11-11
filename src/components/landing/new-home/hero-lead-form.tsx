@@ -34,17 +34,10 @@ import { upsertLeadAction } from "@/actions/user-action";
 import { useSimulatorStore } from "@/store/simulator-store";
 import { useUtmStore } from "@/store/utm-store";
 import { useAuthStore } from "@/store/auth-store";
-
-type HeroProject = {
-  id: string;
-  name: string;
-  city: string;
-  unitPrice: number;
-  minInvestmentUnits: number;
-};
+import { ProjectCard } from "@/schemas/project-card-schema";
 
 export interface HeroLeadFormProps {
-  currentProject: HeroProject;
+  currentProject: ProjectCard;
   heroInvestmentAmount: number;
   onBack: () => void;
 }
