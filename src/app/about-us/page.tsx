@@ -7,6 +7,7 @@ import OurTeam from './sections/OurTeam';
 import FrequentlyQs from './sections/FrequentlyQs';
 import Supplierbar from './sections/Supplierbar';
 import StatsBarWithData from './components/StatsBarWithData';
+import MarketingFooter from '@/components/footer/marketing-footer';
 
 // Metadatos para SEO
 export const metadata: Metadata = {
@@ -102,6 +103,8 @@ export default function AboutUsPage() {
       <aside className="mt-16">
         <Supplierbar />
       </aside>
+
+      <MarketingFooter />
     </main>
   );
 }

@@ -6,6 +6,7 @@ import AmbassadorBenefits from './sections/AmbassadorBenefits';
 import AmbassadorHowItsWorks from './sections/AmbassadorHowItsWorks';
 import AmbassadorStepsToRefer from './sections/AmbassadorStepsToRefer';
 import Image from 'next/image';
+import MarketingFooter from '@/components/footer/marketing-footer';
 
 // Metadatos para SEO
 export const metadata: Metadata = {
@@ -128,6 +129,8 @@ export default function Ambassadors() {
           <AmbassadorStepsToRefer />
         </section>
       </article>
+
+      <MarketingFooter />
     </main>
   );
 }
