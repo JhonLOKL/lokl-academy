@@ -1,16 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { Button, Text } from "@/components/design-system";
+import YouTubeLite from "@/components/ui/youtube-lite";
 
 interface LoklInvestmentSectionProps {
   className?: string;
 }
 
 const LoklInvestmentSection: React.FC<LoklInvestmentSectionProps> = ({ className = "" }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  
   return (
     <section className={`relative py-16 ${className}`}>
       {/* Fondo con gradiente sutil */}
@@ -40,30 +39,13 @@ const LoklInvestmentSection: React.FC<LoklInvestmentSectionProps> = ({ className
         <div className="flex flex-col md:flex-row gap-12">
           {/* Columna izquierda: Video */}
           <div className="md:w-1/2 order-2 md:order-1">
-            <div 
-              className="aspect-video relative rounded-xl overflow-hidden shadow-md border border-gray-100"
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-            >
-              <div className={`absolute inset-0 bg-black/10 z-10 flex items-center justify-center transition-opacity duration-300 ${isHovered ? 'opacity-0' : 'opacity-100'}`}>
-                <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-md">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5352F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                  </svg>
-                </div>
-              </div>
-              <iframe
-                className="absolute inset-0 w-full h-full"
-                src="https://www.youtube.com/embed/tuGviQOfMQU?autoplay=0&rel=0"
-                title="LOKL - Descubre cómo crecer tu patrimonio"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </div>
-            <p className="text-xs text-center text-gray-500 mt-3">
-              Conoce más sobre cómo LOKL te ayuda a crecer tu patrimonio
-            </p>
+            <YouTubeLite
+              videoId="tuGviQOfMQU"
+              title="LOKL - Descubre cómo crecer tu patrimonio"
+              showCaption
+              caption="Conoce más sobre cómo LOKL te ayuda a crecer tu patrimonio"
+              className="shadow-md border border-gray-100"
+            />
           </div>
           
           {/* Columna derecha: Puntos clave */}

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import SafeImage from "@/components/ui/safe-image";
+import YouTubeLite from "@/components/ui/youtube-lite";
 import { motion } from "framer-motion";
 import { Paragraph } from "@/components/design-system";
 import { ContentBlock, Author } from "@/lib/blog/schema";
@@ -323,21 +324,18 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
 
         if (provider === "youtube") {
           const embedUrl = toYouTubeEmbed(block.src) || block.src;
+          // Extraer el videoId de la URL de YouTube
+          const videoIdMatch = embedUrl.match(/embed\/([^?]+)/);
+          const videoId = videoIdMatch ? videoIdMatch[1] : "";
+          
           return (
             <div className={`mb-8 ${block.className || ""}`}>
-              <div className="relative aspect-video w-full overflow-hidden rounded-lg">
-                <iframe
-                  src={embedUrl}
-                  title={block.caption || "Video"}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  className="absolute left-0 top-0 h-full w-full border-0"
-                />
-              </div>
-              {block.caption && (
-                <p className="mt-2 text-center text-sm text-[#6D6C6C]">{block.caption}</p>
-              )}
+              <YouTubeLite
+                videoId={videoId}
+                title={block.caption || "Video"}
+                showCaption={!!block.caption}
+                caption={block.caption}
+              />
               {block.transcript && (
                 <details className="mt-4 rounded-lg border border-[#E5E5E5] p-4">
                   <summary className="cursor-pointer font-medium">Transcripción</summary>
