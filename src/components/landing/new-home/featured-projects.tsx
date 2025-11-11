@@ -1067,13 +1067,13 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                                 let url = '';
                                 const projectName = project.name.toLowerCase();
                                 if (projectName.includes('nido')) {
-                                  url = 'https://lokl.life/project/nido-de-agua';
+                                  url = 'https://dashboard.lokl.life/project/nido-de-agua';
                                 } else if (projectName.includes('indie')) {
-                                  url = 'https://lokl.life/project/indie-universe';
+                                  url = 'https://dashboard.lokl.life/project/indie-universe';
                                 } else if (projectName.includes('aldea')) {
-                                  url = 'https://lokl.life/project-signup/aldea';
+                                  url = 'https://dashboard.lokl.life/project-signup/aldea';
                                 } else if (projectName.includes('patito')) {
-                                  url = 'https://lokl.life/project-signup/patito-feo';
+                                  url = 'https://dashboard.lokl.life/project-signup/patito-feo';
                                 }
                                 
                                 if (url) {
