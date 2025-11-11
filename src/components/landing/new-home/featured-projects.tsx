@@ -935,13 +935,13 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                                 let url = '';
                                 const projectName = project.name.toLowerCase();
                                 if (projectName.includes('aldea')) {
-                                  url = 'https://lokl.life/project-signup/aldea';
+                                  url = 'https://dashboard.lokl.life/project-signup/aldea';
                                 } else if (projectName.includes('patito')) {
-                                  url = 'https://lokl.life/project-signup/patito-feo';
+                                  url = 'https://dashboard.lokl.life/project-signup/patito-feo';
                                 }
                                 
                                 if (url) {
-                                  window.open(url, '_blank');
+                                  window.open(url, '_self');
                                 }
                               }}
                             >
