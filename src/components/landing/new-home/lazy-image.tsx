@@ -96,6 +96,8 @@ export default function LazyImage({
           loading={priority ? "eager" : "lazy"}
           priority={priority}
           fetchPriority={fetchPriority}
+          quality={priority ? 85 : 75}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
         />
       )}
     </div>
