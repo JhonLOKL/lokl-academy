@@ -40,7 +40,7 @@ export default function HowItWorks() {
       cardStyle: 'white', // Tarjeta blanca
       badge: 'Fácil y rápido',
       badgeIcon: Zap,
-      href: '/register',
+      href: 'https://dashboard.lokl.life/register',
       target: '_self'
     },
     {
