@@ -1,6 +1,7 @@
 "use client";
 
 import { Paragraph, Text, Heading } from "@/components/design-system";
+import YouTubeLite from "@/components/ui/youtube-lite";
 
 interface WhatIsLoklProps {
   isVisible: boolean;
@@ -42,18 +43,11 @@ export default function WhatIsLokl({ isVisible }: WhatIsLoklProps) {
 
         {/* Video Section */}
         <div className="mb-12 max-w-4xl mx-auto">
-          <div className="relative group">
-            <div className="relative w-full aspect-video bg-gray-900 rounded-2xl overflow-hidden shadow-2xl border-2 border-primary/20">
-              <iframe
-                className="absolute inset-0 w-full h-full"
-                src="https://www.youtube.com/embed/tuGviQOfMQU?controls=1&modestbranding=1&rel=0&showinfo=0"
-                title="¿Cómo funciona LOKL?"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-              ></iframe>
-            </div>
-          </div>
+          <YouTubeLite
+            videoId="tuGviQOfMQU"
+            title="¿Cómo funciona LOKL?"
+            className="shadow-2xl border-2 border-primary/20"
+          />
         </div>
 
         {/* Description */}

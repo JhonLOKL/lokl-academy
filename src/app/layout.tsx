@@ -155,6 +155,15 @@ export default function RootLayout({
           fetchPriority="high"
           media="(min-width: 768px)"
         />
+        
+        {/* Preload de fuente crítica para mejorar FCP */}
+        <link
+          rel="preload"
+          href="https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hiA.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
       </head>
       <body className={inter.className} suppressHydrationWarning>
         {/* Google Tag Manager - Movido a lazyOnload para no bloquear */}
