@@ -13,15 +13,15 @@ export function SiteNavbar() {
   const router = useRouter();
 
   const goToLogin = () => {
-    router.push("/login");
+    router.push("https://dashboard.lokl.life/login");
   };
 
   const goToRegister = () => {
-    router.push("/register");
+    router.push("https://dashboard.lokl.life/register");
   };
 
   const goToProfile = () => {
-    router.push("https://lokl.life/dashboard/perfil");
+    router.push("https://dashboard.lokl.life/dashboard/perfil");
   };
   
   return (
