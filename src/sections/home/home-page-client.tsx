@@ -7,6 +7,7 @@ import StatsSection from "./stats-section";
 import WhatIsLokl from "@/components/home/WhatIsLokl";
 import { useEffect } from "react";
 import { getProjectCardsAction } from "@/actions/project-actions";
+import { FloatingWhatsApp } from "react-floating-whatsapp";
 
 // 🚀 OPTIMIZACIÓN CRÍTICA: Lazy load del Simulador con IntersectionObserver
 // Reduce ~1500-2000ms de TBT cargando solo cuando el usuario va a verlo
@@ -103,6 +104,19 @@ export default function HomePageClient() {
       <section className="w-full">
         <FinalCTASection />
       </section>
+
+      <FloatingWhatsApp
+        phoneNumber="573017328112"
+        accountName="Laura"
+        allowEsc
+        allowClickAway
+        notification
+        notificationSound
+        avatar="/images/home/foto-wpp-lokl.png"
+        statusMessage="En línea"
+        chatMessage="Hola! Soy Laura 😊 Tu asesora en inversiones inmobiliarias. ¿Cuál es tu nombre?"
+        placeholder="Escríbenos un mensaje"
+      />
     </main>
   );
 }
