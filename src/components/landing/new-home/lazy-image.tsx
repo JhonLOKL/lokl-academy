@@ -10,6 +10,7 @@ interface LazyImageProps {
   width?: number;
   height?: number;
   priority?: boolean;
+  fetchPriority?: "high" | "low" | "auto";
   fallbackSrc?: string;
   onLoad?: () => void;
 }
@@ -21,6 +22,7 @@ export default function LazyImage({
   width,
   height,
   priority = false,
+  fetchPriority = "auto",
   fallbackSrc = "https://via.placeholder.com/800x600?text=Imagen+no+disponible",
   onLoad,
 }: LazyImageProps) {
@@ -93,6 +95,7 @@ export default function LazyImage({
           onError={handleError}
           loading={priority ? "eager" : "lazy"}
           priority={priority}
+          fetchPriority={fetchPriority}
         />
       )}
     </div>

@@ -235,6 +235,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
                     alt={`Hero móvil ${index + 1} - LOKL`}
                     className="absolute inset-0 h-full w-full object-cover"
                     priority={index === 0}
+                    fetchPriority={index === 0 ? "high" : "auto"}
                     width={1920}
                     height={1080}
                   />

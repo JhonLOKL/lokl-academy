@@ -138,12 +138,22 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         
-        {/* Preload hero poster para mejorar LCP */}
+        {/* Preload imagen LCP del hero móvil - CRÍTICO para LCP */}
+        <link 
+          rel="preload" 
+          as="image" 
+          href="https://lokl-assets.s3.us-east-1.amazonaws.com/home/Hero-indie-movil.png"
+          fetchPriority="high"
+          media="(max-width: 767px)"
+        />
+        
+        {/* Preload hero poster desktop para mejorar LCP */}
         <link 
           rel="preload" 
           as="image" 
           href="https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe_poster.jpg"
           fetchPriority="high"
+          media="(min-width: 768px)"
         />
       </head>
       <body className={inter.className} suppressHydrationWarning>
