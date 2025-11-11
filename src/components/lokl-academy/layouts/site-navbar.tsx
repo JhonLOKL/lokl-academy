@@ -113,7 +113,7 @@ export function SiteNavbar() {
           <div className="flex items-center gap-4">
             {/* Botón Dashboard */}
             <Link 
-              href="https://lokl.life/dashboard/income"
+              href="https://dashboard.lokl.life/dashboard/income"
               className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-[#F3F3F3] transition-colors"
             >
               <ChartBarDecreasing className="w-5 h-5 text-[#1C274C]" />

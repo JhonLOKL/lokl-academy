@@ -1077,7 +1077,7 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                                 }
                                 
                                 if (url) {
-                                  window.open(url, '_blank');
+                                  window.open(url, '_self');
                                 }
                               }}
                             >
