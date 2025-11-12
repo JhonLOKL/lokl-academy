@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import MenuTabs from '@/components/nido-de-agua/MenuTabs';
 import { scrollToSection } from '@/helpers/functions';
@@ -14,9 +14,15 @@ import { Timeline } from '@/components/nido-de-agua/Timeline';
 import { Insights } from '@/components/nido-de-agua/Insights';
 import { Simulator } from '@/components/nido-de-agua/Simulator';
 import InvestorProfiles from '@/components/nido-de-agua/InvestorProfiles';
+import PromoBanner from '@/components/shared/PromoBanner';
+import { getNidoDeAguaHomeInfoAction } from '@/actions/project-actions';
+import type { ProjectHomePageInfo } from '@/services/projectService';
 
 export default function NidoDeAgua() {
   const searchParams = useSearchParams();
+  const [homeInfo, setHomeInfo] = useState<ProjectHomePageInfo | null>(null);
+  const [homeInfoError, setHomeInfoError] = useState<string | null>(null);
+  const [homeInfoLoading, setHomeInfoLoading] = useState(true);
 
   // Código para hacer scroll al inicio cuando cambia la página
   useEffect(() => {
@@ -42,6 +48,47 @@ export default function NidoDeAgua() {
     }
   }, []);
 
+  // Obtener información del home del proyecto
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchHomeInfo = async () => {
+      try {
+        const result = await getNidoDeAguaHomeInfoAction();
+
+        if (!isMounted) return;
+
+        if (result.success) {
+          setHomeInfo(result.data);
+          setHomeInfoError(null);
+        } else {
+          setHomeInfo(null);
+          setHomeInfoError(result.error);
+        }
+      } catch (error) {
+        if (!isMounted) return;
+
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : 'Ocurrió un error inesperado al cargar la información del proyecto.';
+
+        setHomeInfo(null);
+        setHomeInfoError(errorMessage);
+      } finally {
+        if (isMounted) {
+          setHomeInfoLoading(false);
+        }
+      }
+    };
+
+    fetchHomeInfo();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Obtener y guardar utm_source si existe
   useEffect(() => {
     const pageOrigin = searchParams.get('utm_source');
@@ -52,11 +99,20 @@ export default function NidoDeAgua() {
 
   return (
     <>
+      <PromoBanner
+        title="¡Disfruta de beneficios exclusivos siendo inversionista!"
+        subtitle="y crece como socio invirtiendo en proyectos con LOKL"
+        ctaLabel="Invertir ahora"
+        targetId="insights"
+        ctaHref="https://dashboard.lokl.life/register?redirect_to=/checkout/invest?"
+        countdownLabel="Aumento del Unit en"
+        deadline="2025-12-01T00:00:00-05:00"
+      />
       <section
         id="NidoTop"
-        className="flex flex-col items-start container mx-auto xl:max-w-7xl pt-52 pb-40 space-y-12 lg:space-y-16 px-4"
+        className="flex flex-col items-start container mx-auto xl:max-w-7xl pt-16 pb-40 space-y-12 lg:space-y-16 px-4"
       >
-        <Header />
+        <Header homeInfo={homeInfo} isLoading={homeInfoLoading} error={homeInfoError} />
 
         <div className="w-full lg:flex justify-center" id="simulator">
           <Simulator />
@@ -94,7 +150,13 @@ export default function NidoDeAgua() {
               <InvestorProfiles />
             </div>
 
-            <div className="my-6 w-full hidden md:block" id="insights">
+            <div
+              id="insights"
+              className="-mt-40 h-px w-px opacity-0 pointer-events-none"
+              aria-hidden="true"
+            />
+
+            <div className="my-6 w-full hidden md:block">
               <Insights />
             </div>
           </div>

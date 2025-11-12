@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import { Star, Play, Eye, Calculator, Info, X, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { useAuthStore } from '@/store/auth-store';
+import type { ProjectHomePageInfo } from '@/services/projectService';
 
-// Datos hardcodeados
-const PROJECT_DATA = {
+// Datos base por defecto
+const DEFAULT_PROJECT_DATA = {
   tag: "Operando",
   name: "Indie Universe",
   location: "Laureles, Medellín",
@@ -56,22 +58,495 @@ const PROJECT_DATA = {
   },
 };
 
+const INVEST_URL = "https://dashboard.lokl.life/checkout/invest?projectId=c3f50b31-1e1b-4ebe-881e-0d390458f471";
+const REGISTER_REDIRECT_URL = "https://dashboard.lokl.life/register?redirect_to=/checkout/invest?projectId=c3f50b31-1e1b-4ebe-881e-0d390458f471&";
+
 const numberFormatter = new Intl.NumberFormat("es-CO", {
   minimumFractionDigits: 0,
   maximumFractionDigits: 0,
 });
 
-const formatNumber = (value: number) => numberFormatter.format(value);
+const currencyFormatter = new Intl.NumberFormat("es-CO", {
+  style: "currency",
+  currency: "COP",
+  maximumFractionDigits: 0,
+});
 
-export default function Header() {
+const percentageFormatter = new Intl.NumberFormat("es-CO", {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 1,
+});
+
+const formatNumber = (value: number) => numberFormatter.format(value);
+const toPercentValue = (value: number) => (value > 1 ? value : value * 100);
+
+type ProjectData = typeof DEFAULT_PROJECT_DATA;
+
+type HeaderProps = {
+  homeInfo?: ProjectHomePageInfo | null;
+  isLoading?: boolean;
+  error?: string | null;
+};
+
+type AnyRecord = Record<string, unknown>;
+
+const cloneProjectData = (): ProjectData => ({
+  ...DEFAULT_PROJECT_DATA,
+  availableSlots: { ...DEFAULT_PROJECT_DATA.availableSlots },
+  features: { ...DEFAULT_PROJECT_DATA.features },
+  stages: DEFAULT_PROJECT_DATA.stages.map((stage) => ({ ...stage })),
+  images: {
+    hero: DEFAULT_PROJECT_DATA.images.hero,
+    preview: DEFAULT_PROJECT_DATA.images.preview,
+    gallery: [...DEFAULT_PROJECT_DATA.images.gallery],
+  },
+});
+
+const ensureRecord = (value: unknown): AnyRecord | null =>
+  value && typeof value === "object" && !Array.isArray(value)
+    ? (value as AnyRecord)
+    : null;
+
+const ensureString = (value: unknown): string | null => {
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    return trimmed.length > 0 ? trimmed : null;
+  }
+
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return `${value}`;
+  }
+
+  return null;
+};
+
+const ensureNumber = (value: unknown): number | null => {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const normalised = value.replace(/[^0-9.,-]/g, "").replace(/,/g, ".");
+    if (normalised.length === 0) {
+      return null;
+    }
+
+    const parsed = Number(normalised);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  return null;
+};
+
+const formatCurrencyValue = (value: unknown, fallback: string): string => {
+  const numericValue = ensureNumber(value);
+  if (numericValue !== null) {
+    return currencyFormatter.format(numericValue);
+  }
+
+  const stringValue = ensureString(value);
+  return stringValue ?? fallback;
+};
+
+const formatSlotValue = (value: unknown, fallback: string): string => {
+  const numericValue = ensureNumber(value);
+  if (numericValue !== null) {
+    return formatNumber(Math.max(Math.round(numericValue), 0));
+  }
+
+  const stringValue = ensureString(value);
+  return stringValue ?? fallback;
+};
+
+const formatRentRange = (
+  minRent: unknown,
+  maxRent: unknown,
+  fallback: string
+): string => {
+  const minValue = ensureNumber(minRent);
+  const maxValue = ensureNumber(maxRent);
+
+  if (minValue !== null && maxValue !== null) {
+    const minPercent = percentageFormatter.format(toPercentValue(minValue));
+    const maxPercent = percentageFormatter.format(toPercentValue(maxValue));
+    return `${minPercent} - ${maxPercent}% E.A`;
+  }
+
+  if (minValue !== null) {
+    const percent = percentageFormatter.format(toPercentValue(minValue));
+    return `${percent}% E.A`;
+  }
+
+  if (maxValue !== null) {
+    const percent = percentageFormatter.format(toPercentValue(maxValue));
+    return `${percent}% E.A`;
+  }
+
+  return fallback;
+};
+
+const ensureStringArray = (value: unknown): string[] | null => {
+  if (Array.isArray(value)) {
+    const arr = value
+      .map((item) => ensureString(item))
+      .filter((item): item is string => typeof item === "string" && item.length > 0);
+
+    return arr.length > 0 ? arr : null;
+  }
+
+  const single = ensureString(value);
+  return single ? [single] : null;
+};
+
+const pickString = (source: AnyRecord, keys: string[]): string | null => {
+  for (const key of keys) {
+    const value = ensureString(source[key]);
+    if (value) {
+      return value;
+    }
+  }
+
+  return null;
+};
+
+const pickNumber = (source: AnyRecord, keys: string[]): number | null => {
+  for (const key of keys) {
+    const value = ensureNumber(source[key]);
+    if (value !== null) {
+      return value;
+    }
+  }
+
+  return null;
+};
+
+const pickRecord = (source: AnyRecord, keys: string[]): AnyRecord | null => {
+  for (const key of keys) {
+    const record = ensureRecord(source[key]);
+    if (record) {
+      return record;
+    }
+  }
+
+  return null;
+};
+
+const pickRecordArray = (source: AnyRecord, keys: string[]): AnyRecord[] | null => {
+  for (const key of keys) {
+    const value = source[key];
+    if (Array.isArray(value)) {
+      const records = value
+        .map((item) => ensureRecord(item))
+        .filter((item): item is AnyRecord => Boolean(item));
+
+      if (records.length > 0) {
+        return records;
+      }
+    }
+  }
+
+  return null;
+};
+
+const pickStringArray = (source: AnyRecord, keys: string[]): string[] | null => {
+  for (const key of keys) {
+    const arr = ensureStringArray(source[key]);
+    if (arr && arr.length > 0) {
+      return arr;
+    }
+  }
+
+  return null;
+};
+
+const flattenHomeInfo = (data: ProjectHomePageInfo): AnyRecord => {
+  const base = { ...data } as AnyRecord;
+
+  Object.values(data).forEach((value) => {
+    const record = ensureRecord(value);
+    if (record) {
+      Object.entries(record).forEach(([key, nestedValue]) => {
+        if (base[key] === undefined) {
+          base[key] = nestedValue;
+        }
+      });
+    }
+  });
+
+  return base;
+};
+
+const mapHomeInfoToProjectData = (
+  homeInfo?: ProjectHomePageInfo | null
+): ProjectData => {
+  if (!homeInfo || typeof homeInfo !== "object") {
+    return cloneProjectData();
+  }
+
+  const flattened = flattenHomeInfo(homeInfo);
+  const projectData = cloneProjectData();
+
+  projectData.tag =
+    pickString(flattened, ["tag", "projectTag", "status"]) ?? projectData.tag;
+
+  projectData.name =
+    pickString(flattened, ["name", "projectName", "title"]) ?? projectData.name;
+
+  projectData.location =
+    pickString(flattened, ["location", "projectLocation", "city"]) ??
+    projectData.location;
+
+  const rating = pickNumber(flattened, ["rating", "projectRating", "score"]);
+  if (rating !== null) {
+    projectData.rating = Number(rating.toFixed(1));
+  }
+
+  projectData.estimatedReturn =
+    pickString(flattened, ["estimatedReturn", "expectedReturn", "returnRange"]) ??
+    projectData.estimatedReturn;
+
+  projectData.valuePerUnit =
+    pickString(flattened, ["valuePerUnit", "unitValue", "unitPrice"]) ??
+    projectData.valuePerUnit;
+
+  const totalInvestors = pickNumber(flattened, [
+    "totalInvestors",
+    "investors",
+    "investorsCount",
+  ]);
+  if (totalInvestors !== null) {
+    projectData.totalInvestors = Math.max(Math.round(totalInvestors), 0);
+  }
+
+  projectData.minInvestment =
+    pickString(flattened, [
+      "minInvestment",
+      "minimumInvestment",
+      "investmentFrom",
+      "minAmountInvestment",
+    ]) ?? projectData.minInvestment;
+
+  projectData.minInvestmentPeriod =
+    pickString(flattened, [
+      "minInvestmentPeriod",
+      "investmentPeriod",
+      "paymentFrequency",
+    ]) ?? projectData.minInvestmentPeriod;
+
+  projectData.validUntil =
+    pickString(flattened, ["validUntil", "offerValidUntil", "deadline"]) ??
+    projectData.validUntil;
+
+  projectData.totalInvestment =
+    pickString(flattened, ["totalInvestment", "fundraisingGoal", "totalRaise"]) ??
+    projectData.totalInvestment;
+
+  const viewers = pickNumber(flattened, ["viewers", "liveViewers", "currentViewers"]);
+  if (viewers !== null) {
+    projectData.viewers = Math.max(Math.round(viewers), 0);
+  }
+
+  projectData.videoUrl =
+    pickString(flattened, ["videoUrl", "video", "videoSrc"]) ?? projectData.videoUrl;
+
+  projectData.description =
+    pickString(flattened, ["description", "summary", "shortDescription"]) ??
+    projectData.description;
+
+  projectData.videoQuote =
+    pickString(flattened, ["videoQuote", "quote", "highlightQuote"]) ??
+    projectData.videoQuote;
+
+  const featuresRecord = pickRecord(flattened, [
+    "features",
+    "projectFeatures",
+    "highlights",
+  ]);
+  if (featuresRecord) {
+    projectData.features = {
+      ...projectData.features,
+      area:
+        pickString(featuresRecord, ["area", "surface", "areaLabel"]) ??
+        projectData.features.area,
+      cabins:
+        pickString(featuresRecord, ["cabins", "units", "rooms"]) ??
+        projectData.features.cabins,
+      trees:
+        pickString(featuresRecord, ["trees", "thirdHighlight", "highlight"]) ??
+        projectData.features.trees,
+    };
+  } else {
+    const area = pickString(flattened, ["area", "surface"]);
+    if (area) {
+      projectData.features.area = area;
+    }
+
+    const cabins = pickString(flattened, ["cabins", "units"]);
+    if (cabins) {
+      projectData.features.cabins = cabins;
+    }
+
+    const trees = pickString(flattened, ["trees", "highlight"]);
+    if (trees) {
+      projectData.features.trees = trees;
+    }
+  }
+
+  const slotsRecord = pickRecord(flattened, ["availableSlots", "slots", "quota"]);
+  if (slotsRecord) {
+    projectData.availableSlots = {
+      current:
+        pickString(slotsRecord, [
+          "current",
+          "available",
+          "currentSlots",
+          "availableSlots",
+          "availableSpots",
+        ]) ?? projectData.availableSlots.current,
+      total:
+        pickString(slotsRecord, ["total", "max", "totalSlots", "totalSpots"]) ??
+        projectData.availableSlots.total,
+    };
+  } else {
+    const currentSlots =
+      pickString(flattened, [
+        "availableSlots",
+        "currentSlots",
+        "available",
+        "availableSpots",
+      ]) ??
+      projectData.availableSlots.current;
+    const totalSlots =
+      pickString(flattened, ["totalSlots", "quotaTotal", "totalSpots"]) ??
+      projectData.availableSlots.total;
+
+    projectData.availableSlots = {
+      current: currentSlots,
+      total: totalSlots,
+    };
+  }
+
+  projectData.minInvestment = formatCurrencyValue(
+    flattened["minAmountInvestment"] ?? flattened["minInvestment"],
+    projectData.minInvestment
+  );
+
+  projectData.valuePerUnit = formatCurrencyValue(
+    flattened["unitPrice"] ?? flattened["valuePerUnit"],
+    projectData.valuePerUnit
+  );
+
+  projectData.totalInvestment = formatCurrencyValue(
+    flattened["totalInvestment"],
+    projectData.totalInvestment
+  );
+
+  projectData.availableSlots.current = formatSlotValue(
+    flattened["availableSpots"],
+    projectData.availableSlots.current
+  );
+
+  projectData.availableSlots.total = formatSlotValue(
+    flattened["totalSpots"],
+    projectData.availableSlots.total
+  );
+
+  projectData.estimatedReturn = formatRentRange(
+    flattened["minRent"],
+    flattened["maxRent"],
+    projectData.estimatedReturn
+  );
+
+  const imagesRecord = pickRecord(flattened, ["images", "media", "projectImages"]);
+  if (imagesRecord) {
+    projectData.images = {
+      hero:
+        pickString(imagesRecord, ["hero", "heroImage", "main", "cover"]) ??
+        projectData.images.hero,
+      preview:
+        pickString(imagesRecord, ["preview", "previewImage", "secondary"]) ??
+        projectData.images.preview,
+      gallery:
+        pickStringArray(imagesRecord, ["gallery", "galleryImages", "carousel"]) ??
+        projectData.images.gallery,
+    };
+  } else {
+    const hero = pickString(flattened, ["hero", "heroImage", "heroImageUrl"]);
+    if (hero) {
+      projectData.images.hero = hero;
+    }
+
+    const preview = pickString(flattened, ["preview", "previewImage", "thumbnail"]);
+    if (preview) {
+      projectData.images.preview = preview;
+    }
+
+    const gallery =
+      pickStringArray(flattened, ["gallery", "galleryImages", "carousel"]) ??
+      pickStringArray(flattened, ["mediaGallery"]);
+    if (gallery && gallery.length > 0) {
+      projectData.images.gallery = gallery;
+    }
+  }
+
+  const rawStages = pickRecordArray(flattened, [
+    "stages",
+    "pricingStages",
+    "priceStages",
+  ]);
+  if (rawStages) {
+    const mappedStages = rawStages
+      .map((stageRecord, index) => {
+        const month =
+          pickString(stageRecord, ["month", "label", "name"]) ??
+          projectData.stages[index]?.month ??
+          `Etapa ${index + 1}`;
+        const price =
+          pickString(stageRecord, ["price", "unitPrice", "value"]) ??
+          projectData.stages[index]?.price ??
+          "";
+        const validUntil =
+          pickString(stageRecord, ["validUntil", "until", "deadline"]) ??
+          projectData.stages[index]?.validUntil ??
+          "";
+
+        if (!month && !price && !validUntil) {
+          return null;
+        }
+
+        return {
+          month,
+          price,
+          validUntil,
+        };
+      })
+      .filter((stage): stage is ProjectData["stages"][number] => Boolean(stage));
+
+    if (mappedStages.length > 0) {
+      projectData.stages = mappedStages;
+    }
+  }
+
+  return projectData;
+};
+
+export default function Header({
+  homeInfo,
+  isLoading = false,
+  error,
+}: HeaderProps) {
+  const { token } = useAuthStore();
   const [videoActive, setVideoActive] = useState<"desktop" | "mobile" | null>(null);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
   const [showSecondaryMarketInfo, setShowSecondaryMarketInfo] = useState(false);
-
-  const remainingGallery =
-    Math.max(PROJECT_DATA.images.gallery.length - 1, 0);
+  const projectData = useMemo(
+    () => mapHomeInfoToProjectData(homeInfo),
+    [homeInfo]
+  );
+  const galleryLength = projectData.images.gallery.length;
+  const remainingGallery = Math.max(galleryLength - 1, 0);
 
   const handleGoToSimulator = () => {
     const simulator = document.getElementById('simulator');
@@ -81,8 +556,8 @@ export default function Header() {
   };
 
   const handleGoToBuy = () => {
-    // Redirigir a checkout o registro
-    window.location.href = '/register';
+    const targetUrl = token ? INVEST_URL : REGISTER_REDIRECT_URL;
+    window.location.href = targetUrl;
   };
 
   const openGallery = (index = 0) => {
@@ -95,15 +570,19 @@ export default function Header() {
   };
 
   const handlePrev = () => {
+    if (galleryLength === 0) return;
+
     setActiveImage((prev) =>
-      (prev - 1 + PROJECT_DATA.images.gallery.length) %
-      PROJECT_DATA.images.gallery.length
+      (prev - 1 + galleryLength) %
+      galleryLength
     );
   };
 
   const handleNext = () => {
+    if (galleryLength === 0) return;
+
     setActiveImage((prev) =>
-      (prev + 1) % PROJECT_DATA.images.gallery.length
+      (prev + 1) % galleryLength
     );
   };
 
@@ -111,20 +590,28 @@ export default function Header() {
     <header className="w-full flex flex-col items-start space-y-8">
       {/* Tag de estado */}
       <div className="flex bg-[#00F0B5] text-[#3533FF] font-medium px-3 py-2 rounded">
-        <div className="ml-2">{PROJECT_DATA.tag}</div>
+        <div className="ml-2">{projectData.tag}</div>
       </div>
+
+      {isLoading && (
+        <div className="w-full rounded-lg bg-blue-50 text-blue-700 text-sm p-3">
+          Cargando información actualizada del proyecto...
+        </div>
+      )}
+
+      {/* Mensaje de error omitido para evitar mostrar aviso adicional */}
 
       {/* Título y métricas (Desktop) */}
       <div className="lg:w-3/5 flex flex-col lg:flex-row justify-between items-center space-x-10">
         <div>
-          <h2 className="font-black text-3xl md:text-4xl mb-2">{PROJECT_DATA.name}</h2>
+          <h2 className="font-black text-3xl md:text-4xl mb-2">{projectData.name}</h2>
           <div className="flex items-center font-medium gap-2 text-sm md:text-base">
             <p>
-              <span className="font-extrabold">{PROJECT_DATA.location}</span>
+              <span className="font-extrabold">{projectData.location}</span>
             </p>
             <div className="flex items-center gap-1">
               <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-              <p>{PROJECT_DATA.rating}</p>
+              <p>{projectData.rating}</p>
             </div>
           </div>
         </div>
@@ -133,7 +620,7 @@ export default function Header() {
         <div className="hidden lg:flex justify-between items-end gap-8">
           <div className="text-center relative">
             <div className="flex items-center gap-1 justify-center">
-              <p className="text-2xl font-extrabold">{PROJECT_DATA.estimatedReturn}</p>
+              <p className="text-2xl font-extrabold">{projectData.estimatedReturn}</p>
               <button
                 onClick={() => setShowDisclaimer(!showDisclaimer)}
                 className="cursor-pointer"
@@ -145,12 +632,12 @@ export default function Header() {
           </div>
 
           <div className="text-center">
-            <p className="font-black text-xl">{PROJECT_DATA.valuePerUnit}</p>
+            <p className="font-black text-xl">{projectData.valuePerUnit}</p>
             <p className="text-sm">Valor $ por Unit</p>
           </div>
 
           <div className="text-center">
-            <p className="font-black text-xl">{formatNumber(PROJECT_DATA.totalInvestors)}</p>
+            <p className="font-black text-xl">{formatNumber(projectData.totalInvestors)}</p>
             <p className="text-sm">Inversionistas</p>
           </div>
         </div>
@@ -165,7 +652,7 @@ export default function Header() {
               <iframe
                 width="100%"
                 height="100%"
-                src={PROJECT_DATA.videoUrl}
+                src={projectData.videoUrl}
                 title="YouTube video player"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 className="rounded-lg"
@@ -173,8 +660,8 @@ export default function Header() {
             ) : (
               <>
                 <Image
-                  src={PROJECT_DATA.images.hero}
-                  alt={`Imagen principal del proyecto ${PROJECT_DATA.name}`}
+                  src={projectData.images.hero}
+                  alt={`Imagen principal del proyecto ${projectData.name}`}
                   fill
                   sizes="(max-width: 1024px) 100vw, 60vw"
                   className="object-cover"
@@ -185,7 +672,7 @@ export default function Header() {
                   onClick={() => setVideoActive('desktop')}
                 >
                   <div className="text-xl">
-                    {PROJECT_DATA.videoQuote}
+                    {projectData.videoQuote}
                   </div>
 
                   <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
@@ -195,9 +682,9 @@ export default function Header() {
                   </div>
 
                   <div className="flex items-center space-x-10">
-                    <div className="text-lg">{PROJECT_DATA.features.area}</div>
-                    <div className="text-lg">{PROJECT_DATA.features.cabins}</div>
-                    <div className="text-lg">{PROJECT_DATA.features.trees}</div>
+                    <div className="text-lg">{projectData.features.area}</div>
+                    <div className="text-lg">{projectData.features.cabins}</div>
+                    <div className="text-lg">{projectData.features.trees}</div>
                   </div>
                 </div>
               </>
@@ -211,8 +698,8 @@ export default function Header() {
               className="w-[68%] h-32 relative rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5452F6]"
             >
               <Image
-                src={PROJECT_DATA.images.preview}
-                alt={`Vista previa del proyecto ${PROJECT_DATA.name}`}
+                src={projectData.images.preview}
+                alt={`Vista previa del proyecto ${projectData.name}`}
                 fill
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 className="object-cover"
@@ -223,10 +710,10 @@ export default function Header() {
               onClick={() => openGallery(1)}
               className="w-[32%] relative cursor-pointer rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5452F6]"
             >
-              {PROJECT_DATA.images.gallery.length > 0 && (
+              {projectData.images.gallery.length > 0 && (
                 <Image
-                  src={PROJECT_DATA.images.gallery[0]}
-                  alt={`Galería del proyecto ${PROJECT_DATA.name}`}
+                  src={projectData.images.gallery[0]}
+                  alt={`Galería del proyecto ${projectData.name}`}
                   fill
                   sizes="(max-width: 1024px) 100vw, 20vw"
                   className="object-cover"
@@ -252,7 +739,7 @@ export default function Header() {
         <Tabs defaultValue="investment" className="hidden lg:block lg:w-2/5 space-y-7">
           <div>
             <h2 className="font-black text-xl mb-3">¿Qué es Indie Universe?</h2>
-            <p className="text-[#5B5B5B]">{PROJECT_DATA.description}</p>
+            <p className="text-[#5B5B5B]">{projectData.description}</p>
           </div>
 
           <div>
@@ -260,10 +747,10 @@ export default function Header() {
             <div className="flex justify-between items-start relative">
               <div>
                 <div className="font-black text-4xl">
-                  {PROJECT_DATA.minInvestment} <span className="text-lg">{PROJECT_DATA.minInvestmentPeriod}</span>
+                  {projectData.minInvestment} <span className="text-lg">{projectData.minInvestmentPeriod}</span>
                 </div>
                 <div className="text-[#5452F6] font-light underline text-sm mt-1">
-                  Válido hasta el {PROJECT_DATA.validUntil}
+                  Válido hasta el {projectData.validUntil}
                 </div>
               </div>
               <button
@@ -300,14 +787,14 @@ export default function Header() {
 
           <TabsContent value="investment" className="space-y-4">
             <div className="font-extrabold text-lg">
-              {PROJECT_DATA.totalInvestment}
+              {projectData.totalInvestment}
             </div>
             <div className="flex items-baseline gap-2">
               <span className="font-black text-6xl text-gray-800">
-                {PROJECT_DATA.availableSlots.current}
+                {projectData.availableSlots.current}
               </span>
               <span className="font-black text-4xl text-gray-400">
-                /{PROJECT_DATA.availableSlots.total}
+                /{projectData.availableSlots.total}
               </span>
               <p className="text-sm text-gray-600 ml-auto flex-shrink-0 max-w-[60%]">
                 Cupos disponibles antes de que suba el precio por unit. ¡No te quedes por fuera!
@@ -316,7 +803,7 @@ export default function Header() {
           </TabsContent>
 
           <TabsContent value="stages" className="flex space-x-4">
-            {PROJECT_DATA.stages.map((stage, index) => (
+            {projectData.stages.map((stage, index) => (
               <div key={index} className="bg-[#F6F6F6] py-3 px-4 rounded">
                 <div className="font-roboto text-sm font-extrabold mb-1">{stage.month}</div>
                 <div className="font-roboto text-sm mb-1">{stage.price}</div>
@@ -335,7 +822,7 @@ export default function Header() {
           <div className="flex gap-2 items-center">
             <Eye className="w-5 h-5 text-[#5452F6]" />
             <p className="text-[#3533FF] font-medium text-lg">
-              {PROJECT_DATA.viewers} personas viendo este proyecto
+              {projectData.viewers} personas viendo este proyecto
             </p>
           </div>
         </Tabs>
@@ -348,7 +835,7 @@ export default function Header() {
             <iframe
               width="100%"
               height="100%"
-              src={PROJECT_DATA.videoUrl}
+              src={projectData.videoUrl}
               title="YouTube video player"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               className="rounded-lg"
@@ -356,8 +843,8 @@ export default function Header() {
           ) : (
             <>
               <Image
-                src={PROJECT_DATA.images.hero}
-                alt={`Imagen principal del proyecto ${PROJECT_DATA.name}`}
+                src={projectData.images.hero}
+                alt={`Imagen principal del proyecto ${projectData.name}`}
                 fill
                 sizes="100vw"
                 className="object-cover"
@@ -368,7 +855,7 @@ export default function Header() {
                 onClick={() => setVideoActive('mobile')}
               >
                 <div className="text-lg">
-                  {PROJECT_DATA.videoQuote}
+                  {projectData.videoQuote}
                 </div>
 
                 <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
@@ -378,9 +865,9 @@ export default function Header() {
                 </div>
 
                 <div className="flex items-center justify-between text-sm">
-                  <div>{PROJECT_DATA.features.area}</div>
-                  <div>{PROJECT_DATA.features.cabins}</div>
-                  <div>{PROJECT_DATA.features.trees}</div>
+                  <div>{projectData.features.area}</div>
+                  <div>{projectData.features.cabins}</div>
+                  <div>{projectData.features.trees}</div>
                 </div>
               </div>
             </>
@@ -394,8 +881,8 @@ export default function Header() {
             className="w-[70%] h-28 relative rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5452F6]"
           >
             <Image
-              src={PROJECT_DATA.images.preview}
-              alt={`Vista previa del proyecto ${PROJECT_DATA.name}`}
+              src={projectData.images.preview}
+              alt={`Vista previa del proyecto ${projectData.name}`}
               fill
               sizes="100vw"
               className="object-cover"
@@ -407,10 +894,10 @@ export default function Header() {
             onClick={() => openGallery(1)}
             className="w-[30%] h-28 relative cursor-pointer rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5452F6]"
           >
-            {PROJECT_DATA.images.gallery.length > 0 && (
+            {projectData.images.gallery.length > 0 && (
               <Image
-                src={PROJECT_DATA.images.gallery[0]}
-                alt={`Galería del proyecto ${PROJECT_DATA.name}`}
+                src={projectData.images.gallery[0]}
+                alt={`Galería del proyecto ${projectData.name}`}
                 fill
                 sizes="100vw"
                 className="object-cover"
@@ -435,15 +922,15 @@ export default function Header() {
         <div className="w-2 h-auto bg-[#DADADA]"></div>
         <div className="w-full flex justify-around bg-[#9393930D] py-4">
           <div className="text-center">
-            <div className="font-black text-xl">{PROJECT_DATA.estimatedReturn}</div>
+            <div className="font-black text-xl">{projectData.estimatedReturn}</div>
             <div className="text-sm">Retorno Estimado</div>
           </div>
           <div className="text-center">
-            <div className="font-black text-xl">{PROJECT_DATA.valuePerUnit}</div>
+            <div className="font-black text-xl">{projectData.valuePerUnit}</div>
             <div className="text-sm">Valor $ por unit</div>
           </div>
           <div className="text-center">
-            <div className="font-black text-xl">{formatNumber(PROJECT_DATA.totalInvestors)}</div>
+            <div className="font-black text-xl">{formatNumber(projectData.totalInvestors)}</div>
             <div className="text-sm">Total de socios</div>
           </div>
         </div>
@@ -456,10 +943,10 @@ export default function Header() {
           <div className="flex justify-between items-start relative">
             <div>
               <div className="font-black text-4xl">
-                {PROJECT_DATA.minInvestment} <span className="text-lg">{PROJECT_DATA.minInvestmentPeriod}</span>
+                {projectData.minInvestment} <span className="text-lg">{projectData.minInvestmentPeriod}</span>
               </div>
               <div className="text-[#5452F6] font-light underline text-sm mt-1">
-                Válido hasta el {PROJECT_DATA.validUntil}
+                Válido hasta el {projectData.validUntil}
               </div>
             </div>
             <button
@@ -496,20 +983,20 @@ export default function Header() {
 
         <TabsContent value="investment" className="space-y-4">
           <div className="font-extrabold text-lg">
-            {PROJECT_DATA.totalInvestment}
+            {projectData.totalInvestment}
           </div>
           <div className="flex items-baseline gap-2">
             <span className="font-black text-6xl text-gray-800">
-              {PROJECT_DATA.availableSlots.current}
+              {projectData.availableSlots.current}
             </span>
             <span className="font-black text-4xl text-gray-400">
-              /{PROJECT_DATA.availableSlots.total}
+              /{projectData.availableSlots.total}
             </span>
           </div>
         </TabsContent>
 
         <TabsContent value="stages" className="flex space-x-4">
-          {PROJECT_DATA.stages.map((stage, index) => (
+          {projectData.stages.map((stage, index) => (
             <div key={index} className="bg-[#F6F6F6] py-3 px-4 rounded">
               <div className="font-roboto text-sm font-extrabold mb-1">{stage.month}</div>
               <div className="font-roboto text-sm mb-1">{stage.price}</div>
@@ -526,7 +1013,7 @@ export default function Header() {
         </button>
       </Tabs>
 
-      {galleryOpen && PROJECT_DATA.images.gallery.length > 0 && (
+      {galleryOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex flex-col">
           <div className="flex justify-end p-4">
             <button
@@ -551,8 +1038,8 @@ export default function Header() {
 
             <div className="relative w-full max-w-4xl h-[55vh] md:h-auto md:aspect-[16/10]">
               <Image
-                src={PROJECT_DATA.images.gallery[activeImage]}
-                alt={`Imagen ${activeImage + 1} del proyecto ${PROJECT_DATA.name}`}
+                src={projectData.images.gallery[activeImage]}
+                alt={`Imagen ${activeImage + 1} del proyecto ${projectData.name}`}
                 fill
                 className="object-contain rounded-lg"
                 sizes="100vw"
@@ -571,7 +1058,7 @@ export default function Header() {
           </div>
 
           <div className="flex justify-center gap-2 pb-4 flex-wrap px-4 md:pb-6 md:px-6">
-            {PROJECT_DATA.images.gallery.map((image, index) => (
+            {projectData.images.gallery.map((image, index) => (
               <button
                 type="button"
                 key={image}
@@ -581,7 +1068,7 @@ export default function Header() {
               >
                 <Image
                   src={image}
-                  alt={`Miniatura ${index + 1} del proyecto ${PROJECT_DATA.name}`}
+                  alt={`Miniatura ${index + 1} del proyecto ${projectData.name}`}
                   fill
                   className="object-cover"
                 />

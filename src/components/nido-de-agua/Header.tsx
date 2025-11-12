@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import { Star, Play, Eye, Calculator, Info, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { useAuthStore } from '@/store/auth-store';
+import type { ProjectHomePageInfo } from '@/services/projectService';
 
-// Datos hardcodeados
-const PROJECT_DATA = {
+// Datos base por defecto
+const DEFAULT_PROJECT_DATA = {
   tag: "Construcción",
   name: "Nido de Agua",
   location: "Vda. Palestina, Guatapé",
@@ -58,21 +60,497 @@ const PROJECT_DATA = {
   },
 };
 
+type ProjectData = typeof DEFAULT_PROJECT_DATA;
+
+type HeaderProps = {
+  homeInfo?: ProjectHomePageInfo | null;
+  isLoading?: boolean;
+  error?: string | null;
+};
+
+type AnyRecord = Record<string, unknown>;
+
+const cloneProjectData = (): ProjectData => ({
+  ...DEFAULT_PROJECT_DATA,
+  availableSlots: { ...DEFAULT_PROJECT_DATA.availableSlots },
+  features: { ...DEFAULT_PROJECT_DATA.features },
+  stages: DEFAULT_PROJECT_DATA.stages.map((stage) => ({ ...stage })),
+  images: {
+    hero: DEFAULT_PROJECT_DATA.images.hero,
+    preview: DEFAULT_PROJECT_DATA.images.preview,
+    gallery: [...DEFAULT_PROJECT_DATA.images.gallery],
+  },
+});
+
+const ensureRecord = (value: unknown): AnyRecord | null =>
+  value && typeof value === "object" && !Array.isArray(value)
+    ? (value as AnyRecord)
+    : null;
+
+const ensureString = (value: unknown): string | null => {
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    return trimmed.length > 0 ? trimmed : null;
+  }
+
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return `${value}`;
+  }
+
+  return null;
+};
+
+const ensureNumber = (value: unknown): number | null => {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const normalised = value.replace(/[^0-9.,-]/g, "").replace(/,/g, ".");
+    if (normalised.length === 0) {
+      return null;
+    }
+
+    const parsed = Number(normalised);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  return null;
+};
+
+const formatCurrencyValue = (value: unknown, fallback: string): string => {
+  const numericValue = ensureNumber(value);
+  if (numericValue !== null) {
+    return currencyFormatter.format(numericValue);
+  }
+
+  const stringValue = ensureString(value);
+  return stringValue ?? fallback;
+};
+
+const formatSlotValue = (value: unknown, fallback: string): string => {
+  const numericValue = ensureNumber(value);
+  if (numericValue !== null) {
+    return formatNumber(Math.max(Math.round(numericValue), 0));
+  }
+
+  const stringValue = ensureString(value);
+  return stringValue ?? fallback;
+};
+
+const formatRentRange = (
+  minRent: unknown,
+  maxRent: unknown,
+  fallback: string
+): string => {
+  const minValue = ensureNumber(minRent);
+  const maxValue = ensureNumber(maxRent);
+
+  if (minValue !== null && maxValue !== null) {
+    const minPercent = percentageFormatter.format(toPercentValue(minValue));
+    const maxPercent = percentageFormatter.format(toPercentValue(maxValue));
+    return `${minPercent} - ${maxPercent}% E.A`;
+  }
+
+  if (minValue !== null) {
+    const percent = percentageFormatter.format(toPercentValue(minValue));
+    return `${percent}% E.A`;
+  }
+
+  if (maxValue !== null) {
+    const percent = percentageFormatter.format(toPercentValue(maxValue));
+    return `${percent}% E.A`;
+  }
+
+  return fallback;
+};
+
+const ensureStringArray = (value: unknown): string[] | null => {
+  if (Array.isArray(value)) {
+    const arr = value
+      .map((item) => ensureString(item))
+      .filter((item): item is string => typeof item === "string" && item.length > 0);
+
+    return arr.length > 0 ? arr : null;
+  }
+
+  const single = ensureString(value);
+  return single ? [single] : null;
+};
+
+const pickString = (source: AnyRecord, keys: string[]): string | null => {
+  for (const key of keys) {
+    const value = ensureString(source[key]);
+    if (value) {
+      return value;
+    }
+  }
+
+  return null;
+};
+
+const pickNumber = (source: AnyRecord, keys: string[]): number | null => {
+  for (const key of keys) {
+    const value = ensureNumber(source[key]);
+    if (value !== null) {
+      return value;
+    }
+  }
+
+  return null;
+};
+
+const pickRecord = (source: AnyRecord, keys: string[]): AnyRecord | null => {
+  for (const key of keys) {
+    const record = ensureRecord(source[key]);
+    if (record) {
+      return record;
+    }
+  }
+
+  return null;
+};
+
+const pickRecordArray = (source: AnyRecord, keys: string[]): AnyRecord[] | null => {
+  for (const key of keys) {
+    const value = source[key];
+    if (Array.isArray(value)) {
+      const records = value
+        .map((item) => ensureRecord(item))
+        .filter((item): item is AnyRecord => Boolean(item));
+
+      if (records.length > 0) {
+        return records;
+      }
+    }
+  }
+
+  return null;
+};
+
+const pickStringArray = (source: AnyRecord, keys: string[]): string[] | null => {
+  for (const key of keys) {
+    const arr = ensureStringArray(source[key]);
+    if (arr && arr.length > 0) {
+      return arr;
+    }
+  }
+
+  return null;
+};
+
+const flattenHomeInfo = (data: ProjectHomePageInfo): AnyRecord => {
+  const base = { ...data } as AnyRecord;
+
+  Object.values(data).forEach((value) => {
+    const record = ensureRecord(value);
+    if (record) {
+      Object.entries(record).forEach(([key, nestedValue]) => {
+        if (base[key] === undefined) {
+          base[key] = nestedValue;
+        }
+      });
+    }
+  });
+
+  return base;
+};
+
+const mapHomeInfoToProjectData = (
+  homeInfo?: ProjectHomePageInfo | null
+): ProjectData => {
+  if (!homeInfo || typeof homeInfo !== "object") {
+    return cloneProjectData();
+  }
+
+  const flattened = flattenHomeInfo(homeInfo);
+  const projectData = cloneProjectData();
+
+  projectData.tag =
+    pickString(flattened, ["tag", "projectTag", "status"]) ?? projectData.tag;
+
+  projectData.name =
+    pickString(flattened, ["name", "projectName", "title"]) ?? projectData.name;
+
+  projectData.location =
+    pickString(flattened, ["location", "projectLocation", "city"]) ??
+    projectData.location;
+
+  const rating = pickNumber(flattened, ["rating", "projectRating", "score"]);
+  if (rating !== null) {
+    projectData.rating = Number(rating.toFixed(1));
+  }
+
+  projectData.estimatedReturn =
+    pickString(flattened, ["estimatedReturn", "expectedReturn", "returnRange"]) ??
+    projectData.estimatedReturn;
+
+  projectData.valuePerUnit =
+    pickString(flattened, ["valuePerUnit", "unitValue", "unitPrice"]) ??
+    projectData.valuePerUnit;
+
+  const totalInvestors = pickNumber(flattened, [
+    "totalInvestors",
+    "investors",
+    "investorsCount",
+  ]);
+  if (totalInvestors !== null) {
+    projectData.totalInvestors = Math.max(Math.round(totalInvestors), 0);
+  }
+
+  projectData.minInvestment =
+    pickString(flattened, [
+      "minInvestment",
+      "minimumInvestment",
+      "investmentFrom",
+      "minAmountInvestment",
+    ]) ?? projectData.minInvestment;
+
+  projectData.minInvestmentPeriod =
+    pickString(flattened, [
+      "minInvestmentPeriod",
+      "investmentPeriod",
+      "paymentFrequency",
+    ]) ?? projectData.minInvestmentPeriod;
+
+  projectData.validUntil =
+    pickString(flattened, ["validUntil", "offerValidUntil", "deadline"]) ??
+    projectData.validUntil;
+
+  projectData.totalInvestment =
+    pickString(flattened, ["totalInvestment", "fundraisingGoal", "totalRaise"]) ??
+    projectData.totalInvestment;
+
+  const viewers = pickNumber(flattened, ["viewers", "liveViewers", "currentViewers"]);
+  if (viewers !== null) {
+    projectData.viewers = Math.max(Math.round(viewers), 0);
+  }
+
+  projectData.videoUrl =
+    pickString(flattened, ["videoUrl", "video", "videoSrc"]) ?? projectData.videoUrl;
+
+  projectData.description =
+    pickString(flattened, ["description", "summary", "shortDescription"]) ??
+    projectData.description;
+
+  projectData.videoQuote =
+    pickString(flattened, ["videoQuote", "quote", "highlightQuote"]) ??
+    projectData.videoQuote;
+
+  const featuresRecord = pickRecord(flattened, [
+    "features",
+    "projectFeatures",
+    "highlights",
+  ]);
+  if (featuresRecord) {
+    projectData.features = {
+      ...projectData.features,
+      area:
+        pickString(featuresRecord, ["area", "surface", "areaLabel"]) ??
+        projectData.features.area,
+      cabins:
+        pickString(featuresRecord, ["cabins", "units", "rooms"]) ??
+        projectData.features.cabins,
+      trees:
+        pickString(featuresRecord, ["trees", "thirdHighlight", "highlight"]) ??
+        projectData.features.trees,
+    };
+  } else {
+    const area = pickString(flattened, ["area", "surface"]);
+    if (area) {
+      projectData.features.area = area;
+    }
+
+    const cabins = pickString(flattened, ["cabins", "units"]);
+    if (cabins) {
+      projectData.features.cabins = cabins;
+    }
+
+    const trees = pickString(flattened, ["trees", "highlight"]);
+    if (trees) {
+      projectData.features.trees = trees;
+    }
+  }
+
+  const slotsRecord = pickRecord(flattened, ["availableSlots", "slots", "quota"]);
+  if (slotsRecord) {
+    projectData.availableSlots = {
+      current:
+        pickString(slotsRecord, [
+          "current",
+          "available",
+          "currentSlots",
+          "availableSlots",
+          "availableSpots",
+        ]) ?? projectData.availableSlots.current,
+      total:
+        pickString(slotsRecord, ["total", "max", "totalSlots", "totalSpots"]) ??
+        projectData.availableSlots.total,
+    };
+  } else {
+    const currentSlots =
+      pickString(flattened, [
+        "availableSlots",
+        "currentSlots",
+        "available",
+        "availableSpots",
+      ]) ??
+      projectData.availableSlots.current;
+    const totalSlots =
+      pickString(flattened, ["totalSlots", "quotaTotal", "totalSpots"]) ??
+      projectData.availableSlots.total;
+
+    projectData.availableSlots = {
+      current: currentSlots,
+      total: totalSlots,
+    };
+  }
+
+  projectData.minInvestment = formatCurrencyValue(
+    flattened["minAmountInvestment"] ?? flattened["minInvestment"],
+    projectData.minInvestment
+  );
+
+  projectData.valuePerUnit = formatCurrencyValue(
+    flattened["unitPrice"] ?? flattened["valuePerUnit"],
+    projectData.valuePerUnit
+  );
+
+  projectData.totalInvestment = formatCurrencyValue(
+    flattened["totalInvestment"],
+    projectData.totalInvestment
+  );
+
+  projectData.availableSlots.current = formatSlotValue(
+    flattened["availableSpots"],
+    projectData.availableSlots.current
+  );
+
+  projectData.availableSlots.total = formatSlotValue(
+    flattened["totalSpots"],
+    projectData.availableSlots.total
+  );
+
+  projectData.estimatedReturn = formatRentRange(
+    flattened["minRent"],
+    flattened["maxRent"],
+    projectData.estimatedReturn
+  );
+
+  const imagesRecord = pickRecord(flattened, ["images", "media", "projectImages"]);
+  if (imagesRecord) {
+    projectData.images = {
+      hero:
+        pickString(imagesRecord, ["hero", "heroImage", "main", "cover"]) ??
+        projectData.images.hero,
+      preview:
+        pickString(imagesRecord, ["preview", "previewImage", "secondary"]) ??
+        projectData.images.preview,
+      gallery:
+        pickStringArray(imagesRecord, ["gallery", "galleryImages", "carousel"]) ??
+        projectData.images.gallery,
+    };
+  } else {
+    const hero = pickString(flattened, ["hero", "heroImage", "heroImageUrl"]);
+    if (hero) {
+      projectData.images.hero = hero;
+    }
+
+    const preview = pickString(flattened, ["preview", "previewImage", "thumbnail"]);
+    if (preview) {
+      projectData.images.preview = preview;
+    }
+
+    const gallery =
+      pickStringArray(flattened, ["gallery", "galleryImages", "carousel"]) ??
+      pickStringArray(flattened, ["mediaGallery"]);
+    if (gallery && gallery.length > 0) {
+      projectData.images.gallery = gallery;
+    }
+  }
+
+  const rawStages = pickRecordArray(flattened, [
+    "stages",
+    "pricingStages",
+    "priceStages",
+  ]);
+  if (rawStages) {
+    const mappedStages = rawStages
+      .map((stageRecord, index) => {
+        const month =
+          pickString(stageRecord, ["month", "label", "name"]) ??
+          projectData.stages[index]?.month ??
+          `Etapa ${index + 1}`;
+        const price =
+          pickString(stageRecord, ["price", "unitPrice", "value"]) ??
+          projectData.stages[index]?.price ??
+          "";
+        const validUntil =
+          pickString(stageRecord, ["validUntil", "until", "deadline"]) ??
+          projectData.stages[index]?.validUntil ??
+          "";
+
+        if (!month && !price && !validUntil) {
+          return null;
+        }
+
+        return {
+          month,
+          price,
+          validUntil,
+        };
+      })
+      .filter((stage): stage is ProjectData["stages"][number] => Boolean(stage));
+
+    if (mappedStages.length > 0) {
+      projectData.stages = mappedStages;
+    }
+  }
+
+  return projectData;
+};
+
+const INVEST_URL_BASE =
+  "https://dashboard.lokl.life/checkout/invest?projectId=a6775860-635a-4622-80f8-7d0de0c3eef0&token=";
+const REGISTER_REDIRECT_URL =
+  "https://dashboard.lokl.life/register?redirect_to=/checkout/invest?projectId=a6775860-635a-4622-80f8-7d0de0c3eef0&";
+
 const numberFormatter = new Intl.NumberFormat("es-CO", {
   minimumFractionDigits: 0,
   maximumFractionDigits: 0,
 });
 
-const formatNumber = (value: number) => numberFormatter.format(value);
+const currencyFormatter = new Intl.NumberFormat("es-CO", {
+  style: "currency",
+  currency: "COP",
+  maximumFractionDigits: 0,
+});
 
-export default function Header() {
+const percentageFormatter = new Intl.NumberFormat("es-CO", {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 1,
+});
+
+const formatNumber = (value: number) => numberFormatter.format(value);
+const toPercentValue = (value: number) => (value > 1 ? value : value * 100);
+
+export default function Header({
+  homeInfo,
+  isLoading = false,
+  error,
+}: HeaderProps) {
+  const { token } = useAuthStore();
   const [videoActive, setVideoActive] = useState<"desktop" | "mobile" | null>(null);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
-
+  const PROJECT_DATA = useMemo(
+    () => mapHomeInfoToProjectData(homeInfo),
+    [homeInfo]
+  );
+  const galleryLength = PROJECT_DATA.images.gallery.length;
   const remainingGallery =
-    Math.max(PROJECT_DATA.images.gallery.length - 1, 0);
+    Math.max(galleryLength - 1, 0);
 
   const handleGoToSimulator = () => {
     const simulator = document.getElementById('simulator');
@@ -82,8 +560,10 @@ export default function Header() {
   };
 
   const handleGoToBuy = () => {
-    // Redirigir a checkout o registro
-    window.location.href = '/register';
+    const targetUrl = token
+      ? `${INVEST_URL_BASE}${encodeURIComponent(token)}`
+      : REGISTER_REDIRECT_URL;
+    window.location.href = targetUrl;
   };
 
   const openGallery = (index = 0) => {
@@ -96,15 +576,19 @@ export default function Header() {
   };
 
   const handlePrev = () => {
+    if (galleryLength === 0) return;
+
     setActiveImage((prev) =>
-      (prev - 1 + PROJECT_DATA.images.gallery.length) %
-      PROJECT_DATA.images.gallery.length
+      (prev - 1 + galleryLength) %
+      galleryLength
     );
   };
 
   const handleNext = () => {
+    if (galleryLength === 0) return;
+
     setActiveImage((prev) =>
-      (prev + 1) % PROJECT_DATA.images.gallery.length
+      (prev + 1) % galleryLength
     );
   };
 
@@ -114,6 +598,14 @@ export default function Header() {
       <div className="flex bg-[#00F0B5] text-[#3533FF] font-medium px-3 py-2 rounded">
         <div className="ml-2">{PROJECT_DATA.tag}</div>
       </div>
+
+      {isLoading && (
+        <div className="w-full rounded-lg bg-blue-50 text-blue-700 text-sm p-3">
+          Cargando información actualizada del proyecto...
+        </div>
+      )}
+
+      {/* Mensaje de error omitido para evitar mostrar aviso adicional */}
 
       {/* Título y métricas (Desktop) */}
       <div className="lg:w-3/5 flex flex-col lg:flex-row justify-between items-center space-x-10">
