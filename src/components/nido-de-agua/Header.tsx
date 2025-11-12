@@ -66,7 +66,7 @@ const numberFormatter = new Intl.NumberFormat("es-CO", {
 const formatNumber = (value: number) => numberFormatter.format(value);
 
 export default function Header() {
-  const [videoActive, setVideoActive] = useState(false);
+  const [videoActive, setVideoActive] = useState<"desktop" | "mobile" | null>(null);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
@@ -162,7 +162,7 @@ export default function Header() {
         {/* Sección de imágenes/video (Desktop) */}
         <div className="hidden lg:block lg:w-3/5">
           <div className="mb-3 relative aspect-video rounded-lg overflow-hidden">
-            {videoActive ? (
+            {videoActive === 'desktop' ? (
               <iframe
                 width="100%"
                 height="100%"
@@ -183,7 +183,7 @@ export default function Header() {
                 />
                 <div
                   className="absolute top-0 left-0 w-full h-full flex flex-col justify-between text-white p-8 font-extrabold cursor-pointer z-10 bg-black/20"
-                  onClick={() => setVideoActive(true)}
+                  onClick={() => setVideoActive('desktop')}
                 >
                   <div className="text-xl">
                     {PROJECT_DATA.videoQuote}
@@ -337,7 +337,7 @@ export default function Header() {
       {/* Sección de imágenes/video (Mobile) */}
       <div className="lg:hidden w-full space-y-4">
         <div className="relative aspect-[16/10] rounded-lg overflow-hidden">
-          {videoActive ? (
+          {videoActive === 'mobile' ? (
             <iframe
               width="100%"
               height="100%"
@@ -358,7 +358,7 @@ export default function Header() {
               />
               <div
                 className="absolute top-0 left-0 w-full h-full flex flex-col justify-between text-white p-6 font-extrabold cursor-pointer z-10 bg-black/25"
-                onClick={() => setVideoActive(true)}
+                onClick={() => setVideoActive('mobile')}
               >
                 <div className="text-lg">
                   {PROJECT_DATA.videoQuote}

@@ -46,8 +46,9 @@ export function LocationIndie() {
       <div className="mb-8">
         <Swiper
           loop
+          grabCursor
           modules={[Autoplay]}
-          className="aliados-logos"
+          className="aliados-logos select-none"
           breakpoints={{
             640: {
               slidesPerView: 1.4,
@@ -70,17 +71,18 @@ export function LocationIndie() {
           }}
         >
           {locationImages.map((image, index) => (
-            <SwiperSlide key={index} className="logo">
-              <div
-                className="relative w-full aspect-video rounded-lg overflow-hidden select-none"
-                onDragStart={(event) => event.preventDefault()}
-              >
+            <SwiperSlide
+              key={index}
+              className="logo select-none"
+              onDragStart={(event) => event.preventDefault()}
+            >
+              <div className="relative w-full aspect-video rounded-lg overflow-hidden select-none">
                 <Image
                   src={image.src}
                   alt={image.alt}
                   fill
                   draggable={false}
-                  className="object-cover rounded-lg"
+                  className="object-cover rounded-lg pointer-events-none"
                 />
               </div>
             </SwiperSlide>

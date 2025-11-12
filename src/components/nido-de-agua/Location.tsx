@@ -52,8 +52,9 @@ export function Location() {
         <Swiper
           loop={true}
           navigation={true}
+          grabCursor
           modules={[Autoplay, Navigation]}
-          className="aliados-logos"
+          className="aliados-logos select-none"
           breakpoints={{
             640: {
               slidesPerView: 1.4,
@@ -76,13 +77,18 @@ export function Location() {
           }}
         >
           {locationImages.map((image, index) => (
-            <SwiperSlide key={index} className="logo">
-              <div className="relative w-full aspect-video rounded-lg overflow-hidden">
+            <SwiperSlide
+              key={index}
+              className="logo select-none"
+              onDragStart={(event) => event.preventDefault()}
+            >
+              <div className="relative w-full aspect-video rounded-lg overflow-hidden select-none">
                 <Image
                   src={image.src}
                   alt={image.alt}
                   fill
-                  className="object-cover rounded-lg"
+                  draggable={false}
+                  className="object-cover rounded-lg pointer-events-none"
                 />
               </div>
             </SwiperSlide>
