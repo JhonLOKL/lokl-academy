@@ -7,7 +7,10 @@ import StatsSection from "./stats-section";
 import WhatIsLokl from "@/components/home/WhatIsLokl";
 import { useEffect } from "react";
 import { getProjectCardsAction } from "@/actions/project-actions";
-import { FloatingWhatsApp } from "react-floating-whatsapp";
+const FloatingWhatsApp = dynamic(
+  () => import("react-floating-whatsapp").then((mod) => mod.FloatingWhatsApp),
+  { ssr: false }
+);
 
 // 🚀 OPTIMIZACIÓN CRÍTICA: Lazy load del Simulador con IntersectionObserver
 // Reduce ~1500-2000ms de TBT cargando solo cuando el usuario va a verlo
