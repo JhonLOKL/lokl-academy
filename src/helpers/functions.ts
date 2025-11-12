@@ -41,3 +41,21 @@ export const formatCurrency = (amount: number): string => {
   }).format(amount);
 };
 
+/**
+ * Desplaza suavemente a una sección de la página
+ * @param sectionId - ID de la sección a la que desplazarse
+ * @param distance - Distancia adicional desde el top (default: 0)
+ */
+export const scrollToSection = (sectionId: string, distance: number = 0): void => {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - distance;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+  }
+};
+
