@@ -1,21 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import dynamic from "next/dynamic";
-
-// Lazy load del simulador solo cuando esté cerca del viewport
-const Simulator = dynamic(() => import("./simulator"), {
-  loading: () => (
-    <div className="w-full min-h-[600px] bg-gradient-to-b from-slate-50 to-white flex items-center justify-center">
-      <div className="text-center">
-        <div className="w-16 h-16 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-lg font-semibold text-gray-700">Cargando simulador...</p>
-        <p className="text-sm text-gray-500 mt-2">Preparando tu proyección de inversión</p>
-      </div>
-    </div>
-  ),
-  ssr: false,
-});
+import Simulator from "./simulator";
 
 interface SimulatorLazyWrapperProps {
   hideRightColumn?: boolean;

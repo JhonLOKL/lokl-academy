@@ -1,13 +1,17 @@
 "use client";
 
-import React from "react";
+import { useEffect } from "react";
+import SimulatorLazyWrapper from "@/components/simulator/simulator-lazy-wrapper";
+import { getProjectCardsAction } from "@/actions/project-actions";
 
 export function Simulator() {
+  useEffect(() => {
+    void getProjectCardsAction();
+  }, []);
+
   return (
-    <div className="w-full min-h-[320px] rounded-2xl border border-dashed border-slate-200 bg-slate-50 flex items-center justify-center">
-      <p className="text-slate-400 text-xs uppercase tracking-[0.3em]">
-        Espacio reservado para el simulador
-      </p>
+    <div className="w-full">
+      <SimulatorLazyWrapper id="nido-de-agua-simulator" />
     </div>
   );
 }
