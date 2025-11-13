@@ -57,7 +57,7 @@ const teamList = [
 export default function Team() {
   return (
     <section className="w-full">
-      <h2 className="text-gray-400 text-2xl font-bold font-epilogue mb-5">
+      <h2 className="text-gray-400 text-2xl font-bold font-epilogue mb-5 text-center">
         Equipo del proyecto
       </h2>
       

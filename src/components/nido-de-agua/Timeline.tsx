@@ -1,30 +1,35 @@
 "use client";
 
+import Image from 'next/image';
 import React from 'react';
 
 const timelineData = [
   {
     id: 1,
-    icon: 'timeline-icon',
-    text: 'Pre lanzamiento noviembre 2022',
+    icon: '/images/new-home/timeline-icon.svg',
+    title: 'Etapa de Pre lanzamiento',
+    subtitle: 'Cuarto Trimestre del 2022',
     isLast: false
   },
   {
     id: 2,
-    icon: 'timeline-icon',
-    text: 'Lanzamiento junio 2023',
+    icon: '/images/new-home/timeline-icon.svg',
+    title: 'Etapa de comercialización',
+    subtitle: 'Segundo Trimestre del 2023',
     isLast: false
   },
   {
     id: 3,
-    icon: 'timeline-icon',
-    text: 'Inicio de la construcción primer semestre del 2024',
+    icon: '/images/new-home/timeline-icon.svg',
+    title: 'Etapa de construcción',
+    subtitle: 'Primer Trimestre del 2024',
     isLast: false
   },
   {
     id: 4,
     icon: 'house-icon',
-    text: 'Inicio de operación primer semestre del 2026',
+    title: 'Etapa operativa',
+    subtitle: 'Segundo Trimestre del 2026',
     isLast: true
   }
 ];
@@ -52,22 +57,19 @@ export function Timeline() {
                   <path d="M4 29.5L12 58L19 30" stroke="#514E4E" />
                 </svg>
               ) : (
-                <div className="w-6 h-6 bg-[#514E4E] rounded-full flex items-center justify-center">
-                  <div className="w-3 h-3 bg-white rounded-full"></div>
-                </div>
+                <Image
+                  src={item.icon}
+                  alt={item.title}
+                  width={26}
+                  height={24}
+                  className="w-auto h-12"
+                />
               )}
             </div>
             <div className="border-t-2 border-gray-300 flex justify-center text-center">
               <p className="px-8 mt-3 text-gray-700">
-                {item.id === 1 ? (
-                  <>Pre lanzamiento noviembre <strong className="font-bold">2022</strong></>
-                ) : item.id === 2 ? (
-                  <>Lanzamiento junio <strong className="font-bold">2023</strong></>
-                ) : item.id === 3 ? (
-                  <><strong className="font-bold">Inicio de la construcción</strong> primer semestre del <strong className="font-bold">2024</strong></>
-                ) : (
-                  <><strong className="font-bold">Inicio de operación</strong> primer semestre del <strong className="font-bold">2026</strong></>
-                )}
+                <span className="block font-bold">{item.title}</span>
+                <span className="block">{item.subtitle}</span>
               </p>
             </div>
           </div>

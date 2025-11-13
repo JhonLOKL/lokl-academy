@@ -162,7 +162,7 @@ export default function NidoDeAgua() {
           <hr className="my-8" />
 
           <div className="my-12 hidden md:block" id="timeline">
-            <h2 className="text-gray-400 text-2xl font-bold font-epilogue mb-5">
+            <h2 className="text-gray-400 text-2xl font-bold font-epilogue mb-5 text-center">
               Cronograma del proyecto
             </h2>
             <div className="grid grid-cols-12 my-5 lg:gap-16">

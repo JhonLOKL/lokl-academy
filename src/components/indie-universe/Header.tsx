@@ -1006,6 +1006,9 @@ export default function Header({
               /{projectData.availableSlots.total}
             </span>
           </div>
+          <p className="text-sm text-gray-600 font-medium">
+            Cupos disponibles antes de que suba el precio por unit. ¡No te quedes por fuera!
+          </p>
         </TabsContent>
 
         <TabsContent value="stages" className="flex space-x-4">
