@@ -9,12 +9,14 @@ interface SimulatorProps {
   project?: ProjectCard;
   simulatorName?: string; // Nombre del simulador para tracking
   hideRightColumn?: boolean;
+  defaultProjectCode?: string;
 }
 
 export default function Simulator({ 
   project, 
   simulatorName = "Simulador General",
   hideRightColumn,
+  defaultProjectCode,
 }: SimulatorProps) {
   const { setSelectedProject, selectedProject } = useSimulatorStore();
 
@@ -30,6 +32,7 @@ export default function Simulator({
       <SimulatorRedesigned
         simulatorName={simulatorName}
         hideRightColumn={hideRightColumn}
+        defaultProjectCode={defaultProjectCode}
       />
     </div>
   );

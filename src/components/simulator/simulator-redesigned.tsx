@@ -23,11 +23,13 @@ import InvestorLevelsBanner from "./investor-levels-banner";
 interface SimulatorRedesignedProps {
   simulatorName?: string;
   hideRightColumn?: boolean;
+  defaultProjectCode?: string;
 }
 
 export default function SimulatorRedesigned({
   simulatorName = "Simulador General",
   hideRightColumn,
+  defaultProjectCode,
 }: SimulatorRedesignedProps) {
   const {
     availableProjects,
@@ -120,6 +122,28 @@ export default function SimulatorRedesigned({
       loadProjects();
     }
   }, [hasEnteredViewport, availableProjects.length, isLoadingProjects, setAvailableProjects, setLoadingProjects, setProjectsError]);
+
+  // Seleccionar proyecto por defecto según la página
+  useEffect(() => {
+    if (!defaultProjectCode || availableProjects.length === 0) {
+      return;
+    }
+
+    const projectByCode = availableProjects.find(
+      (project) => project.projectCode === defaultProjectCode
+    );
+
+    if (!projectByCode) {
+      return;
+    }
+
+    const isDifferentProject =
+      !selectedProject || selectedProject.projectCode !== projectByCode.projectCode;
+
+    if (isDifferentProject) {
+      setSelectedProject(projectByCode);
+    }
+  }, [availableProjects, defaultProjectCode, selectedProject, setSelectedProject]);
 
   // Handlers
   const handleProjectChange = (projectId: string) => {

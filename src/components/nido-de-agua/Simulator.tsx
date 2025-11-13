@@ -11,7 +11,7 @@ export function Simulator() {
 
   return (
     <div className="w-full">
-      <SimulatorLazyWrapper id="nido-de-agua-simulator" />
+      <SimulatorLazyWrapper id="nido-de-agua-simulator" defaultProjectCode="nido-de-agua" />
     </div>
   );
 }

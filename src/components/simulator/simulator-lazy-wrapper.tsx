@@ -6,9 +6,10 @@ import Simulator from "./simulator";
 interface SimulatorLazyWrapperProps {
   hideRightColumn?: boolean;
   id?: string;
+  defaultProjectCode?: string;
 }
 
-export default function SimulatorLazyWrapper({ hideRightColumn, id }: SimulatorLazyWrapperProps) {
+export default function SimulatorLazyWrapper({ hideRightColumn, id, defaultProjectCode }: SimulatorLazyWrapperProps) {
   const [shouldLoad, setShouldLoad] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -45,7 +46,7 @@ export default function SimulatorLazyWrapper({ hideRightColumn, id }: SimulatorL
   return (
     <div ref={wrapperRef} id={id} className="w-full">
       {shouldLoad ? (
-        <Simulator hideRightColumn={hideRightColumn} />
+        <Simulator hideRightColumn={hideRightColumn} defaultProjectCode={defaultProjectCode} />
       ) : (
         <div className="w-full min-h-[600px] bg-gradient-to-b from-slate-50 to-white" />
       )}

@@ -11,7 +11,7 @@ export function Simulator() {
 
   return (
     <div className="w-full">
-      <SimulatorLazyWrapper id="indie-universe-simulator" />
+      <SimulatorLazyWrapper id="indie-universe-simulator" defaultProjectCode="indie-universe" />
     </div>
   );
 }
