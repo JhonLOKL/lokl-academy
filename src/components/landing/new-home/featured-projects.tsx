@@ -1067,9 +1067,9 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                                 let url = '';
                                 const projectName = project.name.toLowerCase();
                                 if (projectName.includes('nido')) {
-                                  url = 'https://dashboard.lokl.life/project/nido-de-agua';
+                                  url = '/nido-de-agua';
                                 } else if (projectName.includes('indie')) {
-                                  url = 'https://dashboard.lokl.life/project/indie-universe';
+                                  url = '/indie-universe';
                                 } else if (projectName.includes('aldea')) {
                                   url = 'https://dashboard.lokl.life/project-signup/aldea';
                                 } else if (projectName.includes('patito')) {

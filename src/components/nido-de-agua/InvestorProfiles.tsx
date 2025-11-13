@@ -71,8 +71,8 @@ function InvestorProfile({ type, img, price, benefits, amount }: InvestorProfile
       localStorage.setItem('amount', amount.toString());
       localStorage.setItem('instalmentValue', price.toString());
       localStorage.setItem('installments', '1');
-      // Redirigir a registro o checkout
-      window.location.href = '/register';
+      // Redirigir a checkout
+      window.location.href = 'https://dashboard.lokl.life/checkout/invest?';
     }
   };
 
