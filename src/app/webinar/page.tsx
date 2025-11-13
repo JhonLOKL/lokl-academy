@@ -28,6 +28,12 @@ function WebinarsContent() {
 
 
 
+  const sortWebinarsByDate = useCallback((webinarsToSort: Webinar[]) => {
+    return [...webinarsToSort].sort(
+      (a, b) => new Date(b.scheduledAt).getTime() - new Date(a.scheduledAt).getTime()
+    );
+  }, []);
+
   useEffect(() => {
     const fetchWebinars = async () => {
       try {
@@ -62,7 +68,8 @@ function WebinarsContent() {
 
         // Procesar los webinars para determinar el estado de inscripción
         // Si el usuario está inscrito, usar el accessLink del webinar original
-        const processedWebinars = fetchedWebinars.map(webinar => {
+        const sortedWebinars = sortWebinarsByDate(fetchedWebinars);
+        const processedWebinars = sortedWebinars.map(webinar => {
           const isEnrolled = enrolledWebinarIds.includes(webinar.id);
           
           return {
@@ -88,7 +95,7 @@ function WebinarsContent() {
     fetchWebinars();
     // Resetear el estado de auto-enroll cuando cambie la autenticación
     setAutoEnrollProcessed(false);
-  }, [isAuthenticated]); // Recargar cuando cambie el estado de autenticación
+  }, [isAuthenticated, sortWebinarsByDate]); // Recargar cuando cambie el estado de autenticación
 
   const handleEnroll = useCallback(async (webinarId: string) => {
     if (!isAuthenticated) {
@@ -116,7 +123,8 @@ function WebinarsContent() {
             
             if (!enrolledError && updatedEnrollments) {
               // Procesar los webinars con la información actualizada
-              const processedWebinars = refreshedWebinars.map(webinar => {
+              const sortedWebinars = sortWebinarsByDate(refreshedWebinars);
+              const processedWebinars = sortedWebinars.map(webinar => {
                 const isEnrolled = updatedEnrollments.includes(webinar.id);
                 
                 return {

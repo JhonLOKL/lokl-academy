@@ -137,6 +137,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://lokl-academy.s3.us-east-1.amazonaws.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        <link rel="dns-prefetch" href="https://static.hotjar.com" />
         
         {/* Preload imagen LCP del hero móvil - CRÍTICO para LCP */}
         <link 
@@ -203,6 +204,27 @@ export default function RootLayout({
               });
             } catch (err) {
               console.error('GA config failed', err);
+            }
+          `}
+        </Script>
+
+        {/* Hotjar Tracking Code */}
+        <Script
+          id="hotjar-tracking"
+          strategy="lazyOnload"
+        >
+          {`
+            try {
+              (function(h,o,t,j,a,r){
+                h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+                h._hjSettings={hjid:2663938,hjsv:6};
+                a=o.getElementsByTagName('head')[0];
+                r=o.createElement('script');r.async=1;
+                r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+                a.appendChild(r);
+              })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+            } catch (err) {
+              console.error('Hotjar init failed', err);
             }
           `}
         </Script>

@@ -94,7 +94,7 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
         };
       }),
       minInvestment: project.unitPrice * project.minInvestmentUnits,
-      installments: 12, // Valor por defecto
+      installments: project.maxInvestmentQuota,
       totalSize: project.squareMeters / 100, // Convertir a una escala más pequeña para la UI
       units: project.unitPrice,
       fundingProgress: Math.min(Math.floor(Math.random() * 100), 100), // Valor aleatorio para demostración
@@ -1053,8 +1053,13 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                             <div className="mb-6">
                               <p className="text-base text-foreground leading-relaxed">
                                 <span className="font-bold">${project.minInvestment.toLocaleString('es-CO')}</span>
-                                {' '}cupo de inversión hasta en{' '}
-                                <span className="text-primary font-bold">{project.installments} cuotas</span>
+                                {' '}cupo de inversión
+                                {project.installments > 1 && (
+                                  <>
+                                    {' '}hasta en{' '}
+                                    <span className="text-primary font-bold">{project.installments} cuotas</span>
+                                  </>
+                                )}
                               </p>
                             </div>
 
