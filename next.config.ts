@@ -183,6 +183,36 @@ const nextConfig: NextConfig = {
         destination: '/indie-universe',
         permanent: true,
       },
+      {
+        source: '/discover-your-investor-profile',
+        destination: 'https://dashboard.lokl.life/discover-your-investor-profile',
+        permanent: true,
+      },
+      {
+        source: '/cdt-vs-real-estate-investing',
+        destination: 'https://dashboard.lokl.life/cdt-vs-real-estate-investing',
+        permanent: true,
+      },
+      {
+        source: '/real-estate-investment-simulator',
+        destination: 'https://dashboard.lokl.life/real-estate-investment-simulator',
+        permanent: true,
+      },
+      {
+        source: '/investment-for-freelancers',
+        destination: 'https://dashboard.lokl.life/investment-for-freelancers',
+        permanent: true,
+      },
+      {
+        source: '/digital-nomad',
+        destination: 'https://dashboard.lokl.life/digital-nomad',
+        permanent: true,
+      },
+      {
+        source: '/landing/financial-freedom-simulator',
+        destination: 'https://dashboard.lokl.life/landing/financial-freedom-simulator',
+        permanent: true,
+      },
     ];
   },
   // Optimizaciones de producción
