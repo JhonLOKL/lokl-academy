@@ -536,6 +536,63 @@ export default function Header({
   isLoading = false,
   error,
 }: HeaderProps) {
+  if (isLoading) {
+    return (
+      <header className="w-full flex flex-col items-start space-y-8">
+        <div className="h-8 w-32 rounded bg-slate-200 animate-pulse" />
+
+        <div className="w-full flex flex-col gap-8 lg:flex-row">
+          <div className="flex-1 space-y-6">
+            <div className="space-y-3">
+              <div className="h-10 w-2/3 rounded bg-slate-200 animate-pulse" />
+              <div className="h-6 w-40 rounded bg-slate-200 animate-pulse" />
+            </div>
+
+            <div className="hidden lg:flex gap-6">
+              <div className="h-16 w-40 rounded bg-slate-200 animate-pulse" />
+              <div className="h-16 w-32 rounded bg-slate-200 animate-pulse" />
+              <div className="h-16 w-32 rounded bg-slate-200 animate-pulse" />
+            </div>
+
+            <div className="hidden lg:block h-80 rounded-xl bg-slate-200 animate-pulse" />
+            <div className="hidden lg:flex gap-3">
+              <div className="h-28 w-3/5 rounded-lg bg-slate-200 animate-pulse" />
+              <div className="h-28 w-2/5 rounded-lg bg-slate-200 animate-pulse" />
+            </div>
+            <div className="hidden lg:block h-4 w-3/4 rounded bg-slate-200 animate-pulse" />
+          </div>
+
+          <div className="flex-1 space-y-6">
+            <div className="hidden lg:block space-y-4">
+              <div className="h-8 w-1/2 rounded bg-slate-200 animate-pulse" />
+              <div className="h-28 w-full rounded-lg bg-slate-200 animate-pulse" />
+            </div>
+
+            <div className="hidden lg:block h-36 w-full rounded-lg bg-slate-200 animate-pulse" />
+            <div className="hidden lg:block h-12 w-48 rounded-full bg-slate-200 animate-pulse" />
+            <div className="hidden lg:block h-6 w-64 rounded bg-slate-200 animate-pulse" />
+          </div>
+        </div>
+
+        <div className="lg:hidden w-full space-y-6">
+          <div className="h-60 w-full rounded-xl bg-slate-200 animate-pulse" />
+          <div className="flex gap-3">
+            <div className="h-28 w-3/4 rounded-lg bg-slate-200 animate-pulse" />
+            <div className="h-28 w-1/4 rounded-lg bg-slate-200 animate-pulse" />
+          </div>
+          <div className="h-4 w-full rounded bg-slate-200 animate-pulse" />
+          <div className="flex gap-4">
+            <div className="h-16 flex-1 rounded-lg bg-slate-200 animate-pulse" />
+            <div className="h-16 flex-1 rounded-lg bg-slate-200 animate-pulse" />
+            <div className="h-16 flex-1 rounded-lg bg-slate-200 animate-pulse" />
+          </div>
+          <div className="h-24 w-full rounded-lg bg-slate-200 animate-pulse" />
+          <div className="h-12 w-full rounded-full bg-slate-200 animate-pulse" />
+        </div>
+      </header>
+    );
+  }
+
   const [videoActive, setVideoActive] = useState<"desktop" | "mobile" | null>(null);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
@@ -591,12 +648,6 @@ export default function Header({
       <div className="flex bg-[#00F0B5] text-[#3533FF] font-medium px-3 py-2 rounded">
         <div className="ml-2">{PROJECT_DATA.tag}</div>
       </div>
-
-      {isLoading && (
-        <div className="w-full rounded-lg bg-blue-50 text-blue-700 text-sm p-3">
-          Cargando información actualizada del proyecto...
-        </div>
-      )}
 
       {/* Mensaje de error omitido para evitar mostrar aviso adicional */}
 
