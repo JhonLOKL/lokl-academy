@@ -154,7 +154,7 @@ export function PromoBanner({
                 <Countdown label={countdownLabelText} timeLeft={timeLeft} variant="horizontal" />
                 <button
                   onClick={handleCtaClick}
-                  className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#0B1050] shadow-sm transition hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
+                  className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#0B1050] shadow-sm transition hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 cursor-pointer"
                   type="button"
                 >
                   {ctaLabel}
@@ -164,7 +164,7 @@ export function PromoBanner({
           ) : (
             <button
               onClick={handleCtaClick}
-              className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#0B1050] shadow-sm transition hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
+              className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#0B1050] shadow-sm transition hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 cursor-pointer"
               type="button"
             >
               {ctaLabel}
@@ -223,7 +223,7 @@ function renderMobileSegment({
       ) : (
         <button
           onClick={onClick}
-          className="rounded-full bg-white px-6 py-2 text-sm font-semibold text-[#0B1050] shadow-sm transition hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
+          className="rounded-full bg-white px-6 py-2 text-sm font-semibold text-[#0B1050] shadow-sm transition hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 cursor-pointer"
           type="button"
         >
           {ctaLabel}
