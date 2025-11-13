@@ -145,7 +145,7 @@ export default function NidoDeAgua() {
 
           <div className="col-span-12 lg:col-span-4">
             <div className="my-6 w-full" id="investor-profile">
-              <InvestorProfiles />
+              <InvestorProfiles homeInfo={homeInfo} />
             </div>
 
             <div className="my-6 w-full hidden md:block scroll-mt-40" id="insights">

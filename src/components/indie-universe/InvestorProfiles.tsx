@@ -1,49 +1,136 @@
 "use client";
 
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
 import { Autoplay } from 'swiper/modules';
 import Image from 'next/image';
 import MenuTabs from './MenuTabs';
+import type { ProjectHomePageInfo } from '@/services/projectService';
 
 // CSS de Swiper movido a globals.css para optimizar la carga
 
-// Datos de los perfiles de inversionista
-const INVESTOR_PROFILES = [
+type AnyRecord = Record<string, unknown>;
+
+const DEFAULT_UNIT_PRICE = 129250;
+
+const UNIT_PRICE_KEYS = [
+  "unitPrice",
+  "valuePerUnit",
+  "unit_price",
+  "unit_value",
+  "unitprice",
+  "unitvalue",
+  "pricePerUnit",
+  "price_per_unit",
+  "unitCost",
+  "unitAmount",
+];
+
+const ensureRecord = (value: unknown): AnyRecord | null =>
+  value && typeof value === "object" && !Array.isArray(value)
+    ? (value as AnyRecord)
+    : null;
+
+const ensureNumber = (value: unknown): number | null => {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const digitsOnly = value.replace(/\D/g, "");
+    if (digitsOnly.length === 0) {
+      return null;
+    }
+
+    return Number(digitsOnly);
+  }
+
+  return null;
+};
+
+const extractUnitPrice = (homeInfo?: ProjectHomePageInfo | null): number | null => {
+  const initialRecord = ensureRecord(homeInfo);
+
+  if (!initialRecord) {
+    return null;
+  }
+
+  const queue: AnyRecord[] = [initialRecord];
+  const visited = new Set<AnyRecord>([initialRecord]);
+
+  while (queue.length > 0) {
+    const record = queue.shift()!;
+
+    for (const key of Object.keys(record)) {
+      const value = record[key];
+
+      if (UNIT_PRICE_KEYS.includes(key)) {
+        const numericValue = ensureNumber(value);
+        if (numericValue !== null && numericValue > 0) {
+          return numericValue;
+        }
+      }
+
+      if (Array.isArray(value)) {
+        value.forEach((item) => {
+          const nested = ensureRecord(item);
+          if (nested && !visited.has(nested)) {
+            visited.add(nested);
+            queue.push(nested);
+          }
+        });
+      } else {
+        const nested = ensureRecord(value);
+        if (nested && !visited.has(nested)) {
+          visited.add(nested);
+          queue.push(nested);
+        }
+      }
+    }
+  }
+
+  return null;
+};
+
+type InvestorProfileConfig = {
+  type: string;
+  img: string;
+  multiplier: number;
+  benefits: string[];
+};
+
+const INVESTOR_PROFILE_CONFIG: InvestorProfileConfig[] = [
   {
     type: "Explorador",
-    img: '/images/profiles/explorer.png',
-    price: 12925000, // 100 * 129250
-    amount: 100,
+    img: "/images/profiles/explorer.png",
+    multiplier: 100,
     benefits: [
-      'Descuento 10% en espacios operados por Indie Universe',
-      'Canales dedicados de atención para reservas y requerimientos',
-      'Eventos exclusivos para comunidad de inversionistas'
-    ]
+      "Descuento 10% en espacios operados por Indie Universe",
+      "Canales dedicados de atención para reservas y requerimientos",
+      "Eventos exclusivos para comunidad de inversionistas",
+    ],
   },
   {
     type: "Aventurero",
-    img: '/images/profiles/adventurer.png',
-    price: 25850000, // 200 * 129250
-    amount: 200,
+    img: "/images/profiles/adventurer.png",
+    multiplier: 200,
     benefits: [
-      'Descuento 20% en espacios operados por Indie Universe',
-      'Participa de la lotería de noches y experiencias de Indie Universe',
-      'Acceso a asesorías privadas para evaluar portafolio'
-    ]
+      "Descuento 20% en espacios operados por Indie Universe",
+      "Participa de la lotería de noches y experiencias de Indie Universe",
+      "Acceso a asesorías privadas para evaluar portafolio",
+    ],
   },
   {
     type: "Héroe",
-    img: '/images/profiles/hero.jpg',
-    price: 64625000, // 500 * 129250
-    amount: 500,
+    img: "/images/profiles/hero.jpg",
+    multiplier: 500,
     benefits: [
-      'Descuento 25% en espacios operados por Indie Universe',
-      'Participa de la lotería de experiencias de Indie Universe y 1 Noche Gratis al año',
-      'Acceso a asesorías privadas para evaluar portafolio'
-    ]
-  }
+      "Descuento 25% en espacios operados por Indie Universe",
+      "Participa de la lotería de experiencias de Indie Universe y 1 Noche Gratis al año",
+      "Acceso a asesorías privadas para evaluar portafolio",
+    ],
+  },
 ];
 
 interface InvestorProfileProps {
@@ -136,7 +223,26 @@ function InvestorProfile({ type, img, price, benefits, amount }: InvestorProfile
   );
 }
 
-export default function InvestorProfiles() {
+interface InvestorProfilesProps {
+  homeInfo?: ProjectHomePageInfo | null;
+}
+
+export default function InvestorProfiles({ homeInfo }: InvestorProfilesProps) {
+  const unitPrice = useMemo(() => {
+    const priceFromApi = extractUnitPrice(homeInfo);
+    return priceFromApi && priceFromApi > 0 ? priceFromApi : DEFAULT_UNIT_PRICE;
+  }, [homeInfo]);
+
+  const investorProfiles = useMemo(
+    () =>
+      INVESTOR_PROFILE_CONFIG.map((profile) => ({
+        ...profile,
+        price: unitPrice * profile.multiplier,
+        amount: profile.multiplier,
+      })),
+    [unitPrice]
+  );
+
   const itemsBenefits = [
     { name: 'Explorador', id: 'explorador' },
     { name: 'Aventurero', id: 'aventurero' },
@@ -180,7 +286,7 @@ export default function InvestorProfiles() {
           }}
           className="w-full h-full"
         >
-          {INVESTOR_PROFILES.map((profile, index) => (
+          {investorProfiles.map((profile, index) => (
             <SwiperSlide key={index}>
               <InvestorProfile
                 img={profile.img}

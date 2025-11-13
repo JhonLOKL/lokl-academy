@@ -146,7 +146,7 @@ export default function IndieUniverse() {
 
           <div className="col-span-12 lg:col-span-4">
             <div className="my-6 w-full" id="investor-profile">
-              <InvestorProfiles />
+              <InvestorProfiles homeInfo={homeInfo} />
             </div>
 
             <div
