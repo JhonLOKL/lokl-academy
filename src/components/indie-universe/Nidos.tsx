@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import Image from "next/image";
 
 const formatNestName = (name: string) =>
   name.replace(/([a-z])([A-Z])/g, "$1 $2").trim();
@@ -144,9 +145,11 @@ export function Nidos() {
               className="border border-gray-200 rounded-xl flex px-5 py-4 items-center justify-center flex-grow min-w-fit bg-white"
             >
               <div className="mr-4 w-12 h-12 flex items-center justify-center">
-                <img
+                <Image
                   src={nido.iconLink}
                   alt={displayName}
+                  width={48}
+                  height={48}
                   className="w-full h-full object-contain"
                 />
               </div>
@@ -166,7 +169,13 @@ export function Nidos() {
           return (
             <div className="flex items-center" key={nido.name}>
               <div className="flex-shrink-0 w-10 h-10 mr-10">
-                <img src={nido.iconLink} alt={nido.name} className="w-full h-full object-contain" />
+                <Image
+                  src={nido.iconLink}
+                  alt={nido.name}
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-contain"
+                />
               </div>
               <p className="text-gray-500 font-epilogue">
                 <span className="text-2xl font-bold text-[#636D7A]">{nido.name}: </span>

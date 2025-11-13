@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import { Star, Play, Eye, Calculator, Info, X, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import type { ProjectHomePageInfo } from '@/services/projectService';
 
 // Datos base por defecto
@@ -529,9 +529,20 @@ const mapHomeInfoToProjectData = (
 
 export default function Header({
   homeInfo,
-  isLoading = false,
-  error,
+  isLoading = false
 }: HeaderProps) {
+  const [videoActive, setVideoActive] = useState<"desktop" | "mobile" | null>(null);
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [activeImage, setActiveImage] = useState(0);
+  const [showSecondaryMarketInfo, setShowSecondaryMarketInfo] = useState(false);
+  const projectData = useMemo(
+    () => mapHomeInfoToProjectData(homeInfo),
+    [homeInfo]
+  );
+  const galleryLength = projectData.images.gallery.length;
+  const remainingGallery = Math.max(galleryLength - 1, 0);
+
   if (isLoading) {
     return (
       <header className="w-full flex flex-col items-start space-y-8">
@@ -588,18 +599,6 @@ export default function Header({
       </header>
     );
   }
-
-  const [videoActive, setVideoActive] = useState<"desktop" | "mobile" | null>(null);
-  const [showDisclaimer, setShowDisclaimer] = useState(false);
-  const [galleryOpen, setGalleryOpen] = useState(false);
-  const [activeImage, setActiveImage] = useState(0);
-  const [showSecondaryMarketInfo, setShowSecondaryMarketInfo] = useState(false);
-  const projectData = useMemo(
-    () => mapHomeInfoToProjectData(homeInfo),
-    [homeInfo]
-  );
-  const galleryLength = projectData.images.gallery.length;
-  const remainingGallery = Math.max(galleryLength - 1, 0);
 
   const handleGoToSimulator = () => {
     const simulator = document.getElementById('simulator');

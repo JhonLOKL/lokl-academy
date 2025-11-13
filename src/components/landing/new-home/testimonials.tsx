@@ -95,6 +95,7 @@ export default function Testimonials() {
         
         try {
           container.setPointerCapture(event.pointerId);
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           // Ignoramos errores de pointer capture en navegadores que no lo soporten
         }
@@ -119,6 +120,7 @@ export default function Testimonials() {
           if (container.hasPointerCapture(event.pointerId)) {
             container.releasePointerCapture(event.pointerId);
           }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           // Ignoramos errores de pointer capture en navegadores que no lo soporten
         }

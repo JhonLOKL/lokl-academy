@@ -12,7 +12,7 @@ import {
   CheckCircle,
   Sparkles,
 } from "lucide-react";
-import { Button, Card, CardContent, CardHeader, CardTitle } from "@/components/design-system";
+import { Card, CardContent } from "@/components/design-system";
 import { buttonVariants } from "@/components/design-system/ui/button";
 
 const pensionPainPoints = [

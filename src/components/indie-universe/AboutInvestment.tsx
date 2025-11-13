@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef } from 'react';
+import Image from 'next/image';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
 import { Autoplay, Pagination } from 'swiper/modules';
@@ -79,7 +80,13 @@ export function AboutInvestment() {
               <div className="flex border border-gray-200 rounded-2xl font-normal h-36 items-center justify-center px-4 mx-px">
                 <div className="flex justify-center items-start">
                   <div className="flex-shrink-0 w-7 mr-3">
-                    <img src={item.link} alt={item.description} className="w-full h-7 object-contain" />
+                    <Image
+                      src={item.link}
+                      alt={item.description}
+                      width={28}
+                      height={28}
+                      className="w-full h-7 object-contain"
+                    />
                   </div>
                   <div className="w-full">
                     <p className="text-[13px] text-gray-700 leading-relaxed">

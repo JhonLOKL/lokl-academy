@@ -10,7 +10,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { User, Phone, Mail, Users } from "lucide-react";
 import LazyImage from "./lazy-image";
 import { useProjectStore } from "@/store/project-store";
 import type { HeroLeadFormProps } from "./hero-lead-form";
@@ -120,7 +119,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
   };
 
   // Handler para el cambio del slider
-  const handleSliderChange = (value: number[]) => {
+/*   const handleSliderChange = (value: number[]) => {
     if (currentHeroProject) {
       const newValue = value[0];
       const { minInvestment, maxInvestment } = calculateSliderRange(currentHeroProject);
@@ -130,7 +129,7 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
         setHeroInvestmentAmount(newValue);
       }
     }
-  };
+  }; */
 
   const handleViewFullProjection = (e: React.MouseEvent) => {
     e.preventDefault();

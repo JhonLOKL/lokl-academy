@@ -7,7 +7,6 @@ import {
   CheckCircle2,
   AlertTriangle,
   Loader2,
-  Shield,
   Phone,
   Mail,
 } from "lucide-react";

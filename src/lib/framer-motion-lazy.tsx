@@ -11,7 +11,7 @@
  */
 
 import { LazyMotion, domAnimation, m } from "framer-motion";
-import { ComponentProps, ReactNode } from "react";
+import { ReactNode } from "react";
 
 // Wrapper que proporciona las features de animación
 export function FramerMotionProvider({ children }: { children: ReactNode }) {

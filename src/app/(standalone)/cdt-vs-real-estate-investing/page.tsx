@@ -1,8 +1,8 @@
 import React from "react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { CheckCircle, TrendingUp, Shield, Calculator } from "lucide-react";
 import {
-  Button,
   Card,
   CardContent,
   CardHeader,
@@ -104,12 +104,12 @@ const HeroSection = () => (
           ))}
         </div>
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <a
+          <Link
             href="/#newprojects"
             className={buttonVariants({ size: "lg", variant: "primary" })}
           >
             Explorar proyectos reales
-          </a>
+          </Link>
           <a
             href="https://wa.me/573017328112"
             target="_blank"
@@ -163,8 +163,8 @@ const CdtValidationSection = () => (
               </p>
               <p className="text-sm text-orange-600">
                 Si tu CDT te da 12% anual y la inflación es 10%, en realidad
-                solo estás ganando 2% real. Tu dinero está "seguro", pero su
-                poder de compra apenas crece.
+                solo estás ganando 2% real. Tu dinero está &quot;seguro&quot;,
+                pero su poder de compra apenas crece.
               </p>
             </CardContent>
           </Card>
@@ -356,12 +356,12 @@ const FinalCtaSection = () => (
           Ya viste el potencial y entiendes la diferencia. Explora los proyectos
           reales donde puedes poner tu dinero a trabajar de manera inteligente.
         </p>
-        <a
+        <Link
           href="/#newprojects"
           className={buttonVariants({ size: "lg", variant: "secondary" })}
         >
           Explorar proyectos reales
-        </a>
+        </Link>
         <p className="mt-4 text-sm text-gray-400">
           Sin compromisos. Explora primero, decide después.
         </p>

@@ -533,9 +533,20 @@ const toPercentValue = (value: number) => (value > 1 ? value : value * 100);
 
 export default function Header({
   homeInfo,
-  isLoading = false,
-  error,
+  isLoading = false
 }: HeaderProps) {
+  const [videoActive, setVideoActive] = useState<"desktop" | "mobile" | null>(null);
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [activeImage, setActiveImage] = useState(0);
+  const PROJECT_DATA = useMemo(
+    () => mapHomeInfoToProjectData(homeInfo),
+    [homeInfo]
+  );
+  const galleryLength = PROJECT_DATA.images.gallery.length;
+  const remainingGallery =
+    Math.max(galleryLength - 1, 0);
+
   if (isLoading) {
     return (
       <header className="w-full flex flex-col items-start space-y-8">
@@ -592,18 +603,6 @@ export default function Header({
       </header>
     );
   }
-
-  const [videoActive, setVideoActive] = useState<"desktop" | "mobile" | null>(null);
-  const [showDisclaimer, setShowDisclaimer] = useState(false);
-  const [galleryOpen, setGalleryOpen] = useState(false);
-  const [activeImage, setActiveImage] = useState(0);
-  const PROJECT_DATA = useMemo(
-    () => mapHomeInfoToProjectData(homeInfo),
-    [homeInfo]
-  );
-  const galleryLength = PROJECT_DATA.images.gallery.length;
-  const remainingGallery =
-    Math.max(galleryLength - 1, 0);
 
   const handleGoToSimulator = () => {
     const simulator = document.getElementById('simulator');

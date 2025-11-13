@@ -37,8 +37,6 @@ export function PromoBanner({
   title,
   subtitle,
   ctaLabel,
-  targetId,
-  ctaHref,
   countdownLabel,
   deadline,
   className,

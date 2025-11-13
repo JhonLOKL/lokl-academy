@@ -3,7 +3,6 @@
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
-import { MapPin } from 'lucide-react';
 import Image from 'next/image';
 
 // CSS de Swiper movido a globals.css para optimizar la carga

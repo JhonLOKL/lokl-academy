@@ -20,7 +20,7 @@ interface SimulatorState extends SimulationData {
   setAvailableProjects: (projects: ProjectCard[]) => void;
   setLoadingProjects: (loading: boolean) => void;
   setProjectsError: (error: string | null) => void;
-  setPrefetchedSimulationData: (data: any | null) => void;
+  setPrefetchedSimulationData: (data: ApiSimulationData | null) => void;
   resetSimulation: () => void;
   saveSimulationState: () => void; // Guardar estado para persistencia temporal
   hasPersistedState: () => boolean; // Verificar si hay estado guardado
@@ -73,7 +73,8 @@ export const useSimulatorStore = create<SimulatorState>()(
       
       setProjectsError: (error) => set({ projectsError: error, isLoadingProjects: false }),
 
-      setPrefetchedSimulationData: (data) => set({ prefetchedSimulationData: data }),
+      setPrefetchedSimulationData: (data: ApiSimulationData | null) =>
+        set({ prefetchedSimulationData: data }),
 
       resetSimulation: () => set({ ...initialState, prefetchedSimulationData: null }),
 
