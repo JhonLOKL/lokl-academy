@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import MenuTabs from '@/components/indie-universe/MenuTabs';
 import { scrollToSection } from '@/helpers/functions';
@@ -18,7 +18,7 @@ import MarketingFooter from '@/components/footer/marketing-footer';
 import { getIndieUniverseHomeInfoAction } from '@/actions/project-actions';
 import type { ProjectHomePageInfo } from '@/services/projectService';
 
-export default function IndieUniverse() {
+function IndieUniverseContent() {
   const searchParams = useSearchParams();
   const [homeInfo, setHomeInfo] = useState<ProjectHomePageInfo | null>(null);
   const [homeInfoError, setHomeInfoError] = useState<string | null>(null);
@@ -174,4 +174,10 @@ export default function IndieUniverse() {
   );
 }
 
-
+export default function IndieUniverse() {
+  return (
+    <Suspense fallback={null}>
+      <IndieUniverseContent />
+    </Suspense>
+  );
+}
