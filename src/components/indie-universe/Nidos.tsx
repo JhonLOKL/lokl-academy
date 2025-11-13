@@ -134,7 +134,7 @@ export function Nidos() {
       <div
         ref={scrollContainerRef}
         onMouseDown={handleMouseDown}
-        className="flex gap-3 w-full mb-12 overflow-x-auto pb-4 scrollbar-hide cursor-grab select-none"
+        className="flex gap-6 w-full mb-12 overflow-x-auto pb-4 scrollbar-hide cursor-grab select-none"
       >
         {nidosTypes.map((nido) => {
           const displayName = formatNestName(nido.name);
@@ -161,7 +161,7 @@ export function Nidos() {
         })}
       </div>
 
-      <div className="px-5 flex flex-col gap-5">
+      <div className="px-5 flex flex-col gap-8">
         {nidosList.map((nido) => {
           return (
             <div className="flex items-center" key={nido.name}>
@@ -169,7 +169,7 @@ export function Nidos() {
                 <img src={nido.iconLink} alt={nido.name} className="w-full h-full object-contain" />
               </div>
               <p className="text-gray-500 font-epilogue">
-                <span className="text-2xl font-bold text-gray-800">{nido.name}: </span>
+                <span className="text-2xl font-bold text-[#636D7A]">{nido.name}: </span>
                 {nido.description}
               </p>
             </div>

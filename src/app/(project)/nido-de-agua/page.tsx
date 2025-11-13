@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import MenuTabs from '@/components/nido-de-agua/MenuTabs';
 import { scrollToSection } from '@/helpers/functions';
-import Benefits from '@/components/nido-de-agua/Benefits';
 import Header from '@/components/nido-de-agua/Header';
 import Team from '@/components/nido-de-agua/Team';
 import { AboutInvestment } from '@/components/nido-de-agua/AboutInvestment';
@@ -15,8 +14,10 @@ import { Insights } from '@/components/nido-de-agua/Insights';
 import { Simulator } from '@/components/nido-de-agua/Simulator';
 import InvestorProfiles from '@/components/nido-de-agua/InvestorProfiles';
 import PromoBanner from '@/components/shared/PromoBanner';
+import MarketingFooter from '@/components/footer/marketing-footer';
 import { getNidoDeAguaHomeInfoAction } from '@/actions/project-actions';
 import type { ProjectHomePageInfo } from '@/services/projectService';
+import Benefits from '@/components/nido-de-agua/Benefits';
 
 export default function NidoDeAgua() {
   const searchParams = useSearchParams();
@@ -140,9 +141,6 @@ export default function NidoDeAgua() {
 
             <hr className="my-8" />
 
-            <div id="team" className="w-full my-12">
-              <Team />
-            </div>
           </div>
 
           <div className="col-span-12 lg:col-span-4">
@@ -150,16 +148,14 @@ export default function NidoDeAgua() {
               <InvestorProfiles />
             </div>
 
-            <div
-              id="insights"
-              className="-mt-40 h-px w-px opacity-0 pointer-events-none"
-              aria-hidden="true"
-            />
-
-            <div className="my-6 w-full hidden md:block">
+            <div className="my-6 w-full hidden md:block scroll-mt-40" id="insights">
               <Insights />
             </div>
           </div>
+        </div>
+
+        <div id="team" className="w-full my-12">
+          <Team />
         </div>
 
         <div>
@@ -178,11 +174,12 @@ export default function NidoDeAgua() {
 
           <hr className="my-8" />
 
-          <div id="benefits" className="w-full my-12">
+          <section className="w-full">
             <Benefits />
-          </div>
+          </section>
         </div>
       </section>
+      <MarketingFooter />
     </>
   );
 }

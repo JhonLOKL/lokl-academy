@@ -61,32 +61,30 @@ export default function Team() {
         Equipo del proyecto
       </h2>
       
-      <div className="grid grid-cols-6 gap-x-0 gap-y-6 lg:gap-x-5 lg:gap-y-16">
+      <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 xl:gap-x-6 xl:gap-y-10">
         {teamList.map((team) => (
-          <div 
-            key={team.id} 
-            className="flex items-end justify-center col-span-3 lg:col-span-2"
+          <div
+            key={team.id}
+            className="flex flex-col items-center justify-start text-center"
           >
-            <div className="text-center">
-              <div className="flex justify-center mb-3">
-                <Image
-                  src={team.img}
-                  alt={team.name}
-                  width={104}
-                  height={104}
-                  className="object-contain rounded-lg"
-                />
-              </div>
-              <p className="font-syne text-sm text-gray-700">{team.name}</p>
-              <a 
-                href={team.link} 
-                className="font-syne text-[#5452F6] text-sm hover:underline" 
-                target="_blank" 
-                rel="noreferrer"
-              >
-                Conoce más aquí
-              </a>
+            <div className="flex justify-center mb-3">
+              <Image
+                src={team.img}
+                alt={team.name}
+                width={104}
+                height={104}
+                className="object-contain rounded-lg"
+              />
             </div>
+            <p className="font-syne text-sm text-gray-700">{team.name}</p>
+            <a
+              href={team.link}
+              className="font-syne text-[#5452F6] text-sm hover:underline"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Conoce más aquí
+            </a>
           </div>
         ))}
       </div>

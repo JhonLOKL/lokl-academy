@@ -14,6 +14,7 @@ import { Insights } from '@/components/indie-universe/Insights';
 import { Simulator } from '@/components/indie-universe/Simulator';
 import InvestorProfiles from '@/components/indie-universe/InvestorProfiles';
 import PromoBanner from '@/components/shared/PromoBanner';
+import MarketingFooter from '@/components/footer/marketing-footer';
 import { getIndieUniverseHomeInfoAction } from '@/actions/project-actions';
 import type { ProjectHomePageInfo } from '@/services/projectService';
 
@@ -150,7 +151,7 @@ export default function IndieUniverse() {
 
             <div
               id="insights"
-              className="-mt-40 h-px w-px opacity-0 pointer-events-none"
+              className="h-0 scroll-mt-40 pointer-events-none"
               aria-hidden="true"
             />
 
@@ -168,6 +169,7 @@ export default function IndieUniverse() {
           </div>
         </div>
       </section>
+      <MarketingFooter />
     </>
   );
 }

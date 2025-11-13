@@ -610,10 +610,10 @@ export default function Header({
       {/* Título y métricas (Desktop) */}
       <div className="lg:w-3/5 flex flex-col lg:flex-row justify-between items-center space-x-10">
         <div>
-          <h2 className="font-black text-3xl md:text-4xl mb-2">{PROJECT_DATA.name}</h2>
+          <h2 className="font-bold text-3xl md:text-4xl mb-2">{PROJECT_DATA.name}</h2>
           <div className="flex items-center font-medium gap-2 text-sm md:text-base">
             <p>
-              <span className="font-extrabold">{PROJECT_DATA.location}</span>
+              <span className="font-bold">{PROJECT_DATA.location}</span>
             </p>
             <div className="flex items-center gap-1">
               <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -626,7 +626,7 @@ export default function Header({
         <div className="hidden lg:flex justify-between items-end gap-8">
           <div className="text-center relative">
             <div className="flex items-center gap-1 justify-center">
-              <p className="text-2xl font-extrabold">{PROJECT_DATA.estimatedReturn}</p>
+              <p className="text-2xl font-semibold">{PROJECT_DATA.estimatedReturn}</p>
               <button
                 onClick={() => setShowDisclaimer(!showDisclaimer)}
                 className="cursor-pointer"
@@ -638,12 +638,12 @@ export default function Header({
           </div>
 
           <div className="text-center">
-            <p className="font-black text-xl">{PROJECT_DATA.valuePerUnit}</p>
+            <p className="font-bold text-xl">{PROJECT_DATA.valuePerUnit}</p>
             <p className="text-sm">Valor $ por Unit</p>
           </div>
 
           <div className="text-center">
-            <p className="font-black text-xl">{formatNumber(PROJECT_DATA.totalInvestors)}</p>
+            <p className="font-bold text-xl">{formatNumber(PROJECT_DATA.totalInvestors)}</p>
             <p className="text-sm">Inversionistas</p>
           </div>
         </div>
@@ -674,10 +674,10 @@ export default function Header({
                   priority
                 />
                 <div
-                  className="absolute top-0 left-0 w-full h-full flex flex-col justify-between text-white p-8 font-extrabold cursor-pointer z-10 bg-black/20"
+                  className="absolute top-0 left-0 w-full h-full flex flex-col justify-between text-white p-8 font-semibold cursor-pointer z-10 bg-black/20"
                   onClick={() => setVideoActive('desktop')}
                 >
-                  <div className="text-xl">
+                  <div className="text-xl font-semibold">
                     {PROJECT_DATA.videoQuote}
                   </div>
 
@@ -688,9 +688,9 @@ export default function Header({
                   </div>
 
                   <div className="flex items-center space-x-10">
-                    <div className="text-lg">{PROJECT_DATA.features.area}</div>
-                    <div className="text-lg">{PROJECT_DATA.features.cabins}</div>
-                    <div className="text-lg">{PROJECT_DATA.features.trees}</div>
+                    <div className="text-lg font-semibold">{PROJECT_DATA.features.area}</div>
+                    <div className="text-lg font-semibold">{PROJECT_DATA.features.cabins}</div>
+                    <div className="text-lg font-semibold">{PROJECT_DATA.features.trees}</div>
                   </div>
                 </div>
               </>
@@ -727,7 +727,7 @@ export default function Header({
               )}
               <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center text-white z-10">
                 {remainingGallery > 0 && (
-                  <div className="text-4xl font-extrabold">+{remainingGallery}</div>
+                  <div className="text-4xl font-semibold">+{remainingGallery}</div>
                 )}
                 <div className="font-light underline text-sm">Ver más fotos</div>
               </div>
@@ -744,15 +744,15 @@ export default function Header({
         {/* Descripción y tabs (Desktop) */}
         <Tabs defaultValue="investment" className="hidden lg:block lg:w-2/5 space-y-7">
           <div>
-            <h2 className="font-black text-xl mb-3">¿Qué es Nido de agua?</h2>
+            <h2 className="font-bold text-xl mb-3">¿Qué es Nido de agua?</h2>
             <p className="text-[#5B5B5B]">{PROJECT_DATA.description}</p>
           </div>
 
           <div>
-            <h2 className="font-black text-xl mb-3">¿A partir de qué monto puedo invertir?</h2>
+            <h2 className="font-bold text-xl mb-3">¿A partir de qué monto puedo invertir?</h2>
             <div className="flex justify-between items-start relative">
               <div>
-                <div className="font-black text-4xl">
+                <div className="font-bold text-4xl">
                   {PROJECT_DATA.minInvestment} <span className="text-lg">{PROJECT_DATA.minInvestmentPeriod}</span>
                 </div>
                 <div className="text-[#5452F6] font-light underline text-sm mt-1">
@@ -768,7 +768,7 @@ export default function Header({
             </div>
           </div>
 
-          <TabsList className="flex space-x-3 bg-transparent p-0">
+          <TabsList className="flex justify-start space-x-3 bg-transparent p-0">
             <TabsTrigger 
               value="investment" 
               className="rounded-md px-4 py-2 font-medium text-sm transition-all data-[state=active]:bg-[#DDE4FF] data-[state=active]:text-gray-800 data-[state=inactive]:bg-[#F0F0F0] data-[state=inactive]:text-gray-700"
@@ -784,17 +784,19 @@ export default function Header({
           </TabsList>
 
           <TabsContent value="investment" className="space-y-4">
-            <div className="font-extrabold text-lg">
+            <div className="font-semibold text-lg">
               {PROJECT_DATA.totalInvestment}
             </div>
-            <div className="flex items-baseline gap-2">
-              <span className="font-black text-6xl text-gray-800">
-                {PROJECT_DATA.availableSlots.current}
-              </span>
-              <span className="font-black text-4xl text-gray-400">
-                /{PROJECT_DATA.availableSlots.total}
-              </span>
-              <p className="text-sm text-gray-600 ml-auto flex-shrink-0 max-w-[60%]">
+            <div className="flex items-end justify-between gap-4">
+              <div className="flex items-baseline gap-2">
+                <span className="font-bold text-6xl text-gray-800">
+                  {PROJECT_DATA.availableSlots.current}
+                </span>
+                <span className="font-bold text-4xl text-gray-400">
+                  /{PROJECT_DATA.availableSlots.total}
+                </span>
+              </div>
+              <p className="text-sm text-gray-600 text-right max-w-[60%] font-medium">
                 Cupos disponibles antes de que suba el precio por unit. ¡No te quedes por fuera!
               </p>
             </div>
@@ -803,8 +805,8 @@ export default function Header({
           <TabsContent value="stages" className="flex space-x-4">
             {PROJECT_DATA.stages.map((stage, index) => (
               <div key={index} className="bg-[#F6F6F6] py-3 px-4 rounded">
-                <div className="font-roboto text-sm font-extrabold mb-1">{stage.month}</div>
-                <div className="font-roboto text-sm mb-1">{stage.price}</div>
+                <div className="font-roboto text-sm font-semibold mb-1">{stage.month}</div>
+                <div className="font-roboto text-sm font-medium mb-1">{stage.price}</div>
                 <div className="text-[#5452F6] text-xs">{stage.validUntil}</div>
               </div>
             ))}
@@ -812,7 +814,7 @@ export default function Header({
 
           <button
             onClick={handleGoToBuy}
-            className="w-full bg-black text-white py-3 px-6 rounded-lg font-bold hover:bg-gray-800 transition"
+            className="inline-flex items-center justify-center bg-[#0F172A] text-white py-3.5 px-10 rounded-full font-semibold text-base hover:bg-[#111C2F] transition"
           >
             Quiero ser socio
           </button>
@@ -849,7 +851,7 @@ export default function Header({
                 priority
               />
               <div
-                className="absolute top-0 left-0 w-full h-full flex flex-col justify-between text-white p-6 font-extrabold cursor-pointer z-10 bg-black/25"
+                className="absolute top-0 left-0 w-full h-full flex flex-col justify-between text-white p-6 font-semibold cursor-pointer z-10 bg-black/25"
                 onClick={() => setVideoActive('mobile')}
               >
                 <div className="text-lg">
@@ -902,8 +904,8 @@ export default function Header({
               />
             )}
             <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center text-white z-10 bg-black/30">
-              {remainingGallery > 0 && (
-                <div className="text-2xl font-extrabold">+{remainingGallery}</div>
+                {remainingGallery > 0 && (
+                  <div className="text-2xl font-semibold">+{remainingGallery}</div>
               )}
               <div className="font-light underline text-xs">Ver más fotos</div>
             </div>
@@ -920,15 +922,15 @@ export default function Header({
         <div className="w-2 h-auto bg-[#DADADA]"></div>
         <div className="w-full flex justify-around bg-[#9393930D] py-4">
           <div className="text-center">
-            <div className="font-black text-xl">{PROJECT_DATA.estimatedReturn}</div>
+            <div className="font-bold text-xl">{PROJECT_DATA.estimatedReturn}</div>
             <div className="text-sm">Retorno Estimado</div>
           </div>
           <div className="text-center">
-            <div className="font-black text-xl">{PROJECT_DATA.valuePerUnit}</div>
+            <div className="font-bold text-xl">{PROJECT_DATA.valuePerUnit}</div>
             <div className="text-sm">Valor $ por unit</div>
           </div>
           <div className="text-center">
-            <div className="font-black text-xl">{formatNumber(PROJECT_DATA.totalInvestors)}</div>
+            <div className="font-bold text-xl">{formatNumber(PROJECT_DATA.totalInvestors)}</div>
             <div className="text-sm">Total de socios</div>
           </div>
         </div>
@@ -937,10 +939,10 @@ export default function Header({
       {/* Tabs Mobile */}
       <Tabs defaultValue="investment" className="lg:hidden w-full space-y-7">
         <div>
-          <h2 className="font-black text-xl mb-3">¿A partir de qué monto puedo invertir?</h2>
+          <h2 className="font-bold text-xl mb-3">¿A partir de qué monto puedo invertir?</h2>
           <div className="flex justify-between items-start relative">
             <div>
-              <div className="font-black text-4xl">
+              <div className="font-bold text-4xl">
                 {PROJECT_DATA.minInvestment} <span className="text-lg">{PROJECT_DATA.minInvestmentPeriod}</span>
               </div>
               <div className="text-[#5452F6] font-light underline text-sm mt-1">
@@ -956,40 +958,40 @@ export default function Header({
           </div>
         </div>
 
-        <TabsList className="flex space-x-3 bg-transparent p-0">
+        <TabsList className="grid grid-cols-2 gap-3 bg-transparent p-0">
           <TabsTrigger 
             value="investment" 
-            className="rounded-md px-4 py-2 font-medium text-sm transition-all data-[state=active]:bg-[#DDE4FF] data-[state=active]:text-gray-800 data-[state=inactive]:bg-[#F0F0F0] data-[state=inactive]:text-gray-700"
+            className="w-full rounded-md px-4 py-2 font-medium text-sm text-center transition-all data-[state=active]:bg-[#DDE4FF] data-[state=active]:text-gray-800 data-[state=inactive]:bg-[#F0F0F0] data-[state=inactive]:text-gray-700"
           >
             Cupo de inversión
           </TabsTrigger>
           <TabsTrigger 
             value="stages" 
-            className="rounded-md px-4 py-2 font-medium text-sm transition-all data-[state=active]:bg-[#DDE4FF] data-[state=active]:text-gray-800 data-[state=inactive]:bg-[#F0F0F0] data-[state=inactive]:text-gray-700"
+            className="w-full rounded-md px-4 py-2 font-medium text-sm text-center transition-all data-[state=active]:bg-[#DDE4FF] data-[state=active]:text-gray-800 data-[state=inactive]:bg-[#F0F0F0] data-[state=inactive]:text-gray-700"
           >
             Etapas
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="investment" className="space-y-4">
-          <div className="font-extrabold text-lg">
+          <div className="font-semibold text-lg">
             {PROJECT_DATA.totalInvestment}
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="font-black text-6xl text-gray-800">
+            <span className="font-bold text-6xl text-gray-800">
               {PROJECT_DATA.availableSlots.current}
             </span>
-            <span className="font-black text-4xl text-gray-400">
+            <span className="font-bold text-4xl text-gray-400">
               /{PROJECT_DATA.availableSlots.total}
             </span>
           </div>
         </TabsContent>
 
         <TabsContent value="stages" className="flex space-x-4">
-          {PROJECT_DATA.stages.map((stage, index) => (
-            <div key={index} className="bg-[#F6F6F6] py-3 px-4 rounded">
-              <div className="font-roboto text-sm font-extrabold mb-1">{stage.month}</div>
-              <div className="font-roboto text-sm mb-1">{stage.price}</div>
+            {PROJECT_DATA.stages.map((stage, index) => (
+              <div key={index} className="bg-[#F6F6F6] py-3 px-4 rounded">
+                <div className="font-roboto text-sm font-semibold mb-1">{stage.month}</div>
+                <div className="font-roboto text-sm font-medium mb-1">{stage.price}</div>
               <div className="text-[#5452F6] text-xs">{stage.validUntil}</div>
             </div>
           ))}
@@ -997,7 +999,7 @@ export default function Header({
 
         <button
           onClick={handleGoToBuy}
-          className="w-full bg-black text-white py-3 px-6 rounded-lg font-bold hover:bg-gray-800 transition"
+          className="inline-flex items-center justify-center bg-[#0F172A] text-white py-3.5 px-10 rounded-full font-semibold text-base hover:bg-[#111C2F] transition"
         >
           Quiero ser socio
         </button>

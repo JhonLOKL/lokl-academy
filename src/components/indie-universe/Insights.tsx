@@ -57,7 +57,7 @@ export function Insights() {
           navigation={true}
           modules={[Autoplay, Navigation, Pagination]}
           pagination={true}
-          className="w-full h-[500px] md:h-[600px]"
+          className="w-full h-[360px] md:h-[420px] lg:h-[460px]"
         >
           {insightsData.map((insight) => (
             <SwiperSlide key={insight.id}>
@@ -73,14 +73,14 @@ export function Insights() {
                     priority={insight.id === 1}
                   />
                 </div>
-                <div className="absolute z-30 top-1/2 left-0 right-0 text-center m-auto -translate-y-1/2 px-6 md:px-12 max-w-4xl mx-auto">
-                  <h2 className="text-white text-2xl md:text-3xl font-extrabold font-epilogue text-left mb-3">
+                <div className="absolute inset-x-0 top-1/2 z-30 -translate-y-1/2 px-4 md:px-10 max-w-3xl mx-auto">
+                  <h2 className="text-white text-xl md:text-2xl lg:text-3xl font-extrabold font-epilogue text-left mb-2">
                     {insight.title}
                   </h2>
-                  <div className="text-white text-base md:text-xl font-medium font-epilogue mb-8 md:mb-12 text-left leading-relaxed space-y-4">
+                  <div className="text-white text-sm md:text-base lg:text-lg font-medium font-epilogue mb-5 md:mb-8 text-left leading-relaxed space-y-3">
                     {typeof insight.text === 'string' ? <p>{insight.text}</p> : insight.text}
                   </div>
-                  <div className="flex justify-center md:justify-start">
+                  <div className="flex justify-start">
                     <button 
                       onClick={handleGoToBuy}
                       className={`${insight.buttonBg} text-black rounded-full font-noto font-semibold text-lg md:text-xl px-4 py-2 md:py-[10px] hover:opacity-90 transition whitespace-nowrap`}

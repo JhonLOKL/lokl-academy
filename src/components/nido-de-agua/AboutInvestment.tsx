@@ -4,34 +4,34 @@ import React, { useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
 import { Autoplay, Pagination } from 'swiper/modules';
-import { Calendar, CreditCard, DollarSign, Lock, Clock, Percent } from 'lucide-react';
+import Image from 'next/image';
 
 // CSS de Swiper movido a globals.css para optimizar la carga
 
 const investmentInfo = [
   {
-    icon: Calendar,
-    text: '*Estimado de apertura Primer semestre 2026'
+    link: 'https://lokl-assets.s3.us-east-1.amazonaws.com/property-page/nido-de-agua/icon-coins.svg',
+    description: '1% de costo de administración anual de tu inversión'
   },
   {
-    icon: CreditCard,
-    text: '*Pagos trimestrales, un año después de apertura'
+    link: 'https://lokl-assets.s3.us-east-1.amazonaws.com/property-page/nido-de-agua/icon-dollar.svg',
+    description: 'Pagos trimestrales, un año después de apertura'
   },
   {
-    icon: DollarSign,
-    text: '*<strong>3%</strong> de comisión cuando te ayudamos a vender tu inversión'
+    link: 'https://lokl-assets.s3.us-east-1.amazonaws.com/property-page/nido-de-agua/icon-wallet.svg',
+    description: '1 año mínimo para poder vender tu inversión'
   },
   {
-    icon: Lock,
-    text: '*1 año mínimo para poder vender tu inversión'
+    link: 'https://lokl-assets.s3.us-east-1.amazonaws.com/property-page/nido-de-agua/icon-calendar.svg',
+    description: 'El primer año de operación se realizan reservas'
   },
   {
-    icon: Clock,
-    text: '*El primer año de operación se realizan reservas'
+    link: 'https://lokl-assets.s3.us-east-1.amazonaws.com/property-page/nido-de-agua/icon-chart.svg',
+    description: '3% de comisión cuando te ayudamos a vender tu inversión'
   },
   {
-    icon: Percent,
-    text: '*<strong>1%</strong> de costo de administración anual de tu inversión'
+    link: 'https://lokl-assets.s3.us-east-1.amazonaws.com/property-page/nido-de-agua/icon-house.svg',
+    description: 'Estimado de apertura primer semestre 2026'
   }
 ];
 
@@ -74,39 +74,27 @@ export function AboutInvestment() {
         }}
         className="about-investment-swiper"
       >
-        {investmentInfo.map((item, index) => {
-          const IconComponent = item.icon;
-          return (
-            <SwiperSlide key={index}>
-              <div className="flex border border-gray-200 rounded-2xl font-normal h-36 items-center justify-center px-4 mx-px">
-                <div className="flex justify-center items-start">
-                  <div className="flex-shrink-0 w-7 mr-3">
-                    <IconComponent className="w-full h-7 text-gray-600" />
-                  </div>
-                  <div className="w-full">
-                    <p className="text-[13px] text-gray-700 leading-relaxed">
-                      {item.text.includes('3%') || item.text.includes('1%') ? (
-                        <>
-                          {item.text.split(/(<strong>.*?<\/strong>)/).map((part, i) => {
-                            if (part.includes('<strong>')) {
-                              const match = part.match(/<strong>(.*?)<\/strong>/);
-                              return match ? (
-                                <strong key={i} className="font-bold">{match[1]}</strong>
-                              ) : null;
-                            }
-                            return part.replace('*', '');
-                          })}
-                        </>
-                      ) : (
-                        item.text.replace('*', '')
-                      )}
-                    </p>
-                  </div>
+        {investmentInfo.map((item, index) => (
+          <SwiperSlide key={index}>
+            <div className="flex border border-gray-200 rounded-2xl font-normal h-36 items-center justify-center px-4 mx-px">
+              <div className="flex justify-center items-start">
+                <div className="relative flex-shrink-0 w-9 h-9 mr-3">
+                  <Image
+                    src={item.link}
+                    alt={item.description}
+                    fill
+                    sizes="36px"
+                  />
+                </div>
+                <div className="w-full">
+                  <p className="text-[13px] text-gray-700 leading-relaxed">
+                    {item.description}
+                  </p>
                 </div>
               </div>
-            </SwiperSlide>
-          );
-        })}
+            </div>
+          </SwiperSlide>
+        ))}
       </Swiper>
 
       {/* Botones de navegación - Desktop */}

@@ -28,19 +28,13 @@ export function LocationIndie() {
       </h2>
 
       <h2 className="text-3xl font-epilogue font-bold mb-12">
-        Medellín / Laureles - Antioquia, Colombia
+        Medellín - Antioquia, Colombia
       </h2>
 
       <div className="flex flex-col md:flex-row gap-x-8 mb-12">
-        <p className="font-syne text-lg mb-4 md:mb-0">
-          Un espacio único en Medellín que fusiona estilo, innovación y confort,
-          capturando la energía de la ciudad más vibrante de Colombia.
+        <p className="font-syne text-lg">
+          Uno de los destinos más importantes de valorización del país, de los principales atractivos de Medellín y la ciudad más turística de Colombia.
         </p>
-        <ul>
-          <li className="list-disc font-syne text-lg">
-            "Un lugar que ha crecido en un <strong className="font-bold">85%</strong> su ocupación hotelera."
-          </li>
-        </ul>
       </div>
 
       <div className="mb-8">

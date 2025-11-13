@@ -144,7 +144,7 @@ export function Nidos() {
               <div>
                 <p className="text-gray-600 text-sm">{displayName}</p>
                 <p className="text-gray-500 text-sm">
-                  {nido.squareMeters} m² · {nido.roomCount} habitaciones
+                  {nido.squareMeters} m² · {nido.roomCount} alojamientos
                 </p>
               </div>
             </div>
@@ -160,7 +160,7 @@ export function Nidos() {
                 <img src={nido.iconLink} alt={nido.name} className="w-full h-full object-contain" />
               </div>
               <p className="text-gray-500 font-epilogue">
-                <span className="text-2xl font-bold text-gray-800">{nido.name}: </span>
+                <span className="text-2xl font-bold text-[#636D7A]">{nido.name}: </span>
                 {nido.description}
               </p>
             </div>

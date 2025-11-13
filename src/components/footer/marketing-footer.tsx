@@ -196,7 +196,7 @@ export function MarketingFooter() {
               </li>
               <li className="inline-flex items-center gap-2 text-white/70">
                 <Mail className="h-4 w-4" />
-                contacto@lokl.life
+                digital@lokl.life
               </li>
             </ul>
           </div>

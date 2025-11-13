@@ -11,7 +11,7 @@ const insightsData = [
   {
     id: 1,
     img: 'https://lokl-assets.s3.us-east-1.amazonaws.com/nido-de-agua/insights/insight-1.webp',
-    title: 'Proyecto en Turismo ...',
+    title: 'Proyecto en Turismo ',
     description: 'El sector con más potencial de la economía Colombiana. en términos de turismo Colombia planea recibir para 2026 entre 7.5 y 12 millones de visitantes.',
     buttonBg: 'bg-white',
     overlay: 'bg-black/40'
@@ -19,7 +19,7 @@ const insightsData = [
   {
     id: 2,
     img: 'https://lokl-assets.s3.us-east-1.amazonaws.com/nido-de-agua/insights/insight-2.webp',
-    title: '2do sector que genera USD ...',
+    title: '2do sector que genera USD ',
     description: 'Siendo una industria con mayor flujo de dólares, superando productos tradicionales cómo el café y las flores',
     buttonBg: 'bg-[#D7CFFF]',
     overlay: 'bg-black/30'
@@ -27,7 +27,7 @@ const insightsData = [
   {
     id: 3,
     img: 'https://lokl-assets.s3.us-east-1.amazonaws.com/nido-de-agua/insights/insight-3.webp',
-    title: 'Una ubicación de alta valorización ...',
+    title: 'Una ubicación de alta valorización ',
     description: 'Guatape y el peñol tienen un factor de valorización por encima de las principales ciudades del país',
     buttonBg: 'bg-[#FFF2C3]',
     overlay: 'bg-black/20'
@@ -57,7 +57,7 @@ export function Insights() {
           navigation={true}
           modules={[Autoplay, Navigation, Pagination]}
           pagination={true}
-          className="w-full h-[500px] md:h-[600px]"
+          className="w-full h-[420px] md:h-[520px]"
         >
           {insightsData.map((insight) => (
             <SwiperSlide key={insight.id}>

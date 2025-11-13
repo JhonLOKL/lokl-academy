@@ -36,16 +36,9 @@ export function Location() {
       </h2>
 
       <div className="flex flex-col md:flex-row gap-x-8 mb-12">
-        <p className="font-syne text-lg mb-4 md:mb-0">
-          Uno de los destinos más importantes de valorización del país 
-          y uno de los principales atractivos de Medellín, 
-          la ciudad más turística de Colombia.
+        <p className="font-syne text-lg">
+          Uno de los destinos más importantes de valorización del país y uno de los principales atractivos de Medellín, la ciudad más turística de Colombia. Un lugar que ha crecido en un <strong className="font-bold">85%</strong> su ocupación hotelera.
         </p>
-        <ul>
-          <li className="list-disc font-syne text-lg">
-            "Un lugar que ha crecido en un <strong className="font-bold">85%</strong> su ocupación hotelera."
-          </li>
-        </ul>
       </div>
 
       <div className="mb-8">
