@@ -164,6 +164,26 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: '/project/nido-de-agua',
+        destination: '/nido-de-agua',
+        permanent: true,
+      },
+      {
+        source: '/nido',
+        destination: '/nido-de-agua',
+        permanent: true,
+      },
+      {
+        source: '/project/indie-universe',
+        destination: '/indie-universe',
+        permanent: true,
+      },
+      {
+        source: '/indie',
+        destination: '/indie-universe',
+        permanent: true,
+      },
+      {
         source: '/discover-your-investor-profile',
         destination: 'https://dashboard.lokl.life/discover-your-investor-profile',
         permanent: true,

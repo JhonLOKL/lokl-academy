@@ -158,6 +158,7 @@ export default function RootLayout({
         />
         
         {/* Preload de fuente crítica para mejorar FCP */}
+        {/* eslint-disable-next-line @next/next/google-font-preconnect */}
         <link
           rel="preload"
           href="https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hiA.woff2"

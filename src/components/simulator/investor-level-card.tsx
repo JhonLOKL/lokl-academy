@@ -87,6 +87,7 @@ export default function InvestorLevelCard({
     : investorLevels[0];
 
   // Calcular progreso
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getProgress = () => {
     if (!nextLevel) return 100;
     const start = currentLevel?.level.minUnits || 0;
@@ -94,8 +95,6 @@ export default function InvestorLevelCard({
     const progress = ((currentUnits - start) / (end - start)) * 100;
     return Math.min(100, Math.max(0, progress));
   };
-
-  const progress = getProgress();
   const unitsToNext = nextLevel ? Math.max(0, nextLevel.minUnits - currentUnits) : 0;
 
   // Nivel a mostrar (actual o próximo)

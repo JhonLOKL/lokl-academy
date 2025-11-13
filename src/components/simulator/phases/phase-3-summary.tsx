@@ -58,8 +58,6 @@ export default function Phase3Summary({
     Math.max(minUnits, Math.round(investmentAmount / unitPrice))
   );
 
-  const minInvestment = unitPrice * minUnits;
-  const maxInvestment = unitPrice * maxUnits;
   const maxInstallments = project.maxInvestmentQuota || 1;
 
   // Estado local para escritura fluida en el input de units

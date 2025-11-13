@@ -12,79 +12,172 @@ export default function Testimonials() {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const row1Ref = useRef<HTMLDivElement>(null);
   const row2Ref = useRef<HTMLDivElement>(null);
+  const isVideoPlayingRef = useRef(isVideoPlaying);
   
   // Estado para el carrusel móvil
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   
-  // Efecto para controlar la pausa de animación en hover y reproducción de video
   useEffect(() => {
-    // Función para manejar el hover en la primera fila
-    const handleRow1MouseEnter = () => {
-      if (row1Ref.current && !isVideoPlaying) {
-        row1Ref.current.style.animationPlayState = 'paused';
-      }
-    };
-    
-    const handleRow1MouseLeave = () => {
-      if (row1Ref.current && !isVideoPlaying) {
-        row1Ref.current.style.animationPlayState = 'running';
-      }
-    };
-    
-    // Función para manejar el hover en la segunda fila
-    const handleRow2MouseEnter = () => {
-      if (row2Ref.current && !isVideoPlaying) {
-        row2Ref.current.style.animationPlayState = 'paused';
-      }
-    };
-    
-    const handleRow2MouseLeave = () => {
-      if (row2Ref.current && !isVideoPlaying) {
-        row2Ref.current.style.animationPlayState = 'running';
-      }
-    };
-    
-    // Añadir event listeners
-    const row1 = row1Ref.current;
-    const row2 = row2Ref.current;
-    
-    if (row1) {
-      row1.addEventListener('mouseenter', handleRow1MouseEnter);
-      row1.addEventListener('mouseleave', handleRow1MouseLeave);
-    }
-    
-    if (row2) {
-      row2.addEventListener('mouseenter', handleRow2MouseEnter);
-      row2.addEventListener('mouseleave', handleRow2MouseLeave);
-    }
-    
-    // Limpieza al desmontar
-    return () => {
-      if (row1) {
-        row1.removeEventListener('mouseenter', handleRow1MouseEnter);
-        row1.removeEventListener('mouseleave', handleRow1MouseLeave);
-      }
-      
-      if (row2) {
-        row2.removeEventListener('mouseenter', handleRow2MouseEnter);
-        row2.removeEventListener('mouseleave', handleRow2MouseLeave);
-      }
-    };
+    isVideoPlayingRef.current = isVideoPlaying;
   }, [isVideoPlaying]);
+  
+  useEffect(() => {
+    type Direction = 'left' | 'right';
+    
+    const setupAutoScroll = (container: HTMLDivElement | null, direction: Direction) => {
+      if (!container) return;
+      
+      container.style.cursor = 'grab';
+      container.style.touchAction = 'pan-y';
+      container.style.userSelect = 'none';
+      
+      let loopWidth = 0;
+      let virtualScroll = 0;
+      let animationFrameId: number | null = null;
+      let recalcFrameId: number | null = null;
+      let isDragging = false;
+      let isHovering = false;
+      let startX = 0;
+      let startVirtualScroll = 0;
+      
+      const baseSpeed = direction === 'left' ? 0.4 : -0.4;
+      
+      const wrapPosition = (value: number) => {
+        if (loopWidth === 0) return 0;
+        return ((value % loopWidth) + loopWidth) % loopWidth;
+      };
+      
+      const syncScrollLeft = () => {
+        container.scrollLeft = virtualScroll;
+      };
+      
+      const recalcLoopWidth = () => {
+        const totalWidth = container.scrollWidth;
+        loopWidth = totalWidth / 2;
+        
+        if (loopWidth === 0) return;
+        
+        if (direction === 'right' && virtualScroll === 0) {
+          virtualScroll = loopWidth;
+        }
+        
+        virtualScroll = wrapPosition(virtualScroll);
+        syncScrollLeft();
+      };
+      
+      recalcLoopWidth();
+      recalcFrameId = requestAnimationFrame(recalcLoopWidth);
+      
+      const handleResize = () => {
+        recalcLoopWidth();
+      };
+      
+      window.addEventListener('resize', handleResize);
+      
+      const autoScroll = () => {
+        if (!isDragging && !isHovering && !isVideoPlayingRef.current && loopWidth > 0) {
+          virtualScroll = wrapPosition(virtualScroll + baseSpeed);
+          syncScrollLeft();
+        }
+        
+        animationFrameId = requestAnimationFrame(autoScroll);
+      };
+      
+      animationFrameId = requestAnimationFrame(autoScroll);
+      
+      const handlePointerDown = (event: PointerEvent) => {
+        if (event.pointerType === 'mouse' && event.button !== 0) return;
+        
+        isDragging = true;
+        startX = event.clientX;
+        startVirtualScroll = virtualScroll;
+        container.style.cursor = 'grabbing';
+        
+        try {
+          container.setPointerCapture(event.pointerId);
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+          // Ignoramos errores de pointer capture en navegadores que no lo soporten
+        }
+      };
+      
+      const handlePointerMove = (event: PointerEvent) => {
+        if (!isDragging) return;
+        
+        event.preventDefault();
+        const delta = event.clientX - startX;
+        virtualScroll = wrapPosition(startVirtualScroll - delta);
+        syncScrollLeft();
+      };
+      
+      const endDrag = (event: PointerEvent) => {
+        if (!isDragging) return;
+        
+        isDragging = false;
+        container.style.cursor = 'grab';
+        
+        try {
+          if (container.hasPointerCapture(event.pointerId)) {
+            container.releasePointerCapture(event.pointerId);
+          }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+          // Ignoramos errores de pointer capture en navegadores que no lo soporten
+        }
+      };
+      
+      const handleMouseEnter = () => {
+        isHovering = true;
+      };
+      
+      const handleMouseLeave = () => {
+        isHovering = false;
+      };
+      
+      container.addEventListener('pointerdown', handlePointerDown);
+      container.addEventListener('pointermove', handlePointerMove);
+      container.addEventListener('pointerup', endDrag);
+      container.addEventListener('pointercancel', endDrag);
+      container.addEventListener('pointerleave', endDrag);
+      container.addEventListener('mouseenter', handleMouseEnter);
+      container.addEventListener('mouseleave', handleMouseLeave);
+      
+      return () => {
+        if (animationFrameId !== null) {
+          cancelAnimationFrame(animationFrameId);
+        }
+        
+        if (recalcFrameId !== null) {
+          cancelAnimationFrame(recalcFrameId);
+        }
+        
+        window.removeEventListener('resize', handleResize);
+        container.removeEventListener('pointerdown', handlePointerDown);
+        container.removeEventListener('pointermove', handlePointerMove);
+        container.removeEventListener('pointerup', endDrag);
+        container.removeEventListener('pointercancel', endDrag);
+        container.removeEventListener('pointerleave', endDrag);
+        container.removeEventListener('mouseenter', handleMouseEnter);
+        container.removeEventListener('mouseleave', handleMouseLeave);
+        container.style.cursor = '';
+        container.style.touchAction = '';
+        container.style.userSelect = '';
+      };
+    };
+    
+    const cleanups = [
+      setupAutoScroll(row1Ref.current, 'right'),
+      setupAutoScroll(row2Ref.current, 'left')
+    ].filter(Boolean) as Array<() => void>;
+    
+    return () => {
+      cleanups.forEach((cleanup) => cleanup());
+    };
+  }, []);
   
   // Función para manejar el estado de reproducción de video
   const handleVideoPlayStateChange = (isPlaying: boolean) => {
     setIsVideoPlaying(isPlaying);
-    
-    // Pausar ambos carruseles cuando un video está reproduciéndose
-    if (isPlaying) {
-      if (row1Ref.current) row1Ref.current.style.animationPlayState = 'paused';
-      if (row2Ref.current) row2Ref.current.style.animationPlayState = 'paused';
-    } else {
-      // Restaurar el estado normal de los carruseles
-      if (row1Ref.current) row1Ref.current.style.animationPlayState = 'running';
-      if (row2Ref.current) row2Ref.current.style.animationPlayState = 'running';
-    }
   };
 
   // Funciones para navegación móvil
@@ -291,70 +384,45 @@ export default function Testimonials() {
       {/* Desktop Scrolling Rows - Solo visible en desktop */}
       <div className="hidden md:block space-y-6">
         {/* Row 1 - Scrolling Right */}
-        <div className="relative">
+        <div className="relative overflow-hidden">
           <div 
             id="testimonial-row-1" 
             ref={row1Ref}
-            className="flex gap-4 animate-scroll-right"
+            className="w-full overflow-hidden"
           >
-            {row1Testimonials.map((testimonial, index) => (
-              <div key={`${testimonial.id}-${index}`}>
-                <TestimonialCard 
-                  testimonial={testimonial} 
-                  onVideoPlayStateChange={handleVideoPlayStateChange}
-                />
-              </div>
-            ))}
+            <div className="flex gap-4 w-max select-none cursor-grab touch-pan-y">
+              {row1Testimonials.map((testimonial, index) => (
+                <div key={`${testimonial.id}-${index}`}>
+                  <TestimonialCard 
+                    testimonial={testimonial} 
+                    onVideoPlayStateChange={handleVideoPlayStateChange}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Row 2 - Scrolling Left */}
-        <div className="relative">
+        <div className="relative overflow-hidden">
           <div 
             id="testimonial-row-2" 
             ref={row2Ref}
-            className="flex gap-4 animate-scroll-left"
+            className="w-full overflow-hidden"
           >
-            {row2Testimonials.map((testimonial, index) => (
-              <div key={`${testimonial.id}-${index}`}>
-                <TestimonialCard 
-                  testimonial={testimonial} 
-                  onVideoPlayStateChange={handleVideoPlayStateChange}
-                />
-              </div>
-            ))}
+            <div className="flex gap-4 w-max select-none cursor-grab touch-pan-y">
+              {row2Testimonials.map((testimonial, index) => (
+                <div key={`${testimonial.id}-${index}`}>
+                  <TestimonialCard 
+                    testimonial={testimonial} 
+                    onVideoPlayStateChange={handleVideoPlayStateChange}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Inline CSS for animations */}
-      <style jsx>{`
-        @keyframes scroll-right {
-          0% {
-            transform: translateX(-50%);
-          }
-          100% {
-            transform: translateX(0%);
-          }
-        }
-
-        @keyframes scroll-left {
-          0% {
-            transform: translateX(0%);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-
-        .animate-scroll-right {
-          animation: scroll-right 60s linear infinite;
-        }
-
-        .animate-scroll-left {
-          animation: scroll-left 60s linear infinite;
-        }
-      `}</style>
     </section>
   );
 }

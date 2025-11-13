@@ -18,16 +18,82 @@ type Step = {
 };
 
 export default function HowItWorks() {
-  const scrollToProjects = (event: MouseEvent<HTMLAnchorElement>) => {
+  const scrollWithFallback = (
+    targetId: string,
+    event: MouseEvent<HTMLAnchorElement>,
+    attempts: number = 4
+  ) => {
     event.preventDefault();
 
-    const section = document.getElementById("featured-projects");
-
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth", block: "start" });
-    } else {
-      window.location.hash = "featured-projects";
+    if (typeof window === "undefined") {
+      return;
     }
+
+    const prefersReducedMotion = window
+      .matchMedia("(prefers-reduced-motion: reduce)")
+      .matches;
+    const scrollOptions: ScrollIntoViewOptions = {
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+      block: "start",
+    };
+
+    const tryScroll = (attemptsLeft: number) => {
+      const section = document.getElementById(targetId);
+
+      if (section) {
+        section.scrollIntoView(scrollOptions);
+        return;
+      }
+
+      if (attemptsLeft <= 0) {
+        window.location.hash = targetId;
+        return;
+      }
+
+      setTimeout(() => tryScroll(attemptsLeft - 1), 200);
+    };
+
+    tryScroll(attempts);
+  };
+
+  const scrollToFeaturedProjects = (event: MouseEvent<HTMLAnchorElement>) => {
+    scrollWithFallback("featured-projects", event);
+  };
+
+  const scrollToSimulator = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const prefersReducedMotion = window
+      .matchMedia("(prefers-reduced-motion: reduce)")
+      .matches;
+    const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+    const targetId = isDesktop ? "simulador-desktop" : "simulador-mobile";
+    const scrollOptions: ScrollIntoViewOptions = {
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+      block: "start",
+    };
+
+    const tryScroll = (attemptsLeft: number) => {
+      const section = document.getElementById(targetId);
+
+      if (section) {
+        section.scrollIntoView(scrollOptions);
+        return;
+      }
+
+      if (attemptsLeft <= 0) {
+        window.location.hash = targetId;
+        return;
+      }
+
+      setTimeout(() => tryScroll(attemptsLeft - 1), 200);
+    };
+
+    tryScroll(4);
   };
 
   const steps: Step[] = [
@@ -54,7 +120,7 @@ export default function HowItWorks() {
       badgeIcon: Sparkles,
       href: '#featured-projects',
       target: '_self',
-      onClick: scrollToProjects
+      onClick: scrollToFeaturedProjects
     },
     {
       number: '3',
@@ -65,9 +131,9 @@ export default function HowItWorks() {
       cardStyle: 'primary', // Tarjeta azul
       badge: 'Rentabilidad alta',
       badgeIcon: CheckCircle2,
-      href: '#featured-projects',
+      href: '#simulador-desktop',
       target: '_self',
-      onClick: scrollToProjects
+      onClick: scrollToSimulator
     }
   ];
 

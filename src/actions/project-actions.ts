@@ -1,4 +1,8 @@
-import { getProjectCardsService } from "@/services/projectService";
+import {
+    getProjectCardsService,
+    getProjectHomePageInfoByCodeService,
+    ProjectHomePageInfo,
+} from "@/services/projectService";
 import { ProjectCardsResponse } from "@/schemas/project-card-schema";
 import { useProjectStore } from "@/store/project-store";
 
@@ -45,3 +49,38 @@ export const getProjectCardsAction = async (): Promise<ProjectCardsResponse> => 
         };
     }
 }
+
+type ProjectHomePageInfoActionResponse =
+    | { success: true; data: ProjectHomePageInfo }
+    | { success: false; error: string };
+
+const getProjectHomePageInfo = async (
+    projectCode: string
+): Promise<ProjectHomePageInfoActionResponse> => {
+    try {
+        const data = await getProjectHomePageInfoByCodeService(projectCode);
+
+        return {
+            success: true,
+            data,
+        };
+    } catch (error) {
+        const errorMessage =
+            error instanceof Error
+                ? error.message
+                : "Error al obtener la información del home del proyecto.";
+
+        console.error("Error al obtener la información del home del proyecto.", error);
+
+        return {
+            success: false,
+            error: errorMessage,
+        };
+    }
+};
+
+export const getNidoDeAguaHomeInfoAction = () =>
+    getProjectHomePageInfo("nido-de-agua");
+
+export const getIndieUniverseHomeInfoAction = () =>
+    getProjectHomePageInfo("indie-universe");

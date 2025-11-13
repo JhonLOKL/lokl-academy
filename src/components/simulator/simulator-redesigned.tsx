@@ -23,11 +23,13 @@ import InvestorLevelsBanner from "./investor-levels-banner";
 interface SimulatorRedesignedProps {
   simulatorName?: string;
   hideRightColumn?: boolean;
+  defaultProjectCode?: string;
 }
 
 export default function SimulatorRedesigned({
   simulatorName = "Simulador General",
   hideRightColumn,
+  defaultProjectCode,
 }: SimulatorRedesignedProps) {
   const {
     availableProjects,
@@ -56,7 +58,7 @@ export default function SimulatorRedesigned({
   const [simulationError, setSimulationError] = useState<string | null>(null);
   const [hasSubmittedLead, setHasSubmittedLead] = useState(false);
   const [hasSimulatedWithData, setHasSimulatedWithData] = useState(false);
-  const [, setLeadFormData] = useState<LeadFormData | null>(null);
+  const [leadFormData, setLeadFormData] = useState<LeadFormData | null>(null);
   const [hasEnteredViewport, setHasEnteredViewport] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -120,6 +122,28 @@ export default function SimulatorRedesigned({
       loadProjects();
     }
   }, [hasEnteredViewport, availableProjects.length, isLoadingProjects, setAvailableProjects, setLoadingProjects, setProjectsError]);
+
+  // Seleccionar proyecto por defecto según la página
+  useEffect(() => {
+    if (!defaultProjectCode || availableProjects.length === 0) {
+      return;
+    }
+
+    const projectByCode = availableProjects.find(
+      (project) => project.projectCode === defaultProjectCode
+    );
+
+    if (!projectByCode) {
+      return;
+    }
+
+    const isDifferentProject =
+      !selectedProject || selectedProject.projectCode !== projectByCode.projectCode;
+
+    if (isDifferentProject) {
+      setSelectedProject(projectByCode);
+    }
+  }, [availableProjects, defaultProjectCode, selectedProject, setSelectedProject]);
 
   // Handlers
   const handleProjectChange = (projectId: string) => {
@@ -192,16 +216,16 @@ export default function SimulatorRedesigned({
       });
 
       if (response.success && response.data) {
-        setSimulationData(response.data);
+        const newSimulationData = response.data;
+        setSimulationData(newSimulationData);
 
         // Guardar la nueva simulación (el usuario ya tiene datos)
         if (user) {
-          await saveSimulationWithAuth(response.data);
-        } else if (hasSubmittedLead) {
-          // Si ya envió el lead, también guardamos
-          // Nota: aquí necesitarías guardar los datos del lead en un state si quieres
-          // guardar simulaciones subsecuentes. Por ahora solo actualizamos los resultados.
-          console.log("Simulación actualizada - lead ya enviado");
+          await saveSimulationWithAuth(newSimulationData);
+        } else if (hasSubmittedLead && leadFormData) {
+          await saveSimulationWithLeadData(newSimulationData, leadFormData);
+        } else if (hasSubmittedLead && !leadFormData) {
+          console.warn("Lead marcado como enviado pero sin datos almacenados");
         }
 
         // Permanecer en fase 3
@@ -260,6 +284,43 @@ export default function SimulatorRedesigned({
     }
   };
 
+  const saveSimulationWithLeadData = async (
+    simData: SimulationData,
+    leadData: LeadFormData
+  ) => {
+    if (!selectedProject) return;
+
+    try {
+      const phoneData = parsePhoneData(leadData.phone);
+      // Si installments es 1 (pago único), enviar 0 a la API
+      const installmentsToSend = installments === 1 ? 0 : installments;
+
+      await saveSimulationAction(
+        {
+          countryCodePhone: phoneData.countryCode,
+          email: leadData.email,
+          installments: installmentsToSend,
+          investmentValue: investmentAmount,
+          leadOrigin: leadData.howDidYouHearAboutUs,
+          name: `${leadData.firstName} ${leadData.lastName}`,
+          phone: phoneData.phoneNumber,
+          projectId: selectedProject.id,
+          simulator: simulatorName,
+          termsAccepted: leadData.termsAccepted,
+          unitsQuantity: simData.unitsAmount,
+          ...(utmSource && { utmSource }),
+          ...(utmMedium && { utmMedium }),
+          ...(utmCampaign && { utmCampaign }),
+          ...(utmTerm && { utmTerm }),
+          ...(utmContent && { utmContent }),
+        },
+        false
+      );
+    } catch (error) {
+      console.error("Error al guardar simulación para lead:", error);
+    }
+  };
+
   const handleLeadSubmit = async (data: LeadFormData) => {
     const phoneData = parsePhoneData(data.phone);
     
@@ -268,30 +329,7 @@ export default function SimulatorRedesigned({
 
     if (simulationData && selectedProject) {
       try {
-        // Si installments es 1 (pago único), enviar 0 a la API
-        const installmentsToSend = installments === 1 ? 0 : installments;
-
-        await saveSimulationAction(
-          {
-            countryCodePhone: phoneData.countryCode,
-            email: data.email,
-            installments: installmentsToSend,
-            investmentValue: investmentAmount,
-            leadOrigin: data.howDidYouHearAboutUs,
-            name: `${data.firstName} ${data.lastName}`,
-            phone: phoneData.phoneNumber,
-            projectId: selectedProject.id,
-            simulator: simulatorName,
-            termsAccepted: data.termsAccepted,
-            unitsQuantity: simulationData.unitsAmount,
-            ...(utmSource && { utmSource }),
-            ...(utmMedium && { utmMedium }),
-            ...(utmCampaign && { utmCampaign }),
-            ...(utmTerm && { utmTerm }),
-            ...(utmContent && { utmContent }),
-          },
-          false
-        );
+        await saveSimulationWithLeadData(simulationData, data);
 
         // Ejecutar función de primera simulación con datos completos
         if (!hasSimulatedWithData) {

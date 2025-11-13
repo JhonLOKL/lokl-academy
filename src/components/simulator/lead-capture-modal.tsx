@@ -24,7 +24,6 @@ import { NestedSelect } from "@/components/ui/nested-select";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { LeadFormSchema, LeadFormData, howDidYouHearAboutUsOptions } from "@/schemas/lead-schema";
-import Link from "next/link";
 
 interface LeadCaptureModalProps {
   isOpen: boolean;
@@ -37,8 +36,7 @@ interface LeadCaptureModalProps {
 export default function LeadCaptureModal({
   isOpen,
   onClose,
-  onSubmit,
-  onLoginRedirect,
+  onSubmit
 }: LeadCaptureModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 

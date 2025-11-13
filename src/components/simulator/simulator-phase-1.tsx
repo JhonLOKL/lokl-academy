@@ -57,6 +57,7 @@ export default function SimulatorPhase1({ simulatorName }: SimulatorPhase1Props)
   // Estados para el modal de captura de leads
   const [showLeadModal, setShowLeadModal] = useState(false);
   const [hasSubmittedLead, setHasSubmittedLead] = useState(false);
+  const [leadFormData, setLeadFormData] = useState<LeadFormData | null>(null);
   
   // Estado para trackear la primera simulación CON datos completos
   const [hasSimulatedWithData, setHasSimulatedWithData] = useState(false);
@@ -129,6 +130,41 @@ export default function SimulatorPhase1({ simulatorName }: SimulatorPhase1Props)
     });
   };
 
+  const saveSimulationWithLeadData = async (
+    simData: SimulationData,
+    leadData: LeadFormData
+  ) => {
+    if (!selectedProject) return;
+
+    try {
+      const phoneData = parsePhoneData(leadData.phone);
+
+      await saveSimulationAction(
+        {
+          countryCodePhone: phoneData.countryCode,
+          email: leadData.email,
+          installments,
+          investmentValue: investmentAmount,
+          leadOrigin: leadData.howDidYouHearAboutUs,
+          name: `${leadData.firstName} ${leadData.lastName}`,
+          phone: phoneData.phoneNumber,
+          projectId: selectedProject.id,
+          simulator: simulatorName,
+          termsAccepted: leadData.termsAccepted,
+          unitsQuantity: simData.unitsAmount,
+          ...(utmSource && { utmSource }),
+          ...(utmMedium && { utmMedium }),
+          ...(utmCampaign && { utmCampaign }),
+          ...(utmTerm && { utmTerm }),
+          ...(utmContent && { utmContent }),
+        },
+        false
+      );
+    } catch (error) {
+      console.error("Error al guardar simulación para lead:", error);
+    }
+  };
+
   // Función para guardar la simulación
   const saveSimulation = async (simData: SimulationData) => {
     if (!selectedProject) return;
@@ -165,11 +201,10 @@ export default function SimulatorPhase1({ simulatorName }: SimulatorPhase1Props)
           });
           setHasSimulatedWithData(true);
         }
-      } else if (hasSubmittedLead) {
-        // Usuario no autenticado pero ya envió datos del lead
-        // Aquí necesitarías guardar los datos del lead en el estado
-        // Por ahora solo logueamos
-        console.log("Usuario no autenticado con lead enviado - no se guarda la simulación automáticamente");
+      } else if (hasSubmittedLead && leadFormData) {
+        await saveSimulationWithLeadData(simData, leadFormData);
+      } else if (hasSubmittedLead && !leadFormData) {
+        console.warn("Lead marcado como enviado pero sin datos almacenados");
       }
       // Si no está autenticado y no ha enviado lead, se guardará después del formulario
     } catch (error) {
@@ -221,37 +256,19 @@ export default function SimulatorPhase1({ simulatorName }: SimulatorPhase1Props)
   const handleLeadSubmit = async (data: LeadFormData) => {
     // Parsear el número de teléfono
     const phoneData = parsePhoneData(data.phone);
-    
+
     console.log("Lead capturado:", {
       ...data,
       phoneDetails: phoneData,
     });
-    
+
+    // Guardar los datos del lead para futuras simulaciones
+    setLeadFormData(data);
+
     // Guardar la simulación con los datos del lead
     if (simulationData && selectedProject) {
       try {
-        await saveSimulationAction(
-          {
-            countryCodePhone: phoneData.countryCode,
-            email: data.email,
-            installments,
-            investmentValue: investmentAmount,
-            leadOrigin: data.howDidYouHearAboutUs,
-            name: `${data.firstName} ${data.lastName}`,
-            phone: phoneData.phoneNumber,
-            projectId: selectedProject.id,
-            simulator: simulatorName,
-            termsAccepted: data.termsAccepted,
-            unitsQuantity: simulationData.unitsAmount,
-            // Incluir parámetros UTM si existen
-            ...(utmSource && { utmSource }),
-            ...(utmMedium && { utmMedium }),
-            ...(utmCampaign && { utmCampaign }),
-            ...(utmTerm && { utmTerm }),
-            ...(utmContent && { utmContent }),
-          },
-          false // isAuthenticated
-        );
+        await saveSimulationWithLeadData(simulationData, data);
 
         // Ejecutar función de primera simulación con datos completos (usuario no autenticado)
         if (!hasSimulatedWithData) {

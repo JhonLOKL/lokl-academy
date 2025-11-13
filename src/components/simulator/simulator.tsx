@@ -1,23 +1,22 @@
 "use client";
 
-import React, { useEffect } from "react";
-import dynamic from "next/dynamic";
-const SimulatorRedesigned = dynamic(() => import("./simulator-redesigned"), {
-  ssr: false,
-});
+import { useEffect } from "react";
 import { ProjectCard } from "@/schemas/project-card-schema";
 import { useSimulatorStore } from "@/store/simulator-store";
+import SimulatorRedesigned from "./simulator-redesigned";
 
 interface SimulatorProps {
   project?: ProjectCard;
   simulatorName?: string; // Nombre del simulador para tracking
   hideRightColumn?: boolean;
+  defaultProjectCode?: string;
 }
 
 export default function Simulator({ 
   project, 
   simulatorName = "Simulador General",
   hideRightColumn,
+  defaultProjectCode,
 }: SimulatorProps) {
   const { setSelectedProject, selectedProject } = useSimulatorStore();
 
@@ -30,7 +29,11 @@ export default function Simulator({
 
   return (
     <div className="scroll-mt-20 bg-gradient-to-b from-slate-50 to-white">
-      <SimulatorRedesigned simulatorName={simulatorName} hideRightColumn={hideRightColumn} />
+      <SimulatorRedesigned
+        simulatorName={simulatorName}
+        hideRightColumn={hideRightColumn}
+        defaultProjectCode={defaultProjectCode}
+      />
     </div>
   );
 }
