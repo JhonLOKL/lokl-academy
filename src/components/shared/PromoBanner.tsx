@@ -31,6 +31,8 @@ const defaultTimeLeft: TimeLeft = {
   isExpired: false,
 };
 
+const INVEST_URL = "https://dashboard.lokl.life/checkout/invest?";
+
 export function PromoBanner({
   title,
   subtitle,
@@ -98,18 +100,7 @@ export function PromoBanner({
   const countdownLabelText = countdownLabel ?? "Aumento del Unit en";
 
   const handleCtaClick = () => {
-    if (ctaHref) {
-      window.location.href = ctaHref;
-      return;
-    }
-
-    const targetElement = document.getElementById(targetId);
-
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
-    } else {
-      window.location.hash = targetId;
-    }
+    window.location.href = INVEST_URL;
   };
 
   const showCountdown = Boolean(targetTimestamp) && !timeLeft.isExpired && isMounted;

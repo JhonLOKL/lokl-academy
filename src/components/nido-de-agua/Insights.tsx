@@ -36,7 +36,8 @@ const insightsData = [
 
 export function Insights() {
   const handleGoToBuy = () => {
-    window.location.href = '/register';
+    window.location.href =
+      'https://dashboard.lokl.life/checkout/invest?projectId=a6775860-635a-4622-80f8-7d0de0c3eef0';
   };
 
   return (

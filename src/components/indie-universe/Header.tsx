@@ -4,7 +4,6 @@ import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import { Star, Play, Eye, Calculator, Info, X, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { useAuthStore } from '@/store/auth-store';
 import type { ProjectHomePageInfo } from '@/services/projectService';
 
 // Datos base por defecto
@@ -59,8 +58,6 @@ const DEFAULT_PROJECT_DATA = {
 };
 
 const INVEST_URL = "https://dashboard.lokl.life/checkout/invest?projectId=c3f50b31-1e1b-4ebe-881e-0d390458f471";
-const REGISTER_REDIRECT_URL = "https://dashboard.lokl.life/register?redirect_to=/checkout/invest?projectId=c3f50b31-1e1b-4ebe-881e-0d390458f471&";
-
 const numberFormatter = new Intl.NumberFormat("es-CO", {
   minimumFractionDigits: 0,
   maximumFractionDigits: 0,
@@ -535,7 +532,6 @@ export default function Header({
   isLoading = false,
   error,
 }: HeaderProps) {
-  const { token } = useAuthStore();
   const [videoActive, setVideoActive] = useState<"desktop" | "mobile" | null>(null);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
@@ -556,8 +552,7 @@ export default function Header({
   };
 
   const handleGoToBuy = () => {
-    const targetUrl = token ? INVEST_URL : REGISTER_REDIRECT_URL;
-    window.location.href = targetUrl;
+    window.location.href = INVEST_URL;
   };
 
   const openGallery = (index = 0) => {
