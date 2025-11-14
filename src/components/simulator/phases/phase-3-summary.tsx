@@ -67,7 +67,7 @@ export default function Phase3Summary({
   }, [currentUnits]);
 
   return (
-    <div className="space-y-6 bg-[#5352F6] rounded-2xl p-8 text-white">
+    <div className="space-y-6 bg-[#5352F6] rounded-2xl p-5 sm:p-8 text-white max-w-full overflow-hidden">
       {/* Header */}
       <div>
         <h3 className="text-2xl font-bold mb-2">Tu proyección está lista</h3>
@@ -77,7 +77,7 @@ export default function Phase3Summary({
       </div>
 
       {/* Controles de Resimulación */}
-      <div className="space-y-4 bg-white/10 rounded-xl p-5 border border-white/20">
+      <div className="space-y-4 bg-white/10 rounded-xl p-4 sm:p-5 border border-white/20">
         <h4 className="font-semibold text-white text-sm uppercase tracking-wide flex items-center gap-2">
           <RefreshCw className="w-4 h-4" />
           Ajustar simulación
@@ -224,7 +224,7 @@ export default function Phase3Summary({
           Resumen de resultados
         </h4>
 
-        <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="bg-white/10 rounded-lg p-4">
             <p className="text-white/70 text-xs mb-1">Total a pagar</p>
             <p className="font-bold text-lg">{formatCurrency(simulationData.totalToPay)}</p>
@@ -256,22 +256,22 @@ export default function Phase3Summary({
         </h4>
 
         <div className="space-y-2 text-sm">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-2 text-xs sm:text-sm">
             <span className="text-white/80">Alojamiento</span>
             <span className="font-semibold">{simulationData.accommodations} días</span>
           </div>
 
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-2 text-xs sm:text-sm">
             <span className="text-white/80">Tarifa Promedio</span>
             <span className="font-semibold">{formatCurrency(simulationData.averageRate)}</span>
           </div>
 
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-2 text-xs sm:text-sm">
             <span className="text-white/80">Ocupación Hotel</span>
             <span className="font-semibold">{(simulationData.occupation * 100).toFixed(0)}%</span>
           </div>
 
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-2 text-xs sm:text-sm">
             <span className="text-white/80">Margen de Costos</span>
             <span className="font-semibold">{(simulationData.costMargin * 100).toFixed(0)}%</span>
           </div>
@@ -279,21 +279,22 @@ export default function Phase3Summary({
       </div>
 
       {/* Utilidad destacada */}
-      <div className="bg-gradient-to-r from-white/20 to-white/10 rounded-xl p-6 text-center border border-white/20">
-        <div className="flex items-center justify-center gap-2 mb-2">
+      <div className="bg-gradient-to-r from-white/20 to-white/10 rounded-xl p-5 sm:p-6 text-center border border-white/20">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-2 text-center">
           <TrendingUp className="w-5 h-5" />
           <p className="text-white/90 text-sm font-medium">Utilidad de tu inversión estimada a 5 años*</p>
         </div>
-        <p className="text-4xl font-bold mb-1">
+        <p className="text-3xl sm:text-4xl font-bold mb-1">
           {formatCurrency(simulationData.totalIncome + simulationData.totalValuation)}
         </p>
-        <div className="flex items-center justify-center gap-4 mt-3 text-sm">
-          <div>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-3 text-sm w-full">
+          <div className="text-center">
             <p className="text-white/70 text-xs">Rentas</p>
             <p className="font-semibold">{formatCurrency(simulationData.totalIncome)}</p>
           </div>
-          <div className="w-px h-8 bg-white/20"></div>
-          <div>
+          <div className="hidden sm:block w-px h-8 bg-white/20"></div>
+          <div className="sm:hidden w-full h-px bg-white/20"></div>
+          <div className="text-center">
             <p className="text-white/70 text-xs">Valorización</p>
             <p className="font-semibold">{formatCurrency(simulationData.totalValuation)}</p>
           </div>
