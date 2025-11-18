@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
 import { Autoplay } from 'swiper/modules';
@@ -139,10 +139,70 @@ interface InvestorProfileProps {
   price: number;
   benefits: string[];
   amount: number;
+  swiperRef?: React.RefObject<SwiperType | null>;
 }
 
-function InvestorProfile({ type, img, price, benefits, amount }: InvestorProfileProps) {
+function InvestorProfile({ type, img, price, benefits, amount, swiperRef }: InvestorProfileProps) {
   const [showBenefit, setShowBenefit] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detectar si estamos en móvil
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint de Tailwind
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Controlar autoplay en móvil cuando se muestran/ocultan beneficios
+  useEffect(() => {
+    if (!isMobile || !swiperRef?.current) return;
+
+    if (showBenefit) {
+      // Detener autoplay cuando se muestran los beneficios
+      swiperRef.current.autoplay?.stop();
+    } else {
+      // Reanudar autoplay cuando se ocultan los beneficios
+      swiperRef.current.autoplay?.start();
+    }
+  }, [showBenefit, isMobile, swiperRef]);
+
+  useEffect(() => {
+    const updateHeight = () => {
+      if (containerRef.current && overlayRef.current && imageRef.current) {
+        const imageHeight = imageRef.current.offsetHeight;
+        const overlayHeight = overlayRef.current.scrollHeight;
+        const newHeight = Math.max(imageHeight, overlayHeight);
+        containerRef.current.style.height = `${newHeight}px`;
+      }
+    };
+
+    // Actualizar inmediatamente
+    updateHeight();
+    
+    // Actualizar después de que el DOM se actualice
+    const timeoutId1 = setTimeout(updateHeight, 0);
+    const timeoutId2 = setTimeout(updateHeight, 100);
+    
+    // Usar requestAnimationFrame para asegurar que se actualice después del render
+    const rafId = requestAnimationFrame(() => {
+      requestAnimationFrame(updateHeight);
+    });
+    
+    window.addEventListener('resize', updateHeight);
+    return () => {
+      window.removeEventListener('resize', updateHeight);
+      clearTimeout(timeoutId1);
+      clearTimeout(timeoutId2);
+      cancelAnimationFrame(rafId);
+    };
+  }, [showBenefit]);
 
   const formatPrice = (value: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -164,44 +224,44 @@ function InvestorProfile({ type, img, price, benefits, amount }: InvestorProfile
   };
 
   return (
-    <div className="relative rounded-xl overflow-hidden">
-      <div className="relative w-full aspect-square min-h-[266px]">
+    <div ref={containerRef} className="relative rounded-xl overflow-x-hidden w-full max-w-full" style={{ minHeight: '266px' }}>
+      <div ref={imageRef} className="relative w-full aspect-square md:aspect-square min-h-[266px]">
         <Image
           src={img}
           alt={type}
           fill
-          className="object-cover"
+          className="object-cover rounded-xl"
         />
       </div>
       
-      <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center bg-black/60">
-        <div className="px-10 mb-6 w-full">
-          <h4 className="text-3xl font-lato font-extrabold text-white mb-4">{type}</h4>
+      <div ref={overlayRef} className="absolute top-0 left-0 w-full flex flex-col justify-center items-center bg-black/60 py-4 md:py-0 rounded-xl" style={{ minHeight: '100%' }}>
+        <div className="px-4 md:px-10 mb-4 md:mb-6 w-full max-w-full box-border">
+          <h4 className="text-2xl md:text-3xl font-lato font-extrabold text-white mb-3 md:mb-4 break-words">{type}</h4>
           
           {!showBenefit ? (
-            <div>
+            <div className="w-full">
               <div className="mb-4">
-                <p className="text-white font-lato">Invirtiendo a partir de</p>
-                <h4 className="text-3xl font-lato font-extrabold text-white">{formatPrice(price)}</h4>
-                <p className="text-white font-lato text-lg">Estás a un paso de ser inversionista pionero y comenzar tu historia</p>
+                <p className="text-white font-lato text-sm md:text-base">Invirtiendo a partir de</p>
+                <h4 className="text-2xl md:text-3xl font-lato font-extrabold text-white break-words">{formatPrice(price)}</h4>
+                <p className="text-white font-lato text-base md:text-lg break-words">Estás a un paso de ser inversionista pionero y comenzar tu historia</p>
               </div>
               <p
-                className="text-white text-center font-semibold underline text-lg cursor-pointer hover:text-gray-200 transition"
+                className="text-white text-center font-semibold underline text-base md:text-lg cursor-pointer hover:text-gray-200 transition break-words"
                 onClick={() => setShowBenefit(true)}
               >
                 Conoce los beneficios
               </p>
             </div>
           ) : (
-            <div className="px-4">
-              <ul className="list-disc text-white font-lato text-lg space-y-2">
+            <div className="w-full max-w-full box-border">
+              <ul className="list-disc text-white font-lato text-base md:text-lg space-y-2 pl-5 pr-2 break-words">
                 {benefits.map((benefit, index) => (
-                  <li key={index}>{benefit}</li>
+                  <li key={index} className="break-words">{benefit}</li>
                 ))}
               </ul>
               <div className="w-full text-center mt-4">
                 <p 
-                  className="text-white text-center font-semibold underline text-lg cursor-pointer hover:text-gray-200 transition" 
+                  className="text-white text-center font-semibold underline text-base md:text-lg cursor-pointer hover:text-gray-200 transition break-words" 
                   onClick={() => setShowBenefit(false)}
                 >
                   Volver
@@ -213,7 +273,7 @@ function InvestorProfile({ type, img, price, benefits, amount }: InvestorProfile
         
         <button 
           id="btnInvestorProfile"
-          className="bg-[#B8CCFF] text-gray-800 px-6 py-3 rounded-lg font-semibold hover:bg-[#A8BCEF] transition"
+          className="bg-[#B8CCFF] text-gray-800 px-4 md:px-6 py-2 md:py-3 rounded-lg font-semibold hover:bg-[#A8BCEF] transition text-sm md:text-base whitespace-nowrap mx-4 max-w-[calc(100%-2rem)]"
           onClick={() => goBenefit(amount)}
         >
           Quiero ser un {type}
@@ -270,7 +330,7 @@ export default function InvestorProfiles({ homeInfo }: InvestorProfilesProps) {
         />
       </div>
 
-      <div className="aspect-square">
+      <div className="w-full max-w-full">
         <Swiper
           onSwiper={(swiper) => {
             swiperRef.current = swiper;
@@ -284,16 +344,18 @@ export default function InvestorProfiles({ homeInfo }: InvestorProfilesProps) {
             delay: 5000,
             disableOnInteraction: false
           }}
-          className="w-full h-full"
+          className="w-full"
+          style={{ height: 'auto', minHeight: '400px' }}
         >
           {investorProfiles.map((profile, index) => (
-            <SwiperSlide key={index}>
+            <SwiperSlide key={index} className="!h-auto">
               <InvestorProfile
                 img={profile.img}
                 type={profile.type}
                 price={profile.price}
                 amount={profile.amount}
                 benefits={profile.benefits}
+                swiperRef={swiperRef}
               />
             </SwiperSlide>
           ))}
