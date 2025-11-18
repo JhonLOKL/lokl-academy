@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og';
  
 export const runtime = 'edge';
  
-export const alt = 'LOKL Academy - Inversiones Inmobiliarias';
+export const alt = 'LOKL - Inversiones Inmobiliarias';
 export const size = {
   width: 1200,
   height: 630,
@@ -34,7 +34,6 @@ export default async function Image() {
           }}
         >
           <span style={{ fontWeight: 'bold' }}>LOKL</span>
-          <span style={{ fontWeight: 'bold', color: '#5352F6', marginLeft: 8 }}>Academy</span>
         </div>
         <div
           style={{
@@ -45,16 +44,6 @@ export default async function Image() {
           }}
         >
           Domina el mundo de las inversiones inmobiliarias
-        </div>
-        <div
-          style={{
-            fontSize: 24,
-            color: '#6D6C6C',
-            textAlign: 'center',
-            maxWidth: '70%',
-          }}
-        >
-          Cursos, blogs, podcasts y recursos premium para inversores
         </div>
       </div>
     ),
