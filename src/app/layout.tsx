@@ -17,14 +17,14 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "LOKL Academy | Plataforma de Inversión y Bienes Raíces",
-    template: "%s | LOKL Academy"
+    default: "LOKL | Plataforma de Inversión y Bienes Raíces",
+    template: "%s | LOKL"
   },
-  description: "LOKL Academy es una plataforma educativa especializada en inversión inmobiliaria, bienes raíces y finanzas personales. Ofrecemos cursos, blogs, podcasts y recursos para inversores de todos los niveles.",
-  keywords: ["inversión inmobiliaria", "bienes raíces", "finanzas personales", "educación financiera", "cursos de inversión", "LOKL Academy"],
-  authors: [{ name: "LOKL Academy" }],
-  creator: "LOKL Academy",
-  publisher: "LOKL Academy",
+  description: "LOKL es una plataforma educativa especializada en inversión inmobiliaria, bienes raíces y finanzas personales. Ofrecemos cursos, blogs, podcasts y recursos para inversores de todos los niveles.",
+  keywords: ["inversión inmobiliaria", "bienes raíces", "finanzas personales", "educación financiera", "cursos de inversión", "LOKL"],
+  authors: [{ name: "LOKL" }],
+  creator: "LOKL",
+  publisher: "LOKL",
   formatDetection: {
     email: false,
     address: false,
@@ -49,16 +49,16 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "LOKL Academy | Plataforma de Inversión y Bienes Raíces",
+    title: "LOKL | Plataforma de Inversión y Bienes Raíces",
     description: "Aprende a invertir en bienes raíces y administrar tus finanzas personales con nuestros cursos, blogs y podcasts especializados.",
     url: "https://academy.lokl.life",
-    siteName: "LOKL Academy",
+    siteName: "LOKL",
     images: [
       {
         url: "/images/lokl-academy-og.jpg",
         width: 1200,
         height: 630,
-        alt: "LOKL Academy - Plataforma de Inversión y Bienes Raíces",
+        alt: "LOKL - Plataforma de Inversión y Bienes Raíces",
       },
     ],
     locale: "es_ES",
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "LOKL Academy | Plataforma de Inversión y Bienes Raíces",
+    title: "LOKL | Plataforma de Inversión y Bienes Raíces",
     description: "Aprende a invertir en bienes raíces y administrar tus finanzas personales con nuestros cursos, blogs y podcasts especializados.",
     images: ["/images/lokl-academy-og.jpg"],
     creator: "@loklacademy",
@@ -88,7 +88,7 @@ export const metadata: Metadata = {
     'ld+json:organization': JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      name: 'LOKL Academy',
+      name: 'LOKL',
       url: process.env.NEXT_PUBLIC_SITE_URL || 'https://academy.lokl.life',
       logo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://academy.lokl.life'}/logo.png`,
       sameAs: [
@@ -101,7 +101,7 @@ export const metadata: Metadata = {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       url: process.env.NEXT_PUBLIC_SITE_URL || 'https://academy.lokl.life',
-      name: 'LOKL Academy',
+      name: 'LOKL',
       potentialAction: {
         '@type': 'SearchAction',
         target: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://academy.lokl.life'}/blog?search={search_term_string}`,
