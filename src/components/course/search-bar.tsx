@@ -10,7 +10,20 @@ const SearchBar: React.FC = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (query.trim()) {
+    const trimmedQuery = query.trim().toLowerCase();
+    
+    // Detectar búsquedas relacionadas con FAQs y redirigir directamente
+    if (trimmedQuery === 'faqs' || 
+        trimmedQuery === 'faq' ||
+        trimmedQuery === 'preguntas frecuentes' ||
+        trimmedQuery === 'preguntas-frecuentes' ||
+        trimmedQuery.includes('preguntas frecuentes') ||
+        trimmedQuery.includes('preguntas-frecuentes')) {
+      router.push('/faqs');
+      return;
+    }
+    
+    if (trimmedQuery) {
       router.push(`/course/search?q=${encodeURIComponent(query.trim())}`);
     }
   };

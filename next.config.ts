@@ -184,6 +184,11 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: '/preguntas-frecuentes',
+        destination: '/faqs',
+        permanent: true,
+      },
+      {
         source: '/discover-your-investor-profile',
         destination: 'https://dashboard.lokl.life/discover-your-investor-profile',
         permanent: true,

@@ -152,7 +152,7 @@ export function MarketingFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/#pqrs" className="hover:text-white">
+                <Link href="/faqs" className="hover:text-white">
                   Preguntas frecuentes
                 </Link>
               </li>

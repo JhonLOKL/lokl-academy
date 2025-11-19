@@ -1,93 +1,57 @@
 "use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
+import React from 'react';
 import Image from 'next/image';
-import { X, Play } from 'lucide-react';
-import { scrollToSection } from '@/helpers/functions';
 
 const benefitsData = [
   {
     id: 1,
-    img: 'https://lokl-assets.s3.us-east-1.amazonaws.com/nido-de-agua/benefit-img-1.png',
-    alt: 'Imagen interior',
-    title: 'Beneficios y descuentos',
-    description: 'Desde 10% de descuento en los servicios de los proyectos a noches gratuitas...',
-    link: {
-      text: 'Descubre mas beneficios',
-      action: 'scroll',
-      target: 'investor-profile'
-    }
+    title: "Impacto y comunidad",
+    description:
+      "Inversión inmobiliaria con propósito: proyectos reales que crean valor, empleo y tejido local.",
+    image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Benefit-01.png",
   },
   {
     id: 2,
-    img: 'https://lokl-assets.s3.us-east-1.amazonaws.com/nido-de-agua/benefit-img-2.png',
-    alt: 'Imagen de un guitarrista',
-    title: 'Invierte en comunidad',
-    description: '¡Sé parte de una comunidad que le apasiona crecer con eventos, network y mas!',
-    link: {
-      text: 'Conoce a la comunidad',
-      action: 'video'
-    }
+    title: "Accesibilidad",
+    description:
+      "Montos flexibles y procesos simples para diversificar tu patrimonio sin barreras.",
+    image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Benefit-02.png",
   },
   {
     id: 3,
-    img: 'https://lokl-assets.s3.us-east-1.amazonaws.com/nido-de-agua/benefit-img-3.png',
-    alt: 'Imagen de un edificio',
-    title: 'Proyectos con impacto',
-    description: 'Invierte en el futuro que quieres crear con proyectos con impacto positivo',
-    link: {
-      text: '¿Como evaluamos impacto?',
-      action: 'link',
-      href: '/blog/inversion-ahorro-crecimiento-financiero'
-    }
-  }
+    title: "Rentabilidad",
+    description:
+      "Potencial de retorno con seguimiento transparente y gestión experta del activo.",
+    image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Benefit-03.png",
+  },
+  {
+    id: 4,
+    title: "Seguridad y transparencia",
+    description:
+      "La confianza no se promete, se construye. Curaduría experta y seguimiento 100% abierto y en tiempo real.",
+    image:
+      "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Benefit-04.png",
+  },
+  {
+    id: 5,
+    title: "Valor que vuelve a ti",
+    description:
+      "Inversión inmobiliaria con propósito: proyectos reales que crean valor, empleo y tejido local..",
+    image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Benefit-05.png",
+  },
+  {
+    id: 6,
+    title: "Educación",
+    description:
+      "Aprende a invertir mejor: test de perfil, guías, cursos y webinars en vivo.",
+    image: "https://lokl-assets.s3.us-east-1.amazonaws.com/home/benefits/Benefit-06.png",
+  },
 ];
 
-function VideoModal({ onClose }: { onClose: () => void }) {
-  return (
-    <div 
-      className="fixed h-screen w-screen bg-black/60 top-0 left-0 z-50 flex items-center justify-center"
-      onClick={onClose}
-    >
-      <div 
-        className="w-[360px] h-[300px] lg:w-[666px] lg:h-[430px] relative z-50"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          className="absolute -right-4 -top-4 lg:-right-8 lg:-top-8 cursor-pointer z-10"
-          onClick={onClose}
-          aria-label="Cerrar video"
-        >
-          <X className="w-8 h-8 text-white" />
-        </button>
-        <iframe 
-          className="w-full h-full rounded-xl" 
-          src="https://www.youtube.com/embed/CQDtTMMa2mQ" 
-          title="YouTube video player" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowFullScreen
-        ></iframe>
-      </div>
-    </div>
-  );
-}
-
 export default function Benefits() {
-  const [videoActive, setVideoActive] = useState(false);
-
-  const handleLinkClick = (benefit: typeof benefitsData[0]) => {
-    if (benefit.link.action === 'scroll') {
-      scrollToSection(benefit.link.target || '', 160);
-    } else if (benefit.link.action === 'video') {
-      setVideoActive(true);
-    }
-  };
-
   return (
     <section className="w-full">
-      {videoActive && <VideoModal onClose={() => setVideoActive(false)} />}
-      
       <h2 className="text-2xl font-bold mb-12 lg:w-2/4">
         ¿Cuáles son los beneficios de invertir a través de Lokl?
       </h2>
@@ -97,8 +61,8 @@ export default function Benefits() {
           <div key={benefit.id} className="col-span-1 flex items-start">
             <div className="flex-shrink-0 w-[70px] mr-8">
               <Image
-                src={benefit.img}
-                alt={benefit.alt}
+                src={benefit.image}
+                alt={benefit.title}
                 width={70}
                 height={70}
                 className="object-cover rounded-lg"
@@ -109,26 +73,6 @@ export default function Benefits() {
               <p className="text-lg leading-8 text-[#575757] mb-3">
                 {benefit.description}
               </p>
-              {benefit.link.action === 'link' ? (
-                <Link 
-                  href={benefit.link.href || '#'} 
-                  className="text-[#3533FF] underline cursor-pointer"
-                >
-                  {benefit.link.text}
-                </Link>
-              ) : (
-                <div className="flex items-center gap-2">
-                  {benefit.link.action === 'video' && (
-                    <Play className="w-5 h-5 text-[#5452F6]" />
-                  )}
-                  <p 
-                    onClick={() => handleLinkClick(benefit)}
-                    className="text-[#3533FF] underline cursor-pointer hover:text-[#2521E6] transition"
-                  >
-                    {benefit.link.text}
-                  </p>
-                </div>
-              )}
             </div>
           </div>
         ))}
