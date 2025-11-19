@@ -66,7 +66,7 @@ export default function InvestorLevelsBanner({ currentUnits, onUnitsChange }: In
     : 100;
 
   return (
-    <div className="max-w-7xl mx-auto mb-8">
+    <div className="max-w-7xl mx-auto mb-8 px-4 md:px-0">
       <div className="relative overflow-hidden rounded-2xl md:h-[280px] shadow-2xl">
         {/* Imagen de fondo */}
         <div className="absolute inset-0">
@@ -80,7 +80,7 @@ export default function InvestorLevelsBanner({ currentUnits, onUnitsChange }: In
           <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-black/85 via-black/70 to-black/50"></div>
         </div>
 
-        <div className="relative z-10 flex flex-col md:flex-row items-stretch md:items-center justify-between p-5 md:p-8 gap-5 md:gap-6">
+        <div className="relative z-10 flex flex-col md:flex-row items-stretch md:items-center justify-between p-4 md:p-8 gap-4 md:gap-6">
           {/* Lado izquierdo: Nivel actual */}
           <div className="flex items-center gap-4">
             <div className="p-3 md:p-4 rounded-xl md:rounded-2xl bg-[#5352F6] shadow-xl flex-shrink-0">
@@ -116,7 +116,7 @@ export default function InvestorLevelsBanner({ currentUnits, onUnitsChange }: In
 
           {/* Lado derecho: Progreso */}
           {next ? (
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 md:p-5 border border-white/20 md:min-w-[240px]">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 md:p-5 border border-white/20 w-full md:w-auto md:min-w-[240px]">
               <p className="text-white/90 text-xs md:text-sm font-medium mb-2">
                 Simula <span className="font-bold text-white">{unitsToNext} units más</span> para ser
               </p>
@@ -161,7 +161,7 @@ export default function InvestorLevelsBanner({ currentUnits, onUnitsChange }: In
               </Button>
             </div>
           ) : (
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 md:p-5 border border-white/20 text-center md:min-w-[240px]">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 md:p-5 border border-white/20 text-center w-full md:w-auto md:min-w-[240px]">
               <Trophy className="w-10 h-10 md:w-12 md:h-12 text-yellow-300 mx-auto mb-2" />
               <p className="text-white font-bold text-base md:text-lg">¡Nivel Máximo!</p>
               <p className="text-white/80 text-xs md:text-sm mt-1">
