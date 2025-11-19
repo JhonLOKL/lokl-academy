@@ -326,14 +326,6 @@ export const faqs: FAQ[] = [
     answer:
       "Puedes consultarlo directamente desde tu panel de inversionista, en la sección \"Calendario\" del proyecto.\n\nAhí encontrarás:\n• Las fechas estimadas de distribución de retornos\n• Y cualquier actualización en los plazos de ejecución\n\nTodo se presenta de forma clara y actualizada, para que siempas sepas cuándo esperar cada movimiento de tu inversión.",
   },
-  {
-    id: 30,
-    category: "Liquidez",
-    icon: "arrow-left-right",
-    question: "¿Hay penalidades por salida anticipada?",
-    answer:
-      "Actualmente no hay una penalidad directa por salir de forma anticipada, pero sí aplica una comisión del 3% sobre la ganancia obtenida cuando vendés tu participación en el mercado secundario antes de que el proyecto termine. Esta comisión cubre los costos administrativos de la cesión.",
-  },
 
   // Beneficios (10)
   {
@@ -489,14 +481,6 @@ export const faqs: FAQ[] = [
     question: "¿Dónde veo el estatus \"activo/cerrado/en operación\"?",
     answer:
       "Puedes verlo en tu panel de inversionista y en la página web de LOKL. Cada proyecto muestra su estado actual de forma clara y actualizada, para que siempre sepas en qué etapa se encuentra.",
-  },
-  {
-    id: 50,
-    category: "Proyectos",
-    icon: "building",
-    question: "¿Qué información trae cada proyecto?",
-    answer:
-      "Cada proyecto en LOKL cuenta con información detallada que incluye:\n\n• Descripción general del proyecto y su propósito\n• Ubicación y características del activo\n• Monto mínimo de inversión y rentabilidad proyectada\n• Plazo estimado del proyecto\n• Información del desarrollador/operador\n• Documentación legal y financiera en el data room\n• Cronograma de desarrollo y hitos clave\n• Indicadores de impacto social y ambiental",
   },
 ];
 
