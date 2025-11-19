@@ -19,7 +19,8 @@ const SearchBar: React.FC = () => {
         trimmedQuery === 'preguntas-frecuentes' ||
         trimmedQuery.includes('preguntas frecuentes') ||
         trimmedQuery.includes('preguntas-frecuentes')) {
-      router.push('/faqs');
+      // Usar window.location para asegurar navegación correcta
+      window.location.href = '/faqs';
       return;
     }
     
