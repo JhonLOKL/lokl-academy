@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import MenuTabs from '@/components/indie-universe/MenuTabs';
 import { scrollToSection } from '@/helpers/functions';
-import Benefits from '@/components/indie-universe/Benefits';
+import Benefits from '@/components/landing/new-home/benefits';
 import Header from '@/components/indie-universe/Header';
 import Team from '@/components/indie-universe/Team';
 import { AboutInvestment } from '@/components/indie-universe/AboutInvestment';
@@ -160,15 +160,10 @@ function IndieUniverseContent() {
             </div>
           </div>
         </div>
-
-        <div>
-          <hr className="my-8" />
-
-          <div id="benefits" className="w-full my-12">
-            <Benefits />
-          </div>
-        </div>
       </section>
+
+      <Benefits />
+
       <MarketingFooter />
     </>
   );
