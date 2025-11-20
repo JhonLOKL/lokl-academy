@@ -46,10 +46,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   entries.push({ url: `${SITE_URL}/`, lastModified: new Date(), changeFrequency: 'weekly', priority: 1 });
   entries.push({ url: `${SITE_URL}/blog`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.7 });
   entries.push({ url: `${SITE_URL}/course`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.8 });
+  entries.push({ url: `${SITE_URL}/faqs`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.7 });
+  entries.push({ url: `${SITE_URL}/indie-universe`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
+  entries.push({ url: `${SITE_URL}/nido-de-agua`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
 
   // URLs importantes adicionales (no eliminar)
   entries.push({ url: `https://academy.lokl.life`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 });
   entries.push({ url: `https://academy.lokl.life/blog`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.7 });
+  entries.push({ url: `https://academy.lokl.life/faqs`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.7 });
+  entries.push({ url: `https://academy.lokl.life/indie-universe`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
+  entries.push({ url: `https://academy.lokl.life/nido-de-agua`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
 
   // Blog global paginado
   const totalBlogPages = await getTotalPages();
