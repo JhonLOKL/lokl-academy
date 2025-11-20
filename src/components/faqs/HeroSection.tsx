@@ -53,7 +53,7 @@ export function HeroSection({
         />
         {/* Imagen para desktop */}
         <ImageWithFallback
-          src="https://lokl-academy.s3.us-east-1.amazonaws.com/blog-cover/faqs.png"
+          src="https://lokl-academy.s3.us-east-1.amazonaws.com/blog-cover/faq-hero.png"
           alt="Preguntas frecuentes sobre invertir con LOKL"
           className="hidden md:block w-full h-full object-cover"
           width={1600}
