@@ -17,7 +17,7 @@ import PromoBanner from '@/components/shared/PromoBanner';
 import MarketingFooter from '@/components/footer/marketing-footer';
 import { getNidoDeAguaHomeInfoAction } from '@/actions/project-actions';
 import type { ProjectHomePageInfo } from '@/services/projectService';
-import Benefits from '@/components/nido-de-agua/Benefits';
+import Benefits from '@/components/landing/new-home/benefits';
 
 function NidoDeAguaContent() {
   const searchParams = useSearchParams();
@@ -171,14 +171,11 @@ function NidoDeAguaContent() {
               </div>
             </div>
           </div>
-
-          <hr className="my-8" />
-
-          <section className="w-full">
-            <Benefits />
-          </section>
         </div>
       </section>
+
+      <Benefits />
+
       <MarketingFooter />
     </>
   );
