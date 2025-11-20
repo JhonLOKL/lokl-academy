@@ -199,11 +199,6 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: '/investment-for-freelancers',
-        destination: 'https://dashboard.lokl.life/investment-for-freelancers',
-        permanent: true,
-      },
-      {
         source: '/digital-nomad',
         destination: 'https://dashboard.lokl.life/digital-nomad',
         permanent: true,
