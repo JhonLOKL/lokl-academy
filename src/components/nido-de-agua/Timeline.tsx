@@ -36,8 +36,8 @@ const timelineData = [
 
 export function Timeline() {
   return (
-    <section className="w-full flex flex-col items-center">
-      <div className="flex gap-4 flex-row lg:flex-col mb-8 max-w-4xl">
+    <section className="w-full flex flex-col items-center px-4 lg:px-8">
+      <div className="flex gap-4 flex-row lg:flex-col mb-8 max-w-4xl w-full">
         <p className="text-gray-700">Estabilización estimada del proyecto 2 años a partir del inicio de operación.</p>
         <ul>
           <li className="list-disc text-gray-700">
@@ -46,9 +46,9 @@ export function Timeline() {
         </ul>
       </div>
 
-      <div className="flex justify-center flex-col lg:flex-row gap-4 w-full max-w-5xl">
+      <div className="flex justify-center flex-col lg:flex-row gap-4 lg:gap-6 xl:gap-8 w-full max-w-6xl overflow-x-auto pb-4">
         {timelineData.map((item) => (
-          <div key={item.id} className="w-48 mx-auto">
+          <div key={item.id} className="w-48 lg:w-56 xl:w-64 flex-shrink-0 mx-auto lg:mx-0">
             <div className="flex justify-center items-end h-20">
               {item.isLast ? (
                 <svg width="23" height="60" viewBox="0 0 23 60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -67,7 +67,7 @@ export function Timeline() {
               )}
             </div>
             <div className="border-t-2 border-gray-300 flex justify-center text-center">
-              <p className="px-8 mt-3 text-gray-700">
+              <p className="px-4 lg:px-6 xl:px-8 mt-3 text-gray-700">
                 <span className="block font-bold">{item.title}</span>
                 <span className="block">{item.subtitle}</span>
               </p>
@@ -76,7 +76,7 @@ export function Timeline() {
         ))}
       </div>
 
-      <div className="my-3 max-w-4xl text-center">
+      <div className="my-3 max-w-4xl text-center w-full px-4">
         <p className="font-syne text-[13px] text-gray-500">
           *Las fechas son estimaciones iniciales. Pueden haber cambios y retrasos durante la ejecución del proyecto
         </p>
