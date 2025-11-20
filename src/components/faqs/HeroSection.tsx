@@ -45,7 +45,7 @@ export function HeroSection({
       <div className="absolute inset-0">
         {/* Imagen para móvil */}
         <ImageWithFallback
-          src="https://lokl-academy.s3.us-east-1.amazonaws.com/blog-cover/movil-faqs.png"
+          src="https://lokl-academy.s3.us-east-1.amazonaws.com/blog-cover/NDA+mobile.png"
           alt="Preguntas frecuentes sobre invertir con LOKL"
           className="w-full h-full object-cover md:hidden"
           width={800}
