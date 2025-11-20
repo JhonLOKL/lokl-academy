@@ -194,11 +194,6 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: '/cdt-vs-real-estate-investing',
-        destination: 'https://dashboard.lokl.life/cdt-vs-real-estate-investing',
-        permanent: true,
-      },
-      {
         source: '/real-estate-investment-simulator',
         destination: 'https://dashboard.lokl.life/real-estate-investment-simulator',
         permanent: true,

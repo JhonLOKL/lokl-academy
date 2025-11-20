@@ -1,7 +1,9 @@
+"use client";
+
 import React from "react";
-import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import Link from "next/link";
-import { CheckCircle, TrendingUp, Shield, Calculator } from "lucide-react";
+import { CheckCircle, TrendingUp, Shield } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -10,14 +12,11 @@ import {
 } from "@/components/design-system";
 import { buttonVariants } from "@/components/design-system/ui/button";
 
-export const metadata: Metadata = {
-  title: "CDT vs. inversión inmobiliaria | LOKL",
-  description:
-    "Compara la seguridad de un CDT con el potencial de crecimiento que obtienes al invertir en bienes raíces con LOKL. Entiende cómo proteger y hacer crecer tu dinero.",
-  alternates: {
-    canonical: "https://academy.lokl.life/cdt-vs-real-estate-investing",
-  },
-};
+// Lazy load del simulador para optimizar rendimiento
+const SimulatorLazyWrapper = dynamic(() => import("@/components/simulator/simulator-lazy-wrapper"), {
+  ssr: false,
+});
+
 
 const heroHighlights = [
   "Respaldado por activos reales",
@@ -80,7 +79,7 @@ const allocationSuggestions = [
 
 const HeroSection = () => (
   <section className="py-24 md:py-32">
-    <div className="container px-4">
+    <div className="container mx-auto px-4">
       <div className="mx-auto max-w-4xl text-center">
         <h1 className="mb-6 text-4xl font-bold leading-tight text-gray-900 md:text-6xl">
           Tu CDT cuida tu dinero.
@@ -126,7 +125,7 @@ const HeroSection = () => (
 
 const CdtValidationSection = () => (
   <section className="bg-gray-50 py-16">
-    <div className="container px-4">
+    <div className="container mx-auto px-4">
       <div className="mx-auto max-w-4xl">
         <div className="mb-12 text-center">
           <h2 className="text-3xl font-bold text-gray-900 md:text-4xl">
@@ -176,7 +175,7 @@ const CdtValidationSection = () => (
 
 const ComparisonSection = () => (
   <section className="py-16">
-    <div className="container px-4">
+    <div className="container mx-auto px-4">
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 text-center">
           <h2 className="text-3xl font-bold text-gray-900 md:text-4xl">
@@ -230,64 +229,11 @@ const ComparisonSection = () => (
   </section>
 );
 
-const GrowthInsightsSection = () => (
+const SimulatorSection = () => (
   <section className="bg-gradient-to-r from-blue-50 to-green-50 py-16">
-    <div className="container px-4">
-      <div className="mx-auto max-w-4xl text-center">
-        <Calculator className="mx-auto mb-4 h-16 w-16 text-[#5352F6]" />
-        <h2 className="mb-6 text-3xl font-bold text-gray-900 md:text-4xl">
-          Descubre cuánto más podría crecer tu dinero
-        </h2>
-        <p className="text-xl leading-relaxed text-gray-600">
-          Descarga la guía práctica para comparar el potencial de crecimiento de
-          un CDT frente a una inversión en bienes raíces con LOKL. Entiende
-          escenarios reales, proyecciones y cómo combinar ambas estrategias.
-        </p>
-      </div>
-      <div className="mx-auto mt-12 grid gap-6 md:max-w-5xl md:grid-cols-3">
-        <Card className="border-blue-200 bg-white/80 backdrop-blur">
-          <CardHeader>
-            <CardTitle className="text-[#5352F6]">
-              Comparaciones claras
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0 text-sm text-gray-600">
-            Analiza escenarios de rentabilidad a 12, 24 y 36 meses para tomar
-            decisiones con información.
-          </CardContent>
-        </Card>
-        <Card className="border-blue-200 bg-white/80 backdrop-blur">
-          <CardHeader>
-            <CardTitle className="text-[#5352F6]">
-              Riesgos bajo control
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0 text-sm text-gray-600">
-            Comprende cómo funciona la diversificación entre renta fija y bienes
-            raíces físicos.
-          </CardContent>
-        </Card>
-        <Card className="border-blue-200 bg-white/80 backdrop-blur">
-          <CardHeader>
-            <CardTitle className="text-[#5352F6]">
-              Pasos accionables
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0 text-sm text-gray-600">
-            Sigue un plan sencillo para pasar de una inversión tradicional a una
-            estrategia híbrida.
-          </CardContent>
-        </Card>
-      </div>
-      <div className="mt-10 flex justify-center">
-        <a
-          href="https://lokl.life/#projects"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={buttonVariants({ size: "lg", variant: "primary" })}
-        >
-          Descargar guía comparativa
-        </a>
+    <div className="container mx-auto px-4">
+      <div className="mx-auto max-w-6xl w-full">
+        <SimulatorLazyWrapper />
       </div>
     </div>
   </section>
@@ -295,7 +241,7 @@ const GrowthInsightsSection = () => (
 
 const DiversificationSection = () => (
   <section className="py-16">
-    <div className="container px-4">
+    <div className="container mx-auto px-4">
       <div className="mx-auto max-w-4xl">
         <div className="mb-12 text-center">
           <h2 className="text-3xl font-bold text-gray-900 md:text-4xl">
@@ -347,7 +293,7 @@ const DiversificationSection = () => (
 
 const FinalCtaSection = () => (
   <section className="bg-gray-900 py-16 text-white">
-    <div className="container px-4">
+    <div className="container mx-auto px-4">
       <div className="mx-auto max-w-4xl text-center">
         <h2 className="mb-6 text-3xl font-bold md:text-4xl">
           Es hora de que tu dinero no solo esté seguro, sino que trabaje para ti
@@ -377,7 +323,7 @@ export default function CDTvsRealEstateInvestingPage() {
         <HeroSection />
         <CdtValidationSection />
         <ComparisonSection />
-        <GrowthInsightsSection />
+        <SimulatorSection />
         <DiversificationSection />
         <FinalCtaSection />
       </main>
