@@ -377,6 +377,7 @@ export function InvestorProfileForm({ onBack }: InvestorProfileFormProps) {
                 name: `${formData.nombre} ${formData.apellidos}`,
                 email: formData.correo,
                 phone: formData.telefono,
+                termsAccepted: aceptaTerminos,
                 leadOrigin: "discoveryourinvestorprofile",
                 origin: "Perfil de Inversor",
                 utmSource: utmParams.utmSource,

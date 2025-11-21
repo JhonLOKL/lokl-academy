@@ -49,6 +49,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   entries.push({ url: `${SITE_URL}/faqs`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.7 });
   entries.push({ url: `${SITE_URL}/indie-universe`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
   entries.push({ url: `${SITE_URL}/nido-de-agua`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
+  entries.push({ url: `${SITE_URL}/discoveryourinvestorprofile`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
+  entries.push({ url: `${SITE_URL}/investment-for-freelancers`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
+  entries.push({ url: `${SITE_URL}/cdt-vs-real-estate-investing`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
 
   // URLs importantes adicionales (no eliminar)
   entries.push({ url: `https://academy.lokl.life`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 });
@@ -56,6 +59,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   entries.push({ url: `https://academy.lokl.life/faqs`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.7 });
   entries.push({ url: `https://academy.lokl.life/indie-universe`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
   entries.push({ url: `https://academy.lokl.life/nido-de-agua`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
+  entries.push({ url: `https://academy.lokl.life/discoveryourinvestorprofile`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
+  entries.push({ url: `https://academy.lokl.life/investment-for-freelancers`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
+  entries.push({ url: `https://academy.lokl.life/cdt-vs-real-estate-investing`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
 
   // Blog global paginado
   const totalBlogPages = await getTotalPages();

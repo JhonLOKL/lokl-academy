@@ -189,11 +189,6 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: '/discover-your-investor-profile',
-        destination: 'https://dashboard.lokl.life/discover-your-investor-profile',
-        permanent: true,
-      },
-      {
         source: '/real-estate-investment-simulator',
         destination: 'https://dashboard.lokl.life/real-estate-investment-simulator',
         permanent: true,
