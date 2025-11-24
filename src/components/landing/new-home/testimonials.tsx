@@ -506,12 +506,12 @@ function TestimonialCard({ testimonial, onVideoPlayStateChange }: TestimonialCar
               </AvatarFallback>
             </Avatar>
             <div>
-              <div className="font-bold text-sm">{testimonial.name}</div>
-              <div className="text-xs text-muted-foreground">{testimonial.project}</div>
+              <div className="font-bold text-base md:text-lg">{testimonial.name}</div>
+              <div className="text-sm md:text-base text-muted-foreground">{testimonial.project}</div>
             </div>
           </div>
         </div>
-        <p className="text-sm text-foreground leading-relaxed flex-1">
+        <p className="text-base md:text-lg text-foreground leading-relaxed flex-1">
           {testimonial.content}
         </p>
       </Card>
