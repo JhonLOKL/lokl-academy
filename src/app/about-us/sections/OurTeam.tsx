@@ -90,7 +90,6 @@ export default function OurTeam() {
                   src={member.src}
                   name={member.name}
                   role={member.role}
-                  url={member.url}
                 />
               </motion.div>
             </SwiperSlide>
