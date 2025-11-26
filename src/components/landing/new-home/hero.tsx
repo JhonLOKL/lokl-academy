@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import {
   Select,
   SelectContent,
@@ -48,6 +49,9 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
   const [selectedHeroProjectId, setSelectedHeroProjectId] = useState<string>("");
   const [heroInvestmentAmount, setHeroInvestmentAmount] = useState(5310000);
   const [heroPhase, setHeroPhase] = useState<1 | 2>(1); // 1: configuración, 2: captura de datos
+  
+  // Estado para controlar la carga del video
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
 
   
 
@@ -190,6 +194,20 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
     >
       {/* Contenedor del Hero con imagen de fondo */}
       <div className="relative min-h-[100dvh] md:min-h-screen overflow-hidden">
+        {/* Imagen de placeholder mientras se carga el video - Solo desktop */}
+        {!isVideoLoaded && (
+          <div className="absolute inset-0 hidden md:block overflow-hidden">
+            <Image
+              src="/images/home/IMAGEN GRANDE NIDO.png"
+              alt="LOKL - Inversiones inmobiliarias"
+              fill
+              className="object-cover"
+              priority
+              quality={90}
+            />
+          </div>
+        )}
+        
         {/* Video de fondo - Solo desktop con lazy loading optimizado */}
         <div className="absolute inset-0 hidden md:block overflow-hidden">
           <video
@@ -197,10 +215,14 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
             muted
             loop
             playsInline
-            preload="none"
-            className="absolute inset-0 w-full h-full object-cover"
+            preload="auto"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+              isVideoLoaded ? "opacity-100" : "opacity-0"
+            }`}
             poster="https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe_poster.jpg"
             aria-label="Video de fondo mostrando proyectos inmobiliarios LOKL"
+            onLoadedData={() => setIsVideoLoaded(true)}
+            onCanPlay={() => setIsVideoLoaded(true)}
           >
             <source 
               src="https://lokl-assets.s3.us-east-1.amazonaws.com/home/Hero_Video.mp4" 
