@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { HelpCircle, ChevronUp, ChevronDown } from 'lucide-react';
+import { HelpCircle, ChevronUp, ChevronDown, ChevronRight } from 'lucide-react';
 
 export default function FAQ() {
   const [searchTerm, ] = useState('');
@@ -362,6 +363,16 @@ export default function FAQ() {
             </div>
           </div>
         )}
+
+        {/* Ver todas las FAQs */}
+        <div className="text-center mt-8">
+          <Link href="/faqs">
+            <Button variant="outline" className="border-[#5352F6]/20 text-[#5352F6] hover:bg-[#5352F6]/5">
+              Ver todas
+              <ChevronRight className="h-4 w-4 ml-1" />
+            </Button>
+          </Link>
+        </div>
 
       </div>
 

@@ -1,11 +1,14 @@
 "use client";
 
+import { useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ImageWithFallback } from './image-with-fallback';
 import { TrendingUp, Check, ChevronRight, Users } from 'lucide-react';
 
 export default function PerfilTab() {
+  const router = useRouter();
+
   return (
     <div className="animate-fade-in">
       <div>
@@ -67,7 +70,7 @@ export default function PerfilTab() {
               <Button 
                 size="lg" 
                 className="w-full bg-[#5352F6] hover:bg-[#5352F6]/90 text-primary-foreground h-12 mb-4"
-                onClick={() => window.open('https://lokl.life/discover-your-investor-profile', '_blank')}
+                onClick={() => router.push('/discoveryourinvestorprofile')}
               >
                 Hacer el test (2 minutos)
                 <ChevronRight className="h-5 w-5 ml-2" />
