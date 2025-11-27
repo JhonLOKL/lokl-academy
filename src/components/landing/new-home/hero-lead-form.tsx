@@ -190,7 +190,7 @@ export default function HeroLeadForm({
       </button>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleHeroFormSubmit)} className="space-y-3">
+        <form id="lead_projection_id" onSubmit={form.handleSubmit(handleHeroFormSubmit)} className="space-y-3">
           <div className="grid grid-cols-2 gap-2">
             <FormField
               control={form.control}
