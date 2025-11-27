@@ -36,6 +36,18 @@ import { useUtmStore } from "@/store/utm-store";
 import { useAuthStore } from "@/store/auth-store";
 import { ProjectCard } from "@/schemas/project-card-schema";
 
+interface WindowWithGTag extends Window {
+  gtag?: (
+    command: "event",
+    action: string,
+    params?: {
+      form_name?: string;
+      form_location?: string;
+      [key: string]: unknown;
+    }
+  ) => void;
+}
+
 export interface HeroLeadFormProps {
   currentProject: ProjectCard;
   heroInvestmentAmount: number;
@@ -84,6 +96,16 @@ export default function HeroLeadForm({
 
       if (simulationResponse.success && simulationResponse.data) {
         setPrefetchedSimulationData(simulationResponse.data);
+
+        if (typeof window !== "undefined") {
+          const w = window as unknown as WindowWithGTag;
+          if (w.gtag) {
+            w.gtag("event", "lead_projection_submit", {
+              form_name: "proyeccion_rapida",
+              form_location: "hero_home",
+            });
+          }
+        }
 
         const fullName = `${formData.firstName} ${formData.lastName}`.trim();
         const isAuthenticated = !!user;
