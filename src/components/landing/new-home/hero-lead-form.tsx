@@ -24,7 +24,6 @@ import {
   howDidYouHearAboutUsOptions,
 } from "@/schemas/lead-schema";
 import { ArrowLeft } from "lucide-react";
-import { parsePhoneData } from "@/lib/phone-utils";
 import {
   createSimulationAction,
   createQuiivenContactAction,
@@ -37,7 +36,7 @@ import { useAuthStore } from "@/store/auth-store";
 import { ProjectCard } from "@/schemas/project-card-schema";
 
 interface WindowWithDataLayer extends Window {
-  dataLayer: Record<string, any>[];
+  dataLayer: Record<string, unknown>[];
 }
 
 export interface HeroLeadFormProps {
@@ -101,13 +100,14 @@ export default function HeroLeadForm({
 
         const fullName = `${formData.firstName} ${formData.lastName}`.trim();
         const isAuthenticated = !!user;
-        const phoneData = parsePhoneData(formData.phone);
+        // Obtener el teléfono completo sin el símbolo '+' (incluye código de país)
+        const fullPhone = formData.phone?.replace(/\+/g, "") || "";
 
         const leadData = {
           email: formData.email,
           firstName: formData.firstName,
           project: currentProject.name,
-          ...(phoneData.phoneNumber && { phone: phoneData.phoneNumber }),
+          ...(fullPhone && { phone: fullPhone }),
           ...(formData.howDidYouHearAboutUs && { leadOrigin: formData.howDidYouHearAboutUs }),
           ...(utmSource && { utmSource }),
           ...(utmMedium && { utmMedium }),
@@ -133,7 +133,7 @@ export default function HeroLeadForm({
           investmentValue: heroInvestmentAmount.toString(),
           shares: simulationResponse.data.unitsAmount,
           numberInstallments: installmentsToSend,
-          phone: phoneData.phoneNumber || "",
+          phone: fullPhone,
           termsAccepted: formData.termsAccepted,
           leadOrigin: formData.howDidYouHearAboutUs || "Simulador Hero",
           utmSource,
@@ -152,12 +152,12 @@ export default function HeroLeadForm({
           console.error("❌ Error al crear contacto en Quiiven:", quiivenResponse.error);
         }
 
-        if (phoneData.phoneNumber) {
+        if (fullPhone) {
           const whatsappData = {
             name: fullName,
             projectId: currentProject.id,
             email: formData.email,
-            numberToSend: phoneData.phoneNumber,
+            numberToSend: fullPhone,
           };
 
           console.log("📱 Enviando mensaje de WhatsApp desde hero:", whatsappData);

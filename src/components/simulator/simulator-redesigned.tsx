@@ -275,6 +275,7 @@ export default function SimulatorRedesigned({
           email: user.email,
           isAuthenticated: true,
           ...(user.phone && { phone: user.phone }),
+          ...(user.countryPhoneCode && { countryCode: user.countryPhoneCode }),
           ...(user.leadOrigin && { leadOrigin: user.leadOrigin }),
         });
         setHasSimulatedWithData(true);
@@ -337,7 +338,8 @@ export default function SimulatorRedesigned({
             name: `${data.firstName} ${data.lastName}`,
             email: data.email,
             isAuthenticated: false,
-            phone: phoneData.fullPhone,
+            phone: phoneData.phoneNumber,
+            countryCode: phoneData.countryCode,
             leadOrigin: data.howDidYouHearAboutUs,
           });
           setHasSimulatedWithData(true);
@@ -356,6 +358,7 @@ export default function SimulatorRedesigned({
     email: string;
     isAuthenticated: boolean;
     phone?: string;
+    countryCode?: string;
     leadOrigin?: string;
   }) => {
     try {
@@ -363,12 +366,19 @@ export default function SimulatorRedesigned({
       const nameParts = userData.name.split(' ');
       const firstName = nameParts[0] || '';
 
+      // Construir teléfono completo si hay código de país
+      const rawPhone = userData.phone && userData.countryCode
+        ? `${userData.countryCode}${userData.phone}`
+        : userData.phone;
+
+      const fullPhone = rawPhone?.replace(/\+/g, '');
+
       // 1. Guardar lead en CRM (upsertLeadAction)
       const leadData = {
         email: userData.email,
         firstName: firstName,
         ...(selectedProject && { project: selectedProject.name }),
-        ...(userData.phone && { phone: userData.phone }),
+        ...(fullPhone && { phone: fullPhone }),
         ...(userData.leadOrigin && { leadOrigin: userData.leadOrigin }),
         ...(utmSource && { utmSource }),
         ...(utmMedium && { utmMedium }),
@@ -396,7 +406,7 @@ export default function SimulatorRedesigned({
           investmentValue: investmentAmount.toString(),
           shares: simulationData.unitsAmount,
           numberInstallments: installments === 1 ? 0 : installments,
-          phone: userData.phone || '',
+          phone: fullPhone || '',
           termsAccepted: true,
           leadOrigin: userData.leadOrigin || 'Simulador',
           utmSource,
@@ -416,12 +426,12 @@ export default function SimulatorRedesigned({
         }
 
         // 3. Enviar mensaje de WhatsApp (solo si hay teléfono)
-        if (userData.phone) {
+        if (fullPhone) {
           const whatsappData = {
             name: userData.name,
             projectId: selectedProject.id,
             email: userData.email,
-            numberToSend: userData.phone,
+            numberToSend: fullPhone,
           };
 
           console.log('📱 Enviando mensaje de WhatsApp:', whatsappData);
