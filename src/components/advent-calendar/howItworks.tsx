@@ -9,7 +9,7 @@ export function HowItWorks() {
         {
             icon: Calendar,
             title: '1. Elige un día',
-            description: 'Selecciona cualquier caja del calendario del 10 al 22 de diciembre.',
+            description: 'Selecciona cualquier caja del calendario del 13 al 24 de diciembre.',
         },
         {
             icon: Gift,

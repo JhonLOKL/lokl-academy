@@ -51,14 +51,14 @@ export function WelcomePopup({ onOpenRegistration }: WelcomePopupProps) {
                     title: '¡Pronto comenzará el calendario!',
                     badge: `Faltan ${status.daysUntilStart} ${status.daysUntilStart === 1 ? 'día' : 'días'}`,
                     badgeColor: '#8b8af8',
-                    description: 'Del 10 al 22 de diciembre - ¡Regresa pronto para abrir tu primer regalo!',
+                    description: 'Del 13 al 24 de diciembre - ¡Regresa pronto para abrir tu primer regalo!',
                 };
             case 'active':
                 return {
                     title: '¡El calendario está activo!',
                     badge: `Día ${status.currentDay} ACTIVO`,
                     badgeColor: '#4ade80',
-                    description: 'Del 10 al 22 de diciembre - ¡Abre un regalo cada día!',
+                    description: 'Del 13 al 24 de diciembre - ¡Abre un regalo cada día!',
                 };
             case 'ended':
                 return {

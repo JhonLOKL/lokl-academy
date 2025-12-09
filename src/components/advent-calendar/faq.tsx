@@ -11,7 +11,7 @@ export function FAQ() {
     const faqs = [
         {
             question: '¿Cuándo puedo abrir los regalos?',
-            answer: 'Puedes abrir cualquier regalo del 10 al 22 de diciembre. Cada día desbloquea una recompensa especial diseñada para impulsar tu crecimiento profesional.',
+            answer: 'Puedes abrir cualquier regalo del 13 al 24 de diciembre. Cada día desbloquea una recompensa especial diseñada para impulsar tu crecimiento profesional.',
         },
         {
             question: '¿Qué tipo de recompensas hay?',

@@ -50,7 +50,7 @@ export function Hero() {
                     style={{ textShadow: '0 6px 30px rgba(0,0,0,1), 0 4px 20px rgba(0,0,0,0.95), 0 3px 15px rgba(0,0,0,0.85), 0 2px 10px rgba(0,0,0,0.75), 0 1px 5px rgba(0,0,0,0.65)' }}
                 >
                     Cada día desbloquea una recompensa exclusiva diseñada para impulsar tu crecimiento profesional.
-                    Del 10 al 22 de diciembre, descubre ventajas únicas que te acercan a tus objetivos.
+                    Del 13 al 24 de diciembre, descubre ventajas únicas que te acercan a tus objetivos.
                 </motion.p>
 
                 {/* Botón */}

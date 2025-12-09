@@ -6,27 +6,20 @@ import { useEffect, useState } from 'react';
 
 export function CountdownCalendar() {
     const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-    const [isCampaignActive, setIsCampaignActive] = useState(false); // Si la campaña global ya empezó (10 Dic 10 AM)
-    const [showCountdown, setShowCountdown] = useState(true); // Si debemos mostrar el contador (antes de las 10 AM o antes de campaña)
-
-    // Fecha de inicio de campaña: 10 de diciembre de 2025 a las 10:00 AM
-    //const startDate = useMemo(() => new Date('2025-12-10T10:00:00'), []);
+    const [isCampaignActive, setIsCampaignActive] = useState(false);
+    const [showCountdown, setShowCountdown] = useState(true);
 
     useEffect(() => {
         const calculateTimeLeft = () => {
             const now = new Date();
-            const campaignStart = new Date('2025-12-10T10:00:00');
+            const campaignStart = new Date('2025-12-13T10:00:00');
 
-            // Determinar si la campaña ya empezó globalmente
             const campaignActive = now >= campaignStart;
             setIsCampaignActive(campaignActive);
 
             let targetDate = new Date();
             targetDate.setHours(10, 0, 0, 0);
 
-            // Si es antes de las 10 AM de hoy, el objetivo es hoy a las 10 AM.
-            // Si es después de las 10 AM de hoy, el objetivo es mañana a las 10 AM.
-            // PERO si estamos en campaña activa y son mas de las 10 AM, mostramos "Activo", no contador para mañana.
 
             if (now.getTime() >= targetDate.getTime()) {
                 // Ya pasaron las 10 AM de hoy
@@ -72,7 +65,7 @@ export function CountdownCalendar() {
 
     const now = new Date();
     // Calculo de día actual para mostrar msj "Día X ACTIVO"
-    const campaignStart = new Date('2025-12-10T10:00:00');
+    const campaignStart = new Date('2025-12-13T10:00:00');
     const dayNumber = Math.min(Math.floor((now.getTime() - campaignStart.getTime()) / (1000 * 60 * 60 * 24)) + 1, 12);
 
     return (
@@ -123,7 +116,7 @@ export function CountdownCalendar() {
                         </div>
 
                         <p className="text-white/60 text-center mt-4 md:mt-6 text-xs md:text-sm">
-                            Los regalos se desbloquearán del 10 al 22 de diciembre
+                            Los regalos se desbloquearán del 13 al 24 de diciembre
                         </p>
                     </>
                 )}
@@ -140,7 +133,7 @@ export function CountdownCalendar() {
                             </span>
                         </div>
                         <p className="text-white/80 mt-3 text-xs md:text-sm">
-                            Del 10 al 22 de diciembre - ¡Abre un regalo cada día!
+                            Del 13 al 24 de diciembre - ¡Abre un regalo cada día!
                         </p>
                     </div>
                 )}
