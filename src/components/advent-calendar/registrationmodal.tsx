@@ -74,7 +74,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                                 {/* Botón para ir a login */}
                                 <motion.button
                                     onClick={() => {
-                                        router.push('/login');
+                                        router.push('/login?redirect=/advent-calendar');
                                         onClose();
                                     }}
                                     className="w-full text-white py-3.5 rounded-lg font-bold text-base md:text-lg shadow-lg transition-all"
@@ -88,7 +88,7 @@ export function RegistrationModal({ isOpen, onClose }: RegistrationModalProps) {
                                 {/* Botón para ir a registro */}
                                 <motion.button
                                     onClick={() => {
-                                        router.push('/register');
+                                        router.push('/register?redirect=/advent-calendar');
                                         onClose();
                                     }}
                                     className="w-full text-[#5352f6] py-3.5 rounded-lg font-bold text-base md:text-lg shadow-md border-2 transition-all"

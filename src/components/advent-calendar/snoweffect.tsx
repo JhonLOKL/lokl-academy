@@ -1,55 +1,77 @@
 "use client";
 
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 
 export function SnowEffect() {
-    const [height, setHeight] = useState(0);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
     useEffect(() => {
-        setHeight(window.innerHeight);
-        const handleResize = () => setHeight(window.innerHeight);
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
+        const updateDimensions = () => {
+            if (containerRef.current) {
+                const { offsetWidth, offsetHeight } = containerRef.current;
+                setDimensions({ width: offsetWidth, height: offsetHeight });
+            }
+        };
+
+        // Initial measurement
+        updateDimensions();
+
+        const observer = new ResizeObserver(updateDimensions);
+        if (containerRef.current) {
+            observer.observe(containerRef.current);
+        }
+
+        return () => observer.disconnect();
     }, []);
 
-    const snowflakes = Array.from({ length: 100 }, (_, i) => ({
+    const snowflakes = useMemo(() => Array.from({ length: 100 }, (_, i) => ({
         id: i,
         left: Math.random() * 100,
         animationDelay: Math.random() * 8,
         size: Math.random() * 5 + 2,
-        duration: Math.random() * 5 + 8,
+        // Store speed (pixels per second) instead of fixed duration
+        // Random speed between 50 and 100 px/s seems reasonable for snow
+        speed: Math.random() * 50 + 50,
         drift: (Math.random() - 0.5) * 100,
-    }));
+    })), []);
 
-    if (height === 0) return null;
+    if (dimensions.height === 0) return (
+        <div ref={containerRef} className="absolute inset-0 z-5 overflow-hidden pointer-events-none" />
+    );
 
     return (
-        <div className="absolute inset-0 z-5 overflow-hidden pointer-events-none">
-            {snowflakes.map((flake) => (
-                <motion.div
-                    key={flake.id}
-                    className="absolute bg-white rounded-full"
-                    style={{
-                        left: `${flake.left}%`,
-                        width: `${flake.size}px`,
-                        height: `${flake.size}px`,
-                        top: '-20px',
-                        opacity: 0.8,
-                    }}
-                    animate={{
-                        y: [0, height + 40],
-                        x: [0, flake.drift],
-                        opacity: [0, 0.9, 0.9, 0],
-                    }}
-                    transition={{
-                        duration: flake.duration,
-                        repeat: Infinity,
-                        delay: flake.animationDelay,
-                        ease: 'linear',
-                    }}
-                />
-            ))}
+        <div ref={containerRef} className="absolute inset-0 z-5 overflow-hidden pointer-events-none">
+            {snowflakes.map((flake) => {
+                // Calculate duration based on height and speed
+                const duration = dimensions.height / flake.speed;
+
+                return (
+                    <motion.div
+                        key={flake.id}
+                        className="absolute bg-white rounded-full"
+                        style={{
+                            left: `${flake.left}%`,
+                            width: `${flake.size}px`,
+                            height: `${flake.size}px`,
+                            top: '-20px',
+                            opacity: 0.8,
+                        }}
+                        animate={{
+                            y: [0, dimensions.height + 40],
+                            x: [0, flake.drift],
+                            opacity: [0, 0.9, 0.9, 0],
+                        }}
+                        transition={{
+                            duration: duration,
+                            repeat: Infinity,
+                            delay: flake.animationDelay,
+                            ease: 'linear',
+                        }}
+                    />
+                );
+            })}
         </div>
     );
 }
