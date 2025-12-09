@@ -2,18 +2,55 @@
 
 import { motion } from 'framer-motion';
 import { TreePine } from 'lucide-react';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 
 export function CountdownCalendar() {
     const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+    const [isCampaignActive, setIsCampaignActive] = useState(false); // Si la campaña global ya empezó (10 Dic 10 AM)
+    const [showCountdown, setShowCountdown] = useState(true); // Si debemos mostrar el contador (antes de las 10 AM o antes de campaña)
 
-    // Fecha de inicio: 10 de diciembre de 2025
-    const startDate = useMemo(() => new Date('2025-12-10T00:00:00'), []);
+    // Fecha de inicio de campaña: 10 de diciembre de 2025 a las 10:00 AM
+    //const startDate = useMemo(() => new Date('2025-12-10T10:00:00'), []);
 
     useEffect(() => {
         const calculateTimeLeft = () => {
             const now = new Date();
-            const difference = startDate.getTime() - now.getTime();
+            const campaignStart = new Date('2025-12-10T10:00:00');
+
+            // Determinar si la campaña ya empezó globalmente
+            const campaignActive = now >= campaignStart;
+            setIsCampaignActive(campaignActive);
+
+            let targetDate = new Date();
+            targetDate.setHours(10, 0, 0, 0);
+
+            // Si es antes de las 10 AM de hoy, el objetivo es hoy a las 10 AM.
+            // Si es después de las 10 AM de hoy, el objetivo es mañana a las 10 AM.
+            // PERO si estamos en campaña activa y son mas de las 10 AM, mostramos "Activo", no contador para mañana.
+
+            if (now.getTime() >= targetDate.getTime()) {
+                // Ya pasaron las 10 AM de hoy
+                targetDate.setDate(targetDate.getDate() + 1);
+            }
+
+            // Si estamos antes del inicio de campaña, el target es el inicio de campaña
+            if (now < campaignStart) {
+                targetDate = campaignStart;
+                setShowCountdown(true);
+            } else {
+                // Estamos en fechas de campaña
+                // Si es antes de las 10 AM, mostramos contador para las 10 AM de hoy
+                if (now.getHours() < 10) {
+                    setShowCountdown(true);
+                    // El target ya se seteo correctamente arriba (hoy 10 AM)
+                    targetDate.setHours(10, 0, 0, 0); // Re-asegurar que es hoy
+                } else {
+                    // Es después de las 10 AM, mostramos "Activo"
+                    setShowCountdown(false);
+                }
+            }
+
+            const difference = targetDate.getTime() - now.getTime();
 
             if (difference > 0) {
                 setTimeLeft({
@@ -31,10 +68,12 @@ export function CountdownCalendar() {
         const timer = setInterval(calculateTimeLeft, 1000);
 
         return () => clearInterval(timer);
-    }, [startDate]);
+    }, []);
 
     const now = new Date();
-    const hasStarted = now >= startDate;
+    // Calculo de día actual para mostrar msj "Día X ACTIVO"
+    const campaignStart = new Date('2025-12-10T10:00:00');
+    const dayNumber = Math.min(Math.floor((now.getTime() - campaignStart.getTime()) / (1000 * 60 * 60 * 24)) + 1, 12);
 
     return (
         <motion.div
@@ -47,14 +86,14 @@ export function CountdownCalendar() {
                 <div className="flex items-center justify-center gap-2 md:gap-3 mb-4">
                     <TreePine className="text-white" size={24} />
                     <h2 className="text-white text-lg md:text-2xl font-bold text-center">
-                        {hasStarted ? '¡El calendario está activo!' : 'El calendario comienza pronto'}
+                        {!showCountdown ? '¡El calendario está activo!' : 'El calendario comienza pronto'}
                     </h2>
                 </div>
 
-                {!hasStarted && (
+                {showCountdown && (
                     <>
                         <p className="text-white/80 text-center mb-4 text-sm md:text-base">
-                            Activo en:
+                            {isCampaignActive ? 'Siguiente regalo en:' : 'Activo en:'}
                         </p>
 
                         <div className="grid grid-cols-4 gap-2 md:gap-4 max-w-2xl mx-auto">
@@ -89,7 +128,7 @@ export function CountdownCalendar() {
                     </>
                 )}
 
-                {hasStarted && (
+                {!showCountdown && (
                     <div className="text-center">
                         <div className="inline-flex items-center justify-center gap-1.5 bg-white/10 backdrop-blur-md rounded-full px-3 py-1.5 border border-white/20">
                             <div className="relative">
@@ -97,7 +136,7 @@ export function CountdownCalendar() {
                                 <div className="relative w-2 h-2 bg-green-400 rounded-full" />
                             </div>
                             <span className="text-white text-sm font-bold">
-                                Día {Math.min(Math.floor((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1, 12)} ACTIVO
+                                Día {dayNumber} ACTIVO
                             </span>
                         </div>
                         <p className="text-white/80 mt-3 text-xs md:text-sm">
