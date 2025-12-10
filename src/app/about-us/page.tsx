@@ -43,8 +43,8 @@ export const metadata: Metadata = {
     title: "Sobre Nosotros | Inversiones Inmobiliarias | LOKL",
     description: "Descubre cómo LOKL permite a las nuevas generaciones invertir en proyectos que les apasionan desde $1,000,000 COP en el sector inmobiliario, todo de manera 100% digital.",
     url: "https://lokl.life/about-us",
-    siteName: "LOKL",
-    locale: "es",
+    siteName: "LOKL Life",
+    locale: "es_CO",
     type: "website",
     images: [
       {
