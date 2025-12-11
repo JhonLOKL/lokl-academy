@@ -1,4 +1,4 @@
-import { enrollPageService, getEnrollPageService, updateEnrollPageService } from "@/services/EnrollPageService"
+import { enrollPageService, getEnrollPageService, updateEnrollPageService, sendRewardWebhook } from "@/services/EnrollPageService"
 
 export const enrollPageAction = async (body: {
     name: string
@@ -28,7 +28,7 @@ export const enrollPageAction = async (body: {
     }
 }
 
-export const claimRewardAction = async (rewardDay: number, rewardData: Record<string, unknown>): Promise<{ success: boolean, message: string }> => {
+export const claimRewardAction = async (rewardDay: number, rewardData: Record<string, unknown>, userId: string): Promise<{ success: boolean, message: string }> => {
     try {
         // 1. Obtener inscripción existente
         const existingEnrollment = await getEnrollPageService();
@@ -51,6 +51,15 @@ export const claimRewardAction = async (rewardDay: number, rewardData: Record<st
             };
 
             await updateEnrollPageService({ notes: updatedNotes });
+            
+            // Enviar webhook
+            if (userId) {
+                await sendRewardWebhook({
+                    userId: userId,
+                    day: rewardDay
+                });
+            }
+
             return { success: true, message: "Recompensa reclamada exitosamente" };
         }
 
@@ -65,6 +74,14 @@ export const claimRewardAction = async (rewardDay: number, rewardData: Record<st
             name: "Advent Calendar",
             notes: initialNotes
         });
+
+        // Enviar webhook
+        if (userId) {
+            await sendRewardWebhook({
+                userId: userId,
+                day: rewardDay
+            });
+        }
 
         return { success: true, message: "Primera recompensa reclamada exitosamente" };
 

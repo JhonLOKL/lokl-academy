@@ -115,7 +115,7 @@ export function CalendarGrid() {
     const [claimedRewards, setClaimedRewards] = useState<number[]>([]);
 
     // Get authentication state
-    const { token } = useAuthStore();
+    const { token, user } = useAuthStore();
 
     // Cargar recompensas reclamadas al iniciar
     useEffect(() => {
@@ -149,7 +149,7 @@ export function CalendarGrid() {
                     await claimRewardAction(day, {
                         title: reward.title,
                         claimedAt: new Date().toISOString()
-                    });
+                    }, user?.id || "");
 
                     // Actualizar estado local
                     setClaimedRewards(prev => [...prev, day]);
@@ -187,10 +187,10 @@ export function CalendarGrid() {
 
         // Calcular cuántos días han pasado desde el inicio
         const daysSinceStart = Math.floor((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+        const currentDay = daysSinceStart + 1;
 
-        // El día N se desbloquea si han pasado N-1 días
-        // Ejemplo: Día 1 se desbloquea si daysSinceStart >= 0
-        return daysSinceStart >= day - 1;
+        // Solo permitir ver el día actual. Días pasados y futuros bloqueados.
+        return day === currentDay;
     };
 
     // Verificar si un regalo es el día activo
