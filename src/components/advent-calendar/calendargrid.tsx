@@ -179,8 +179,8 @@ export function CalendarGrid() {
     // Verificar si un regalo está desbloqueado
     const isUnlocked = (day: number) => {
         const now = new Date();
-        // Fecha de inicio: 10 de Diciembre de 2025
-        const startDate = new Date('2025-12-10T00:00:00');
+        // Fecha de inicio: 13 de Diciembre de 2025
+        const startDate = new Date('2025-12-13T00:00:00');
 
         // Si aún no es la fecha de inicio, todo está bloqueado
         if (now < startDate) return false;
@@ -196,7 +196,7 @@ export function CalendarGrid() {
     // Verificar si un regalo es el día activo
     const isActiveDay = (day: number) => {
         const now = new Date();
-        const startDate = new Date('2025-12-10T00:00:00');
+        const startDate = new Date('2025-12-13T00:00:00');
 
         if (now < startDate) return false;
 

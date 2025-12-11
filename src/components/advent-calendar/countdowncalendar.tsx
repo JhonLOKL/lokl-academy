@@ -12,35 +12,26 @@ export function CountdownCalendar() {
     useEffect(() => {
         const calculateTimeLeft = () => {
             const now = new Date();
-            const campaignStart = new Date('2025-12-13T10:00:00');
+            const campaignStart = new Date('2025-12-13T00:00:00'); // Fecha de inicio actualizada al 13
+            const campaignEnd = new Date('2025-12-24T23:59:59');
 
-            const campaignActive = now >= campaignStart;
+            const campaignActive = now >= campaignStart && now <= campaignEnd;
             setIsCampaignActive(campaignActive);
 
             let targetDate = new Date();
-            targetDate.setHours(10, 0, 0, 0);
-
-
-            if (now.getTime() >= targetDate.getTime()) {
-                // Ya pasaron las 10 AM de hoy
-                targetDate.setDate(targetDate.getDate() + 1);
-            }
+            targetDate.setHours(24, 0, 0, 0); // Apuntar a la siguiente medianoche por defecto
 
             // Si estamos antes del inicio de campaña, el target es el inicio de campaña
             if (now < campaignStart) {
                 targetDate = campaignStart;
                 setShowCountdown(true);
+            } else if (now > campaignEnd) {
+                // Campaña finalizada
+                setShowCountdown(false);
             } else {
-                // Estamos en fechas de campaña
-                // Si es antes de las 10 AM, mostramos contador para las 10 AM de hoy
-                if (now.getHours() < 10) {
-                    setShowCountdown(true);
-                    // El target ya se seteo correctamente arriba (hoy 10 AM)
-                    targetDate.setHours(10, 0, 0, 0); // Re-asegurar que es hoy
-                } else {
-                    // Es después de las 10 AM, mostramos "Activo"
-                    setShowCountdown(false);
-                }
+                // Estamos en fechas de campaña (13 al 24 de dic)
+                // Siempre mostrar contador para el siguiente día (00:00)
+                setShowCountdown(true);
             }
 
             const difference = targetDate.getTime() - now.getTime();
@@ -65,9 +56,17 @@ export function CountdownCalendar() {
 
     const now = new Date();
     // Calculo de día actual para mostrar msj "Día X ACTIVO"
-    const campaignStart = new Date('2025-12-13T10:00:00');
-    const dayNumber = Math.min(Math.floor((now.getTime() - campaignStart.getTime()) / (1000 * 60 * 60 * 24)) + 1, 12);
+    const campaignStart = new Date('2025-12-13T00:00:00');
+    const campaignEnd = new Date('2025-12-24T23:59:59');
+    
+    // Si la campaña no ha empezado
+    const isPreCampaign = now < campaignStart;
+    // Si la campaña ya terminó
+    const isPostCampaign = now > campaignEnd;
 
+    // Calcular día actual (1 a 12)
+    const dayNumber = Math.min(Math.floor((now.getTime() - campaignStart.getTime()) / (1000 * 60 * 60 * 24)) + 1, 12);
+    
     return (
         <motion.div
             className="relative z-10 max-w-2xl mx-auto mb-12 md:mb-16 px-4 md:px-6"
@@ -79,14 +78,18 @@ export function CountdownCalendar() {
                 <div className="flex items-center justify-center gap-2 md:gap-3 mb-4">
                     <TreePine className="text-white" size={24} />
                     <h2 className="text-white text-lg md:text-2xl font-bold text-center">
-                        {!showCountdown ? '¡El calendario está activo!' : 'El calendario comienza pronto'}
+                        {isPreCampaign 
+                            ? '¡El calendario comienza pronto!' 
+                            : isPostCampaign 
+                                ? '¡Gracias por participar en el Calendario de Adviento!' 
+                                : `¡El día ${dayNumber} está activo!`}
                     </h2>
                 </div>
 
-                {showCountdown && (
+                {showCountdown && !isPostCampaign && (
                     <>
                         <p className="text-white/80 text-center mb-4 text-sm md:text-base">
-                            {isCampaignActive ? 'Siguiente regalo en:' : 'Activo en:'}
+                            {isPreCampaign ? 'La magia comienza en:' : 'Tu próxima sorpresa llega en:'}
                         </p>
 
                         <div className="grid grid-cols-4 gap-2 md:gap-4 max-w-2xl mx-auto">
@@ -116,12 +119,14 @@ export function CountdownCalendar() {
                         </div>
 
                         <p className="text-white/60 text-center mt-4 md:mt-6 text-xs md:text-sm">
-                            Los regalos se desbloquearán del 13 al 24 de diciembre
+                            {isPreCampaign 
+                                ? 'Prepárate para 12 días de regalos exclusivos' 
+                                : 'Los regalos se desbloquearán diariamente a las 00:00'}
                         </p>
                     </>
                 )}
 
-                {!showCountdown && (
+                {!showCountdown && !isPreCampaign && !isPostCampaign && (
                     <div className="text-center">
                         <div className="inline-flex items-center justify-center gap-1.5 bg-white/10 backdrop-blur-md rounded-full px-3 py-1.5 border border-white/20">
                             <div className="relative">

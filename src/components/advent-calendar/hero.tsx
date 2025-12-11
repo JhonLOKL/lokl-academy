@@ -55,7 +55,7 @@ export function Hero() {
 
                 {/* Botón */}
                 <motion.div
-                    className="flex justify-center"
+                    className="flex flex-col items-center"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
@@ -67,6 +67,19 @@ export function Hero() {
                     >
                         Comenzar
                     </button>
+
+                    {/* Términos y condiciones */}
+                    <div className="mt-4 text-center">
+                        <a
+                            href="https://drive.google.com/file/d/1ITLVvRaMY_MG5w5uShgmO-0S3cYWJV3N/view"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-white/80 text-xs md:text-sm hover:text-white underline transition-colors"
+                            style={{ textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}
+                        >
+                            Términos y condiciones
+                        </a>
+                    </div>
                 </motion.div>
             </div>
         </div>

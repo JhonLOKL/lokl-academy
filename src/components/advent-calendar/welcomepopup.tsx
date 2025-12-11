@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Gift } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useAuthStore } from '@/store/auth-store';
 
 interface WelcomePopupProps {
     onOpenRegistration: () => void;
@@ -11,6 +12,7 @@ interface WelcomePopupProps {
 
 export function WelcomePopup({ onOpenRegistration }: WelcomePopupProps) {
     const [isOpen, setIsOpen] = useState(true);
+    const { token } = useAuthStore();
     const [status, setStatus] = useState<{
         type: 'before' | 'active' | 'ended';
         daysUntilStart?: number;
@@ -123,16 +125,34 @@ export function WelcomePopup({ onOpenRegistration }: WelcomePopupProps) {
                     {/* Botón de Inscripción */}
                     <motion.button
                         onClick={() => {
-                            onOpenRegistration();
-                            setIsOpen(false);
+                            if (token) {
+                                // Si ya está logueado, solo cierra el popup
+                                setIsOpen(false);
+                            } else {
+                                // Si no está logueado, abre el registro
+                                onOpenRegistration();
+                                setIsOpen(false);
+                            }
                         }}
                         className="w-full max-w-xs mx-auto block text-white py-3 md:py-4 px-6 rounded-full font-bold text-base md:text-lg shadow-xl transition-all"
                         style={{ backgroundColor: 'rgba(255, 255, 255, 0.25)' }}
                         whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 255, 255, 0.35)' }}
                         whileTap={{ scale: 0.95 }}
                     >
-                        Únete al Reto Navideño
+                        {token ? 'Ir al Calendario' : 'Únete al Reto Navideño'}
                     </motion.button>
+
+                    {/* Términos y condiciones */}
+                    <div className="mt-4 text-center">
+                        <a
+                            href="https://drive.google.com/file/d/1ITLVvRaMY_MG5w5uShgmO-0S3cYWJV3N/view"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-white/70 text-xs md:text-sm hover:text-white underline transition-colors"
+                        >
+                            Términos y condiciones
+                        </a>
+                    </div>
                 </motion.div>
             </DialogContent>
         </Dialog>
