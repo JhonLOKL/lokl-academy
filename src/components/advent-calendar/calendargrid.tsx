@@ -149,7 +149,7 @@ export function CalendarGrid() {
                     await claimRewardAction(day, {
                         title: reward.title,
                         claimedAt: new Date().toISOString()
-                    }, user?.id || "");
+                    }, user?.id || "", user?.email || "");
 
                     // Actualizar estado local
                     setClaimedRewards(prev => [...prev, day]);

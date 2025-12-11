@@ -28,7 +28,7 @@ export const enrollPageAction = async (body: {
     }
 }
 
-export const claimRewardAction = async (rewardDay: number, rewardData: Record<string, unknown>, userId: string): Promise<{ success: boolean, message: string }> => {
+export const claimRewardAction = async (rewardDay: number, rewardData: Record<string, unknown>, userId: string, email?: string): Promise<{ success: boolean, message: string }> => {
     try {
         // 1. Obtener inscripción existente
         const existingEnrollment = await getEnrollPageService();
@@ -56,7 +56,8 @@ export const claimRewardAction = async (rewardDay: number, rewardData: Record<st
             if (userId) {
                 await sendRewardWebhook({
                     userId: userId,
-                    day: rewardDay
+                    day: rewardDay,
+                    email: email
                 });
             }
 
@@ -79,7 +80,8 @@ export const claimRewardAction = async (rewardDay: number, rewardData: Record<st
         if (userId) {
             await sendRewardWebhook({
                 userId: userId,
-                day: rewardDay
+                day: rewardDay,
+                email: email
             });
         }
 

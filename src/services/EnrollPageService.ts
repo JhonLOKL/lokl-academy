@@ -42,6 +42,7 @@ export const updateEnrollPageService = async (body: {
 export const sendRewardWebhook = async (body: {
     userId: string
     day: number
+    email?: string
 }) => {
     try {
         const url = 'https://lokl.app.n8n.cloud/webhook/e5e12389-5f17-4207-8fd4-f54515e0a6cf'
