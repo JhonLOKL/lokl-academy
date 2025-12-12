@@ -3,7 +3,11 @@
 import { motion } from 'framer-motion';
 import { useEffect, useState, useRef, useMemo } from 'react';
 
-export function SnowEffect() {
+interface SnowEffectProps {
+    speedMultiplier?: number;
+}
+
+export function SnowEffect({ speedMultiplier = 1 }: SnowEffectProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
@@ -33,9 +37,10 @@ export function SnowEffect() {
         size: Math.random() * 5 + 2,
         // Store speed (pixels per second) instead of fixed duration
         // Random speed between 50 and 100 px/s seems reasonable for snow
-        speed: Math.random() * 50 + 50,
+        // Multiplicamos por speedMultiplier para ajustar la velocidad (e.g. 0.5 para más lento)
+        speed: (Math.random() * 50 + 50) * speedMultiplier,
         drift: (Math.random() - 0.5) * 100,
-    })), []);
+    })), [speedMultiplier]);
 
     if (dimensions.height === 0) return (
         <div ref={containerRef} className="absolute inset-0 z-5 overflow-hidden pointer-events-none" />
