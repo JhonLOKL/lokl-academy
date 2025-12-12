@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { RewardModal } from './rewardmodal';
 import { RegistrationModal } from './registrationmodal';
+import { ThankYouPopup } from './thankyoupopup';
 import { CountdownCalendar } from './countdowncalendar';
 import { Gift, Snowflake, Star, TreePine, Candy, Sparkles, Heart, Bell, Check } from 'lucide-react';
 import { useAuthStore } from '@/store/auth-store';
@@ -25,21 +26,21 @@ const rewards: Reward[] = [
         day: 1,
         title: 'Clase Magistral con Camilo',
         description: 'La Mejor Inversión es el Conocimiento. Aprende la estrategia LOKL para evaluar proyectos con propósito y oportunidades reales con Camilo y expertos.',
-        imageUrl: 'https://images.unsplash.com/photo-1543062591-e3c0fdb97350?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMG1hc3RlcmNsYXNzJTIwc3BlYWtlcnxlbnwxfHx8fDE3NjQ3ODkzNjl8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+        imageUrl: 'https://lokl-assets.s3.us-east-1.amazonaws.com/advent+calendar/Banner+Dia+1+.webp',
         ctaButton: 'Acceder GRATIS a la Masterclass',
     },
     {
         day: 2,
         title: 'Granizado Ilimitado x 1 Día (*cupos limitados)',
         description: 'Energía Ilimitada para tu Propósito. Disfruta de todos los granizados que quieras durante un día completo en el Café INDIE. Porque la creatividad también necesita sabor.',
-        imageUrl: 'https://images.unsplash.com/photo-1539574610665-dc92264e9c4f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpY2VkJTIwY29mZmVlJTIwc21vb3RoaWV8ZW58MXx8fHwxNzY0Nzg5MzY5fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+        imageUrl: 'https://lokl-assets.s3.us-east-1.amazonaws.com/advent+calendar/Banner+Dia+2+.webp',
         ctaButton: '¡Activar mi Granizado Ilimitado!',
     },
     {
         day: 3,
         title: 'Cashback 1% en Créditos INDIE (*cupos limitados)',
         description: 'El Retorno Inteligente. Invierte en Units LOKL y recibe 1% de cashback en créditos para usar en todo el ecosistema: hotel, café, labs, cowork. Tu inversión te beneficia hoy.',
-        imageUrl: 'https://images.unsplash.com/photo-1636112163085-2f0b1951d028?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjYXNoYmFjayUyMHJld2FyZHMlMjBtb25leXxlbnwxfHx8fDE3NjQ3ODkzNzJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+        imageUrl: 'https://lokl-assets.s3.us-east-1.amazonaws.com/advent+calendar/Banner+Dia+3+.webp',
         ctaButton: 'Quiero Invertir y Ganar Créditos INDIE',
     },
     {
@@ -111,6 +112,7 @@ export function CalendarGrid() {
     const [selectedReward, setSelectedReward] = useState<Reward | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [showRegistration, setShowRegistration] = useState(false);
+    const [showThankYou, setShowThankYou] = useState(false);
     const [pendingReward, setPendingReward] = useState<Reward | null>(null);
     const [claimedRewards, setClaimedRewards] = useState<number[]>([]);
 
@@ -327,6 +329,13 @@ export function CalendarGrid() {
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 reward={selectedReward}
+                onRewardClaimed={() => setShowThankYou(true)}
+            />
+
+            {/* Popup de agradecimiento */}
+            <ThankYouPopup 
+                isOpen={showThankYou} 
+                onClose={() => setShowThankYou(false)} 
             />
 
             {/* Modal de registro */}

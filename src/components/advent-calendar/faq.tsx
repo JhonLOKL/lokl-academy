@@ -64,7 +64,7 @@ export function FAQ() {
                                 onClick={() => toggleFAQ(index)}
                                 className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-[#5352fe]/10 transition-all"
                             >
-                                <span className="pr-4" style={{ color: '#5352fe' }}>{faq.question}</span>
+                                <span className="pr-4 font-semibold text-lg" style={{ color: '#5352fe' }}>{faq.question}</span>
                                 <motion.div
                                     animate={{ rotate: openIndex === index ? 180 : 0 }}
                                     transition={{ duration: 0.3 }}
@@ -82,7 +82,7 @@ export function FAQ() {
                                 transition={{ duration: 0.3 }}
                                 className="overflow-hidden"
                             >
-                                <div className="px-6 pb-5 pt-2" style={{ color: '#5352fe' }}>
+                                <div className="px-6 pb-5 pt-2 text-[#5352fe]/80 font-light leading-relaxed" style={{ color: '#5352fe' }}>
                                     {faq.answer}
                                 </div>
                             </motion.div>

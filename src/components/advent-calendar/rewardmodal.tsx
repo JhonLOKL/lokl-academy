@@ -16,9 +16,10 @@ interface RewardModalProps {
     isOpen: boolean;
     onClose: () => void;
     reward: Reward | null;
+    onRewardClaimed: () => void;
 }
 
-export function RewardModal({ isOpen, onClose, reward }: RewardModalProps) {
+export function RewardModal({ isOpen, onClose, reward, onRewardClaimed }: RewardModalProps) {
     if (!reward) return null;
 
     return (
@@ -124,6 +125,10 @@ export function RewardModal({ isOpen, onClose, reward }: RewardModalProps) {
 
                             {/* Botón de CTA */}
                             <motion.button
+                                onClick={() => {
+                                    onRewardClaimed();
+                                    onClose();
+                                }}
                                 className="text-white px-6 py-3 md:px-8 md:py-4 rounded-full shadow-lg transition-all hover:shadow-xl"
                                 style={{ backgroundColor: '#5352f6' }}
                                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#4242d6'}
