@@ -17,13 +17,19 @@ export function Hero() {
             {/* Imagen de fondo en blanco y negro */}
             <div className="absolute inset-0 z-0">
                 <Image
-                    src="https://lokl-assets.s3.us-east-1.amazonaws.com/home/advent+calendar/HeroMovil.png"
+                    src="https://lokl-assets.s3.us-east-1.amazonaws.com/advent+calendar/Foto+banner.png"
                     alt="Christmas background"
                     fill
-                    className="object-cover"
+                    className="object-cover opacity-40 hidden md:block"
                     unoptimized
                 />
-                <div className="absolute inset-0 bg-black/5" />
+                <Image
+                    src="https://lokl-assets.s3.us-east-1.amazonaws.com/advent+calendar/MovilBanner.png"
+                    alt="Christmas background mobile"
+                    fill
+                    className="object-cover opacity-40 block md:hidden"
+                    unoptimized
+                />
             </div>
 
             {/* Contenido */}

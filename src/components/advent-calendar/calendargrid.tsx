@@ -33,14 +33,14 @@ const rewards: Reward[] = [
         day: 2,
         title: 'Granizado Ilimitado x 1 Día (*cupos limitados)',
         description: 'Energía Ilimitada para tu Propósito. Disfruta de todos los granizados que quieras durante un día completo en el Café INDIE. Porque la creatividad también necesita sabor.',
-        imageUrl: 'https://lokl-assets.s3.us-east-1.amazonaws.com/advent+calendar/Banner+Dia+2+.webp',
+        imageUrl: 'https://lokl-assets.s3.us-east-1.amazonaws.com/advent+calendar/Banner+Dia+2.webp',
         ctaButton: '¡Activar mi Granizado Ilimitado!',
     },
     {
         day: 3,
         title: 'Cashback 1% en Créditos INDIE (*cupos limitados)',
         description: 'El Retorno Inteligente. Invierte en Units LOKL y recibe 1% de cashback en créditos para usar en todo el ecosistema: hotel, café, labs, cowork. Tu inversión te beneficia hoy.',
-        imageUrl: 'https://lokl-assets.s3.us-east-1.amazonaws.com/advent+calendar/Banner+Dia+3+.webp',
+        imageUrl: 'https://lokl-assets.s3.us-east-1.amazonaws.com/advent+calendar/Banner+Dia+3.webp',
         ctaButton: 'Quiero Invertir y Ganar Créditos INDIE',
     },
     {
