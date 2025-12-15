@@ -45,13 +45,20 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
     "https://lokl-assets.s3.us-east-1.amazonaws.com/home/Hero-nido-movil.png"
   ];
 
+  // Imágenes para el hero desktop
+  const desktopHeroImages = [
+    "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_ALDEA.png", 
+    "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_INDIE.png", 
+    "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_NDA.png" 
+  ];
+
   // Estado para el simulador del hero
   const [selectedHeroProjectId, setSelectedHeroProjectId] = useState<string>("");
   const [heroInvestmentAmount, setHeroInvestmentAmount] = useState(5310000);
   const [heroPhase, setHeroPhase] = useState<1 | 2>(1); // 1: configuración, 2: captura de datos
   
-  // Estado para controlar la carga del video
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  // Estado para controlar el índice de imágenes desktop
+  const [currentDesktopImageIndex, setCurrentDesktopImageIndex] = useState(0);
 
   
 
@@ -80,6 +87,19 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
 
     return () => clearInterval(interval);
   }, [mobileHeroImages.length]);
+
+  // Rotación automática de imágenes desktop cada 5 segundos
+  useEffect(() => {
+    if (desktopHeroImages.length === 0) return;
+    
+    const interval = setInterval(() => {
+      setCurrentDesktopImageIndex(
+        (prev) => (prev + 1) % desktopHeroImages.length,
+      );
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [desktopHeroImages.length]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("es-CO", {
@@ -194,49 +214,30 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
     >
       {/* Contenedor del Hero con imagen de fondo */}
       <div className="relative min-h-[100dvh] md:min-h-screen overflow-hidden">
-        {/* Imagen de placeholder mientras se carga el video - Solo desktop */}
-        {!isVideoLoaded && (
-          <div className="absolute inset-0 hidden md:block overflow-hidden">
-            <Image
-              src="/images/home/IMAGEN GRANDE NIDO.png"
-              alt="LOKL - Inversiones inmobiliarias"
-              fill
-              className="object-cover"
-              priority
-              quality={90}
-            />
-          </div>
-        )}
+        {/* Fondo con imágenes - Solo desktop - ocupa toda la altura */}
+        <div className="absolute inset-0 hidden md:block overflow-hidden h-full">
+          {desktopHeroImages.map((imageUrl, index) => (
+            <div
+              key={index}
+              aria-hidden="true"
+              className={`absolute inset-0 transition-opacity duration-1000 ${
+                index === currentDesktopImageIndex
+                  ? "opacity-100"
+                  : "opacity-0"
+              }`}
+            >
+              <Image
+                src={imageUrl}
+                alt={`Hero desktop ${index + 1} - LOKL`}
+                fill
+                className="object-cover"
+                priority={index === 0}
+                quality={90}
+              />
+            </div>
+          ))}
+        </div>
         
-        {/* Video de fondo - Solo desktop con lazy loading optimizado */}
-        <div className="absolute inset-0 hidden md:block overflow-hidden">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-              isVideoLoaded ? "opacity-100" : "opacity-0"
-            }`}
-            poster="https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe_poster.jpg"
-            aria-label="Video de fondo mostrando proyectos inmobiliarios LOKL"
-            onLoadedData={() => setIsVideoLoaded(true)}
-            onCanPlay={() => setIsVideoLoaded(true)}
-          >
-            <source 
-              src="https://lokl-assets.s3.us-east-1.amazonaws.com/home/Hero_Video.mp4" 
-              type="video/mp4"
-            />
-            <track
-              kind="captions"
-              srcLang="es"
-              label="Español"
-            />
-            Tu navegador no soporta videos HTML5.
-          </video>
-        </div> 
-
         {/* Fondo con imágenes - Solo móvil - ocupa toda la altura de viewport */}
         <div className="absolute inset-0 md:hidden h-screen">
           {mobileHeroImages.length > 0 ? (
@@ -497,33 +498,6 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
         </div>
       </div>
 
-      {/* Schema JSON-LD para SEO del video */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "VideoObject",
-            "name": "LOKL - Inversiones inmobiliarias con propósito",
-            "description": "Descubre cómo invertir en bienes raíces y proyectos hoteleros con LOKL. Crowdfunding inmobiliario accesible desde $1.3M mensuales.",
-            "thumbnailUrl": "https://lokl-assets.s3.us-east-1.amazonaws.com/home/hero-img-1.jpg",
-            "uploadDate": "2025-10-28T00:00:00.000Z",
-            "contentUrl": "https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe.mp4",
-            "embedUrl": "https://lokl.life",
-            "duration": "PT1M",
-            "publisher": {
-              "@type": "Organization",
-              "name": "LOKL",
-              "logo": {
-                "@type": "ImageObject",
-                "url": "https://lokl.life/images/lokl-logo.png"
-              }
-            },
-            "inLanguage": "es",
-            "keywords": "inversiones inmobiliarias, crowdfunding, bienes raíces, hotelería, LOKL"
-          })
-        }}
-      />
     </section>
   );
 }
