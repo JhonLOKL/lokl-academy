@@ -38,64 +38,76 @@ const rewards: Reward[] = [
     },
     {
         day: 3,
-        title: 'Cashback 1% en Créditos INDIE (*cupos limitados)',
-        description: 'El Retorno Inteligente. Invierte en Units LOKL y recibe 1% de cashback en créditos para usar en todo el ecosistema: hotel, café, labs, cowork. Tu inversión te beneficia hoy.',
+        title: '3% Cashback en Units Nido de Agua',
+        description: `En LOKL, creemos en la Inversión Consciente que es circular y gratificante. Por eso, al invertir en Units Nido de Agua, no solo estás construyendo tu futuro, sino que ganas desde hoy.
+
+La Ecuación LOKL:
+
+Inviertes hoy y te regresamos un 3% de Cashback directamente en tu cuenta. Este cashback lo puedes usar de dos maneras:
+
+Reinversión Inmediata: Úsalo para comprar más Units y acelerar tu crecimiento.
+
+Disfruta el Ecosistema: Transfórmalo en Créditos INDIE para usar en estadías, Content Labs o en el Creators Club.
+
+Es el sistema LOKL: inviertes, construyes y disfrutas el ecosistema mientras creces.
+
+Invertir en propósito nunca fue tan rentable y tangible. Tu retorno no es una promesa a futuro, es una realidad hoy.`,
         imageUrl: 'https://lokl-assets.s3.us-east-1.amazonaws.com/advent+calendar/Banner+Dia+3.webp',
         ctaButton: 'Quiero Invertir y Ganar Créditos INDIE',
     },
     {
         day: 4,
-        title: '10% OFF Membresía Mensual Cowork (*cupos limitados)',
-        description: 'Invertir en tu Entorno. El espacio que te hace crecer. 10% OFF en tu primera mensualidad de Cowork INDIE. Construye patrimonio con hábitos, no con impulsos.',
+        title: '10% OFF Membresía Mensual Cowork',
+        description: 'Ya experimentaste el valor del entorno. Ahora, haz de INDIE tu oficina permanente. Tu regalo de hoy: 10% OFF en tu primera mensualidad de Cowork. Un gran patrimonio se construye con hábitos, no con impulsos. Usa este incentivo para rodearte de la comunidad que te impulsa a crecer.',
         imageUrl: 'https://images.unsplash.com/photo-1659044537787-a2ac4ce1d427?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb3dvcmtpbmclMjBtZW1iZXJzaGlwJTIwd29ya3NwYWNlfGVufDF8fHx8MTc2NDc4OTM3MHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
         ctaButton: 'Asegurar Mi Descuento (Válido 72 Horas)',
     },
     {
         day: 5,
-        title: 'Cowork Day Pass Gratis (*cupos limitados)',
-        description: 'Cambia tu Entorno, Cambia tu Mente. Trabaja un día completo en INDIE sin pagar un peso. El entorno es la infraestructura de tu éxito.',
+        title: 'Cowork Day Pass Gratis (INDIE)',
+        description: 'El entorno es la infraestructura de tu éxito. Te regalamos un Day Pass GRATIS en INDIE Cowork. Ven a experimentar el entorno que impulsa la creatividad, la comunidad y las ideas disruptivas. No es solo un espacio de trabajo. Es una inversión en conexiones que abren puertas. ¡Te esperamos!',
         imageUrl: 'https://images.unsplash.com/photo-1626187777040-ffb7cb2c5450?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb3dvcmtpbmclMjBzcGFjZSUyMG1vZGVybnxlbnwxfHx8fDE3NjQ2OTc0MTd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
         ctaButton: 'Agendar Mi Día de Coworking LOKL',
     },
     {
         day: 6,
-        title: 'Ebook: Guía de Inversión Consciente 2025',
-        description: 'La Herramienta Esencial. Descarga la Guía de Inversión Consciente 2025 con herramientas prácticas para evaluar proyectos y alinear tu dinero con tus valores.',
-        imageUrl: 'https://images.unsplash.com/photo-1674664985250-4d023c679b39?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlYm9vayUyMGRpZ2l0YWwlMjBndWlkZXxlbnwxfHx8fDE3NjQ3ODkzNzB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-        ctaButton: 'Descargar Mi Guía Completa GRATIS',
-    },
-    {
-        day: 7,
-        title: '1 Hora Gratis en Content Lab (*cupos limitados)',
-        description: 'Invierte en tu Marca. Un espacio para materializar tu valor. 1 hora GRATIS en cualquiera de nuestros Content Labs (audio, video, foto). Crea el activo que te hará crecer.',
-        imageUrl: 'https://images.unsplash.com/photo-1616412875447-096e932d893c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb250ZW50JTIwY3JlYXRpb24lMjBzdHVkaW98ZW58MXx8fHwxNzY0NzQzODgxfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-        ctaButton: 'Reservar Mi Hora en el Content Lab',
-    },
-    {
-        day: 8,
-        title: 'Pase Semanal de Café',
-        description: 'Haz de esto un Hábito. 1 bebida diaria por 7 días en INDIE. Cada día una taza, cada taza una oportunidad de crear algo grande. La excelencia está en la repetición consciente.',
-        imageUrl: 'https://images.unsplash.com/photo-1622647306301-176abdc3f209?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2ZmZWUlMjB3ZWVrbHklMjBwYXNzfGVufDF8fHx8MTc2NDc4OTM3MXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-        ctaButton: 'Activar Mi Pase Semanal de Café',
-    },
-    {
-        day: 9,
-        title: 'Pase Visionario LOKL',
-        description: 'Sube el Nivel de tu Visión. Acceso exclusivo a 3 webinars premium sobre inversión consciente, tendencias 2025 y proyectos que están redefiniendo el mercado + material descargable.',
-        imageUrl: 'https://images.unsplash.com/photo-1673515335586-f9f662c01482?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3ZWJpbmFyJTIwYnVzaW5lc3MlMjB0cmFpbmluZ3xlbnwxfHx8fDE3NjQ3ODkzNjh8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
-        ctaButton: 'Obtener Mi Pase Visionario GRATIS',
-    },
-    {
-        day: 10,
-        title: 'Bono de Equity +0.5%',
-        description: 'Más que Inversión. Por cada inversión realizada en Units este diciembre, recibes un Bono de Equity Extra de +0.5% en tu participación. El regalo que no se deprecia.',
+        title: 'Bono de Equity Extra de +0.5%',
+        description: 'Es momento de pasar de la visión a la acción. Por cada inversión realizada en Units este diciembre, te damos un Bono de Equity Extra de +0.5% en tu participación. Es un aumento simbólico, pero poderoso, en tu riqueza real. Este regalo premia la velocidad y la conciencia. Esta oportunidad es limitada y cierra pronto.',
         imageUrl: 'https://images.unsplash.com/photo-1740818576518-0c873d356122?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlcXVpdHklMjBib251cyUyMGdyb3d0aHxlbnwxfHx8fDE3NjQ3ODkzNzJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
         ctaButton: 'Asegurar Mi Bono de Equity Extra',
     },
     {
+        day: 7,
+        title: 'Ebook Premium “Guía de Inversión Consciente 2025”',
+        description: 'Odiamos los "propósitos de año nuevo" que duran dos semanas. ¿Por qué fallan? Porque son deseos, no diseños. En LOKL creemos que tu vida se construye igual que un gran proyecto: necesitas cimientos, estructura y un entorno que lo sostenga. Por eso, tu regalo de hoy es el "LOKL Vision Architect 2026". Una herramienta digital exclusiva para: 1. Demoler los hábitos del 2025 que ya no te sirven. 2. Cimentar tus no-negociables de Bienestar y Creatividad. 3. Diseñar los entornos físicos y mentales que harán inevitable tu éxito. Deja de recortar fotos de revistas. Empieza a actuar como el arquitecto de tu propio año.',
+        imageUrl: 'https://images.unsplash.com/photo-1674664985250-4d023c679b39?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlYm9vayUyMGRpZ2l0YWwlMjBndWlkZXxlbnwxfHx8fDE3NjQ3ODkzNzB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+        ctaButton: 'Descargar Mi Guía Completa GRATIS',
+    },
+    {
+        day: 8,
+        title: '1 Hora Gratis en Content Lab',
+        description: 'Un objeto se desgasta; un contenido bien producido genera retorno constante. ¿Tienes un proyecto, podcast o quieres mejorar tu presencia digital? Te regalamos 1 hora GRATIS en cualquiera de nuestros Content Labs (audio, video, foto). Es tu oportunidad para crear el activo que te hará crecer. CUPOS LIMITADOS. ¡Reserva hoy!',
+        imageUrl: 'https://images.unsplash.com/photo-1616412875447-096e932d893c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb250ZW50JTIwY3JlYXRpb24lMjBzdHVkaW98ZW58MXx8fHwxNzY0NzQzODgxfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+        ctaButton: 'Reservar Mi Hora en el Content Lab',
+    },
+    {
+        day: 9,
+        title: 'Pase Semanal de Café (1 bebida diaria x 7 días)',
+        description: 'La inversión más pequeña puede generar el mayor retorno en tu día a día. Te regalamos un Pase Semanal de Café (una bebida diaria por 7 días) en INDIE. Es nuestra manera de animarte a hacer de INDIE tu centro de operación y de generar consumo complementario con la comunidad. Actívalo ya y empieza a transformar tus mañanas.',
+        imageUrl: 'https://images.unsplash.com/photo-1622647306301-176abdc3f209?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2ZmZWUlMjB3ZWVrbHklMjBwYXNzfGVufDF8fHx8MTc2NDc4OTM3MXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+        ctaButton: 'Activar Mi Pase Semanal de Café',
+    },
+    {
+        day: 10,
+        title: 'Pase Visionario LOKL (3 webinars + material premium)',
+        description: '¡Esto es nivel Pro! Te regalamos el Pase Visionario LOKL: tres webinars exclusivos sobre inversión consciente, tendencias 2025 y los proyectos que están redefiniendo el mercado. Más material descargable. Es la herramienta para tomar decisiones financieras no reactivas, sino estratégicas. Queremos nutrir tu conocimiento antes de cualquier inversión.',
+        imageUrl: 'https://images.unsplash.com/photo-1673515335586-f9f662c01482?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3ZWJpbmFyJTIwYnVzaW5lc3MlMjB0cmFpbmluZ3xlbnwxfHx8fDE3NjQ3ODkzNjh8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+        ctaButton: 'Obtener Mi Pase Visionario GRATIS',
+    },
+    {
         day: 11,
-        title: 'Acceso Prioritario Evento con Camilo (*cupos limitados)',
-        description: 'La Comunidad Primero. Acceso prioritario y garantizado al próximo evento exclusivo en INDIE. Un asiento asegurado junto a los líderes que redefinen la inversión.',
+        title: 'Acceso Prioritario al Evento en Indie con Camilo',
+        description: '"Las fiestas son increíbles, pero agotan. El ruido, las compras, la familia... A veces necesitas un "Reset" antes de arrancar el año. Tu regalo de hoy es una invitación a la pausa: 20% OFF en tu estadía en INDIE Universe. Válido para escaparte justo cuando más lo necesitas: entre el 25 de diciembre y el 15 de enero. No vengas solo a dormir. Ven a despertar en el ecosistema creativo más vibrante de la ciudad. Desconéctate del mundo y reconecta con tu visión."',
         imageUrl: 'https://images.unsplash.com/photo-1678483789476-14cd5debd709?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2aXAlMjBldmVudCUyMGFjY2Vzc3xlbnwxfHx8fDE3NjQ3ODkzNzB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
         ctaButton: 'Confirmar Mi Acceso Prioritario',
     },
