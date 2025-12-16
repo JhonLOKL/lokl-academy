@@ -6,6 +6,15 @@ import { Star, Play, Eye, Calculator, Info, X, ChevronLeft, ChevronRight, Chevro
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import type { ProjectHomePageInfo } from '@/services/projectService';
 
+const getEndOfMonth = () => {
+  const now = new Date();
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  return `${lastDay.getDate()} de ${months[lastDay.getMonth()]} de ${lastDay.getFullYear()}`;
+};
+
+const dynamicValidUntil = getEndOfMonth();
+
 // Datos base por defecto
 const DEFAULT_PROJECT_DATA = {
   tag: "Operando",
@@ -17,7 +26,7 @@ const DEFAULT_PROJECT_DATA = {
   totalInvestors: 644,
   minInvestment: "$5.320.000",
   minInvestmentPeriod: "",
-  validUntil: "30 de noviembre de 2025",
+  validUntil: dynamicValidUntil,
   totalInvestment: "$ 3.993.937.671 COP",
   availableSlots: {
     current: "18",
