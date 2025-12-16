@@ -77,7 +77,7 @@ export function ThankYouPopup({ isOpen, onClose }: ThankYouPopupProps) {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.4 }}
                             >
-                                ¡Tu registro está confirmado! El regalo de nuestro Calendario de Adviento LOKL acaba de aterrizar en tu bandeja. Ve ahora, revisa y empieza a construir un futuro con propósito. 
+                                ¡Confirmación de Registro Exitosa! El obsequio de nuestro Calendario de Adviento LOKL ya se encuentra en tu correo. Te invitamos a abrirlo de inmediato y comenzar a trabajar en un futuro con propósito. 
 
                                 <br />
                                 <span className="text-[#5352f6] font-medium">¡Disfrútala!</span>
