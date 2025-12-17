@@ -78,8 +78,8 @@ Invertir en propósito nunca fue tan rentable y tangible. Tu retorno no es una p
     },
     {
         day: 7,
-        title: 'Ebook Premium “Guía de Inversión Consciente 2025”',
-        description: 'Odiamos los "propósitos de año nuevo" que duran dos semanas. ¿Por qué fallan? Porque son deseos, no diseños. En LOKL creemos que tu vida se construye igual que un gran proyecto: necesitas cimientos, estructura y un entorno que lo sostenga. Por eso, tu regalo de hoy es el "LOKL Vision Architect 2026". Una herramienta digital exclusiva para: 1. Demoler los hábitos del 2025 que ya no te sirven. 2. Cimentar tus no-negociables de Bienestar y Creatividad. 3. Diseñar los entornos físicos y mentales que harán inevitable tu éxito. Deja de recortar fotos de revistas. Empieza a actuar como el arquitecto de tu propio año.',
+        title: 'Ebook Premium “BLUEPRINT 2026”',
+        description: 'Odiamos los "propósitos de año nuevo" que duran dos semanas. ¿Por qué fallan? Porque son deseos, no diseños. En LOKL creemos que tu vida se construye igual que un gran proyecto: necesitas cimientos, estructura y un entorno que lo sostenga. Por eso, tu regalo de hoy es el "Blueprint 2026". Una herramienta digital exclusiva para: 1. Demoler los hábitos del 2025 que ya no te sirven. 2. Cimentar tus no-negociables de Bienestar y Creatividad. 3. Diseñar los entornos físicos y mentales que harán inevitable tu éxito. Deja de recortar fotos de revistas. Empieza a actuar como el arquitecto de tu propio año.',
         imageUrl: 'https://images.unsplash.com/photo-1674664985250-4d023c679b39?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlYm9vayUyMGRpZ2l0YWwlMjBndWlkZXxlbnwxfHx8fDE3NjQ3ODkzNzB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
         ctaButton: 'Descargar Mi Guía Completa GRATIS',
     },
