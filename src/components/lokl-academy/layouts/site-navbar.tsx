@@ -96,7 +96,8 @@ export function SiteNavbar() {
             dropdown: [
               { label: "Cursos", href: "/course" },
               { label: "Blogs", href: "/blog" },
-              { label: "Webinar", href: "/webinar" }
+              { label: "Webinar", href: "/webinar" },
+              { label: "Reportes", href: "/reports" }
             ]
           },
           {
