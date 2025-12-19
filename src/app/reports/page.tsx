@@ -5,6 +5,13 @@ import { ArrowRight, Calendar } from 'lucide-react';
 const ReportsPage = () => {
   const reports = [
     {
+      title: "Choque Regulatorio: La Transformación del Turismo Andino",
+      description: "Un análisis basado en datos sobre el Decreto del 18 de Diciembre, el riesgo de 'apagón digital' y las lecciones aprendidas de Nueva York y Barcelona.",
+      slug: "impacto-regulatorio",
+      date: "Diciembre 2025",
+      category: "Investigación & Análisis de Políticas"
+    },
+    {
       title: "Del Lujo Opulente al Lujo Consciente",
       description: "Un análisis profundo sobre cómo la exclusividad y el exceso han dado paso a la ética, la regeneración y el propósito.",
       slug: "lujo-consciente",
