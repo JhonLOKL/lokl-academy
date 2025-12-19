@@ -111,8 +111,6 @@ export default function HomePageClient() {
       <FloatingWhatsApp
         phoneNumber="573017328112"
         accountName="Laura"
-        allowEsc
-        allowClickAway
         notification
         notificationSound
         avatar="/images/home/foto-wpp-lokl.png"
