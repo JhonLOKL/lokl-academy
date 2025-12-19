@@ -143,7 +143,7 @@ export default function LoginForm() {
             {/* Contraseña */}
             <FormField label="Contraseña" htmlFor="password">
               <div className="flex items-center justify-between">
-                <Link href="/forgot-password" className="text-sm text-[#5352F6] hover:underline">
+                <Link href="https://dashboard.lokl.life/reset-password" className="text-sm text-[#5352F6] hover:underline">
                   ¿Olvidaste tu contraseña?
                 </Link>
               </div>
