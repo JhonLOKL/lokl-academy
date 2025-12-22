@@ -147,16 +147,7 @@ export default function RootLayout({
           fetchPriority="high"
           media="(max-width: 767px)"
         />
-        
-        {/* Preload hero poster desktop para mejorar LCP */}
-        <link 
-          rel="preload" 
-          as="image" 
-          href="https://lokl-assets.s3.us-east-1.amazonaws.com/home/video_heroe_poster.jpg"
-          fetchPriority="high"
-          media="(min-width: 768px)"
-        />
-        
+              
         {/* Preload de fuente crítica para mejorar FCP */}
         {/* eslint-disable-next-line @next/next/google-font-preconnect */}
         <link
