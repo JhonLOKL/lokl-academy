@@ -10,8 +10,8 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Análisis Estratégico Oriente Antioqueño 2025 | LOKL Reports",
         description: "Evaluación de micro-mercados, vectores de infraestructura y matriz de riesgos para inversores en el Oriente Antioqueño.",
-        url: "https://academy.lokl.life/reports/oriente-antioqueno-2025",
-        siteName: "LOKL Academy",
+        url: "https://lokl.life/reports/oriente-antioqueno-2025",
+        siteName: "LOKL",
         images: [
             {
                 url: "/images/reports/oriente-og.jpg",

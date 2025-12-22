@@ -8,8 +8,8 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Choque Regulatorio: La Transformación del Turismo Andino",
         description: "Riesgos, datos y lecciones aprendidas de NY y Barcelona sobre la nueva regulación de rentas cortas en Colombia.",
-        url: "https://academy.lokl.life/reports/impacto-regulatorio",
-        siteName: "LOKL Academy",
+        url: "https://lokl.life/reports/impacto-regulatorio",
+        siteName: "LOKL",
         images: [
             {
                 url: "/images/reports/regulatorio-og.jpg",

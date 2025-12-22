@@ -7,8 +7,8 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Lujo Consciente: El Nuevo Estándar de Estatus",
         description: "Análisis sobre la transformación de la exclusividad hacia la sostenibilidad y el propósito.",
-        url: "https://academy.lokl.life/reports/lujo-consciente",
-        siteName: "LOKL Academy",
+        url: "https://lokl.life/reports/lujo-consciente",
+        siteName: "LOKL",
         images: [
             {
                 url: "/images/reports/lujo-og.jpg",
