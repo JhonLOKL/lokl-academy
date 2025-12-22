@@ -1,16 +1,16 @@
 "use client";
 
 import React from 'react';
-import { 
-  Diamond, 
-  Leaf, 
-  TrendingUp, 
-  Users, 
-  Globe, 
-  AlertTriangle, 
-  Check, 
-  ArrowDown, 
-  Lock, 
+import {
+  Diamond,
+  Leaf,
+  TrendingUp,
+  Users,
+  Globe,
+  AlertTriangle,
+  Check,
+  ArrowDown,
+  Lock,
   RefreshCw,
   Building2,
   Waves,
@@ -21,6 +21,7 @@ import {
 
 // Importar los nuevos componentes de gráficas
 import RadarChart from '@/components/reports/RadarChart';
+import { ReportJsonLd } from '@/components/reports/ReportJsonLd';
 
 // --- LOKL DESIGN TOKENS ---
 // Primary: #5352F6
@@ -30,25 +31,31 @@ import RadarChart from '@/components/reports/RadarChart';
 // Surface: #FFFFFF
 
 const LujoConscientePage = () => {
-
   return (
-    <div className="min-h-screen bg-[#FAFAFA] text-[#444444] font-sans selection:bg-[#5352F6] selection:text-white">
-      
+    <>
+      <ReportJsonLd
+        title="Del Lujo Opulente al Lujo Consciente"
+        description="Análisis sobre cómo la ética, la regeneración y el propósito están redefiniendo el mercado inmobiliario de lujo."
+        url="https://academy.lokl.life/reports/lujo-consciente"
+        datePublished="2025-12-10"
+        image="https://academy.lokl.life/images/reports/lujo-og.jpg"
+      />
+
       {/* --- HERO SECTION --- */}
       <header className="relative pt-24 pb-20 px-6 text-center overflow-hidden bg-white border-b border-[#E5E5E5]">
         {/* Abstract Glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#5352F6] rounded-full opacity-[0.03] blur-[100px] pointer-events-none"></div>
-        
+
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FAFAFA] border border-[#E5E5E5] mb-8">
           <span className="w-2 h-2 rounded-full bg-[#5352F6]"></span>
           <span className="text-xs font-bold text-[#0F0F0F] uppercase tracking-wider">Reporte de Inteligencia de Mercado</span>
         </div>
-        
+
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-[#0F0F0F] tracking-tight mb-6 leading-tight max-w-5xl mx-auto">
           Del Lujo <span className="text-[#6D6C6C] line-through decoration-2 decoration-[#EF4444]">Opulente</span> al <br />
           Lujo <span className="text-[#5352F6]">Consciente</span>
         </h1>
-        
+
         <p className="text-lg text-[#6D6C6C] max-w-2xl mx-auto leading-relaxed">
           Un análisis profundo sobre cómo la exclusividad y el exceso han dado paso a la ética, la regeneración y el propósito como los nuevos indicadores de estatus global.
         </p>
@@ -69,7 +76,7 @@ const LujoConscientePage = () => {
 
         {/* Comparison Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-          
+
           {/* Card: Tradicional */}
           <div className="bg-white rounded-2xl p-8 border border-[#E5E5E5] relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#F3F4F6] rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
@@ -168,41 +175,41 @@ const LujoConscientePage = () => {
       <section className="bg-white border-y border-[#E5E5E5] py-24">
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-12">
-             <h2 className="text-3xl font-bold text-[#0F0F0F]">Evidencia Cuantitativa</h2>
-             <p className="text-[#6D6C6C] mt-2">Los números detrás del cambio cultural.</p>
+            <h2 className="text-3xl font-bold text-[#0F0F0F]">Evidencia Cuantitativa</h2>
+            <p className="text-[#6D6C6C] mt-2">Los números detrás del cambio cultural.</p>
           </div>
 
           {/* Gráfico Radar centrado */}
           <div className="bg-[#FAFAFA] border border-[#E5E5E5] rounded-2xl p-8 h-[500px] relative flex items-center justify-center mb-12 shadow-sm">
-             <div className="w-full h-full relative">
-                <h4 className="absolute top-0 left-0 text-xs font-bold text-[#6D6C6C] uppercase tracking-wider mb-4">Radar de Prioridades</h4>
-                <RadarChart />
-             </div>
+            <div className="w-full h-full relative">
+              <h4 className="absolute top-0 left-0 text-xs font-bold text-[#6D6C6C] uppercase tracking-wider mb-4">Radar de Prioridades</h4>
+              <RadarChart />
+            </div>
           </div>
 
           {/* Estadísticas debajo del gráfico */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-             <div className="bg-[#0F0F0F] text-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
-                <div className="flex items-center gap-2 mb-4">
-                  <TrendingUp size={20} className="text-[#22C55E]" />
-                  <span className="text-xs font-bold uppercase text-[#A3A3A3] tracking-widest">Crecimiento 2024</span>
-                </div>
-                <div className="text-5xl font-extrabold mb-3">+180%</div>
-                <p className="text-sm text-[#D4D4D4] leading-relaxed">
-                  Aumento en búsquedas de "Moda Ética" y "Lujo Sostenible" en comparación con marcas tradicionales.
-                </p>
-             </div>
+            <div className="bg-[#0F0F0F] text-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+              <div className="flex items-center gap-2 mb-4">
+                <TrendingUp size={20} className="text-[#22C55E]" />
+                <span className="text-xs font-bold uppercase text-[#A3A3A3] tracking-widest">Crecimiento 2024</span>
+              </div>
+              <div className="text-5xl font-extrabold mb-3">+180%</div>
+              <p className="text-sm text-[#D4D4D4] leading-relaxed">
+                Aumento en búsquedas de "Moda Ética" y "Lujo Sostenible" en comparación con marcas tradicionales.
+              </p>
+            </div>
 
-             <div className="bg-white border border-[#E5E5E5] p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-                 <div className="flex items-center gap-2 mb-4">
-                  <Users size={20} className="text-[#5352F6]" />
-                  <span className="text-xs font-bold uppercase text-[#6D6C6C] tracking-widest">Gen Z & Millennials</span>
-                </div>
-                <div className="text-5xl font-extrabold text-[#0F0F0F] mb-3">73%</div>
-                <p className="text-sm text-[#6D6C6C] leading-relaxed">
-                  Están dispuestos a pagar un precio premium por productos que garantizan transparencia total.
-                </p>
-             </div>
+            <div className="bg-white border border-[#E5E5E5] p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-2 mb-4">
+                <Users size={20} className="text-[#5352F6]" />
+                <span className="text-xs font-bold uppercase text-[#6D6C6C] tracking-widest">Gen Z & Millennials</span>
+              </div>
+              <div className="text-5xl font-extrabold text-[#0F0F0F] mb-3">73%</div>
+              <p className="text-sm text-[#6D6C6C] leading-relaxed">
+                Están dispuestos a pagar un precio premium por productos que garantizan transparencia total.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -283,10 +290,10 @@ const LujoConscientePage = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
+
             {/* CTA CARD 1: Guatapé */}
-            <a 
-              href="https://lokl.life/nido-de-agua" 
+            <a
+              href="https://lokl.life/nido-de-agua"
               target="_blank"
               rel="noopener noreferrer"
               className="group bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl p-8 hover:border-[#5352F6] hover:shadow-lg transition-all duration-300 flex flex-col items-center text-center"
@@ -304,8 +311,8 @@ const LujoConscientePage = () => {
             </a>
 
             {/* CTA CARD 2: Medellín */}
-            <a 
-              href="https://lokl.life/indie-universe" 
+            <a
+              href="https://lokl.life/indie-universe"
               target="_blank"
               rel="noopener noreferrer"
               className="group bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl p-8 hover:border-[#5352F6] hover:shadow-lg transition-all duration-300 flex flex-col items-center text-center"
@@ -330,11 +337,11 @@ const LujoConscientePage = () => {
       <footer className="bg-[#0F0F0F] text-white py-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-8">Recursos y Normatividad</h2>
-          
+
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            
+
             {/* Button: Descargar PDF */}
-            <a 
+            <a
               href="https://drive.google.com/file/d/1b6zVbKIeUJaZa0dCxDLKAWHosSZD8kmp/view?usp=sharing"
               target="_blank"
               rel="noopener noreferrer"
@@ -351,7 +358,7 @@ const LujoConscientePage = () => {
         </div>
       </footer>
 
-    </div>
+    </>
   );
 };
 

@@ -4,148 +4,23 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { MarketingFooter } from '@/components/footer/marketing-footer';
+import { ReportJsonLd } from '@/components/reports/ReportJsonLd';
 
 const OrienteAnalytics2025 = () => {
     return (
-        <div className="min-h-screen bg-[#FAFAFA] text-[#444444] font-sans selection:bg-[#5352F6] selection:text-white">
+        <>
+            <ReportJsonLd
+                title="Análisis Estratégico Oriente Antioqueño 2025"
+                description="Análisis profundo del mercado inmobiliario del Oriente Antioqueño. Evaluación de micro-mercados y vectores de infraestructura."
+                url="https://academy.lokl.life/reports/oriente-antioqueno-2025"
+                datePublished="2025-12-01"
+                image="https://academy.lokl.life/images/reports/oriente-og.jpg"
+            />
             <style jsx>{`
         h1, h2, h3, h4, h5, h6 { color: #0F0F0F; }
+`}</style>
 
-        .text-primary { color: #5352F6; }
-        .bg-primary { background-color: #5352F6; }
-        .border-primary { border-color: #5352F6; }
-        
-        .bg-surface { background-color: #FFFFFF; }
-        .border-light { border-color: #E5E5E5; }
-
-        .info-card {
-          background: #FFFFFF;
-          border: 1px solid #E5E5E5;
-          border-radius: 1rem;
-          padding: 1.5rem;
-          transition: all 0.3s ease;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .info-card:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 10px 15px -3px rgba(83, 82, 246, 0.1), 0 4px 6px -2px rgba(83, 82, 246, 0.05);
-          border-color: #A1A0FB;
-        }
-
-        .big-stat {
-          font-size: 2.5rem;
-          font-weight: 800;
-          line-height: 1.1;
-          letter-spacing: -0.02em;
-          color: #5352F6;
-          margin-bottom: 0.5rem;
-        }
-
-        .card-label {
-          font-size: 0.7rem;
-          text-transform: uppercase;
-          letter-spacing: 0.08em;
-          font-weight: 600;
-          color: #6D6C6C;
-          margin-bottom: 0.75rem;
-          display: block;
-        }
-
-        .section-header {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-          margin-bottom: 2rem;
-          padding-top: 2rem;
-        }
-        
-        .section-line {
-          height: 1px;
-          flex-grow: 1;
-          background: #E5E5E5;
-        }
-        
-        .lokl-table {
-          width: 100%;
-          border-collapse: separate;
-          border-spacing: 0;
-          font-size: 0.875rem;
-        }
-        
-        .lokl-table th {
-          text-align: left;
-          padding: 1rem;
-          background-color: #FAFAFA;
-          color: #0F0F0F;
-          font-weight: 600;
-          border-bottom: 2px solid #E5E5E5;
-        }
-        
-        .lokl-table td {
-          padding: 1rem;
-          border-bottom: 1px solid #E5E5E5;
-          color: #444444;
-        }
-        
-        .lokl-table tr:last-child td {
-          border-bottom: none;
-        }
-
-        .tag {
-          display: inline-flex;
-          padding: 0.25rem 0.75rem;
-          border-radius: 9999px;
-          font-size: 0.7rem;
-          font-weight: 600;
-          text-transform: uppercase;
-        }
-        
-        .tag-green { background: #DCFCE7; color: #166534; }
-        .tag-amber { background: #FEF3C7; color: #B45309; }
-        .tag-red { background: #FEE2E2; color: #991B1B; }
-        .tag-blue { background: #DBEAFE; color: #1E40AF; }
-
-        .btn-primary {
-          background-color: #5352F6;
-          color: white;
-          padding: 0.75rem 1.5rem;
-          border-radius: 0.5rem;
-          font-weight: 500;
-          transition: background-color 0.2s;
-          box-shadow: 0 4px 6px -1px rgba(83, 82, 246, 0.2);
-          text-align: center;
-          display: inline-block;
-        }
-        
-        .btn-primary:hover { background-color: #4241C5; }
-        
-        .btn-outline {
-          background-color: transparent;
-          border: 1px solid #E5E5E5;
-          color: #0F0F0F;
-          padding: 0.75rem 1.5rem;
-          border-radius: 0.5rem;
-          font-weight: 500;
-          transition: all 0.2s;
-          text-align: center;
-          display: inline-block;
-        }
-        
-        .btn-outline:hover {
-          border-color: #5352F6;
-          color: #5352F6;
-        }
-      `}</style>
-
-            <div className="p-4 md:p-10 max-w-7xl mx-auto">
-                {/* Back Navigation */}
-                <Link href="/reports" className="inline-flex items-center gap-2 text-[#5352F6] hover:text-[#4241C5] transition-colors mb-8 font-medium">
-                    <ArrowLeft size={20} />
-                    Volver a Reportes
-                </Link>
+            <div className="">
 
 
                 {/* Executive Summary / Thesis */}
@@ -588,8 +463,7 @@ const OrienteAnalytics2025 = () => {
                     </footer>
                 </main>
             </div>
-            <MarketingFooter />
-        </div>
+        </>
     );
 };
 

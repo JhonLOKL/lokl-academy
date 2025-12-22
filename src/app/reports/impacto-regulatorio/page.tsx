@@ -2,10 +2,10 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { 
-  Download, 
-  ExternalLink, 
-  AlertTriangle, 
+import {
+  Download,
+  ExternalLink,
+  AlertTriangle,
   Info,
   TrendingDown,
   DollarSign,
@@ -19,10 +19,18 @@ import SupplyShockChart from '@/components/reports/impacto-regulatorio/SupplySho
 import RegionalBubbleChart from '@/components/reports/impacto-regulatorio/RegionalBubbleChart';
 import EconomicFalloutChart from '@/components/reports/impacto-regulatorio/EconomicFalloutChart';
 import { MarketingFooter } from '@/components/footer/marketing-footer';
+import { ReportJsonLd } from '@/components/reports/ReportJsonLd';
 
 const ImpactoRegulatorioPage = () => {
   return (
-    <div className="min-h-screen bg-[#FAFAFA] text-[#444444] font-sans selection:bg-[#5352F6] selection:text-white">
+    <>
+      <ReportJsonLd
+        title="Choque Regulatorio: La Transformación del Turismo Andino"
+        description="Análisis sobre el impacto del Decreto del 18 de Diciembre en el turismo y las rentas cortas en Colombia."
+        url="https://academy.lokl.life/reports/impacto-regulatorio"
+        datePublished="2025-12-18"
+        image="https://academy.lokl.life/images/reports/regulatorio-og.jpg"
+      />
 
       {/* Hero Section */}
       <header className="bg-[#FAFAFA] pt-24 pb-16 px-6 border-b border-[#E5E5E5]">
@@ -40,17 +48,17 @@ const ImpactoRegulatorioPage = () => {
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mb-12">
-            <a 
-              href="https://drive.google.com/file/d/1P6QOD27GMIdE1nJL9-L5hjgiYu7XQqUV/view" 
-              target="_blank" 
+            <a
+              href="https://drive.google.com/file/d/1P6QOD27GMIdE1nJL9-L5hjgiYu7XQqUV/view"
+              target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 bg-[#5352F6] text-white font-medium px-6 py-3 rounded-lg hover:bg-[#4241C5] transition-colors"
             >
               <Download size={18} /> Descargar Reporte PDF
             </a>
-            <a 
-              href="https://www.mincit.gov.co/normatividad/proyectos-de-normatividad/proyectos-de-decreto-2025/02-12-2025-pd-registro-nacional-de-turismo-rnt.aspx" 
-              target="_blank" 
+            <a
+              href="https://www.mincit.gov.co/normatividad/proyectos-de-normatividad/proyectos-de-decreto-2025/02-12-2025-pd-registro-nacional-de-turismo-rnt.aspx"
+              target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 bg-white text-[#0F0F0F] border border-[#E5E5E5] font-medium px-6 py-3 rounded-lg hover:border-[#5352F6] hover:text-[#5352F6] transition-all"
             >
@@ -292,18 +300,18 @@ const ImpactoRegulatorioPage = () => {
             {/* Card 1: Nido de Agua */}
             <div className="bg-white border border-[#E5E5E5] rounded-xl overflow-hidden group hover:shadow-xl hover:border-[#5352F6] transition-all duration-300">
               <div className="h-80 bg-gray-200 relative">
-                <img 
-                  src="https://lokl-assets.s3.us-east-1.amazonaws.com/nido-de-agua/nido-de-agua.jpg" 
-                  alt="Nido de Agua" 
+                <img
+                  src="https://lokl-assets.s3.us-east-1.amazonaws.com/nido-de-agua/nido-de-agua.jpg"
+                  alt="Nido de Agua"
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="p-8">
                 <h3 className="text-xl font-bold text-[#0F0F0F] mb-2">Nido de Agua</h3>
                 <p className="text-[#6D6C6C] text-sm mb-6">Proyecto eco-turístico premium en el embalse de Guatapé. Cumplimiento normativo 100% garantizado.</p>
-                <a 
-                  href="https://lokl.life/nido-de-agua" 
-                  target="_blank" 
+                <a
+                  href="https://lokl.life/nido-de-agua"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="w-full inline-flex items-center justify-center gap-2 bg-[#5352F6] text-white font-medium px-4 py-2 rounded-lg hover:bg-[#4241C5] transition-colors"
                 >
@@ -315,18 +323,18 @@ const ImpactoRegulatorioPage = () => {
             {/* Card 2: Indie Universe */}
             <div className="bg-white border border-[#E5E5E5] rounded-xl overflow-hidden group hover:shadow-xl hover:border-[#5352F6] transition-all duration-300">
               <div className="h-80 bg-gray-200 relative">
-                <img 
-                  src="https://lokl-assets.s3.us-east-1.amazonaws.com/indie-universe/Indie_Page/Landing_Banner.png" 
-                  alt="Indie Universe" 
+                <img
+                  src="https://lokl-assets.s3.us-east-1.amazonaws.com/indie-universe/Indie_Page/Landing_Banner.png"
+                  alt="Indie Universe"
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="p-8">
                 <h3 className="text-xl font-bold text-[#0F0F0F] mb-2">Indie Universe</h3>
                 <p className="text-[#6D6C6C] text-sm mb-6">El primer hub creativo y coliving en el corazón de Medellín. Diseñado para nómadas digitales y locales.</p>
-                <a 
-                  href="https://lokl.life/indie-universe" 
-                  target="_blank" 
+                <a
+                  href="https://lokl.life/indie-universe"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="w-full inline-flex items-center justify-center gap-2 bg-[#5352F6] text-white font-medium px-4 py-2 rounded-lg hover:bg-[#4241C5] transition-colors"
                 >
@@ -339,8 +347,7 @@ const ImpactoRegulatorioPage = () => {
 
       </main>
 
-      <MarketingFooter />
-    </div>
+    </>
   );
 };
 
