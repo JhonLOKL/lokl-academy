@@ -5,6 +5,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-is-mobile";
+import { motion, AnimatePresence } from "framer-motion";
 
 export interface NavbarProps extends React.HTMLAttributes<HTMLElement> {
   logo?: React.ReactNode;
@@ -32,10 +33,27 @@ export function Navbar({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const isMobile = useIsMobile(1024); // Usar breakpoint más alto para incluir tablets en landscape
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isMobile = useIsMobile(1024);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleMouseEnter = (index: number) => {
+    if (isMobile) return;
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setOpenDropdown(index);
+  };
+
+  const handleMouseLeave = () => {
+    if (isMobile) return;
+    timeoutRef.current = setTimeout(() => {
+      setOpenDropdown(null);
+    }, 150); // Delay de cierre para mayor estabilidad
   };
 
   const toggleDropdown = (index: number) => {
@@ -67,7 +85,7 @@ export function Navbar({
 
     window.addEventListener('resize', handleResize);
     window.addEventListener('orientationchange', handleResize);
-    
+
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleResize);
@@ -88,102 +106,115 @@ export function Navbar({
             <div className="mr-4">
               {logo || <span className="text-xl font-bold">LOKL</span>}
             </div>
-            
+
             {!isMobile && (
               <nav>
                 <ul className="flex space-x-8">
-                {items?.map((item, index) => (
-                  <li 
-                    key={index} 
-                    className="relative group" // Added group class for hover effect
-                    onMouseEnter={() => !isMobile && setOpenDropdown(index)} // Open on hover
-                    onMouseLeave={() => !isMobile && setOpenDropdown(null)} // Close on leave
-                  >
-                    {item.dropdown ? (
-                      <div className="relative" ref={dropdownRef}>
-                        <button
-                          onClick={() => toggleDropdown(index)}
-                          className={cn(
-                            "text-sm font-medium transition-colors hover:text-[#5352F6] flex items-center gap-1",
-                            item.active ? "text-[#5352F6]" : "text-[#0F0F0F]"
-                          )}
-                        >
-                          {item.label}
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </button>
-                        {openDropdown === index && (
-                          <div 
-                            className="absolute top-full left-0 mt-0 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50 animate-in fade-in slide-in-from-top-2 duration-200"
-                            onMouseEnter={() => setOpenDropdown(index)} // Keep open when hovering the menu itself
-                            onMouseLeave={() => setOpenDropdown(null)}
-                          >
-                            {item.dropdown.map((dropdownItem, dropdownIndex) => (
-                              dropdownItem.external ? (
-                                <a
-                                  key={dropdownIndex}
-                                  href={dropdownItem.href}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#5352F6] transition-colors"
-                                >
-                                  {dropdownItem.label}
-                                </a>
-                              ) : (
-                                <Link
-                                  key={dropdownIndex}
-                                  href={dropdownItem.href}
-                                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#5352F6] transition-colors"
-                                  onClick={() => setOpenDropdown(null)}
-                                >
-                                  {dropdownItem.label}
-                                </Link>
-                              )
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      item.external ? (
-                        <a
-                          href={item.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={cn(
-                            "text-sm font-medium transition-colors hover:text-[#5352F6]",
-                            item.active ? "text-[#5352F6]" : "text-[#0F0F0F]"
-                          )}
-                        >
-                          {item.label}
-                        </a>
-                      ) : (
-                        item.href ? (
-                          <Link
-                            href={item.href}
+                  {items?.map((item, index) => (
+                    <li
+                      key={index}
+                      className="relative"
+                      onMouseEnter={() => handleMouseEnter(index)}
+                      onMouseLeave={handleMouseLeave}
+                    >
+                      {item.dropdown ? (
+                        <div className="relative">
+                          <button
+                            onClick={() => toggleDropdown(index)}
                             className={cn(
-                              "text-sm font-medium transition-colors hover:text-[#5352F6]",
+                              "text-sm font-medium transition-colors hover:text-[#5352F6] flex items-center gap-1 py-4",
                               item.active ? "text-[#5352F6]" : "text-[#0F0F0F]"
                             )}
                           >
                             {item.label}
-                          </Link>
-                        ) : null
-                      )
-                    )}
-                  </li>
-                ))}
+                            <motion.svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              animate={{ rotate: openDropdown === index ? 180 : 0 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </motion.svg>
+                          </button>
+
+                          <AnimatePresence>
+                            {openDropdown === index && (
+                              <motion.div
+                                ref={dropdownRef}
+                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                transition={{ duration: 0.2, ease: "easeOut" }}
+                                className="absolute top-full left-0 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50 overflow-hidden"
+                              >
+                                {item.dropdown.map((dropdownItem, dropdownIndex) => (
+                                  dropdownItem.external ? (
+                                    <a
+                                      key={dropdownIndex}
+                                      href={dropdownItem.href}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-[#F8F8FF] hover:text-[#5352F6] transition-colors"
+                                    >
+                                      {dropdownItem.label}
+                                    </a>
+                                  ) : (
+                                    <Link
+                                      key={dropdownIndex}
+                                      href={dropdownItem.href}
+                                      className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-[#F8F8FF] hover:text-[#5352F6] transition-colors"
+                                      onClick={() => setOpenDropdown(null)}
+                                    >
+                                      {dropdownItem.label}
+                                    </Link>
+                                  )
+                                ))}
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      ) : (
+                        item.external ? (
+                          <a
+                            href={item.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={cn(
+                              "text-sm font-medium transition-colors hover:text-[#5352F6] flex items-center py-4",
+                              item.active ? "text-[#5352F6]" : "text-[#0F0F0F]"
+                            )}
+                          >
+                            {item.label}
+                          </a>
+                        ) : (
+                          item.href ? (
+                            <Link
+                              href={item.href}
+                              className={cn(
+                                "text-sm font-medium transition-colors hover:text-[#5352F6] flex items-center py-4",
+                                item.active ? "text-[#5352F6]" : "text-[#0F0F0F]"
+                              )}
+                            >
+                              {item.label}
+                            </Link>
+                          ) : null
+                        )
+                      )}
+                    </li>
+                  ))}
                 </ul>
               </nav>
             )}
           </div>
-          
+
           {!isMobile && (
             <div className="flex items-center">
               {actions}
             </div>
           )}
-          
+
           {isMobile && (
             <button
               className="inline-flex items-center justify-center rounded-md p-2 text-[#0F0F0F]"
@@ -195,7 +226,7 @@ export function Navbar({
           )}
         </div>
       </div>
-      
+
       {/* Mobile menu */}
       {isMobile && isMenuOpen && (
         <div className="container mx-auto px-4 max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
