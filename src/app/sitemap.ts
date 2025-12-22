@@ -53,6 +53,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   entries.push({ url: `${SITE_URL}/investment-for-freelancers`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
   entries.push({ url: `${SITE_URL}/cdt-vs-real-estate-investing`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
 
+  // Reports
+  entries.push({ url: `${SITE_URL}/reports`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
+  entries.push({ url: `${SITE_URL}/reports/impacto-regulatorio`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 });
+  entries.push({ url: `${SITE_URL}/reports/lujo-consciente`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 });
+
   // URLs importantes adicionales (no eliminar)
   entries.push({ url: `https://academy.lokl.life`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 });
   entries.push({ url: `https://academy.lokl.life/blog`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.7 });
@@ -62,6 +67,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   entries.push({ url: `https://academy.lokl.life/discoveryourinvestorprofile`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
   entries.push({ url: `https://academy.lokl.life/investment-for-freelancers`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
   entries.push({ url: `https://academy.lokl.life/cdt-vs-real-estate-investing`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
+  
+  // Reports (academy domain)
+  entries.push({ url: `https://academy.lokl.life/reports`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
+  entries.push({ url: `https://academy.lokl.life/reports/impacto-regulatorio`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 });
+  entries.push({ url: `https://academy.lokl.life/reports/lujo-consciente`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 });
 
   // Blog global paginado
   const totalBlogPages = await getTotalPages();

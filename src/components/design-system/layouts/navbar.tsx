@@ -93,7 +93,12 @@ export function Navbar({
               <nav>
                 <ul className="flex space-x-8">
                 {items?.map((item, index) => (
-                  <li key={index} className="relative">
+                  <li 
+                    key={index} 
+                    className="relative group" // Added group class for hover effect
+                    onMouseEnter={() => !isMobile && setOpenDropdown(index)} // Open on hover
+                    onMouseLeave={() => !isMobile && setOpenDropdown(null)} // Close on leave
+                  >
                     {item.dropdown ? (
                       <div className="relative" ref={dropdownRef}>
                         <button
@@ -109,7 +114,11 @@ export function Navbar({
                           </svg>
                         </button>
                         {openDropdown === index && (
-                          <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50">
+                          <div 
+                            className="absolute top-full left-0 mt-0 w-48 bg-white rounded-md shadow-lg border border-gray-200 py-1 z-50 animate-in fade-in slide-in-from-top-2 duration-200"
+                            onMouseEnter={() => setOpenDropdown(index)} // Keep open when hovering the menu itself
+                            onMouseLeave={() => setOpenDropdown(null)}
+                          >
                             {item.dropdown.map((dropdownItem, dropdownIndex) => (
                               dropdownItem.external ? (
                                 <a
