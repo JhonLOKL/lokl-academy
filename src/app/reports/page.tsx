@@ -5,6 +5,13 @@ import { ArrowRight, Calendar } from 'lucide-react';
 const ReportsPage = () => {
   const reports = [
     {
+      title: "Análisis Estratégico Oriente Antioqueño 2025",
+      description: "Análisis basado en datos del mercado inmobiliario del Oriente Antioqueño. ¿Burbuja o crecimiento orgánico? Evaluación de micro-mercados, vectores de infraestructura y matriz de riesgos para inversores.",
+      slug: "oriente-antioqueno-2025",
+      date: "Diciembre 2025",
+      category: "Análisis de Mercado Regional"
+    },
+    {
       title: "Choque Regulatorio: La Transformación del Turismo Andino",
       description: "Un análisis basado en datos sobre el Decreto del 18 de Diciembre, el riesgo de 'apagón digital' y las lecciones aprendidas de Nueva York y Barcelona.",
       slug: "impacto-regulatorio",
@@ -23,10 +30,10 @@ const ReportsPage = () => {
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] text-[#444444] font-sans selection:bg-[#5352F6] selection:text-white pb-20">
-       <header className="relative pt-24 pb-20 px-6 text-center overflow-hidden bg-white border-b border-[#E5E5E5]">
+      <header className="relative pt-24 pb-20 px-6 text-center overflow-hidden bg-white border-b border-[#E5E5E5]">
         {/* Abstract Glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#5352F6] rounded-full opacity-[0.03] blur-[100px] pointer-events-none"></div>
-        
+
         <h1 className="text-4xl md:text-5xl font-extrabold text-[#0F0F0F] tracking-tight mb-6">
           LOKL <span className="text-[#5352F6]">Reports</span>
         </h1>
@@ -41,27 +48,27 @@ const ReportsPage = () => {
             <Link href={`/reports/${report.slug}`} key={report.slug} className="group block h-full">
               <div className="bg-white border border-[#E5E5E5] rounded-2xl p-8 h-full hover:border-[#5352F6] hover:shadow-lg transition-all duration-300 flex flex-col">
                 <div className="mb-6 flex items-center justify-between">
-                   <span className="text-xs font-bold text-[#5352F6] bg-[#EEEEFF] px-3 py-1 rounded-full uppercase tracking-wider">
+                  <span className="text-xs font-bold text-[#5352F6] bg-[#EEEEFF] px-3 py-1 rounded-full uppercase tracking-wider">
                     {report.category}
-                   </span>
+                  </span>
                 </div>
-                
+
                 <h3 className="text-xl font-bold text-[#0F0F0F] mb-3 group-hover:text-[#5352F6] transition-colors">
                   {report.title}
                 </h3>
-                
+
                 <p className="text-[#6D6C6C] text-sm leading-relaxed mb-6 flex-grow">
                   {report.description}
                 </p>
-                
+
                 <div className="flex items-center justify-between pt-6 border-t border-[#F3F4F6] mt-auto">
-                   <div className="flex items-center gap-2 text-xs text-[#9CA3AF]">
-                      <Calendar size={14} />
-                      <span>{report.date}</span>
-                   </div>
-                   <span className="text-[#5352F6] font-bold text-sm flex items-center gap-2 group-hover:translate-x-1 transition-transform">
-                      Leer Reporte <ArrowRight size={16} />
-                   </span>
+                  <div className="flex items-center gap-2 text-xs text-[#9CA3AF]">
+                    <Calendar size={14} />
+                    <span>{report.date}</span>
+                  </div>
+                  <span className="text-[#5352F6] font-bold text-sm flex items-center gap-2 group-hover:translate-x-1 transition-transform">
+                    Leer Reporte <ArrowRight size={16} />
+                  </span>
                 </div>
               </div>
             </Link>
