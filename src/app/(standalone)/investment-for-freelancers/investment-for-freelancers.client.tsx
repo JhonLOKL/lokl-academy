@@ -16,8 +16,8 @@ import {
 import { Card, CardContent } from "@/components/design-system";
 import { buttonVariants } from "@/components/design-system/ui/button";
 
-const FloatingWhatsApp = dynamic(
-  () => import("react-floating-whatsapp").then((mod) => mod.FloatingWhatsApp),
+const FloatingWhatsAppButton = dynamic(
+  () => import("@/components/shared/floating-whatsapp-button"),
   { ssr: false }
 );
 
@@ -243,18 +243,7 @@ export default function InvestmentForFreelancersLanding() {
         </div>
       </section>
 
-      <FloatingWhatsApp
-        phoneNumber="573017328112"
-        accountName="Laura"
-        allowEsc
-        allowClickAway
-        notification
-        notificationSound
-        avatar="/images/home/foto-wpp-lokl.png"
-        statusMessage="En línea"
-        chatMessage="Hola! Soy Laura 😊 Tu asesora en inversiones inmobiliarias. ¿Cuál es tu nombre?"
-        placeholder="Escríbenos un mensaje"
-      />
+      <FloatingWhatsAppButton />
     </div>
   );
 }

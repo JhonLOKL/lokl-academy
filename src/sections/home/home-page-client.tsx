@@ -7,8 +7,8 @@ import StatsSection from "./stats-section";
 import WhatIsLokl from "@/components/home/WhatIsLokl";
 import { useEffect } from "react";
 import { getProjectCardsAction } from "@/actions/project-actions";
-const FloatingWhatsApp = dynamic(
-  () => import("react-floating-whatsapp").then((mod) => mod.FloatingWhatsApp),
+const FloatingWhatsAppButton = dynamic(
+  () => import("@/components/shared/floating-whatsapp-button"),
   { ssr: false }
 );
 
@@ -18,7 +18,7 @@ const SimulatorLazyWrapper = dynamic(() => import("@/components/simulator/simula
   ssr: false,
 });
 
-const BenefitsSection = dynamic(() => import("./benefits-section"), { 
+const BenefitsSection = dynamic(() => import("./benefits-section"), {
   loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
 });
 const HowItWorksSection = dynamic(() => import("./how-it-works-section"), {
@@ -65,7 +65,7 @@ export default function HomePageClient() {
       </section>
 
       <article id="simulador-mobile" className="w-full block md:hidden">
-        <SimulatorLazyWrapper hideRightColumn={true}/>
+        <SimulatorLazyWrapper hideRightColumn={true} />
       </article>
 
       <section className="w-full">
@@ -89,7 +89,7 @@ export default function HomePageClient() {
       </article>
 
       <article id="simulador-desktop" className="w-full hidden md:block">
-        <SimulatorLazyWrapper/>
+        <SimulatorLazyWrapper />
       </article>
 
       <section className="w-full">
@@ -108,16 +108,7 @@ export default function HomePageClient() {
         <FinalCTASection />
       </section>
 
-      <FloatingWhatsApp
-        phoneNumber="573017328112"
-        accountName="Laura"
-        notification
-        notificationSound
-        avatar="/images/home/foto-wpp-lokl.png"
-        statusMessage="En línea"
-        chatMessage="Hola! Soy Laura 😊 Tu asesora en inversiones inmobiliarias. ¿Cuál es tu nombre?"
-        placeholder="Escríbenos un mensaje"
-      />
+      <FloatingWhatsAppButton />
     </main>
   );
 }
