@@ -8,7 +8,7 @@ import GAListener from "@/components/analytics/ga-listener";
 import UtmTracker from "@/components/analytics/utm-tracker";
 import { Toaster } from "@/components/design-system";
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ["latin"],
   display: 'swap',
   preload: true,
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://academy.lokl.life"),
+  metadataBase: new URL("https://lokl.life"),
   icons: {
     icon: [
       { url: '/icon.png', type: 'image/png' }
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "LOKL | Plataforma de Inversión y Bienes Raíces",
     description: "Aprende a invertir en bienes raíces y administrar tus finanzas personales con nuestros cursos, blogs y podcasts especializados.",
-    url: "https://academy.lokl.life",
+    url: "https://lokl.life",
     siteName: "LOKL",
     images: [
       {
@@ -89,8 +89,8 @@ export const metadata: Metadata = {
       '@context': 'https://schema.org',
       '@type': 'Organization',
       name: 'LOKL',
-      url: process.env.NEXT_PUBLIC_SITE_URL || 'https://academy.lokl.life',
-      logo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://academy.lokl.life'}/logo.png`,
+      url: process.env.NEXT_PUBLIC_SITE_URL || 'https://lokl.life',
+      logo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://lokl.life'}/logo.png`,
       sameAs: [
         'https://www.linkedin.com/company/lokl/',
         'https://twitter.com/loklacademy',
@@ -100,11 +100,11 @@ export const metadata: Metadata = {
     'ld+json:website': JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'WebSite',
-      url: process.env.NEXT_PUBLIC_SITE_URL || 'https://academy.lokl.life',
+      url: process.env.NEXT_PUBLIC_SITE_URL || 'https://lokl.life',
       name: 'LOKL',
       potentialAction: {
         '@type': 'SearchAction',
-        target: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://academy.lokl.life'}/blog?search={search_term_string}`,
+        target: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://lokl.life'}/blog?search={search_term_string}`,
         'query-input': 'required name=search_term_string',
       },
     }),
@@ -132,22 +132,22 @@ export default function RootLayout({
         <link rel="preconnect" href="https://lokl-assets.s3.us-east-1.amazonaws.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        
+
         {/* DNS Prefetch para recursos secundarios - no bloquean renderizado */}
         <link rel="dns-prefetch" href="https://lokl-academy.s3.us-east-1.amazonaws.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link rel="dns-prefetch" href="https://static.hotjar.com" />
-        
+
         {/* Preload imagen LCP del hero móvil - CRÍTICO para LCP */}
-        <link 
-          rel="preload" 
-          as="image" 
+        <link
+          rel="preload"
+          as="image"
           href="https://lokl-assets.s3.us-east-1.amazonaws.com/home/Hero-indie-movil.png"
           fetchPriority="high"
           media="(max-width: 767px)"
         />
-              
+
         {/* Preload de fuente crítica para mejorar FCP */}
         {/* eslint-disable-next-line @next/next/google-font-preconnect */}
         <link

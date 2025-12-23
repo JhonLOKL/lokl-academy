@@ -22,23 +22,34 @@ export interface SEOMetadata {
   canonicalUrl?: string;
   author?: string;
   language?: string; // Por ejemplo: "es-CO", "es-ES", etc.
-  
+
   // Open Graph
+  ogTitle?: string;
+  ogDescription?: string;
+  ogUrl?: string;
   ogImage: {
     url: string;
     alt: string;
     width: number;
     height: number;
   };
-  ogType: "article" | "website";
+  ogType: "article" | "website" | string;
   ogSiteName?: string;
   ogLocale?: string; // Por ejemplo: "es_CO", "es_ES", etc.
-  
+
   // Twitter Cards
-  twitterCard: "summary" | "summary_large_image" | "app" | "player";
+  twitterTitle?: string;
+  twitterDescription?: string;
+  twitterUrl?: string;
+  twitterImage?: {
+    src: string;
+    alt: string;
+    credit?: string;
+  };
+  twitterCard: "summary" | "summary_large_image" | "app" | "player" | string;
   twitterSite?: string;
   twitterCreator?: string;
-  
+
   // Robots
   robots?: {
     index?: boolean;
@@ -47,11 +58,11 @@ export interface SEOMetadata {
     maxImagePreview?: "none" | "standard" | "large";
     maxVideoPreview?: number;
   };
-  
+
   // Colores de tema
   themeColor?: string;
   msTileColor?: string;
-  
+
   // Recursos críticos para precargar
   preloadResources?: Array<{
     href: string;
@@ -59,10 +70,10 @@ export interface SEOMetadata {
     type?: string;
     crossOrigin?: "anonymous" | "use-credentials";
   }>;
-  
+
   // Datos estructurados (Schema.org)
   structuredData?: Record<string, unknown>;
-  
+
   // Breadcrumbs para Schema.org
   breadcrumbs?: Array<{
     name: string;
@@ -322,13 +333,13 @@ export interface BlogPost {
   updatedAt?: string;
   status: "draft" | "published" | "archived";
   featured?: boolean;
-  
+
   // Metadatos SEO
   seo: SEOMetadata;
-  
+
   // Información del autor
   author: Author;
-  
+
   // Categorización
   category?: string; // Categoría simplificada para el componente
   categoryFull?: {
@@ -341,7 +352,7 @@ export interface BlogPost {
     name: string;
     slug: string;
   }>;
-  
+
   // Contenido del blog
   title: string;
   subtitle?: string;
@@ -353,10 +364,10 @@ export interface BlogPost {
     caption?: string;
     credit?: string;
   };
-  
+
   // Bloques de contenido
   content: ContentBlock[];
-  
+
   // Relacionados
   relatedPosts?: Array<{
     id: string;
@@ -367,12 +378,12 @@ export interface BlogPost {
       alt: string;
     };
   }>;
-  
+
   // Analítica y engagement
   views?: number;
   likes?: number;
   shares?: number;
-  
+
   // Configuración de comentarios
   commentsEnabled?: boolean;
 }

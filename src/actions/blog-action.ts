@@ -24,21 +24,30 @@ type ApiLiteSeo = {
     image?: { src?: string; alt?: string; caption?: string };
     ogSiteName?: string;
     ogLocale?: string;
+    ogTitle?: string;
+    ogDescription?: string;
+    ogUrl?: string;
+    ogType?: string;
+    ogImage?: { url?: string; alt?: string; width?: number; height?: number };
     canonicalUrl?: string;
     twitterCard?: string;
+    twitterTitle?: string;
+    twitterDescription?: string;
+    twitterUrl?: string;
+    twitterImage?: { src?: string; alt?: string; credit?: string };
+    robots?: {
+        index?: boolean;
+        follow?: boolean;
+        maxSnippet?: number;
+        maxImagePreview?: string;
+        maxVideoPreview?: number;
+    };
+    structuredData?: Record<string, unknown>;
+    breadcrumbs?: Array<{ name: string; url: string; position: number }>;
+    language?: string;
 };
 
-type ApiDetailSeo = {
-    title?: string;
-    description?: string;
-    keywords?: string[];
-    canonicalUrl?: string;
-    twitterCard?: string;
-    ogType?: string;
-    ogSiteName?: string;
-    ogLocale?: string;
-    ogImage?: { url?: string; alt?: string; width?: number; height?: number };
-};
+type ApiDetailSeo = ApiLiteSeo;
 
 type ApiLitePost = {
     id: string;
@@ -63,7 +72,7 @@ type ApiLitePost = {
     author?: ApiAvatar;
     seo?: ApiLiteSeo;
     estimatedReadTime?: number;
-    relatedPosts?: Array<{ id: string; title?: string; slug: string; coverImage?: { src: string; alt: string } }>; 
+    relatedPosts?: Array<{ id: string; title?: string; slug: string; coverImage?: { src: string; alt: string } }>;
 };
 
 type ApiDetailPost = ApiLitePost & {
@@ -124,22 +133,37 @@ function normalizeSeoFromLite(post: ApiLitePost): SEOMetadata {
 }
 
 function normalizeSeoFromDetail(post: ApiDetailPost): SEOMetadata {
-    const og = post?.seo?.ogImage || {};
+    const s = post?.seo || {};
+    const og = s.ogImage || {};
     return {
-        title: post?.seo?.title || post?.title || "",
-        description: post?.seo?.description || post?.excerpt || "",
-        keywords: Array.isArray(post?.seo?.keywords) ? post.seo.keywords : [],
-        canonicalUrl: post?.seo?.canonicalUrl,
+        title: s.title || post?.title || "",
+        description: s.description || post?.excerpt || "",
+        keywords: Array.isArray(s.keywords) ? s.keywords : [],
+        canonicalUrl: s.canonicalUrl,
+        language: s.language,
+
+        ogTitle: s.ogTitle,
+        ogDescription: s.ogDescription,
+        ogUrl: s.ogUrl,
         ogImage: {
-            url: og?.url || post?.coverImage?.src || "",
-            alt: og?.alt || post?.coverImage?.alt || post?.title || "",
-            width: typeof og?.width === "number" ? og.width : 1200,
-            height: typeof og?.height === "number" ? og.height : 630,
+            url: og.url || post?.coverImage?.src || "",
+            alt: og.alt || post?.coverImage?.alt || post?.title || "",
+            width: typeof og.width === "number" ? og.width : 1200,
+            height: typeof og.height === "number" ? og.height : 630,
         },
-        ogType: post?.seo?.ogType || "article",
-        twitterCard: post?.seo?.twitterCard || "summary_large_image",
-        ogSiteName: post?.seo?.ogSiteName,
-        ogLocale: post?.seo?.ogLocale,
+        ogType: s.ogType || "article",
+        ogSiteName: s.ogSiteName,
+        ogLocale: s.ogLocale,
+
+        twitterTitle: s.twitterTitle,
+        twitterDescription: s.twitterDescription,
+        twitterUrl: s.twitterUrl,
+        twitterImage: s.twitterImage,
+        twitterCard: s.twitterCard || "summary_large_image",
+
+        robots: s.robots,
+        structuredData: s.structuredData,
+        breadcrumbs: s.breadcrumbs,
     } as SEOMetadata;
 }
 
