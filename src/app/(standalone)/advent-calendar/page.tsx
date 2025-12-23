@@ -8,6 +8,12 @@ import { SnowEffect } from '@/components/advent-calendar/snoweffect';
 import { WelcomePopup } from '@/components/advent-calendar/welcomepopup';
 import { RegistrationModal } from '@/components/advent-calendar/registrationmodal';
 import { MarketingFooter } from '@/components/footer/marketing-footer';
+import dynamic from 'next/dynamic';
+
+const FloatingWhatsAppButton = dynamic(
+    () => import('@/components/shared/floating-whatsapp-button'),
+    { ssr: false }
+);
 // import { Header } from '@/components/advent-calendar/header'; // Or generic header
 import { useState } from 'react';
 
@@ -50,6 +56,7 @@ export default function AdventCalendarPage() {
                 onClose={() => setShowRegistration(false)}
                 onRegistrationComplete={handleRegistrationComplete}
             />
+            <FloatingWhatsAppButton />
         </div>
     );
 }

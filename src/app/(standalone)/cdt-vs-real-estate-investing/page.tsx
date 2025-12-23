@@ -12,6 +12,11 @@ import {
 } from "@/components/design-system";
 import { buttonVariants } from "@/components/design-system/ui/button";
 
+const FloatingWhatsAppButton = dynamic(
+  () => import("@/components/shared/floating-whatsapp-button"),
+  { ssr: false }
+);
+
 // Lazy load del simulador para optimizar rendimiento
 const SimulatorLazyWrapper = dynamic(() => import("@/components/simulator/simulator-lazy-wrapper"), {
   ssr: false,
@@ -211,11 +216,10 @@ const ComparisonSection = () => (
                     {row.cdt}
                   </td>
                   <td
-                    className={`border-l p-6 text-center ${
-                      row.loklHighlight
+                    className={`border-l p-6 text-center ${row.loklHighlight
                         ? "bg-green-50 font-semibold text-green-700"
                         : "text-gray-800"
-                    }`}
+                      }`}
                   >
                     {row.lokl}
                   </td>
@@ -327,6 +331,7 @@ export default function CDTvsRealEstateInvestingPage() {
         <DiversificationSection />
         <FinalCtaSection />
       </main>
+      <FloatingWhatsAppButton />
     </div>
   );
 }
