@@ -17,6 +17,12 @@ import PromoBanner from '@/components/shared/PromoBanner';
 import MarketingFooter from '@/components/footer/marketing-footer';
 import { getIndieUniverseHomeInfoAction } from '@/actions/project-actions';
 import type { ProjectHomePageInfo } from '@/services/projectService';
+import dynamic from 'next/dynamic';
+
+const FloatingWhatsAppButton = dynamic(
+  () => import('@/components/shared/floating-whatsapp-button'),
+  { ssr: false }
+);
 
 function IndieUniverseContent() {
   const searchParams = useSearchParams();
@@ -165,6 +171,7 @@ function IndieUniverseContent() {
       <Benefits />
 
       <MarketingFooter />
+      <FloatingWhatsAppButton />
     </>
   );
 }

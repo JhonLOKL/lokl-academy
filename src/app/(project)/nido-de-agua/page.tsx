@@ -18,6 +18,12 @@ import MarketingFooter from '@/components/footer/marketing-footer';
 import { getNidoDeAguaHomeInfoAction } from '@/actions/project-actions';
 import type { ProjectHomePageInfo } from '@/services/projectService';
 import Benefits from '@/components/landing/new-home/benefits';
+import dynamic from 'next/dynamic';
+
+const FloatingWhatsAppButton = dynamic(
+  () => import('@/components/shared/floating-whatsapp-button'),
+  { ssr: false }
+);
 
 function NidoDeAguaContent() {
   const searchParams = useSearchParams();
@@ -177,6 +183,7 @@ function NidoDeAguaContent() {
       <Benefits />
 
       <MarketingFooter />
+      <FloatingWhatsAppButton />
     </>
   );
 }
