@@ -2,7 +2,21 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ExternalLink } from 'lucide-react';
+import {
+    ArrowLeft,
+    ExternalLink,
+    TrendingUp,
+    Layout,
+    AlertTriangle,
+    PieChart,
+    ShieldCheck,
+    BarChart3,
+    UserX,
+    Activity,
+    Home,
+    Briefcase
+} from 'lucide-react';
+import { motion } from 'framer-motion';
 import { MarketingFooter } from '@/components/footer/marketing-footer';
 import { ReportJsonLd } from '@/components/reports/ReportJsonLd';
 
@@ -112,160 +126,285 @@ const OrienteAnalytics2025 = () => {
                     </section>
 
                     {/* Section 2: Deep Dive Micro-Markets */}
-                    <section id="micromercados">
+                    <section id="micromercados" className="relative">
                         <div className="section-header">
                             <h2 className="text-2xl font-bold">Análisis de Micro-Mercados</h2>
                             <div className="section-line"></div>
                         </div>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
                             {/* Rionegro / Llanogrande */}
-                            <div className="info-card border-l-4 border-l-primary rounded-l-none">
-                                <div className="flex justify-between items-start mb-4">
-                                    <h3 className="text-xl font-bold text-[#0F0F0F]">Rionegro &amp; Llanogrande</h3>
-                                    <span className="tag tag-amber">Saturación Tráfico</span>
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                whileHover={{ y: -5 }}
+                                className="group relative bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300"
+                            >
+                                <div className="absolute top-0 left-0 w-1.5 h-full bg-primary rounded-l-2xl"></div>
+                                <div className="flex justify-between items-start mb-6 pl-2">
+                                    <div>
+                                        <h3 className="text-xl font-bold text-[#0F0F0F] group-hover:text-primary transition-colors">Rionegro &amp; Llanogrande</h3>
+                                        <p className="text-sm text-gray-500 mt-1">Núcleo metropolitano y Milla de Oro</p>
+                                    </div>
+                                    <span className="px-3 py-1 bg-amber-50 text-amber-700 text-[10px] font-bold uppercase tracking-wider rounded-full border border-amber-100">
+                                        Saturación Tráfico
+                                    </span>
                                 </div>
-                                <p className="text-sm text-gray-600 mb-6">
-                                    El núcleo metropolitano y la &quot;Milla de Oro&quot;. Tendencia hacia la densificación (subdivisión de fincas en aptos de lujo).
+
+                                <p className="text-sm text-gray-600 mb-8 pl-2 leading-relaxed">
+                                    Tendencia hacia la densificación (subdivisión de fincas en aptos de lujo). Alta demanda corporativa y residencial premium.
                                 </p>
-                                <div className="grid grid-cols-2 gap-4 mb-4">
-                                    <div className="bg-gray-50 p-3 rounded">
-                                        <span className="block text-xs font-bold text-gray-500">Precio Venta</span>
-                                        <span className="text-sm font-bold text-[#0F0F0F]">$8M - $12M COP/m²</span>
+
+                                <div className="grid grid-cols-2 gap-4 pl-2">
+                                    <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                                        <div className="flex items-center gap-2 mb-2 text-gray-400">
+                                            <TrendingUp size={14} />
+                                            <span className="text-[10px] font-bold uppercase tracking-wider">Precio Venta</span>
+                                        </div>
+                                        <span className="text-sm font-bold text-[#0F0F0F]">$8M - $12M</span>
+                                        <span className="text-[10px] text-gray-400 block mt-0.5">COP/m²</span>
                                     </div>
-                                    <div className="bg-gray-50 p-3 rounded">
-                                        <span className="block text-xs font-bold text-gray-500">Renta Mensual</span>
-                                        <span className="text-sm font-bold text-[#0F0F0F]">$6.5M - $9.0M COP</span>
+                                    <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                                        <div className="flex items-center gap-2 mb-2 text-gray-400">
+                                            <Layout size={14} />
+                                            <span className="text-[10px] font-bold uppercase tracking-wider">Renta Mensual</span>
+                                        </div>
+                                        <span className="text-sm font-bold text-[#0F0F0F]">$6.5M - $9.0M</span>
+                                        <span className="text-[10px] text-gray-400 block mt-0.5">COP (3 Hab)</span>
                                     </div>
                                 </div>
-                                <div className="text-xs text-gray-500">
-                                    <strong>Riesgo:</strong> Compresión de Yields (4-5% bruto) por alto valor del activo. Inversión depende de apreciación futura.
+
+                                <div className="mt-6 pt-4 border-t border-gray-50 pl-2">
+                                    <div className="flex items-start gap-3">
+                                        <div className="mt-1 p-1 bg-red-50 rounded text-red-500">
+                                            <AlertTriangle size={12} />
+                                        </div>
+                                        <p className="text-[11px] text-gray-500 leading-normal">
+                                            <strong className="text-gray-700">Riesgo:</strong> Compresión de Yields (4-5% bruto) por alto valor del activo. Inversión depende de apreciación.
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
+                            </motion.div>
 
                             {/* La Ceja */}
-                            <div className="info-card border-l-4 border-l-green-600 rounded-l-none">
-                                <div className="flex justify-between items-start mb-4">
-                                    <h3 className="text-xl font-bold text-[#0F0F0F]">La Ceja</h3>
-                                    <span className="tag tag-green">Oportunidad Valor</span>
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                whileHover={{ y: -5 }}
+                                transition={{ delay: 0.1 }}
+                                className="group relative bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300"
+                            >
+                                <div className="absolute top-0 left-0 w-1.5 h-full bg-green-500 rounded-l-2xl"></div>
+                                <div className="flex justify-between items-start mb-6 pl-2">
+                                    <div>
+                                        <h3 className="text-xl font-bold text-[#0F0F0F] group-hover:text-green-600 transition-colors">La Ceja</h3>
+                                        <p className="text-sm text-gray-500 mt-1">La alternativa sostenible</p>
+                                    </div>
+                                    <span className="px-3 py-1 bg-green-50 text-green-700 text-[10px] font-bold uppercase tracking-wider rounded-full border border-green-100">
+                                        Oportunidad Valor
+                                    </span>
                                 </div>
-                                <p className="text-sm text-gray-600 mb-6">
-                                    La &quot;alternativa sostenible&quot;. Topografía plana, caminable. Absorbe el desbordamiento de Rionegro con precios más accesibles.
+
+                                <p className="text-sm text-gray-600 mb-8 pl-2 leading-relaxed">
+                                    Topografía plana, caminable. Absorbe el desbordamiento de Rionegro con precios competitivos y alta calidad de vida.
                                 </p>
-                                <div className="grid grid-cols-2 gap-4 mb-4">
-                                    <div className="bg-gray-50 p-3 rounded">
-                                        <span className="block text-xs font-bold text-gray-500">Precio Venta</span>
-                                        <span className="text-sm font-bold text-[#0F0F0F]">$4.5M - $6.5M COP/m²</span>
+
+                                <div className="grid grid-cols-2 gap-4 pl-2">
+                                    <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                                        <div className="flex items-center gap-2 mb-2 text-gray-400">
+                                            <TrendingUp size={14} />
+                                            <span className="text-[10px] font-bold uppercase tracking-wider">Precio Venta</span>
+                                        </div>
+                                        <span className="text-sm font-bold text-[#0F0F0F]">$4.5M - $6.5M</span>
+                                        <span className="text-[10px] text-gray-400 block mt-0.5">COP/m²</span>
                                     </div>
-                                    <div className="bg-gray-50 p-3 rounded">
-                                        <span className="block text-xs font-bold text-gray-500">Valorización Tierra</span>
-                                        <span className="text-sm font-bold text-[#0F0F0F]">~9% Anual (2024)</span>
+                                    <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                                        <div className="flex items-center gap-2 mb-2 text-gray-400">
+                                            <PieChart size={14} />
+                                            <span className="text-[10px] font-bold uppercase tracking-wider">Valorización</span>
+                                        </div>
+                                        <span className="text-sm font-bold text-[#0F0F0F]">~9% Anual</span>
+                                        <span className="text-[10px] text-gray-400 block mt-0.5">Datos 2024</span>
                                     </div>
                                 </div>
-                                <div className="text-xs text-gray-500">
-                                    <strong>Tesis:</strong> Atractivo para jubilados y familias jóvenes. Alta liquidez en reventa.
+
+                                <div className="mt-6 pt-4 border-t border-gray-50 pl-2">
+                                    <div className="flex items-start gap-3">
+                                        <div className="mt-1 p-1 bg-green-50 rounded text-green-500">
+                                            <ShieldCheck size={12} />
+                                        </div>
+                                        <p className="text-[11px] text-gray-500 leading-normal">
+                                            <strong className="text-gray-700">Tesis:</strong> Atractivo para jubilados y familias jóvenes. Alta liquidez en reventa por ticket de entrada accesible.
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
+                            </motion.div>
 
                             {/* San Antonio */}
-                            <div className="info-card border-l-4 border-l-red-500 rounded-l-none">
-                                <div className="flex justify-between items-start mb-4">
-                                    <h3 className="text-xl font-bold text-[#0F0F0F]">San Antonio de Pereira</h3>
-                                    <span className="tag tag-red">Riesgo Airbnb</span>
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                whileHover={{ y: -5 }}
+                                transition={{ delay: 0.2 }}
+                                className="group relative bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300"
+                            >
+                                <div className="absolute top-0 left-0 w-1.5 h-full bg-red-500 rounded-l-2xl"></div>
+                                <div className="flex justify-between items-start mb-6 pl-2">
+                                    <div>
+                                        <h3 className="text-xl font-bold text-[#0F0F0F] group-hover:text-red-500 transition-colors">San Antonio de Pereira</h3>
+                                        <p className="text-sm text-gray-500 mt-1">Nodo gastronómico y turístico</p>
+                                    </div>
+                                    <span className="px-3 py-1 bg-red-50 text-red-700 text-[10px] font-bold uppercase tracking-wider rounded-full border border-red-100">
+                                        Riesgo Airbnb
+                                    </span>
                                 </div>
-                                <p className="text-sm text-gray-600 mb-6">
-                                    Zona de alta densidad residencial y turística. Fuerte concentración de oferta de rentas cortas.
+
+                                <p className="text-sm text-gray-600 mb-8 pl-2 leading-relaxed">
+                                    Zona de alta densidad residencial y turística. Fuerte concentración de oferta de rentas cortas y saturación comercial.
                                 </p>
-                                <div className="grid grid-cols-2 gap-4 mb-4">
-                                    <div className="bg-gray-50 p-3 rounded">
-                                        <span className="block text-xs font-bold text-gray-500">Yield Bruto Potencial</span>
-                                        <span className="text-sm font-bold text-[#0F0F0F]">0.8% - 1.0% Mensual</span>
+
+                                <div className="grid grid-cols-2 gap-4 pl-2">
+                                    <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                                        <div className="flex items-center gap-2 mb-2 text-gray-400">
+                                            <BarChart3 size={14} />
+                                            <span className="text-[10px] font-bold uppercase tracking-wider">Yield Bruto</span>
+                                        </div>
+                                        <span className="text-sm font-bold text-[#0F0F0F]">0.8% - 1.0%</span>
+                                        <span className="text-[10px] text-gray-400 block mt-0.5">Mensual Potencial</span>
                                     </div>
-                                    <div className="bg-gray-50 p-3 rounded">
-                                        <span className="block text-xs font-bold text-gray-500">Vacancia Real</span>
+                                    <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                                        <div className="flex items-center gap-2 mb-2 text-gray-400">
+                                            <UserX size={14} />
+                                            <span className="text-[10px] font-bold uppercase tracking-wider">Vacancia Real</span>
+                                        </div>
                                         <span className="text-sm font-bold text-[#0F0F0F]">40% - 55%</span>
+                                        <span className="text-[10px] text-gray-400 block mt-0.5">Estacionalidad alta</span>
                                     </div>
                                 </div>
-                                <div className="text-xs text-gray-500">
-                                    <strong>Alerta:</strong> La saturación amenaza la ocupación. Sensible a regulación PH.
+
+                                <div className="mt-6 pt-4 border-t border-gray-50 pl-2">
+                                    <div className="flex items-start gap-3">
+                                        <div className="mt-1 p-1 bg-red-50 rounded text-red-500">
+                                            <Activity size={12} />
+                                        </div>
+                                        <p className="text-[11px] text-gray-500 leading-normal">
+                                            <strong className="text-gray-700">Alerta:</strong> La saturación amenaza la ocupación. Sensible a cambios en regulación de Propiedad Horizontal.
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
+                            </motion.div>
 
                             {/* El Retiro */}
-                            <div className="info-card border-l-4 border-l-[#0F0F0F] rounded-l-none">
-                                <div className="flex justify-between items-start mb-4">
-                                    <h3 className="text-xl font-bold text-[#0F0F0F]">El Retiro</h3>
-                                    <span className="tag tag-blue">Lifestyle / Lujo</span>
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                whileHover={{ y: -5 }}
+                                transition={{ delay: 0.3 }}
+                                className="group relative bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300"
+                            >
+                                <div className="absolute top-0 left-0 w-1.5 h-full bg-[#0F0F0F] rounded-l-2xl"></div>
+                                <div className="flex justify-between items-start mb-6 pl-2">
+                                    <div>
+                                        <h3 className="text-xl font-bold text-[#0F0F0F] group-hover:text-gray-700 transition-colors">El Retiro</h3>
+                                        <p className="text-sm text-gray-500 mt-1">Enclave de Slow Living</p>
+                                    </div>
+                                    <span className="px-3 py-1 bg-gray-50 text-gray-700 text-[10px] font-bold uppercase tracking-wider rounded-full border border-gray-200">
+                                        Lifestyle / Lujo
+                                    </span>
                                 </div>
-                                <p className="text-sm text-gray-600 mb-6">
-                                    Enclave de &quot;Slow Living&quot;. POT restrictivo limita la altura, preservando exclusividad y vistas.
+
+                                <p className="text-sm text-gray-600 mb-8 pl-2 leading-relaxed">
+                                    POT restrictivo limita la altura, preservando exclusividad y vistas. Mercado de segundas residencias de ultra-lujo.
                                 </p>
-                                <div className="grid grid-cols-2 gap-4 mb-4">
-                                    <div className="bg-gray-50 p-3 rounded">
-                                        <span className="block text-xs font-bold text-gray-500">Ticket de Entrada</span>
-                                        <span className="text-sm font-bold text-[#0F0F0F]">$500M+ (Aptos)</span>
+
+                                <div className="grid grid-cols-2 gap-4 pl-2">
+                                    <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                                        <div className="flex items-center gap-2 mb-2 text-gray-400">
+                                            <Home size={14} />
+                                            <span className="text-[10px] font-bold uppercase tracking-wider">Ticket Entrada</span>
+                                        </div>
+                                        <span className="text-sm font-bold text-[#0F0F0F]">$500M+</span>
+                                        <span className="text-[10px] text-gray-400 block mt-0.5">Apartamentos</span>
                                     </div>
-                                    <div className="bg-gray-50 p-3 rounded">
-                                        <span className="block text-xs font-bold text-gray-500">Valorización Tierra</span>
-                                        <span className="text-sm font-bold text-[#0F0F0F]">8% - 12% Proyectado</span>
+                                    <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                                        <div className="flex items-center gap-2 mb-2 text-gray-400">
+                                            <TrendingUp size={14} />
+                                            <span className="text-[10px] font-bold uppercase tracking-wider">Valorización</span>
+                                        </div>
+                                        <span className="text-sm font-bold text-[#0F0F0F]">8% - 12%</span>
+                                        <span className="text-[10px] text-gray-400 block mt-0.5">Proyectado Tierra</span>
                                     </div>
                                 </div>
-                                <div className="text-xs text-gray-500">
-                                    <strong>Perfil:</strong> Comprador de &quot;Hogar Definitivo&quot;. Baja rotación de inventario.
+
+                                <div className="mt-6 pt-4 border-t border-gray-50 pl-2">
+                                    <div className="flex items-start gap-3">
+                                        <div className="mt-1 p-1 bg-gray-50 rounded text-gray-600">
+                                            <Briefcase size={12} />
+                                        </div>
+                                        <p className="text-[11px] text-gray-500 leading-normal">
+                                            <strong className="text-gray-700">Perfil:</strong> Comprador de "Hogar Definitivo". Baja rotación de inventario y alta resiliencia de precios.
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
+                            </motion.div>
                         </div>
 
                         {/* Detailed Metrics Table */}
-                        <div className="overflow-x-auto border border-light rounded-lg">
-                            <table className="lokl-table">
-                                <thead>
-                                    <tr>
-                                        <th>Zona</th>
-                                        <th>Clase de Activo</th>
-                                        <th>Precio Aprox./m²</th>
-                                        <th>Renta (3-Hab)</th>
-                                        <th>Liquidez</th>
-                                        <th>Perfil de Riesgo</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td className="font-bold">Llanogrande</td>
-                                        <td>Aptos Lujo</td>
-                                        <td>$8M - $12M</td>
-                                        <td>$6.5M - $9.0M</td>
-                                        <td><span className="text-yellow-600 font-medium">Media</span></td>
-                                        <td>Tráfico / Saturación</td>
-                                    </tr>
-                                    <tr>
-                                        <td className="font-bold">San Antonio</td>
-                                        <td>Aptos Medio-Alto</td>
-                                        <td>$6M - $8M</td>
-                                        <td>$3.5M - $5.0M</td>
-                                        <td><span className="text-green-600 font-medium">Alta</span></td>
-                                        <td>Regulación Airbnb</td>
-                                    </tr>
-                                    <tr>
-                                        <td className="font-bold">La Ceja</td>
-                                        <td>Residencial Medio</td>
-                                        <td>$4.5M - $6.5M</td>
-                                        <td>$1.8M - $2.5M</td>
-                                        <td><span className="text-green-600 font-medium">Alta</span></td>
-                                        <td>Exceso Oferta Futura</td>
-                                    </tr>
-                                    <tr>
-                                        <td className="font-bold">Guarne / S. Vicente</td>
-                                        <td>Lotes / Rural</td>
-                                        <td>Variable</td>
-                                        <td>N/A</td>
-                                        <td><span className="text-red-600 font-medium">Muy Baja</span></td>
-                                        <td>Especulativo / Iliquidez</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            viewport={{ once: true }}
+                            className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
+                        >
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="bg-gray-50 border-b border-gray-100">
+                                            <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-wider text-gray-500">Zona</th>
+                                            <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-wider text-gray-500">Clase de Activo</th>
+                                            <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-wider text-gray-500 text-right">Precio m²</th>
+                                            <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-wider text-gray-500 text-right">Renta (3-Hab)</th>
+                                            <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-wider text-gray-500 text-center">Liquidez</th>
+                                            <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-wider text-gray-500">Perfil Riesgo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-50">
+                                        {[
+                                            { zona: "Llanogrande", activo: "Aptos Lujo", precio: "$8M - $12M", renta: "$6.5M - $9.0M", liquidez: "Media", liqColor: "amber", riesgo: "Tráfico / Saturación" },
+                                            { zona: "San Antonio", activo: "Aptos Medio-Alto", precio: "$6M - $8M", renta: "$3.5M - $5.0M", liquidez: "Alta", liqColor: "green", riesgo: "Regulación Airbnb" },
+                                            { zona: "La Ceja", activo: "Residencial Medio", precio: "$4.5M - $6.5M", renta: "$1.8M - $2.5M", liquidez: "Alta", liqColor: "green", riesgo: "Exceso Oferta Futura" },
+                                            { zona: "San Vicente", activo: "Lotes / Rural", precio: "Variable", renta: "N/A", liquidez: "Muy Baja", liqColor: "red", riesgo: "Especulativo" },
+                                        ].map((row, i) => (
+                                            <motion.tr
+                                                key={row.zona}
+                                                whileHover={{ backgroundColor: "rgba(249, 250, 251, 0.5)" }}
+                                                className="transition-colors group"
+                                            >
+                                                <td className="px-6 py-4 font-bold text-gray-900">{row.zona}</td>
+                                                <td className="px-6 py-4 text-sm text-gray-600">{row.activo}</td>
+                                                <td className="px-6 py-4 text-sm text-gray-900 font-medium text-right">{row.precio}</td>
+                                                <td className="px-6 py-4 text-sm text-gray-900 font-medium text-right">{row.renta}</td>
+                                                <td className="px-6 py-4 text-center">
+                                                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight
+                                                        ${row.liqColor === 'green' ? 'bg-green-50 text-green-700' :
+                                                            row.liqColor === 'amber' ? 'bg-amber-50 text-amber-700' :
+                                                                'bg-red-50 text-red-700'}`}>
+                                                        {row.liquidez}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 text-xs text-gray-500 italic">{row.riesgo}</td>
+                                            </motion.tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </motion.div>
                     </section>
+
 
                     {/* Section 3: Bubble Analysis (Fact Check) */}
                     <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 bg-white p-8 rounded-2xl border border-light">
