@@ -17,8 +17,8 @@ export function TopBanner() {
 
             // Lógica de fechas de campaña
             // Inicio: 10 de Diciembre 2025 (aunque mostramos cuenta regresiva antes)
-            // Fin: 22 de Diciembre 2025 al final del día
-            const campaignEnd = new Date('2025-12-22T23:59:59');
+            // Fin: 24 de Diciembre 2025 al final del día
+            const campaignEnd = new Date('2025-12-24T23:59:59');
 
             // Si ya pasó la fecha fin, ocultamos el banner
             if (now > campaignEnd) {

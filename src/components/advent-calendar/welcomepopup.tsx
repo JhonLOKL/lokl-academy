@@ -23,7 +23,7 @@ export function WelcomePopup({ onOpenRegistration }: WelcomePopupProps) {
         const calculateStatus = () => {
             const now = new Date();
             const startDate = new Date('2025-12-13T00:00:00');
-            const endDate = new Date('2025-12-22T23:59:59');
+            const endDate = new Date('2025-12-24T23:59:59');
 
             if (now < startDate) {
                 // Antes de que comience
