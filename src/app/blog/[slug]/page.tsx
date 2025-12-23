@@ -2,10 +2,10 @@ import React from "react";
 import { notFound } from "next/navigation";
 import { Footer } from "@/components/design-system";
 import { getBlogBySlugAction, getRelatedBlogsAction } from "@/actions/blog-action";
-import { 
-  BlogHeader, 
-  BlogCover, 
-  AuthorProfile, 
+import {
+  BlogHeader,
+  BlogCover,
+  AuthorProfile,
   RelatedPosts,
   BlogContentClient
 } from "@/components/lokl-academy/components";
@@ -14,21 +14,21 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const resp = await getBlogBySlugAction(slug);
   const blog = resp?.blog;
-  
+
   if (!blog) {
     notFound();
   }
-  
+
   // Formatear la fecha de publicación
   const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     };
     return new Date(dateString).toLocaleDateString('es-ES', options);
   };
-  
+
   return (
     <>
       <main>
@@ -43,13 +43,13 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                 publishDate={formatDate(blog.publishedAt)}
                 readTime={blog.estimatedReadTime}
               />
-              
+
               <div className="mt-8 flex items-center justify-center">
                 <AuthorProfile author={blog.author} variant="compact" />
               </div>
             </div>
           </section>
-          
+
           {/* Cover image */}
           <div className="container mx-auto -mt-8 px-4">
             <BlogCover
@@ -59,18 +59,19 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
               credit={blog.coverImage.credit}
             />
           </div>
-          
+
           {/* Content */}
           <section className="py-12">
             <div className="container mx-auto px-4">
-              <BlogContentClient 
+              <BlogContentClient
                 content={blog.content}
                 tags={blog.tags}
+                keywords={blog.seo.keywords}
                 author={blog.author}
               />
             </div>
           </section>
-          
+
           {/* Related posts */}
           {blog.id && (
             <section className="bg-gradient-to-b from-white to-[#F7F7FB] py-16">

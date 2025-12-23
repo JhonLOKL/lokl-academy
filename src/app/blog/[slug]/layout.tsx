@@ -129,7 +129,7 @@ export default async function BlogLayout({ children, params }: Props) {
         return '';
     };
 
-    // Función para limpiar recursivamente URLs en un objeto de datos estructurados
+    // Función para limpiar recursivamente URLs y ELIMINAR IDs internos en un objeto de datos estructurados
     const cleanStructuredData = (obj: any): any => {
         if (!obj) return obj;
         if (typeof obj === 'string') {
@@ -144,7 +144,11 @@ export default async function BlogLayout({ children, params }: Props) {
         }
         if (typeof obj === 'object') {
             const cleaned: any = {};
+            // Lista de propiedades a omitir (IDs internos o sensibles)
+            const propertiesToOmit = ['id', '_id', 'uuid', 'internal_id'];
+
             for (const key in obj) {
+                if (propertiesToOmit.includes(key)) continue;
                 cleaned[key] = cleanStructuredData(obj[key]);
             }
             return cleaned;

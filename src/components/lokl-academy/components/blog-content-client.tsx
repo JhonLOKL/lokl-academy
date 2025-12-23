@@ -163,9 +163,9 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
         <HeadingTag
           id={block.anchor}
           className={`mb-4 mt-8 font-bold ${block.level === 1 ? "text-3xl md:text-4xl text-[#5352F6]" :
-              block.level === 2 ? "text-2xl md:text-3xl border-b border-[#E5E5E5] pb-2" :
-                block.level === 3 ? "text-xl md:text-2xl text-[#5352F6]/80" :
-                  "text-lg md:text-xl"
+            block.level === 2 ? "text-2xl md:text-3xl border-b border-[#E5E5E5] pb-2" :
+              block.level === 3 ? "text-xl md:text-2xl text-[#5352F6]/80" :
+                "text-lg md:text-xl"
             } ${block.className || ""}`}
         >
           {block.content}
@@ -175,8 +175,8 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
     case "paragraph":
       return (
         <p className={`mb-6 leading-relaxed ${block.className || ""} ${block.size === "small" ? "text-sm" :
-            block.size === "large" ? "text-lg" :
-              "text-base"
+          block.size === "large" ? "text-lg" :
+            "text-base"
           } ${block.dropCap ? "first-letter:float-left first-letter:mr-3 first-letter:text-5xl first-letter:font-bold first-letter:text-[#5352F6]" : ""}`}>
           {block.content}
         </p>
@@ -254,9 +254,9 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
       return (
         <div className={`mb-8 ${block.className || ""}`}>
           <div className={`grid gap-4 ${block.columns === 2 ? "grid-cols-1 md:grid-cols-2" :
-              block.columns === 3 ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" :
-                block.columns === 4 ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-4" :
-                  "grid-cols-1 md:grid-cols-3"
+            block.columns === 3 ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" :
+              block.columns === 4 ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-4" :
+                "grid-cols-1 md:grid-cols-3"
             }`}>
             {block.images.map((image, index) => (
               <motion.div
@@ -327,7 +327,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           // Extraer el videoId de la URL de YouTube
           const videoIdMatch = embedUrl.match(/embed\/([^?]+)/);
           const videoId = videoIdMatch ? videoIdMatch[1] : "";
-          
+
           return (
             <div className={`mb-8 ${block.className || ""}`}>
               <YouTubeLite
@@ -430,21 +430,20 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                   <span className="ml-2 text-xl font-medium text-white/80">{block.suffix}</span>
                 )}
               </div>
-              
+
               {/* Etiqueta/título */}
               <h3 className="mb-4 text-lg font-bold text-white md:text-xl">{block.label}</h3>
-              
+
               {/* Tendencia (si existe) */}
               {block.trendValue && (
                 <div className="mt-2 flex items-center justify-center gap-2">
-                  <div 
-                    className={`flex items-center rounded-full px-3 py-1 text-sm font-medium ${
-                      block.trend === "up" 
-                        ? "bg-white/20 text-white border border-white/30" 
-                        : block.trend === "down" 
-                        ? "bg-white/10 text-white/90 border border-white/20" 
+                  <div
+                    className={`flex items-center rounded-full px-3 py-1 text-sm font-medium ${block.trend === "up"
+                      ? "bg-white/20 text-white border border-white/30"
+                      : block.trend === "down"
+                        ? "bg-white/10 text-white/90 border border-white/20"
                         : "bg-white/30 text-white border border-white/40"
-                    }`}
+                      }`}
                   >
                     {block.trend === "up" && <ChevronUp className="mr-1 h-4 w-4" />}
                     {block.trend === "down" && <ChevronDown className="mr-1 h-4 w-4" />}
@@ -452,7 +451,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                   </div>
                 </div>
               )}
-              
+
               {/* Icono (si existe) */}
               {block.icon && (
                 <div className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
@@ -460,7 +459,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                 </div>
               )}
             </div>
-            
+
             {/* Decoración de fondo */}
             <div className="absolute -bottom-6 -right-6 h-32 w-32 rounded-full bg-white/5"></div>
             <div className="absolute -top-10 -left-10 h-40 w-40 rounded-full bg-white/5"></div>
@@ -514,14 +513,14 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                     {idx < block.items.length - 1 && (
                       <div className="absolute bottom-0 left-4 top-0 w-0.5 translate-x-1/2 bg-gradient-to-b from-[#5352F6] to-[#E5E5E5]"></div>
                     )}
-                    
+
                     {/* Tarjeta con contenido */}
                     <div className="relative ml-12">
                       {/* Marcador de fecha con número */}
                       <div className="absolute -left-12 top-0 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#5352F6] to-[#7A79F9] text-white shadow-md">
                         <span className="text-xs font-bold">{idx + 1}</span>
                       </div>
-                      
+
                       {/* Contenido de la tarjeta */}
                       <div className="overflow-hidden rounded-lg bg-white shadow-md transition-all hover:shadow-lg">
                         <div className="border-b border-[#E5E5E5] bg-[#F7F7FB] px-4 py-2">
@@ -576,13 +575,13 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                             <span className="text-xs font-bold">{idx + 1}</span>
                           </div>
                         </div>
-                        
+
                         {/* Contenido principal */}
                         <div className="flex flex-1 flex-col p-5">
                           <h4 className="mb-3 text-lg font-bold text-[#0F0F0F]">{item.title}</h4>
                           <p className="text-sm text-[#6D6C6C]">{item.content}</p>
                         </div>
-                        
+
                         {/* Borde inferior decorativo */}
                         <div className="h-1 w-full bg-gradient-to-r from-[#5352F6] to-[#7A79F9]"></div>
                       </div>
@@ -590,7 +589,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                   </SwiperSlide>
                 ))}
               </Swiper>
-              
+
               {/* Paginación */}
               <div className="mt-6 flex justify-center">
                 <div className="blog-timeline-pagination"></div>
@@ -605,7 +604,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
         const height = (block.height as number) || 350; // Altura aumentada por defecto
         const options = (block.options as Record<string, unknown>) || {};
         const chartType = block.chartType as string;
-        
+
         // Procesar opciones comunes para gráficos
         const showLegend = options.legend !== false;
         const legendPosition = options.legendPosition as "right" | "bottom" || "bottom";
@@ -651,8 +650,8 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           } else if (Array.isArray(rawUnknown)) {
             pieData = (rawUnknown as Array<{ name: string; value: number; color?: string }>);
           }
-          chart = <PieChart 
-            data={pieData} 
+          chart = <PieChart
+            data={pieData}
             height={height}
             showTooltip={showTooltip}
             showLabels={showLabels}
@@ -683,27 +682,27 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
             series = (options as { series?: Array<{ key: string; name: string; color: string }> })?.series || [];
           }
           if (chartType === "line") {
-            chart = <LineChart 
-              data={data as Array<{ name: string;[k: string]: number | string }>} 
-              series={series} 
+            chart = <LineChart
+              data={data as Array<{ name: string;[k: string]: number | string }>}
+              series={series}
               height={height}
               showGrid={showGrid}
               showLegend={showLegend}
               showTooltip={showTooltip}
             />;
           } else if (chartType === "bar") {
-            chart = <BarChart 
-              data={data as Array<{ name: string;[k: string]: number | string }>} 
-              series={series} 
+            chart = <BarChart
+              data={data as Array<{ name: string;[k: string]: number | string }>}
+              series={series}
               height={height}
               showGrid={showGrid}
               showLegend={showLegend}
               showTooltip={showTooltip}
             />;
           } else {
-            chart = <AreaChart 
-              data={data as Array<{ name: string;[k: string]: number | string }>} 
-              series={series} 
+            chart = <AreaChart
+              data={data as Array<{ name: string;[k: string]: number | string }>}
+              series={series}
               height={height}
               showGrid={showGrid}
               showLegend={showLegend}
@@ -721,9 +720,9 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
             data = (rawUnknown as Array<{ subject: string; value: number }>);
           }
           const radarSeriesName = (isDatasetFormat ? ((rawUnknown as ChartDatasetShape).datasets?.[0]?.label) : undefined) || "Serie";
-          chart = <RadarChart 
-            data={data} 
-            series={[{ key: "value", name: radarSeriesName, color: defaultColors[0] }]} 
+          chart = <RadarChart
+            data={data}
+            series={[{ key: "value", name: radarSeriesName, color: defaultColors[0] }]}
             height={height}
             showLegend={showLegend}
             showTooltip={showTooltip}
@@ -732,7 +731,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
 
         // Renderizar gráfico con diseño mejorado
         return chart ? (
-          <motion.div 
+          <motion.div
             className={`mb-10 ${block.className || ""}`}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -748,12 +747,12 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                   </h3>
                 </div>
               )}
-              
+
               {/* Contenedor del gráfico con padding */}
               <div className="p-5">
                 {chart}
               </div>
-              
+
               {/* Borde inferior decorativo */}
               <div className="h-1 w-full bg-gradient-to-r from-[#5352F6] to-[#7A79F9]"></div>
             </div>
@@ -927,10 +926,10 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
     case "columns":
       return (
         <div className={`mb-8 grid gap-6 ${block.stackBelow === "sm" ? "grid-cols-1 sm:grid-cols-12" :
-            block.stackBelow === "md" ? "grid-cols-1 md:grid-cols-12" :
-              block.stackBelow === "lg" ? "grid-cols-1 lg:grid-cols-12" :
-                block.stackBelow === "xl" ? "grid-cols-1 xl:grid-cols-12" :
-                  "grid-cols-1 md:grid-cols-12"
+          block.stackBelow === "md" ? "grid-cols-1 md:grid-cols-12" :
+            block.stackBelow === "lg" ? "grid-cols-1 lg:grid-cols-12" :
+              block.stackBelow === "xl" ? "grid-cols-1 xl:grid-cols-12" :
+                "grid-cols-1 md:grid-cols-12"
           } ${block.className || ""}`}>
           {block.columns.map((column, index) => {
             const colSpan = {
@@ -993,8 +992,8 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           <a
             href={block.buttonUrl}
             className={`inline-block rounded-md px-6 py-3 font-medium ${block.buttonVariant === "secondary" ? "bg-[#0F0F0F] text-white" :
-                block.buttonVariant === "outline" ? "border border-[#5352F6] bg-transparent text-[#5352F6]" :
-                  "bg-[#5352F6] text-white"
+              block.buttonVariant === "outline" ? "border border-[#5352F6] bg-transparent text-[#5352F6]" :
+                "bg-[#5352F6] text-white"
               }`}
           >
             {block.buttonText}
@@ -1030,11 +1029,11 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
     case "embed":
       {
         const { url, title, width, height, responsive = true, provider = "other" } = block;
-        
+
         // Determinar el tipo de embed basado en la URL o el provider especificado
         const getEmbedType = () => {
           if (provider !== "other") return provider;
-          
+
           if (url.includes("twitter.com") || url.includes("x.com")) return "twitter";
           if (url.includes("instagram.com")) return "instagram";
           if (url.includes("tiktok.com")) return "tiktok";
@@ -1043,63 +1042,63 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           if (url.includes("spotify.com")) return "spotify";
           if (url.includes("codepen.io")) return "codepen";
           if (url.includes("maps.google.com") || url.includes("google.com/maps")) return "google-maps";
-          
+
           return "other";
         };
-        
+
         const embedType = getEmbedType();
-        
+
         // Función para sanitizar y transformar URLs a formato embed cuando sea necesario
         const getEmbedUrl = () => {
           try {
             // Validar URL
             new URL(url);
-            
+
             // Twitter/X
             if (embedType === "twitter") {
               // Convertir URL normal de tweet a formato embed
               const tweetMatch = url.match(/twitter\.com\/[^\/]+\/status\/(\d+)/);
               const xMatch = url.match(/x\.com\/[^\/]+\/status\/(\d+)/);
               const tweetId = tweetMatch?.[1] || xMatch?.[1];
-              
+
               if (tweetId) {
                 return `https://platform.twitter.com/embed/Tweet.html?id=${tweetId}`;
               }
             }
-            
+
             // Instagram
             if (embedType === "instagram" && !url.includes("embed")) {
               // Convertir URL normal de Instagram a formato embed
               const postMatch = url.match(/instagram\.com\/p\/([^\/]+)/);
               const postId = postMatch?.[1];
-              
+
               if (postId) {
                 return `https://www.instagram.com/p/${postId}/embed`;
               }
             }
-            
+
             // YouTube
             if (embedType === "youtube") {
               // Convertir URL normal de YouTube a formato embed
               const videoIdMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\?]+)/);
               const videoId = videoIdMatch?.[1];
-              
+
               if (videoId) {
                 return `https://www.youtube.com/embed/${videoId}`;
               }
             }
-            
+
             // Vimeo
             if (embedType === "vimeo") {
               // Convertir URL normal de Vimeo a formato embed
               const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
               const vimeoId = vimeoMatch?.[1];
-              
+
               if (vimeoId) {
                 return `https://player.vimeo.com/video/${vimeoId}`;
               }
             }
-            
+
             // Spotify
             if (embedType === "spotify") {
               // Convertir URL normal de Spotify a formato embed
@@ -1109,17 +1108,17 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                 return `https://open.spotify.com/embed/${type}/${id}`;
               }
             }
-            
+
             // Para otros tipos, devolver la URL original
             return url;
           } catch {
             return url; // Si hay algún error, devolver la URL original
           }
         };
-        
+
         const embedUrl = getEmbedUrl();
         const aspectRatio = height && width ? (height / width) * 100 : 56.25; // Default a 16:9 si no se especifica
-        
+
         return (
           <div className={`mb-8 ${block.className || ""}`}>
             <motion.div
@@ -1134,8 +1133,8 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
                   <h3 className="text-sm font-medium text-[#0F0F0F]">{title}</h3>
                 </div>
               )}
-              
-              <div className={responsive ? "relative w-full" : ""} 
+
+              <div className={responsive ? "relative w-full" : ""}
                 style={responsive ? { paddingBottom: `${aspectRatio}%` } : {}}>
                 <iframe
                   src={embedUrl}
@@ -1152,7 +1151,7 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
           </div>
         );
       }
-      
+
     case "testimonial":
       return (
         <motion.div
@@ -1199,15 +1198,32 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
 interface BlogContentClientProps {
   content: ContentBlock[];
   tags?: Tag[];
+  keywords?: string[];
   author: Author;
 }
 
-export default function BlogContentClient({ content, tags, author }: BlogContentClientProps) {
+export default function BlogContentClient({ content, tags, keywords, author }: BlogContentClientProps) {
+  // Combinar tags existentes con keywords para la visualización (evitando duplicados por slug/name)
+  const allTags: Tag[] = [...(tags || [])];
+
+  if (keywords && keywords.length > 0) {
+    keywords.forEach((keyword, index) => {
+      const slug = keyword.toLowerCase().trim().replace(/\s+/g, '-');
+      // Solo agregar si no existe ya un tag con el mismo nombre o slug
+      if (!allTags.some(t => t.name.toLowerCase() === keyword.toLowerCase() || t.slug === slug)) {
+        allTags.push({
+          id: `keyword-${index}`,
+          name: keyword,
+          slug: slug
+        });
+      }
+    });
+  }
   return (
     <div className="mx-auto max-w-3xl">
       {content.map((block, index) => (
         <motion.div
-          key={block.id || index}
+          key={block.id ? `${block.id}-${index}` : index}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: Math.min(index * 0.05, 1) }}
@@ -1217,11 +1233,11 @@ export default function BlogContentClient({ content, tags, author }: BlogContent
         </motion.div>
       ))}
 
-      {/* Tags */}
-      {tags && tags.length > 0 && (
+      {/* Tags & Keywords */}
+      {allTags.length > 0 && (
         <div className="mb-8 mt-12">
-          <Paragraph weight="semibold" className="mb-3">Etiquetas:</Paragraph>
-          <BlogTags tags={tags} />
+          <Paragraph weight="semibold" className="mb-3">Explora más sobre:</Paragraph>
+          <BlogTags tags={allTags} />
         </div>
       )}
 
