@@ -5,6 +5,13 @@ import { ArrowRight, Calendar } from 'lucide-react';
 const ReportsPage = () => {
   const reports = [
     {
+      title: "La Vivienda como Activo vs. Pasivo",
+      description: "Análisis financiero comparativo entre el modelo tradicional de vivienda propia y la inversión fraccionada en LOKL. Desglose de costos ocultos y proyecciones de riqueza.",
+      slug: "vivienda-activo-pasivo",
+      date: "Enero 2025",
+      category: "Análisis Estructural"
+    },
+    {
       title: "Análisis Estratégico Oriente Antioqueño 2025",
       description: "Análisis basado en datos del mercado inmobiliario del Oriente Antioqueño. ¿Burbuja o crecimiento orgánico? Evaluación de micro-mercados, vectores de infraestructura y matriz de riesgos para inversores.",
       slug: "oriente-antioqueno-2025",
