@@ -5,6 +5,13 @@ import { ArrowRight, Calendar } from 'lucide-react';
 const ReportsPage = () => {
   const reports = [
     {
+      title: "Guía de Inversión LOKL: Inmuebles Fraccionados",
+      description: "Tu mapa estratégico para construir patrimonio inmobiliario con LOKL, desde la primera fracción hasta la libertad financiera.",
+      slug: "guia-inversion-fraccionada",
+      date: "Enero 2025",
+      category: "Guía Educativa"
+    },
+    {
       title: "La Vivienda como Activo vs. Pasivo",
       description: "Análisis financiero comparativo entre el modelo tradicional de vivienda propia y la inversión fraccionada en LOKL. Desglose de costos ocultos y proyecciones de riqueza.",
       slug: "vivienda-activo-pasivo",
