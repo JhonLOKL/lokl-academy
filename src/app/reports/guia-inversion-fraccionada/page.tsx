@@ -197,7 +197,7 @@ const GrowthChart = () => {
         },
         scales: {
             y: {
-                grid: { borderDash: [4, 4], color: '#F1F5F9' },
+                grid: { color: '#F1F5F9' },
                 ticks: { callback: (val) => formatMillions(Number(val)) }
             },
             x: { grid: { display: false } }
