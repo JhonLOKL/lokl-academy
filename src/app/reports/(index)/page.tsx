@@ -5,6 +5,13 @@ import { ArrowRight, Calendar } from 'lucide-react';
 const ReportsPage = () => {
   const reports = [
     {
+      title: "Horizonte Estratégico 2026: El Año de la Sincronización",
+      description: "Tras la estabilización de tasas, el capital global regresa a Colombia. Análisis completo del mercado inmobiliario colombiano y los activos refugio de la década.",
+      slug: "horizonte-estrategico-2026",
+      date: "Diciembre 2025",
+      category: "Informe Estratégico"
+    },
+    {
       title: "Guía de Inversión LOKL: Inmuebles Fraccionados",
       description: "Tu mapa estratégico para construir patrimonio inmobiliario con LOKL, desde la primera fracción hasta la libertad financiera.",
       slug: "guia-inversion-fraccionada",
