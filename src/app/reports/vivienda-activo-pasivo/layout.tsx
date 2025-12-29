@@ -29,6 +29,9 @@ export const metadata: Metadata = {
         description: "Descubre la verdad financiera sobre la vivienda propia en Colombia.",
         images: ["/images/reports/vivienda-og.jpg"],
     },
+    alternates: {
+        canonical: "https://lokl.life/reports/vivienda-activo-pasivo",
+    },
 };
 
 export default function ViviendaLayout({

@@ -6,6 +6,9 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
     title: 'Guía de Inversión LOKL: Inmuebles Fraccionados',
     description: 'Tu mapa estratégico para construir patrimonio inmobiliario con LOKL, desde la primera fracción hasta la libertad financiera.',
+    alternates: {
+        canonical: 'https://lokl.life/reports/guia-inversion-fraccionada',
+    },
 };
 
 export default function GuiaInversionLayout({

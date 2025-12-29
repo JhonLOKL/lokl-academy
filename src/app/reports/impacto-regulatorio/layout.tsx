@@ -27,6 +27,9 @@ export const metadata: Metadata = {
         description: "Análisis profundo sobre el Decreto del 18 de Diciembre y el futuro del turismo.",
         images: ["/images/reports/regulatorio-og.jpg"],
     },
+    alternates: {
+        canonical: "https://lokl.life/reports/impacto-regulatorio",
+    },
 };
 
 export default function ImpactoLayout({

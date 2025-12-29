@@ -29,6 +29,9 @@ export const metadata: Metadata = {
         description: "Datos y análisis sobre el futuro inmobiliario del Oriente Antioqueño.",
         images: ["/images/reports/oriente-og.jpg"],
     },
+    alternates: {
+        canonical: "https://lokl.life/reports/oriente-antioqueno-2025",
+    },
 };
 
 export default function OrienteLayout({

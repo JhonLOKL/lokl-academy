@@ -26,6 +26,9 @@ export const metadata: Metadata = {
         description: "La evolución del mercado de lujo hacia la regeneración y la ética.",
         images: ["/images/reports/lujo-og.jpg"],
     },
+    alternates: {
+        canonical: "https://lokl.life/reports/lujo-consciente",
+    },
 };
 
 export default function LujoLayout({

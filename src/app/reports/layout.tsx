@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "LOKL Reports | Investigación y Análisis de Mercado",
     description: "Reportes exclusivos, análisis de políticas y tendencias del mercado inmobiliario y turístico.",
-    url: "https://academy.lokl.life/reports",
+    url: "https://lokl.life/reports",
     siteName: "LOKL Life",
     images: [
       {
@@ -25,6 +25,9 @@ export const metadata: Metadata = {
     title: "LOKL Reports | Investigación y Análisis",
     description: "Datos y análisis profundos sobre el mercado inmobiliario y turístico.",
     images: ["/images/lokl-academy-og.jpg"],
+  },
+  alternates: {
+    canonical: "https://lokl.life/reports",
   },
 };
 
