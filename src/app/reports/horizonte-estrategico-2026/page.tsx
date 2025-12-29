@@ -109,13 +109,13 @@ const RatesChart = () => {
                 bodyColor: '#D1D1D1',
                 padding: 12,
                 cornerRadius: 8,
-                titleFont: { weight: '600', size: 13 }
+                titleFont: { weight: 'bold', size: 13 }
             }
         },
         scales: {
             y: {
                 min: 6,
-                grid: { color: '#F3F4F6', borderDash: [4, 4] },
+                grid: { color: '#F3F4F6' },
                 ticks: { color: loklColors.textSub }
             },
             x: {
@@ -326,14 +326,14 @@ const RiskBubbleChart = () => {
                 title: { display: true, text: 'Impacto Económico (1-10)' },
                 min: 2,
                 max: 10,
-                grid: { color: '#F3F4F6', borderDash: [4, 4] },
+                grid: { color: '#F3F4F6' },
                 ticks: { color: loklColors.textSub }
             },
             y: {
                 title: { display: true, text: 'Probabilidad (1-10)' },
                 min: 0,
                 max: 10,
-                grid: { color: '#F3F4F6', borderDash: [4, 4] },
+                grid: { color: '#F3F4F6' },
                 ticks: { color: loklColors.textSub }
             }
         }
@@ -356,14 +356,28 @@ const HorizonteEstrategico2026 = () => {
 
             {/* HEADER HERO */}
             <header className="relative overflow-hidden -mx-4 md:-mx-10 mb-16">
-                {/* Background decorativo */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#F5F5FF] via-white to-[#FAFAFA]"></div>
-                <div className="absolute top-0 right-0 w-96 h-96 bg-[#5352F6] rounded-full opacity-5 blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
+                {/* Background con patrón de grid */}
+                <div className="absolute inset-0 bg-white"></div>
+                <div 
+                    className="absolute inset-0 opacity-[0.4]"
+                    style={{
+                        backgroundImage: `radial-gradient(circle at 1px 1px, #E5E5FF 1px, transparent 0)`,
+                        backgroundSize: '40px 40px'
+                    }}
+                ></div>
+                
+                {/* Formas decorativas */}
+                <div className="absolute top-10 left-10 w-72 h-72 bg-gradient-to-br from-[#5352F6] to-[#A1A0FB] rounded-full opacity-10 blur-3xl"></div>
+                <div className="absolute bottom-0 right-20 w-96 h-96 bg-gradient-to-tl from-[#5352F6] to-[#7C7BF7] rounded-full opacity-10 blur-3xl"></div>
+                
+                {/* Líneas decorativas */}
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#5352F6]/20 to-transparent"></div>
+                <div className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-transparent via-[#5352F6]/30 to-transparent"></div>
                 
                 <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 py-16 md:py-20">
                     {/* Badge superior */}
                     <div className="mb-8">
-                        <span className="inline-flex items-center px-4 py-2 bg-white text-[#5352F6] border border-[#5352F6]/20 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm">
+                        <span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-white to-[#F5F5FF] text-[#5352F6] border border-[#5352F6]/30 rounded-full text-xs font-bold uppercase tracking-wider shadow-md backdrop-blur-sm">
                             Informe Estratégico • Edición 2026
                         </span>
                     </div>
@@ -735,21 +749,103 @@ const HorizonteEstrategico2026 = () => {
                 </section>
 
                 {/* FINAL CTA */}
-                <footer className="bg-[#FAFAFA] border border-[#E5E5E5] rounded-3xl py-16 px-6 text-center">
-                    <h2 className="text-2xl font-bold text-[#0F0F0F] mb-8">Explora nuestras oportunidades recomendadas</h2>
-                    <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
-                        <a href="https://lokl.life/indie-universe" target="_blank" className="inline-flex items-center justify-center gap-2 bg-[#0F0F0F] hover:bg-[#333] text-white px-6 py-3 rounded-lg font-semibold transition-colors">
-                            Ver Indie Universe (Medellín)
-                        </a>
-                        <a href="https://lokl.life/nido-de-agua" target="_blank" className="inline-flex items-center justify-center gap-2 bg-[#06B6D4] hover:bg-[#0891B2] text-white px-6 py-3 rounded-lg font-semibold transition-colors">
-                            Ver Nido de Agua (Guatapé)
-                        </a>
-                        <a href="https://drive.google.com/file/d/1WrELZj7C8XKAjqoUn4I5H9DfmsgWHIIH/view?usp=sharing" target="_blank" className="inline-flex items-center justify-center gap-2 bg-transparent border border-[#E5E5E5] text-[#0F0F0F] px-6 py-3 rounded-lg font-semibold hover:border-[#5352F6] hover:text-[#5352F6] transition-all">
-                            Descargar Informe PDF
-                        </a>
+                <footer className="py-16">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl md:text-4xl font-bold text-[#0F0F0F] mb-4">
+                            Explora nuestras oportunidades recomendadas
+                        </h2>
+                        <p className="text-[#6D6C6C] text-lg max-w-2xl mx-auto">
+                            Proyectos verificados con alto potencial de rentabilidad y valorización
+                        </p>
                     </div>
 
-                    <div className="border-t border-[#E5E5E5] pt-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                        {/* Card 1: Nido de Agua */}
+                        <div className="bg-white border border-[#E5E5E5] rounded-xl overflow-hidden group hover:shadow-xl hover:border-[#5352F6] transition-all duration-300">
+                            <div className="h-64 bg-gray-200 relative overflow-hidden">
+                                <img
+                                    src="https://lokl-assets.s3.us-east-1.amazonaws.com/nido-de-agua/nido-de-agua.jpg"
+                                    alt="Nido de Agua - Proyecto eco-turístico en Guatapé"
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                />
+                                <div className="absolute top-4 left-4">
+                                    <span className="inline-flex items-center px-3 py-1 bg-[#06B6D4] text-white text-xs font-bold uppercase rounded-full">
+                                        Guatapé
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="p-6">
+                                <h3 className="text-xl font-bold text-[#0F0F0F] mb-2">Nido de Agua</h3>
+                                <p className="text-[#6D6C6C] text-sm mb-6 leading-relaxed">
+                                    Proyecto eco-turístico premium en el embalse de Guatapé. Alto yield en renta corta y valorización garantizada.
+                                </p>
+                                <a
+                                    href="https://lokl.life/nido-de-agua"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-full inline-flex items-center justify-center gap-2 bg-[#06B6D4] text-white font-semibold px-6 py-3 rounded-lg hover:bg-[#0891B2] transition-colors"
+                                >
+                                    Ver Proyecto <ExternalLink size={16} />
+                                </a>
+                            </div>
+                        </div>
+
+                        {/* Card 2: Indie Universe */}
+                        <div className="bg-white border border-[#E5E5E5] rounded-xl overflow-hidden group hover:shadow-xl hover:border-[#5352F6] transition-all duration-300">
+                            <div className="h-64 bg-gray-200 relative overflow-hidden">
+                                <img
+                                    src="https://lokl-assets.s3.us-east-1.amazonaws.com/indie-universe/Indie_Page/Landing_Banner.png"
+                                    alt="Indie Universe - Coliving en Medellín"
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                />
+                                <div className="absolute top-4 left-4">
+                                    <span className="inline-flex items-center px-3 py-1 bg-[#5352F6] text-white text-xs font-bold uppercase rounded-full">
+                                        Medellín
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="p-6">
+                                <h3 className="text-xl font-bold text-[#0F0F0F] mb-2">Indie Universe</h3>
+                                <p className="text-[#6D6C6C] text-sm mb-6 leading-relaxed">
+                                    El primer hub creativo y coliving en el corazón de Medellín. Diseñado para nómadas digitales y emprendedores.
+                                </p>
+                                <a
+                                    href="https://lokl.life/indie-universe"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-full inline-flex items-center justify-center gap-2 bg-[#5352F6] text-white font-semibold px-6 py-3 rounded-lg hover:bg-[#4241C5] transition-colors"
+                                >
+                                    Ver Oportunidades <ExternalLink size={16} />
+                                </a>
+                            </div>
+                        </div>
+
+                        {/* Card 3: Download PDF */}
+                        <div className="bg-gradient-to-br from-[#F5F5FF] to-white border-2 border-[#5352F6]/20 rounded-xl overflow-hidden flex flex-col justify-between p-8 hover:shadow-xl hover:border-[#5352F6]/40 transition-all duration-300">
+                            <div className="flex-1 flex flex-col items-center justify-center text-center">
+                                <div className="w-16 h-16 rounded-full bg-[#5352F6]/10 flex items-center justify-center mb-6">
+                                    <Download size={32} className="text-[#5352F6]" strokeWidth={2.5} />
+                                </div>
+                                <h3 className="text-xl font-bold text-[#0F0F0F] mb-3">
+                                    Informe Completo PDF
+                                </h3>
+                                <p className="text-[#6D6C6C] text-sm mb-6 leading-relaxed">
+                                    Descarga el análisis detallado con todas las proyecciones, gráficas y metodología completa.
+                                </p>
+                            </div>
+                            <a
+                                href="https://drive.google.com/file/d/1WrELZj7C8XKAjqoUn4I5H9DfmsgWHIIH/view?usp=sharing"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full inline-flex items-center justify-center gap-2 bg-white border-2 border-[#5352F6] text-[#5352F6] font-semibold px-6 py-3 rounded-lg hover:bg-[#5352F6] hover:text-white transition-colors"
+                            >
+                                Descargar PDF <Download size={16} />
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* Footer info */}
+                    <div className="border-t border-[#E5E5E5] pt-8 text-center">
                         <div className="flex items-center justify-center gap-2 mb-4">
                             <span className="font-bold text-[#5352F6]">LOKL</span>
                             <span className="text-sm text-[#0F0F0F]">Analytics</span>
