@@ -57,6 +57,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   entries.push({ url: `${SITE_URL}/reports`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
   entries.push({ url: `${SITE_URL}/reports/impacto-regulatorio`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 });
   entries.push({ url: `${SITE_URL}/reports/lujo-consciente`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 });
+  entries.push({ url: `${SITE_URL}/reports/horizonte-estrategico-2026`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 });
+  entries.push({ url: `${SITE_URL}/reports/guia-inversion-fraccionada`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 });
+  entries.push({ url: `${SITE_URL}/reports/vivienda-activo-pasivo`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 });
+  entries.push({ url: `${SITE_URL}/reports/oriente-antioqueno-2025`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 });
 
   // URLs importantes adicionales (no eliminar)
   entries.push({ url: `https://academy.lokl.life`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 });
@@ -72,6 +76,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   entries.push({ url: `https://academy.lokl.life/reports`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 });
   entries.push({ url: `https://academy.lokl.life/reports/impacto-regulatorio`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 });
   entries.push({ url: `https://academy.lokl.life/reports/lujo-consciente`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 });
+  entries.push({ url: `https://academy.lokl.life/reports/horizonte-estrategico-2026`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 });
+  entries.push({ url: `https://academy.lokl.life/reports/guia-inversion-fraccionada`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 });
+  entries.push({ url: `https://academy.lokl.life/reports/vivienda-activo-pasivo`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 });
+  entries.push({ url: `https://academy.lokl.life/reports/oriente-antioqueno-2025`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 });
 
   // Blog global paginado
   const totalBlogPages = await getTotalPages();
