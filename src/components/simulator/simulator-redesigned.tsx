@@ -20,6 +20,10 @@ import Phase3Summary from "./phases/phase-3-summary";
 import ResultsFinal from "./phases/results-final";
 import InvestorLevelsBanner from "./investor-levels-banner";
 
+interface WindowWithDataLayer extends Window {
+  dataLayer: Record<string, unknown>[];
+}
+
 interface SimulatorRedesignedProps {
   simulatorName?: string;
   hideRightColumn?: boolean;
@@ -347,6 +351,17 @@ export default function SimulatorRedesigned({
 
         setHasSubmittedLead(true);
         setCurrentPhase(3);
+
+        // Evento GA: Envío de formulario de lead en simulador
+        if (typeof window !== "undefined") {
+          const w = window as unknown as WindowWithDataLayer;
+          w.dataLayer = w.dataLayer || [];
+          w.dataLayer.push({
+            event: "lead_projection_submit",
+            form_name: "captura_lead_simulador",
+            form_location: "simulador_base_fase_2",
+          });
+        }
       } catch (error) {
         console.error("Error al guardar simulación con datos del lead:", error);
       }
