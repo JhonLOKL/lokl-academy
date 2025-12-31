@@ -22,6 +22,10 @@ import { Checkbox } from "@/components/design-system";
 import { H2, Paragraph, Text } from "@/components/design-system";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription } from "@/components/design-system";
 
+interface WindowWithDataLayer extends Window {
+  dataLayer: Record<string, unknown>[];
+}
+
 // Opciones para "¿Cómo nos conociste?"
 const referralOptions = [
   { value: "social_media", label: "Redes sociales" },
@@ -188,6 +192,15 @@ export default function RegisterForm() {
     });
     
     if (success) {
+      // Evento GA: Registro exitoso
+      if (typeof window !== "undefined") {
+        const w = window as unknown as WindowWithDataLayer;
+        w.dataLayer = w.dataLayer || [];
+        w.dataLayer.push({
+          event: "register_on_lokl_next",
+        });
+      }
+
       const target = consumePostLoginRedirect() || searchParams.get("redirect") || "/";
       if (!navigatedRef.current) {
         navigatedRef.current = true;
