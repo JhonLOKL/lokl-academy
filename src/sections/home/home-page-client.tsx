@@ -34,6 +34,9 @@ const TestimonialsSection = dynamic(() => import("./testimonials-section"), {
 const CommunitySectionWrapper = dynamic(() => import("./community-section"), {
   loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
 });
+const ProjectOpportunitiesSection = dynamic(() => import("./project-opportunities-section"), {
+  loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
+});
 const FAQSection = dynamic(() => import("./faq-section"), {
   loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
 });
@@ -106,6 +109,10 @@ export default function HomePageClient() {
 
       <section className="w-full">
         <FinalCTASection />
+      </section>
+
+      <section className="w-full">
+        <ProjectOpportunitiesSection />
       </section>
 
       <MarketingFooter />
