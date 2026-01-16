@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import NewHeroSection from "./new-hero-section";
 import StatsSection from "./stats-section";
 import WhatIsLokl from "@/components/home/WhatIsLokl";
-import { useEffect } from "react";
 import { getProjectCardsAction } from "@/actions/project-actions";
+import MarketingFooter from "@/components/footer/marketing-footer";
 const FloatingWhatsAppButton = dynamic(
   () => import("@/components/shared/floating-whatsapp-button"),
   { ssr: false }
@@ -108,6 +108,7 @@ export default function HomePageClient() {
         <FinalCTASection />
       </section>
 
+      <MarketingFooter />
       <FloatingWhatsAppButton />
     </main>
   );
