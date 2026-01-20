@@ -205,14 +205,6 @@ export const faqs: FAQ[] = [
       "Cuando realizás una inversión en la plataforma, accedés a una serie de documentos que respaldan y formalizan tu participación:\n\n• Contrato de inversión: Documento legal que establece los términos, condiciones, derechos y obligaciones como inversionista.\n\n• Acceso al data room: Desde tu panel podés consultar todos los documentos legales, técnicos y financieros del proyecto, siempre que lo necesites.\n\n• Certificado de participación: Prueba formal de tu inversión en el proyecto, donde se detalla la inversión, el monto adquirido y el valor de Unit.",
   },
   {
-    id: 15,
-    category: "Funcionamiento",
-    icon: "laptop",
-    question: "¿Qué costos existen?",
-    answer:
-      "Para garantizar la sostenibilidad y rentabilidad del proyecto, existen costos que se gestionan de forma transparente:\n\n• Costos Operativos (OpEx): Son los gastos necesarios para mantener el inmueble funcionando (servicios públicos, vigilancia, mantenimiento, seguros e impuestos). Estos se pagan con los ingresos que genera el edificio; por lo tanto, la rentabilidad que tú recibes ya es neta.\n\n• Costos Administrativos: Incluyen los honorarios de la Fiduciaria (que protege tu dinero) y la gestión de la plataforma LOKL.\n\n• Comisión por Venta Anticipada: Solo aplica si decides vender tus participaciones en el Mercado Secundario antes de finalizar el proyecto; en ese caso, se cobra una pequeña tarifa administrativa por la gestión de la venta del 3% sobre la ganancia.",
-  },
-  {
     id: 16,
     category: "Funcionamiento",
     icon: "laptop",
@@ -449,14 +441,6 @@ export const faqs: FAQ[] = [
     question: "¿Puedo invertir en varios proyectos a la vez?",
     answer:
       "¡Por supuesto! En LOKL puedes diversificar tu inversión participando en varios proyectos al mismo tiempo. Nuestra plataforma está diseñada para que elijas los proyectos que más conecten contigo —ya sea por su ubicación, propósito o rentabilidad— y decidas cuánto invertir en cada uno, desde montos accesibles.",
-  },
-  {
-    id: 46,
-    category: "Proyectos",
-    icon: "building",
-    question: "¿Qué pasa si un proyecto no alcanza el fondeo?",
-    answer:
-      "Tu dinero está seguro. En LOKL, los recursos no ingresan directamente a nuestras cuentas durante la etapa de recaudación, sino que son administrados por una Sociedad Fiduciaria (una entidad financiera vigilada independiente).\n\nEl dinero permanece en esa cuenta fiduciaria hasta que el proyecto alcanza su \"Punto de Equilibrio\" (la meta financiera necesaria para garantizar la construcción).\n\nSi por alguna razón el proyecto no logra esta meta en los plazos establecidos:\n1. Se declara el no inicio del proyecto.\n2. La Fiduciaria ordena la devolución total de tu capital.",
   },
   {
     id: 47,
