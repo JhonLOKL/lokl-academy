@@ -185,19 +185,20 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
     case "image":
       return (
         <figure className={`mb-8 ${block.className || ""}`}>
-          <div className="relative h-[300px] w-full md:h-[400px]">
+          <div className="relative w-full">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, filter: "grayscale(1)" }}
               whileInView={{ opacity: 1, scale: 1, filter: "grayscale(0)" }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
-              className="h-full w-full"
+              className="w-full"
             >
               <SafeImage
                 src={block.src}
                 alt={block.alt}
-                fill
-                className="rounded-lg object-cover grayscale hover:grayscale-0 hover:scale-105 transition-all duration-500"
+                width={block.width || 1200}
+                height={block.height || 600}
+                className="rounded-lg w-full h-auto object-contain grayscale hover:grayscale-0 transition-all duration-500"
                 loading={block.loading || "lazy"}
                 fallbackSrc="/images/modern-building.jpg"
               />

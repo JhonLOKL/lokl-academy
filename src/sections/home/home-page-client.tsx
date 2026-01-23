@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import NewHeroSection from "./new-hero-section";
 import StatsSection from "./stats-section";
 import WhatIsLokl from "@/components/home/WhatIsLokl";
-import { useEffect } from "react";
 import { getProjectCardsAction } from "@/actions/project-actions";
+import MarketingFooter from "@/components/footer/marketing-footer";
 const FloatingWhatsAppButton = dynamic(
   () => import("@/components/shared/floating-whatsapp-button"),
   { ssr: false }
@@ -32,6 +32,9 @@ const TestimonialsSection = dynamic(() => import("./testimonials-section"), {
   loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
 });
 const CommunitySectionWrapper = dynamic(() => import("./community-section"), {
+  loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
+});
+const ProjectOpportunitiesSection = dynamic(() => import("./project-opportunities-section"), {
   loading: () => <div className="w-full h-64 bg-gray-100 flex items-center justify-center"><div className="w-12 h-12 border-4 border-gray-300 border-t-[#5352F6] rounded-full animate-spin"></div></div>
 });
 const FAQSection = dynamic(() => import("./faq-section"), {
@@ -108,6 +111,11 @@ export default function HomePageClient() {
         <FinalCTASection />
       </section>
 
+      <section className="w-full">
+        <ProjectOpportunitiesSection />
+      </section>
+
+      <MarketingFooter />
       <FloatingWhatsAppButton />
     </main>
   );
