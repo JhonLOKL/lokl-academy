@@ -1190,6 +1190,61 @@ const ContentBlockRenderer = ({ block }: { block: ContentBlock }) => {
         </motion.div>
       );
 
+    case "link":
+      {
+        const linkVariantStyles = {
+          button: "inline-block rounded-md bg-[#5352F6] px-6 py-3 font-medium text-white shadow-sm transition-all hover:bg-[#7A79F9] hover:shadow-md",
+          underline: "text-[#5352F6] underline decoration-2 underline-offset-4 transition-colors hover:text-[#7A79F9]",
+          default: "inline-flex items-center gap-1 text-[#5352F6] font-medium transition-colors hover:text-[#7A79F9]"
+        };
+
+        const variant = block.variant || "default";
+        const linkClass = `${linkVariantStyles[variant]} ${block.className || ""}`;
+
+        // Para enlaces internos, usamos comportamiento normal (sin target="_blank")
+        // Para enlaces externos, abrimos en nueva pestaña
+        const linkProps = block.linkType === "external"
+          ? { target: "_blank", rel: "noopener noreferrer" }
+          : {};
+
+        return (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            viewport={{ once: true }}
+            className="mb-6"
+          >
+            <a
+              href={block.url}
+              title={block.title || block.text}
+              className={linkClass}
+              {...linkProps}
+            >
+              {block.text}
+              {block.linkType === "external" && variant === "default" && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="inline-block ml-1"
+                >
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+              )}
+            </a>
+          </motion.div>
+        );
+      }
+
     default:
       return null;
   }
