@@ -5,6 +5,13 @@ import { ArrowRight, Calendar } from 'lucide-react';
 const ReportsPage = () => {
   const reports = [
     {
+      title: "El Futuro es una Ciudad Esponja",
+      description: "Investigación técnica sobre la gestión de inundaciones en valles profundos. Una propuesta para transformar a Medellín en un ecosistema que respira y absorbe mediante infraestructura verde e híbrida.",
+      slug: "resiliencia-urbana",
+      date: "Enero 2026",
+      category: "Investigación Senior"
+    },
+    {
       title: "Horizonte Estratégico 2026: El Año de la Sincronización",
       description: "Tras la estabilización de tasas, el capital global regresa a Colombia. Análisis completo del mercado inmobiliario colombiano y los activos refugio de la década.",
       slug: "horizonte-estrategico-2026",
