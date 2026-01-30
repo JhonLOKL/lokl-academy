@@ -101,7 +101,8 @@ export type ContentBlockType =
   | "testimonial"
   | "statistic"
   | "timeline"
-  | "chart";
+  | "chart"
+  | "link";
 
 // Interfaces para cada tipo de bloque de contenido
 export interface BaseBlock {
@@ -303,6 +304,15 @@ export interface ChartBlock extends BaseBlock {
   width?: number;
 }
 
+export interface LinkBlock extends BaseBlock {
+  type: "link";
+  text: string; // Texto que se muestra al usuario
+  url: string; // URL del enlace
+  linkType: "internal" | "external"; // Tipo de enlace: interno (misma página) o externo (nueva pestaña)
+  title?: string; // Atributo title para accesibilidad
+  variant?: "default" | "button" | "underline"; // Estilo visual del enlace
+}
+
 // Tipo unión para todos los bloques de contenido
 export type ContentBlock =
   | HeadingBlock
@@ -323,7 +333,8 @@ export type ContentBlock =
   | TestimonialBlock
   | StatisticBlock
   | TimelineBlock
-  | ChartBlock;
+  | ChartBlock
+  | LinkBlock;
 
 // Estructura principal del blog
 export interface BlogPost {
