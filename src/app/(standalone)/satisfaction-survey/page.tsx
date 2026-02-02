@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import SatisfactionSurvey from "./satisfaction-survey.client";
 
 export const metadata: Metadata = {
@@ -12,5 +13,11 @@ export const metadata: Metadata = {
 };
 
 export default function SatisfactionSurveyPage() {
-  return <SatisfactionSurvey />;
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">
+      <div className="animate-pulse text-purple-600">Cargando...</div>
+    </div>}>
+      <SatisfactionSurvey />
+    </Suspense>
+  );
 }
