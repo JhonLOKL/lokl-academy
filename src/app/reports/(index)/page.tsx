@@ -5,6 +5,13 @@ import { ArrowRight, Calendar } from 'lucide-react';
 const ReportsPage = () => {
   const reports = [
     {
+      title: "Programa de Embajadores LOKL",
+      description: "Guía completa sobre el programa de Community Builders de LOKL. Descubre los niveles, comisiones, beneficios y cómo convertirte en embajador del ecosistema de inversión colaborativa.",
+      slug: "embajadores-lokl",
+      date: "Febrero 2026",
+      category: "Guía de Programa"
+    },
+    {
       title: "El Futuro es una Ciudad Esponja",
       description: "Investigación técnica sobre la gestión de inundaciones en valles profundos. Una propuesta para transformar a Medellín en un ecosistema que respira y absorbe mediante infraestructura verde e híbrida.",
       slug: "resiliencia-urbana",
