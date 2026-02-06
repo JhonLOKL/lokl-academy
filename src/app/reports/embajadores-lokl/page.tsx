@@ -35,10 +35,6 @@ const EmbajadoresLoklPage = () => {
         }).format(commission);
     };
 
-    const handlePrint = () => {
-        window.print();
-    };
-
     return (
         <>
             <ReportJsonLd
@@ -62,13 +58,15 @@ const EmbajadoresLoklPage = () => {
 
             {/* Floating Action Button */}
             <div className="fixed bottom-6 right-6 z-50 no-print">
-                <button
-                    onClick={handlePrint}
+                <a
+                    href="https://drive.google.com/uc?export=download&id=12SceU6PlkvJIVr3yD4TnKqeyBFp2Y5ht"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="bg-[#5352F6] hover:bg-[#4241C5] text-white px-6 py-2.5 rounded-lg font-medium transition-all shadow-md hover:shadow-lg flex items-center gap-2"
                 >
                     <Download size={18} />
-                    Guardar como PDF
-                </button>
+                    Descargar Guía PDF
+                </a>
             </div>
 
             {/* Main Container */}
