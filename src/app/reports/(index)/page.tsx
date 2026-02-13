@@ -5,6 +5,20 @@ import { ArrowRight, Calendar } from 'lucide-react';
 const ReportsPage = () => {
   const reports = [
     {
+      title: "Créditos Vs. Inversión Colaborativa: La Tabla de Verdad",
+      description: "Análisis de la brecha entre lo que pagan los bancos y lo que cobran. Cómo la Fintech elimina intermediarios para beneficiar a inversionistas y solicitantes.",
+      slug: "creditos-vs-inversion-colaborativa",
+      date: "Febrero 2026",
+      category: "Investigación de Mercado"
+    },
+    {
+      title: "PropTech 2026: La Democratización del Ladrillo",
+      description: "Cómo 7 tecnologías clave desmantelaron las barreras de entrada, permitiendo invertir en real estate desde $50.000 COP. Análisis post-Ley Fintech.",
+      slug: "proptech-colombia-2026",
+      date: "Febrero 2026",
+      category: "Informe Especial"
+    },
+    {
       title: "Programa de Embajadores LOKL",
       description: "Guía completa sobre el programa de Community Builders de LOKL. Descubre los niveles, comisiones, beneficios y cómo convertirte en embajador del ecosistema de inversión colaborativa.",
       slug: "embajadores-lokl",
