@@ -5,6 +5,13 @@ import { ArrowRight, Calendar } from 'lucide-react';
 const ReportsPage = () => {
   const reports = [
     {
+      title: "Radar de Inversión 2026-2028: Las 5 Zonas de Explosión Inmobiliaria",
+      description: "Identificando los nodos de valorización agresiva para el ciclo 2026-2028. Antioquia, San Felipe, Guatapé, Santa Marta y oportunidades emergentes.",
+      slug: "radar-inversion-2026-2028",
+      date: "Febrero 2026",
+      category: "Análisis de Mercado"
+    },
+    {
       title: "Créditos Vs. Inversión Colaborativa: La Tabla de Verdad",
       description: "Análisis de la brecha entre lo que pagan los bancos y lo que cobran. Cómo la Fintech elimina intermediarios para beneficiar a inversionistas y solicitantes.",
       slug: "creditos-vs-inversion-colaborativa",
