@@ -177,7 +177,12 @@ export const useAuthStore = create<AuthState>()(
           const response = await getUserProfileService();
           
           if (response?.success && response.data) {
-            set({ user: response.data, isLoading: false });
+            // Asegurar que planType siempre tenga un valor (default: 'basic')
+            const userData = {
+              ...response.data,
+              planType: response.data.planType || 'basic',
+            };
+            set({ user: userData, isLoading: false });
             return true;
           } else {
             // Si hay un error 403 (Forbidden), cerrar sesión

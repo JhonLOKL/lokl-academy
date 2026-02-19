@@ -7,11 +7,19 @@ import { useParams, useRouter } from "next/navigation";
 import { Button, toast } from "@/components/design-system";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Clock, Star, Calendar, CheckCircle, BookOpen, Award, Share2, AlertTriangle } from "lucide-react";
+import { Clock, Star, Calendar, CheckCircle, BookOpen, Award, Share2, AlertTriangle, Lock } from "lucide-react";
 import { Course } from "@/lib/course/schema";
 import { getCourseBySlugAction, enrollCourseAction } from "@/actions/course-action";
 import { useAuthStore } from "@/store/auth-store";
 import { ensureLoginOrRedirect } from "@/lib/auth-utils";
+import {
+  hasAccessToCourse,
+  getCourseAccessLabel,
+  getAccessBadgeClasses,
+  getAccessRestrictionMessage,
+  getPlanDisplayName,
+  type UserPlanType,
+} from "@/helpers/course-access";
 
 export default function CourseDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -128,6 +136,27 @@ export default function CourseDetailPage() {
   
   const isInvestorExclusive = Boolean(course && course.accessRequirements.plan === "investor");
   
+  // Normalización defensiva para pricing (typo 'princing')
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const pricing = course ? (course.pricing || (course as any).princing) : null;
+  const price = pricing?.price;
+  const pricingType = pricing?.type || "free";
+
+  // Lógica de acceso basada en plan
+  const userPlan: UserPlanType = (user?.planType as UserPlanType) || "basic";
+  const requiredPlan = course?.accessRequirements?.plan || "any";
+  const userHasAccess = hasAccessToCourse(userPlan, requiredPlan);
+  const isLoggedIn = !!user;
+  const isLocked = isLoggedIn && !userHasAccess;
+  
+  // Pricing info
+  const accessLabel = course ? getCourseAccessLabel({
+    pricingType: pricingType,
+    price: price,
+    accessPlan: requiredPlan,
+  }) : { label: "Gratis", variant: "free" as const };
+  const badgeClasses = getAccessBadgeClasses(accessLabel.variant);
+  
   const progressPercentage = course?.progress?.overallProgress || 0;
   
   // Formatear la duración
@@ -158,20 +187,11 @@ export default function CourseDetailPage() {
     const ok = ensureLoginOrRedirect(courseLanding, router.push);
     if (!ok) return;
 
-    // Validación de plan
-    const requiredPlan = course.accessRequirements.plan; // 'basic' | 'investor' | 'any' | 'premium'
-    const userPlan = user?.planType || 'basic';
-
-    const hasAccess =
-      requiredPlan === 'any' ||
-      requiredPlan === 'basic' ||
-      (requiredPlan === 'premium' && (userPlan === 'investor' || userPlan === 'premium')) ||
-      (requiredPlan === 'investor' && userPlan === 'investor');
-
-    if (!hasAccess) {
+    // Validación de plan usando helpers centralizados
+    if (!hasAccessToCourse(userPlan, course.accessRequirements.plan)) {
       toast({
-        title: "Acceso denegado",
-        description: "Tu plan actual no permite acceder a este curso. Actualiza tu plan para continuar.",
+        title: "Acceso restringido",
+        description: getAccessRestrictionMessage(course.accessRequirements.plan),
         variant: "destructive",
         icon: <AlertTriangle className="h-5 w-5 text-red-600" />,
       });
@@ -234,10 +254,22 @@ export default function CourseDetailPage() {
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />
           
-          {/* Etiqueta para cursos exclusivos */}
-          {isInvestorExclusive && !loading && (
-            <div className="absolute right-4 top-4 z-10 bg-[#5352F6] px-3 py-1.5 text-sm font-medium text-white rounded-md">
-              Inversionista
+          {/* Etiqueta de plan/pricing */}
+          {!loading && course && (accessLabel.variant !== 'free') && (
+            <div className={`absolute right-4 top-4 z-10 px-3 py-1.5 text-sm font-medium text-white rounded-md ${
+              accessLabel.variant === 'investor' ? 'bg-[#5352F6]' :
+              accessLabel.variant === 'premium' ? 'bg-amber-500' :
+              accessLabel.variant === 'paid' ? 'bg-blue-600' : 'bg-gray-600'
+            }`}>
+              {accessLabel.variant === 'investor' && 'Inversionista'}
+              {accessLabel.variant === 'premium' && 'Premium'}
+              {accessLabel.variant === 'paid' && `$${course.pricing?.price?.toLocaleString('es-CO')}`}
+            </div>
+          )}
+          {isLocked && !loading && (
+            <div className="absolute left-4 top-4 z-10 flex items-center gap-1.5 bg-red-600 px-3 py-1.5 text-sm font-medium text-white rounded-md">
+              <Lock size={14} />
+              Bloqueado
             </div>
           )}
         </div>
@@ -374,20 +406,45 @@ export default function CourseDetailPage() {
                 
                 {/* Botones de acción */}
                 <div className="flex flex-col gap-3 sm:flex-row">
-                  <>
-                    <Button
-                      size="lg"
-                      className="flex-1"
-                      disabled={loading || !course}
-                      onClick={handleStartCourse}
-                    >
-                      {isEnrolled ? (isCourseCompleted ? 'Ver de nuevo' : 'Continuar curso') : (isInvestorExclusive ? 'Iniciar curso' : 'Iniciar curso gratis')}
-                    </Button>
-                    <Button variant="outline" size="lg" className="flex items-center gap-2">
-                      <Share2 size={18} />
-                      Compartir
-                    </Button>
-                  </>
+                  {isLocked ? (
+                    <>
+                      <Button
+                        size="lg"
+                        className="flex-1 bg-gray-400 hover:bg-gray-400 cursor-not-allowed"
+                        disabled
+                      >
+                        <Lock size={18} className="mr-2" />
+                        Requiere plan {getPlanDisplayName(requiredPlan)}
+                      </Button>
+                      <Link href="/course#planes">
+                        <Button variant="outline" size="lg" className="border-[#5352F6] text-[#5352F6] hover:bg-[#5352F6]/5">
+                          Ver planes
+                        </Button>
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        size="lg"
+                        className="flex-1"
+                        disabled={loading || !course}
+                        onClick={handleStartCourse}
+                      >
+                        {isEnrolled
+                          ? (isCourseCompleted ? 'Ver de nuevo' : 'Continuar curso')
+                          : price != null && price > 0
+                            ? `Comprar por $${price.toLocaleString('es-CO')}`
+                            : isInvestorExclusive
+                              ? 'Iniciar curso'
+                              : 'Iniciar curso gratis'
+                        }
+                      </Button>
+                      <Button variant="outline" size="lg" className="flex items-center gap-2">
+                        <Share2 size={18} />
+                        Compartir
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -888,30 +945,75 @@ export default function CourseDetailPage() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Tarjeta de acceso */}
-            <div className="sticky top-6 z-10 rounded-lg border border-[#E5E5E5] bg-white p-6 shadow-sm mb-8">
+            <div className={`sticky top-6 z-10 rounded-lg border bg-white p-6 shadow-sm mb-8 ${isLocked ? 'border-red-200' : 'border-[#E5E5E5]'}`}>
               <h3 className="mb-4 text-lg font-bold">Accede a este curso</h3>
               
-              {/* Estado del curso: Gratis o Inversionista */}
-              <div className="mb-6">
-                {course.accessRequirements.plan === "basic" || course.accessRequirements.plan === "any" ? (
-                  <div className="flex items-center gap-2">
-                    <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-600">
-                      Gratis
-                    </span>
-                    <span className="text-sm text-[#6D6C6C]">
-                      Acceso completo
-                    </span>
+              {/* Banner de bloqueo si el usuario no tiene acceso */}
+              {isLocked && (
+                <div className="mb-4 rounded-lg bg-red-50 border border-red-200 p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-red-100">
+                      <Lock size={16} className="text-red-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-red-800">Acceso restringido</p>
+                      <p className="text-xs text-red-600 mt-1">
+                        {getAccessRestrictionMessage(requiredPlan)}
+                      </p>
+                      <p className="text-xs text-red-500 mt-2">
+                        Tu plan actual: <span className="font-semibold">{getPlanDisplayName(userPlan)}</span>
+                      </p>
+                    </div>
                   </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <span className="rounded-full bg-[#5352F6]/10 px-3 py-1 text-sm font-medium text-[#5352F6]">
-                      Inversionista
+                </div>
+              )}
+
+              {/* Pricing y estado de acceso */}
+              <div className="mb-6">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className={`rounded-full px-3 py-1 text-sm font-medium ${badgeClasses}`}>
+                    {accessLabel.label}
+                  </span>
+                  
+                  {/* Precio del curso si es de pago */}
+                  {price != null && price > 0 && (
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-xl font-bold text-gray-900">
+                        ${price.toLocaleString('es-CO')}
+                      </span>
+                      {pricing?.originalPrice != null && pricing.originalPrice > price && (
+                        <span className="text-sm text-gray-400 line-through">
+                          ${pricing.originalPrice.toLocaleString('es-CO')}
+                        </span>
+                      )}
+                      {pricing?.currency && pricing.currency !== 'COP' && (
+                        <span className="text-xs text-gray-500">{pricing.currency}</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+                
+                {/* Descuento si aplica */}
+                {pricing?.discountPercentage != null && pricing.discountPercentage > 0 && (
+                  <div className="mt-2">
+                    <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-600">
+                      {pricing.discountPercentage}% de descuento
                     </span>
-                    <span className="text-sm text-[#6D6C6C]">
-                      Exclusivo para inversionistas
-                    </span>
+                    {pricing.discountEndsAt && (
+                      <span className="ml-2 text-xs text-gray-500">
+                        Hasta {formatDate(pricing.discountEndsAt)}
+                      </span>
+                    )}
                   </div>
                 )}
+
+                {/* Mensajes contextuales según el tipo */}
+                <p className="mt-2 text-sm text-[#6D6C6C]">
+                  {accessLabel.variant === 'free' && 'Acceso completo gratuito'}
+                  {accessLabel.variant === 'premium' && 'Incluido en tu suscripción Premium'}
+                  {accessLabel.variant === 'investor' && 'Exclusivo para inversionistas LOKL'}
+                  {accessLabel.variant === 'paid' && 'Pago único • Acceso de por vida'}
+                </p>
               </div>
               
               <div className="mb-6 space-y-3">
@@ -941,16 +1043,31 @@ export default function CourseDetailPage() {
                 )}
               </div>
               
-              {isInvestorExclusive ? (
-                <Button className="w-full" disabled={loading || !course} onClick={handleStartCourse}>Soy inversionista, ver curso</Button>
+              {isLocked ? (
+                <div className="space-y-2">
+                  <Button className="w-full bg-gray-400 hover:bg-gray-400 cursor-not-allowed" disabled>
+                    <Lock size={16} className="mr-2" />
+                    Requiere plan {getPlanDisplayName(requiredPlan)}
+                  </Button>
+                  <Link href="/course#planes" className="block">
+                    <Button variant="outline" className="w-full border-[#5352F6] text-[#5352F6] hover:bg-[#5352F6]/5">
+                      Ver planes disponibles
+                    </Button>
+                  </Link>
+                </div>
               ) : isEnrolled ? (
                 <Link href={`/course/${course.slug}/${course.content.modules[0].lessons[0].slug || course.content.modules[0].lessons[0].id}`} className="w-full">
                   <Button className="w-full">{isCourseCompleted ? 'Ver de nuevo' : 'Continuar curso'}</Button>
                 </Link>
               ) : (
-                <Link href={`/course/${course.slug}/${course.content.modules[0].lessons[0].slug || course.content.modules[0].lessons[0].id}`} className="w-full">
-                  <Button className="w-full">Ver curso</Button>
-                </Link>
+                <Button className="w-full" disabled={loading || !course} onClick={handleStartCourse}>
+                  {course.pricing?.price != null && course.pricing.price > 0
+                    ? `Comprar por $${course.pricing.price.toLocaleString('es-CO')}`
+                    : isInvestorExclusive
+                      ? 'Soy inversionista, ver curso'
+                      : 'Iniciar curso gratis'
+                  }
+                </Button>
               )}
             </div>
             
@@ -1027,29 +1144,45 @@ export default function CourseDetailPage() {
       </section>
       
       {/* CTA final */}
-      <section className={`${isCourseCompleted ? 'bg-gradient-to-r from-green-600 to-green-700' : 'bg-[#5352F6]'} py-16 text-white`}>
+      <section className={`${isCourseCompleted ? 'bg-gradient-to-r from-green-600 to-green-700' : isLocked ? 'bg-gradient-to-r from-gray-700 to-gray-800' : 'bg-[#5352F6]'} py-16 text-white`}>
         <div className="container mx-auto px-4 text-center">
           <h2 className="mb-6 text-3xl font-bold tracking-tight">
             {isCourseCompleted 
               ? "¡Felicidades por completar el curso!" 
-              : "¿Listo para comenzar tu aprendizaje?"}
+              : isLocked
+                ? "Desbloquea este curso"
+                : "¿Listo para comenzar tu aprendizaje?"}
           </h2>
           <p className="mx-auto mb-8 max-w-2xl text-lg">
             {isCourseCompleted 
               ? "No pares de aprender. Explora más cursos y sigue mejorando tus habilidades con LOKL Academy."
-              : isInvestorExclusive 
-                ? "Conviértete en inversionista LOKL y desbloquea este y muchos más cursos exclusivos."
-                : "Inscríbete ahora y comienza a aprender con este curso gratuito de alta calidad."
+              : isLocked
+                ? `Este curso requiere un plan ${getPlanDisplayName(requiredPlan)}. Actualiza tu plan para acceder a este y más cursos exclusivos.`
+                : price != null && price > 0
+                  ? `Adquiere este curso por $${price.toLocaleString('es-CO')} y comienza a aprender ahora.`
+                  : isInvestorExclusive 
+                    ? "Conviértete en inversionista LOKL y desbloquea este y muchos más cursos exclusivos."
+                    : "Inscríbete ahora y comienza a aprender con este curso gratuito de alta calidad."
             }
           </p>
-          <Button size="lg" variant="secondary">
-            {isCourseCompleted 
-              ? "Explorar más cursos" 
-              : isInvestorExclusive 
-                ? "Conocer más sobre inversiones LOKL" 
-                : "Ver curso ahora"
-            }
-          </Button>
+          {isLocked ? (
+            <Link href="/course#planes">
+              <Button size="lg" variant="secondary">
+                Ver planes disponibles
+              </Button>
+            </Link>
+          ) : (
+            <Button size="lg" variant="secondary" onClick={handleStartCourse}>
+              {isCourseCompleted 
+                ? "Explorar más cursos" 
+                : price != null && price > 0
+                  ? `Comprar por $${price.toLocaleString('es-CO')}`
+                  : isInvestorExclusive 
+                    ? "Conocer más sobre inversiones LOKL" 
+                    : "Ver curso ahora"
+              }
+            </Button>
+          )}
         </div>
       </section>
     </div>

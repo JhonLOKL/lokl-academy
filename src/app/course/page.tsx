@@ -28,6 +28,7 @@ import { getAllCoursesAction, getUserCoursesAction } from "@/actions/course-acti
 import { useAuthStore } from "@/store/auth-store";
 import { getBlogsLiteAction } from "@/actions/blog-action";
 import BlogSection from "@/components/lokl-academy/sections/blog-section";
+import { getPlanDisplayName, type UserPlanType } from "@/helpers/course-access";
 
 export default function CoursePage() {
   // Estados
@@ -59,7 +60,8 @@ export default function CoursePage() {
     loadBlogs();
   }, []);
   
-  const { token } = useAuthStore();
+  const { token, user } = useAuthStore();
+  const userPlan: UserPlanType = (user?.planType as UserPlanType) || 'basic';
 
   const [userCourses, setUserCourses] = useState<Course[]>([]);
   const [allCourses, setAllCourses] = useState<Course[]>([]);
@@ -111,6 +113,50 @@ export default function CoursePage() {
 
       {/* Contenido principal */}
       <section className="container mx-auto px-4 py-12">
+        {/* Banner de plan del usuario */}
+        {user && (
+          <div className={`mb-8 rounded-lg border p-4 flex items-center justify-between ${
+            userPlan === 'investor' ? 'bg-[#5352F6]/5 border-[#5352F6]/20' :
+            userPlan === 'premium' ? 'bg-amber-50 border-amber-200' :
+            'bg-gray-50 border-gray-200'
+          }`}>
+            <div className="flex items-center gap-3">
+              <div className={`flex h-10 w-10 items-center justify-center rounded-full ${
+                userPlan === 'investor' ? 'bg-[#5352F6]/10' :
+                userPlan === 'premium' ? 'bg-amber-100' :
+                'bg-gray-200'
+              }`}>
+                <span className={`text-lg font-bold ${
+                  userPlan === 'investor' ? 'text-[#5352F6]' :
+                  userPlan === 'premium' ? 'text-amber-600' :
+                  'text-gray-500'
+                }`}>
+                  {getPlanDisplayName(userPlan).charAt(0)}
+                </span>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-900">
+                  Tu plan: <span className={`font-bold ${
+                    userPlan === 'investor' ? 'text-[#5352F6]' :
+                    userPlan === 'premium' ? 'text-amber-600' :
+                    'text-gray-600'
+                  }`}>{getPlanDisplayName(userPlan)}</span>
+                </p>
+                <p className="text-xs text-gray-500">
+                  {userPlan === 'investor' && 'Tienes acceso a todos los cursos incluyendo exclusivos para inversionistas'}
+                  {userPlan === 'premium' && 'Tienes acceso a cursos Premium y gratuitos'}
+                  {userPlan === 'basic' && 'Tienes acceso a cursos gratuitos. Algunos cursos pueden requerir un plan superior.'}
+                </p>
+              </div>
+            </div>
+            {userPlan === 'basic' && (
+              <a href="#planes" className="text-sm font-medium text-[#5352F6] hover:underline whitespace-nowrap ml-4">
+                Mejorar plan →
+              </a>
+            )}
+          </div>
+        )}
+
         {/* Cursos en progreso (si existen) */}
         {loadingCourses ? (
           <div className="mt-6">
@@ -183,7 +229,7 @@ export default function CoursePage() {
       <BenefitsSection />
 
       {/* Comparación de planes */}
-      <section className="bg-white py-16">
+      <section id="planes" className="bg-white py-16 scroll-mt-20">
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
             <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">

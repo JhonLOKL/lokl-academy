@@ -6,15 +6,24 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ImageWithFallback } from './image-with-fallback';
-import { Clock, ChevronRight, Award, Loader2 } from 'lucide-react';
+import { Clock, ChevronRight, Award, Loader2, Lock } from 'lucide-react';
 import { getAllCoursesAction } from '@/actions/course-action';
 import type { Course } from '@/lib/course/schema';
 import Link from 'next/link';
+import { useAuthStore } from '@/store/auth-store';
+import {
+  hasAccessToCourse,
+  getCourseAccessLabel,
+  getAccessBadgeClasses,
+  type UserPlanType,
+} from '@/helpers/course-access';
 
 export default function CursosTab() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuthStore();
+  const userPlan: UserPlanType = (user?.planType as UserPlanType) || 'basic';
 
   useEffect(() => {
     async function loadCourses() {
@@ -40,20 +49,6 @@ export default function CursosTab() {
     
     loadCourses();
   }, []);
-
-  const getBadgeVariant = (course: Course, index: number) => {
-    if (course.pricing?.price === 0 || course.pricing?.type === 'free') return 'bg-green-500 text-white';
-    if (course.featured) return 'bg-[#5352F6] text-primary-foreground';
-    if (index === 0) return 'bg-orange-500 text-white';
-    return 'bg-blue-500 text-white';
-  };
-
-  const getBadgeText = (course: Course, index: number) => {
-    if (course.pricing?.price === 0 || course.pricing?.type === 'free') return 'Gratis';
-    if (course.featured) return 'Destacado';
-    if (index === 0) return 'Nuevo';
-    return 'Premium';
-  };
 
   const formatDuration = (minutes: number) => {
     if (minutes < 60) return `${minutes} min`;
@@ -99,17 +94,35 @@ export default function CursosTab() {
   return (
     <div className="animate-fade-in space-y-8">
       <div className="grid md:grid-cols-2 gap-6">
-        {courses.map((course, index) => (
-          <Card key={course.id} className="overflow-hidden hover:shadow-lg transition-shadow group cursor-pointer p-0">
+        {courses.map((course) => {
+          const requiredPlan = course.accessRequirements?.plan || 'any';
+          const isLoggedIn = !!user;
+          const courseHasAccess = hasAccessToCourse(userPlan, requiredPlan);
+          const isCourseLocked = isLoggedIn && !courseHasAccess;
+
+          // Normalización defensiva para el typo 'princing'
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const pricing = course.pricing || (course as any).princing;
+          const price = pricing?.price;
+
+          const label = getCourseAccessLabel({
+            pricingType: pricing?.type || 'free',
+            price: price,
+            accessPlan: requiredPlan,
+          });
+          const labelClasses = getAccessBadgeClasses(label.variant);
+
+          return (
+          <Card key={course.id} className={`overflow-hidden transition-shadow group cursor-pointer p-0 ${isCourseLocked ? 'opacity-80' : 'hover:shadow-lg'}`}>
             <div className="relative h-56 overflow-hidden">
               <ImageWithFallback
                 src={course.coverImage?.url || course.thumbnail?.url || '/images/course/placeholder.jpg'}
                 alt={course.coverImage?.alt || course.thumbnail?.alt || course.title}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                className={`w-full h-full object-cover transition-transform duration-300 ${isCourseLocked ? 'grayscale' : 'group-hover:scale-105'}`}
               />
               <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-                <Badge className={getBadgeVariant(course, index)}>
-                  {getBadgeText(course, index)}
+                <Badge className={labelClasses}>
+                  {label.label}
                 </Badge>
                 {course.certificate && (
                   <Badge className="bg-[#5352F6] text-primary-foreground flex items-center gap-1">
@@ -118,9 +131,17 @@ export default function CursosTab() {
                   </Badge>
                 )}
               </div>
-              <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm text-white px-2 py-1 rounded text-xs flex items-center gap-1">
-                <Clock className="h-3 w-3" />
-                <span>{formatDuration(course.content?.totalDuration || 0)}</span>
+              <div className="absolute top-3 right-3 flex items-center gap-2">
+                {isCourseLocked && (
+                  <div className="bg-red-600 text-white px-2 py-1 rounded text-xs flex items-center gap-1">
+                    <Lock className="h-3 w-3" />
+                    <span>Bloqueado</span>
+                  </div>
+                )}
+                <div className="bg-black/60 backdrop-blur-sm text-white px-2 py-1 rounded text-xs flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  <span>{formatDuration(course.content?.totalDuration || 0)}</span>
+                </div>
               </div>
             </div>
             <div className="p-6 space-y-3">
@@ -130,6 +151,21 @@ export default function CursosTab() {
               <p className="text-sm text-muted-foreground">
                 {course.description || course.excerpt || 'Descubre más sobre este curso y mejora tus habilidades de inversión.'}
               </p>
+              
+              {/* Pricing visible */}
+              {price != null && price > 0 && (
+                <div className="flex items-baseline gap-2">
+                  <span className="text-lg font-bold text-gray-900">
+                    ${price.toLocaleString('es-CO')}
+                  </span>
+                  {pricing?.originalPrice != null && pricing.originalPrice > price && (
+                    <span className="text-sm text-gray-400 line-through">
+                      ${pricing.originalPrice.toLocaleString('es-CO')}
+                    </span>
+                  )}
+                </div>
+              )}
+
               <div className="flex items-center gap-3 pt-3 border-t border-border/40">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={course.instructor?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${course.instructor?.name || 'Instructor'}`} />
@@ -151,7 +187,8 @@ export default function CursosTab() {
               </div>
             </div>
           </Card>
-        ))}
+          );
+        })}
       </div>
 
       <div className="text-center">

@@ -1,7 +1,29 @@
 import { Course } from "@/lib/course/schema"
 import { enrollCourseService, getAllCoursesService, getCourseBySlugService, getUserCoursesService, markLessonCompletedService, saveQuizResultService } from "@/services/course-service"
 
+// Función auxiliar para normalizar datos del curso (corrige typos del backend)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const normalizeCourseData = (course: any): Course => {
+    if (!course) return course;
+    
+    // Corregir typo 'princing' -> 'pricing'
+    // Verificamos explícitamente ambas propiedades
+    const pricingData = course.pricing || course.princing;
+    
+    if (pricingData) {
+        course.pricing = pricingData;
+    }
+    
+    // Asegurar que accessRequirements exista
+    if (!course.accessRequirements) {
+        course.accessRequirements = {
+            plan: 'basic',
+            minimumLevel: 'any'
+        };
+    }
 
+    return course as Course;
+};
 
 export const enrollCourseAction = async (body: { courseId: string }) : Promise<{ success: boolean, message: string, error?: string }> => {
     try {
@@ -96,7 +118,15 @@ export const getUserCoursesAction = async () : Promise<{ success: boolean,  data
                 data: []
             }
         }
-        return response
+        
+        // Normalizar cursos
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const normalizedCourses = (response.data || []).map((c: any) => normalizeCourseData(c));
+        
+        return {
+            ...response,
+            data: normalizedCourses
+        }
     } catch (error) {
         console.error("Error al obtener los cursos del usuario.", error)
         return {
@@ -117,7 +147,15 @@ export const getAllCoursesAction = async () : Promise<{ success: boolean,  data?
                 data: []
             }
         }
-        return response
+        
+        // Normalizar cursos
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const normalizedCourses = (response.data || []).map((c: any) => normalizeCourseData(c));
+
+        return {
+            ...response,
+            data: normalizedCourses
+        }
     } catch (error) {
         console.error("Error al obtener los cursos del usuario.", error)
         return {
@@ -141,6 +179,12 @@ export const getCourseBySlugAction = async (slug: string) : Promise<{ success: b
                 }
             }
         }
+
+        // Normalizar curso individual
+        if (response.data?.course) {
+            response.data.course = normalizeCourseData(response.data.course);
+        }
+
         return response
     } catch (error) {
         console.error("Error al obtener el curso. Intenlo mas tarde.", error)
