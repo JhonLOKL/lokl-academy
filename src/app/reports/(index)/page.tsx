@@ -5,6 +5,41 @@ import { ArrowRight, Calendar } from 'lucide-react';
 const ReportsPage = () => {
   const reports = [
     {
+      title: "Radar de Inversión 2026-2028: Las 5 Zonas de Explosión Inmobiliaria",
+      description: "Identificando los nodos de valorización agresiva para el ciclo 2026-2028. Antioquia, San Felipe, Guatapé, Santa Marta y oportunidades emergentes.",
+      slug: "radar-inversion-2026-2028",
+      date: "Febrero 2026",
+      category: "Análisis de Mercado"
+    },
+    {
+      title: "Créditos Vs. Inversión Colaborativa: La Tabla de Verdad",
+      description: "Análisis de la brecha entre lo que pagan los bancos y lo que cobran. Cómo la Fintech elimina intermediarios para beneficiar a inversionistas y solicitantes.",
+      slug: "creditos-vs-inversion-colaborativa",
+      date: "Febrero 2026",
+      category: "Investigación de Mercado"
+    },
+    {
+      title: "PropTech 2026: La Democratización del Ladrillo",
+      description: "Cómo 7 tecnologías clave desmantelaron las barreras de entrada, permitiendo invertir en real estate desde $50.000 COP. Análisis post-Ley Fintech.",
+      slug: "proptech-colombia-2026",
+      date: "Febrero 2026",
+      category: "Informe Especial"
+    },
+    {
+      title: "Programa de Embajadores LOKL",
+      description: "Guía completa sobre el programa de Community Builders de LOKL. Descubre los niveles, comisiones, beneficios y cómo convertirte en embajador del ecosistema de inversión colaborativa.",
+      slug: "embajadores-lokl",
+      date: "Febrero 2026",
+      category: "Guía de Programa"
+    },
+    {
+      title: "El Futuro es una Ciudad Esponja",
+      description: "Investigación técnica sobre la gestión de inundaciones en valles profundos. Una propuesta para transformar a Medellín en un ecosistema que respira y absorbe mediante infraestructura verde e híbrida.",
+      slug: "resiliencia-urbana",
+      date: "Enero 2026",
+      category: "Investigación Senior"
+    },
+    {
       title: "Horizonte Estratégico 2026: El Año de la Sincronización",
       description: "Tras la estabilización de tasas, el capital global regresa a Colombia. Análisis completo del mercado inmobiliario colombiano y los activos refugio de la década.",
       slug: "horizonte-estrategico-2026",

@@ -45,11 +45,23 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
     "https://lokl-assets.s3.us-east-1.amazonaws.com/home/Hero-nido-movil.png"
   ];
 
+  // Mapeo de imágenes móviles a códigos de proyectos
+  const mobileImageProjectCodes = [
+    "indie-universe", // Hero-indie-movil.png
+    "nido-de-agua"    // Hero-nido-movil.png
+  ];
+
   // Imágenes para el hero desktop
   const desktopHeroImages = [
-    "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_ALDEA.png", 
+    // "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_ALDEA.png", 
     "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_INDIE.png", 
     "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_NDA.png" 
+  ];
+
+  // Mapeo de imágenes desktop a códigos de proyectos
+  const desktopImageProjectCodes = [
+    "indie-universe", // IMG_INDIE.png
+    "nido-de-agua"    // IMG_NDA.png
   ];
 
   // Estado para el simulador del hero
@@ -59,6 +71,16 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
   
   // Estado para controlar el índice de imágenes desktop
   const [currentDesktopImageIndex, setCurrentDesktopImageIndex] = useState(0);
+
+  // Obtener el proyecto correspondiente a la imagen desktop actual
+  const currentDesktopProject = availableProjects.find(
+    p => p.projectCode === desktopImageProjectCodes[currentDesktopImageIndex]
+  ) || availableProjects[0];
+
+  // Obtener el proyecto correspondiente a la imagen móvil actual
+  const currentMobileProject = availableProjects.find(
+    p => p.projectCode === mobileImageProjectCodes[currentProjectIndex]
+  ) || availableProjects[0];
 
   
 
@@ -315,25 +337,51 @@ export default function Hero({ onWhatIsClick }: HeroProps) {
             {/* Proyecto destacado rotativo - fuera de tarjeta */}
             {availableProjects.length > 0 && (
               <div className="mt-10 md:mt-6">
-                <div
-                  key={currentProjectIndex}
-                  className="animate-in fade-in duration-500"
-                >
-                  <p className="text-lg text-white/90 mb-2">
-                    <span className="text-white/90">
-                      Invierte en{" "}
-                    </span>
-                    <span className="text-[rgba(255,255,255,1)] font-semibold font-bold">
-                      {availableProjects[currentProjectIndex]?.name}
-                    </span>
-                    <span className="text-white/90"> desde</span>
-                  </p>
-                  <p className="text-3xl font-semibold text-white">
-                    {formatCurrency(
-                      availableProjects[currentProjectIndex]?.unitPrice * 
-                      availableProjects[currentProjectIndex]?.minInvestmentUnits
-                    )}
-                  </p>
+                {/* Desktop: usa currentDesktopProject con mapeo explícito */}
+                <div className="hidden md:block">
+                  <div
+                    key={currentDesktopImageIndex}
+                    className="animate-in fade-in duration-500"
+                  >
+                    <p className="text-lg text-white/90 mb-2">
+                      <span className="text-white/90">
+                        Invierte en{" "}
+                      </span>
+                      <span className="text-[rgba(255,255,255,1)] font-semibold font-bold">
+                        {currentDesktopProject?.name}
+                      </span>
+                      <span className="text-white/90"> desde</span>
+                    </p>
+                    <p className="text-3xl font-semibold text-white">
+                      {formatCurrency(
+                        currentDesktopProject?.unitPrice * 
+                        currentDesktopProject?.minInvestmentUnits
+                      )}
+                    </p>
+                  </div>
+                </div>
+                {/* Mobile: usa currentMobileProject con mapeo explícito */}
+                <div className="block md:hidden">
+                  <div
+                    key={currentProjectIndex}
+                    className="animate-in fade-in duration-500"
+                  >
+                    <p className="text-lg text-white/90 mb-2">
+                      <span className="text-white/90">
+                        Invierte en{" "}
+                      </span>
+                      <span className="text-[rgba(255,255,255,1)] font-semibold font-bold">
+                        {currentMobileProject?.name}
+                      </span>
+                      <span className="text-white/90"> desde</span>
+                    </p>
+                    <p className="text-3xl font-semibold text-white">
+                      {formatCurrency(
+                        currentMobileProject?.unitPrice * 
+                        currentMobileProject?.minInvestmentUnits
+                      )}
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
