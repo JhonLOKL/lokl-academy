@@ -63,9 +63,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
           finalPrice = p;
       }
   }
-
-  // Debug visual simplificado para evitar errores de renderizado
-  const isDebugTarget = course.slug === 'the-creator';
   // =================================================================================
 
   // Solo bloquear si el usuario ESTÁ logueado y NO tiene acceso
@@ -104,7 +101,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
         ${variant === "horizontal" ? "flex flex-col md:flex-row" : "flex flex-col"}
         ${variant === "compact" ? "max-w-xs" : ""}
         ${variant === "featured" ? "border-[#5352F6]" : ""}
-        ${isDebugTarget && finalPrice ? "border-2 border-dashed border-red-300" : ""} 
       `}
     >
       {/* Overlay de bloqueo */}
@@ -130,16 +126,16 @@ const CourseCard: React.FC<CourseCardProps> = ({
           </span>
         )}
         
-        {/* Forzar badge de Premium si el tipo es premium, para visibilidad */}
-        {pricingType === 'premium' && accessLabel.variant === 'paid' && (
+        {/* Badge de Plan Requerido (Solo si es Premium/Investor) */}
+        {pricingType === 'premium' && (
           <span className="bg-amber-500 px-2 py-1 text-xs font-medium text-white">
-            Premium
+            Plan Premium
           </span>
         )}
         
         {pricingType === 'investor' && (
           <span className="bg-[#5352F6] px-2 py-1 text-xs font-medium text-white">
-            Inversionista
+            Plan Inversionista
           </span>
         )}
       </div>
@@ -282,51 +278,49 @@ const CourseCard: React.FC<CourseCardProps> = ({
         {/* Pricing y estado de acceso */}
         {!showProgress && !course.progress && (
           <div className="mt-auto pt-2">
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              {/* Badge principal */}
-              <span
-                className={`rounded-full px-2.5 py-0.5 text-sm font-medium ${badgeClasses}`}
-              >
-                {accessLabel.label}
-              </span>
-
-              {/* Mostrar precio si es PAID o si es PREMIUM con precio */}
-              {finalPrice != null && (
-                <span className="text-sm font-semibold text-gray-800">
-                  {formatPrice(finalPrice, pricingObj?.currency)}
+            <div className="flex items-center justify-between">
+              
+              {/* IZQUIERDA: Etiqueta de Acceso (Gratis, o Mensaje de Precio) */}
+              {finalPrice != null ? (
+                // Si hay precio, mostrar el precio grande y claro
+                <div className="flex flex-col">
+                  <span className="text-lg font-bold text-gray-900">
+                    {formatPrice(finalPrice, pricingObj?.currency)}
+                  </span>
+                  {/* Precio original tachado si aplica */}
+                  {pricingObj?.originalPrice != null && pricingObj.originalPrice > finalPrice && (
+                    <span className="text-xs text-gray-400 line-through">
+                      {formatPrice(pricingObj.originalPrice, pricingObj?.currency)}
+                    </span>
+                  )}
+                </div>
+              ) : (
+                // Si es gratis o solo por suscripción sin precio individual
+                <span className={`rounded-full px-2.5 py-0.5 text-sm font-medium ${badgeClasses}`}>
+                  {accessLabel.label}
                 </span>
               )}
 
-              {/* Precio original tachado */}
-              {pricingObj?.originalPrice != null &&
-                pricingObj.originalPrice > 0 &&
-                finalPrice != null &&
-                pricingObj.originalPrice > finalPrice && (
-                  <span className="text-xs text-gray-400 line-through ml-1">
-                    {formatPrice(
-                      pricingObj.originalPrice,
-                      pricingObj?.currency
-                    )}
-                  </span>
-                )}
+              {/* DERECHA: Información adicional o CTA implícito */}
+              {finalPrice != null && pricingType === 'premium' && (
+                 <div className="text-right">
+                    <span className="text-[10px] uppercase font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded">
+                      o Gratis con Premium
+                    </span>
+                 </div>
+              )}
             </div>
             
-            {/* Debug visual si aplica */}
-            {isDebugTarget && (
-               <div className="text-[10px] text-red-500 mt-1 font-mono">
-                  {pricingType} - {finalPrice}
-               </div>
-            )}
-            
-            {/* Mensajes contextuales */}
-            {accessLabel.variant === "premium" && (
-              <p className="mt-1 text-xs text-amber-600">
-                Incluido en suscripción
+            {/* Mensaje inferior contextual */}
+            {pricingType === 'premium' && finalPrice == null && (
+              <p className="mt-2 text-xs text-amber-600 font-medium">
+                Incluido en suscripción Premium
               </p>
             )}
-            {accessLabel.variant === "investor" && (
-              <p className="mt-1 text-xs text-[#5352F6]">
-                Exclusivo inversionistas
+            
+            {pricingType === 'investor' && (
+              <p className="mt-2 text-xs text-[#5352F6] font-medium">
+                Solo para inversionistas
               </p>
             )}
           </div>

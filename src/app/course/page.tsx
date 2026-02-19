@@ -7,6 +7,7 @@ import CourseCard from "@/components/course/course-card";
 import BenefitsSection from "@/components/course/benefits-section";
 import PlanComparison from "@/components/course/plan-comparison";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Award, Star, User } from "lucide-react"; 
  
 
 // Componentes nuevos
@@ -115,45 +116,58 @@ export default function CoursePage() {
       <section className="container mx-auto px-4 py-12">
         {/* Banner de plan del usuario */}
         {user && (
-          <div className={`mb-8 rounded-lg border p-4 flex items-center justify-between ${
-            userPlan === 'investor' ? 'bg-[#5352F6]/5 border-[#5352F6]/20' :
-            userPlan === 'premium' ? 'bg-amber-50 border-amber-200' :
-            'bg-gray-50 border-gray-200'
-          }`}>
-            <div className="flex items-center gap-3">
-              <div className={`flex h-10 w-10 items-center justify-center rounded-full ${
-                userPlan === 'investor' ? 'bg-[#5352F6]/10' :
-                userPlan === 'premium' ? 'bg-amber-100' :
-                'bg-gray-200'
-              }`}>
-                <span className={`text-lg font-bold ${
-                  userPlan === 'investor' ? 'text-[#5352F6]' :
-                  userPlan === 'premium' ? 'text-amber-600' :
-                  'text-gray-500'
+          <div className="mb-10 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md">
+            <div className={`h-1.5 w-full ${
+              userPlan === 'investor' ? 'bg-[#5352F6]' :
+              userPlan === 'premium' ? 'bg-amber-500' :
+              'bg-gray-300'
+            }`} />
+            <div className="p-6 sm:flex sm:items-center sm:justify-between">
+              <div className="flex items-center gap-4">
+                <div className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full ${
+                  userPlan === 'investor' ? 'bg-[#5352F6]/10 text-[#5352F6]' :
+                  userPlan === 'premium' ? 'bg-amber-100 text-amber-600' :
+                  'bg-gray-100 text-gray-500'
                 }`}>
-                  {getPlanDisplayName(userPlan).charAt(0)}
-                </span>
+                  {userPlan === 'investor' ? <Award size={24} /> : 
+                   userPlan === 'premium' ? <Star size={24} /> : 
+                   <User size={24} />}
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Plan actual</p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="text-lg font-bold text-gray-900">
+                      {getPlanDisplayName(userPlan)}
+                    </h3>
+                    {userPlan !== 'investor' && (
+                      <span className="text-sm text-gray-400">•</span>
+                    )}
+                    <p className="text-sm text-gray-600">
+                      {userPlan === 'investor' && 'Acceso total a todos los cursos y herramientas.'}
+                      {userPlan === 'premium' && 'Acceso a cursos Premium y contenido exclusivo.'}
+                      {userPlan === 'basic' && 'Explora nuestros cursos gratuitos o mejora tu plan.'}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-medium text-gray-900">
-                  Tu plan: <span className={`font-bold ${
-                    userPlan === 'investor' ? 'text-[#5352F6]' :
-                    userPlan === 'premium' ? 'text-amber-600' :
-                    'text-gray-600'
-                  }`}>{getPlanDisplayName(userPlan)}</span>
-                </p>
-                <p className="text-xs text-gray-500">
-                  {userPlan === 'investor' && 'Tienes acceso a todos los cursos incluyendo exclusivos para inversionistas'}
-                  {userPlan === 'premium' && 'Tienes acceso a cursos Premium y gratuitos'}
-                  {userPlan === 'basic' && 'Tienes acceso a cursos gratuitos. Algunos cursos pueden requerir un plan superior.'}
-                </p>
+              
+              <div className="mt-4 sm:mt-0 sm:ml-6">
+                {userPlan === 'basic' && (
+                  <Button 
+                    onClick={() => document.getElementById('planes')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="w-full sm:w-auto"
+                  >
+                    Mejorar Plan
+                  </Button>
+                )}
+                {userPlan !== 'basic' && (
+                  <div className="rounded-lg bg-gray-50 px-3 py-2 text-center sm:text-right">
+                    <p className="text-xs font-medium text-gray-500">Estado</p>
+                    <p className="text-sm font-bold text-green-600">Activo</p>
+                  </div>
+                )}
               </div>
             </div>
-            {userPlan === 'basic' && (
-              <a href="#planes" className="text-sm font-medium text-[#5352F6] hover:underline whitespace-nowrap ml-4">
-                Mejorar plan →
-              </a>
-            )}
           </div>
         )}
 

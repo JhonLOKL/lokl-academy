@@ -148,9 +148,11 @@ export const getAllCoursesAction = async () : Promise<{ success: boolean,  data?
             }
         }
         
-        // Normalizar cursos
+        // Normalizar cursos y filtrar solo los publicados
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const normalizedCourses = (response.data || []).map((c: any) => normalizeCourseData(c));
+        const normalizedCourses = (response.data || [])
+            .map((c: any) => normalizeCourseData(c))
+            .filter((c: Course) => c.status === 'published');
 
         return {
             ...response,

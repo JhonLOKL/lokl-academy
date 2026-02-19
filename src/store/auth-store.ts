@@ -178,9 +178,17 @@ export const useAuthStore = create<AuthState>()(
           
           if (response?.success && response.data) {
             // Asegurar que planType siempre tenga un valor (default: 'basic')
+            // Normalizar el plan buscando múltiples propiedades posibles
+            let rawPlan = response.data.planType || response.data.plan || response.data.subscription || 'basic';
+            
+            // Normalizar a minúsculas
+            if (typeof rawPlan === 'string') {
+              rawPlan = rawPlan.toLowerCase();
+            }
+
             const userData = {
               ...response.data,
-              planType: response.data.planType || 'basic',
+              planType: rawPlan,
             };
             set({ user: userData, isLoading: false });
             return true;
