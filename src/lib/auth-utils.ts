@@ -1,30 +1,29 @@
 import { useAuthStore } from "@/store/auth-store";
-import { validateToken } from "@/schemas/api-schema";
+// import { validateToken } from "@/schemas/api-schema";
 
 /**
  * Verifica si el usuario está autenticado con un token válido
  * @returns {boolean} true si el usuario está autenticado con un token válido, false en caso contrario
  */
 export const isAuthenticated = (): boolean => {
-  const token = useAuthStore.getState().token;
+  const user = useAuthStore.getState().user;
   
-  if (!token) return false;
+  if (!user) return false;
   
-  return validateToken();
+  // Asumimos que si hay usuario en el store, estamos autenticados.
+  // El backend rechazará peticiones con 401 si la cookie es inválida/expirada,
+  // lo que disparará el logout en el interceptor de axios.
+  return true;
 };
 
 /**
  * Obtiene el token actual si es válido
  * @returns {string | null} El token si es válido, null en caso contrario
+ * @deprecated Ya no tenemos acceso al token porque se usa cookie HttpOnly.
  */
 export const getValidToken = (): string | null => {
-  const token = useAuthStore.getState().token;
-  
-  if (!token || !validateToken()) {
-    return null;
-  }
-  
-  return token;
+  // Retornamos null porque ya no hay token accesible
+  return null;
 };
 
 /**

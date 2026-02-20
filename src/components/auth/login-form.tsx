@@ -24,7 +24,7 @@ export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const navigatedRef = useRef(false);
-  const { login, error, isLoading, clearError, token } = useAuthStore();
+  const { login, error, isLoading, clearError, user } = useAuthStore();
 
   // Imágenes para el hero móvil
   const mobileHeroImages = [
@@ -79,12 +79,12 @@ export default function LoginForm() {
 
   // Redirigir si ya está autenticado (respeta redirect almacenado o de la URL)
   useEffect(() => {
-    if (token && !navigatedRef.current) {
+    if (user && !navigatedRef.current) {
       const target = consumePostLoginRedirect() || searchParams.get("redirect") || "/";
       navigatedRef.current = true;
       router.push(target);
     }
-  }, [token, router, searchParams]);
+  }, [user, router, searchParams]);
 
   // Estados para los campos del formulario
   const [email, setEmail] = useState("");

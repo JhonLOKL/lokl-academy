@@ -7,7 +7,7 @@ import { Button } from "@/components/design-system";
 
 export default function AuthNav() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { token, logout } = useAuthStore();
+  const { user, logout } = useAuthStore();
 
   // const router = useRouter();
   
@@ -18,7 +18,7 @@ export default function AuthNav() {
   
   return (
     <div className="flex items-center gap-4">
-      {token ? (
+      {user ? (
         <>
           <Link href="https://lokl.life/dashboard">
             <Button variant="secondary" className="text-sm">

@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { signInAction, signUpAction } from '@/actions/auth-service';
 import { getUserProfileService } from '@/services/user-service';
+import { postApi } from '@/schemas/api-schema';
 
 // Definir la interfaz para el usuario
 interface UserProfile {
@@ -47,15 +48,13 @@ type User = UserProfile;
 // Definir la interfaz para el estado de autenticación
 interface AuthState {
   user: User | null;
-  token: string | null;
   isLoading: boolean;
   error: string | null;
   
   // Métodos
   login: (email: string, password: string) => Promise<boolean>;
   register: (userData: RegisterData) => Promise<boolean>;
-  logout: () => void;
-  updateToken: (token: string) => void;
+  logout: () => Promise<void>;
   clearError: () => void;
   fetchUserProfile: () => Promise<boolean>;
 }
@@ -79,7 +78,6 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       user: null,
-      token: null,
       isLoading: false,
       error: null,
 
@@ -89,12 +87,12 @@ export const useAuthStore = create<AuthState>()(
         try {
           const response = await signInAction({ email, password });
           
-          if (response?.success && response.token) {
-            // Guardar el token - el token ya viene directamente en response.token
-            set({ token: response.token, isLoading: false });
+          if (response?.success) {
+            // Ya no guardamos el token, usamos cookie HttpOnly
             
             // Obtener el perfil completo del usuario
             await get().fetchUserProfile();
+            set({ isLoading: false });
             return true;
           } else {
             set({ 
@@ -132,12 +130,12 @@ export const useAuthStore = create<AuthState>()(
 
           const response = await signUpAction(serviceData);
           
-          if (response?.success && response.token) {
-            // Guardar el token - el token ya viene directamente en response.token
-            set({ token: response.token, isLoading: false });
+          if (response?.success) {
+            // Ya no guardamos el token, usamos cookie HttpOnly
             
             // Obtener el perfil completo del usuario
             await get().fetchUserProfile();
+            set({ isLoading: false });
             return true;
           } else {
             set({ 
@@ -156,13 +154,21 @@ export const useAuthStore = create<AuthState>()(
       },
 
       // Método para cerrar sesión
-      logout: () => {
-        set({ user: null, token: null });
-      },
-
-      // Método para actualizar el token
-      updateToken: (token: string) => {
-        set({ token });
+      logout: async () => {
+        try {
+          // Llamar al endpoint de logout para limpiar la cookie
+          await postApi('/api/auth/logout');
+        } catch (error) {
+          console.error('Error durante logout:', error);
+        } finally {
+          // Limpiar estado local independientemente del resultado del servidor
+          set({ user: null });
+          
+          // Opcional: Redirigir si es necesario, pero usualmente lo hace el componente
+          if (typeof window !== 'undefined') {
+             // window.location.href = '/login'; 
+          }
+        }
       },
 
       // Método para limpiar errores
@@ -193,9 +199,9 @@ export const useAuthStore = create<AuthState>()(
             set({ user: userData, isLoading: false });
             return true;
           } else {
-            // Si hay un error 403 (Forbidden), cerrar sesión
-            if (response?.status === 403) {
-              set({ user: null, token: null, isLoading: false });
+            // Si hay un error 403 (Forbidden) o 401, cerrar sesión
+            if (response?.status === 403 || response?.status === 401) {
+              set({ user: null, isLoading: false });
             } else {
               set({ 
                 error: response?.message || 'Error al obtener el perfil del usuario', 
@@ -215,7 +221,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'lokl-auth-storage', // Nombre para localStorage
-      partialize: (state) => ({ user: state.user, token: state.token }), // Solo persistir usuario y token
+      partialize: (state) => ({ user: state.user }), // Solo persistir usuario
     }
   )
 );

@@ -10,7 +10,7 @@ import { ChartBarDecreasing } from "lucide-react";
 import { TopBanner } from "./top-banner";
 
 export function SiteNavbar() {
-  const { token, user } = useAuthStore();
+  const { user } = useAuthStore();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -113,7 +113,7 @@ export function SiteNavbar() {
           },
         ]}
         actions={
-          token ? (
+          user ? (
             <div className="flex items-center gap-4">
               {/* Botón Dashboard */}
               <Link

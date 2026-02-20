@@ -8,22 +8,22 @@ import { Button } from "@/components/design-system";
 import { useRouter } from "next/navigation";
 
 export default function UserProfileWidget() {
-  const { user, token, fetchUserProfile, logout } = useAuthStore();
+  const { user, fetchUserProfile, logout } = useAuthStore();
   const router = useRouter();
   
-  // Obtener el perfil completo del usuario si hay token pero no hay datos completos
+  // Obtener el perfil completo del usuario si hay usuario pero no hay datos completos
   useEffect(() => {
-    if (token && (!user || !user.profilePhoto)) {
+    if (user && (!user.profilePhoto)) {
       fetchUserProfile();
     }
-  }, [token, user, fetchUserProfile]);
+  }, [user, fetchUserProfile]);
   
   const handleLogout = () => {
     logout();
     router.push("/");
   };
   
-  if (!token || !user) {
+  if (!user) {
     return null;
   }
   
