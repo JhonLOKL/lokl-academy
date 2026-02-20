@@ -19,12 +19,28 @@ import { Input } from "@/components/design-system";
 import { FormField } from "@/components/design-system";
 import { H2, Paragraph, Text } from "@/components/design-system";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription } from "@/components/design-system";
+import { AlertCircle, Cookie } from "lucide-react";
+
+// URL base del dashboard, usar variable de entorno o fallback
+const DASHBOARD_URL = process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.lokl.life";
 
 export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const navigatedRef = useRef(false);
   const { login, error, isLoading, clearError, user } = useAuthStore();
+
+  // Detección de cookies
+  const [cookiesDisabled, setCookiesDisabled] = useState(false);
+  const [showCookieWarning, setShowCookieWarning] = useState(false);
+
+  useEffect(() => {
+    // Verificar si las cookies están habilitadas
+    if (typeof navigator !== 'undefined' && !navigator.cookieEnabled) {
+      setCookiesDisabled(true);
+      setShowCookieWarning(true);
+    }
+  }, []);
 
   // Imágenes para el hero móvil
   const mobileHeroImages = [
@@ -190,8 +206,33 @@ export default function LoginForm() {
         <div className="absolute inset-0 bg-black/40" />
       </div>
 
-      <div className="relative z-10 flex min-h-screen w-full items-center justify-center px-4 py-16">
-        <Card className="mx-auto max-w-md backdrop-blur-sm bg-white/95 shadow-xl">
+      <div className="relative z-10 flex flex-col min-h-screen w-full items-center justify-center px-4 py-16">
+        
+        {/* Aviso de cookies deshabilitadas */}
+        {showCookieWarning && (
+          <div className="mb-6 w-full max-w-md rounded-lg bg-amber-50 p-4 border border-amber-200 shadow-lg relative animate-in fade-in slide-in-from-top-4">
+            <button 
+              onClick={() => setShowCookieWarning(false)}
+              className="absolute top-2 right-2 text-amber-500 hover:text-amber-700"
+            >
+              ×
+            </button>
+            <div className="flex items-start gap-3">
+              <div className="p-2 bg-amber-100 rounded-full shrink-0 text-amber-600">
+                <Cookie size={20} />
+              </div>
+              <div>
+                <h4 className="font-semibold text-amber-900 text-sm">Cookies deshabilitadas</h4>
+                <p className="text-amber-800 text-xs mt-1">
+                  Hemos detectado que las cookies están bloqueadas en tu navegador. 
+                  Usaremos un método alternativo de inicio de sesión, pero algunas funciones podrían verse limitadas.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <Card className="mx-auto max-w-md w-full backdrop-blur-sm bg-white/95 shadow-xl">
           <CardHeader>
             <CardTitle>
               <H2 variant="section" className="text-center">
@@ -225,7 +266,7 @@ export default function LoginForm() {
               {/* Contraseña */}
               <FormField label="Contraseña" htmlFor="password">
                 <div className="flex items-center justify-between">
-                  <Link href="https://dashboard.lokl.life/reset-password" className="text-sm text-[#5352F6] hover:underline">
+                  <Link href={`${DASHBOARD_URL}/reset-password`} className="text-sm text-[#5352F6] hover:underline">
                     ¿Olvidaste tu contraseña?
                   </Link>
                 </div>

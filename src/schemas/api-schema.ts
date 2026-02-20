@@ -11,12 +11,19 @@ export const validateToken = (): boolean => {
 };
 
 // ⚡ función para armar headers dinámicos
-const getHeaders = (_isNeedToken: boolean) => {
+const getHeaders = (isNeedToken: boolean) => {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
 
-  // El token ya no se envía en los headers, se usa cookie HttpOnly
+  // El token ya no se envía en los headers por defecto, se usa cookie HttpOnly
+  // Sin embargo, si hay un token en el store (fallback), lo enviamos
+  if (isNeedToken) {
+    const token = useAuthStore.getState().token;
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+  }
   
   return headers;
 };

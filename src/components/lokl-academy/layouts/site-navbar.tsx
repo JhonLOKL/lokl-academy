@@ -9,21 +9,28 @@ import { useRouter, usePathname } from "next/navigation";
 import { ChartBarDecreasing } from "lucide-react";
 import { TopBanner } from "./top-banner";
 
+// URL base del dashboard, usar variable de entorno o fallback
+const DASHBOARD_URL = process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.lokl.life";
+
 export function SiteNavbar() {
   const { user } = useAuthStore();
   const router = useRouter();
   const pathname = usePathname();
 
   const goToLogin = () => {
-    router.push("https://dashboard.lokl.life/login");
+    // router.push(`${DASHBOARD_URL}/login`);
+    router.push("/login");
   };
 
   const goToRegister = () => {
-    router.push("https://dashboard.lokl.life/register");
+    // router.push(`${DASHBOARD_URL}/register`);
+    router.push("/register");
   };
 
   const goToProfile = () => {
-    router.push("https://dashboard.lokl.life/dashboard/perfil");
+    // Si estamos en local, ir a la ruta relativa. Si no, usar la URL del dashboard.
+    // router.push(`${DASHBOARD_URL}/dashboard/perfil`);
+    router.push("/dashboard");
   };
 
   return (
@@ -88,7 +95,7 @@ export function SiteNavbar() {
                 <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M8.55988 3.06219C9.80324 2.47927 11.1967 2.47927 12.44 3.06219L18.2948 5.80706C19.5684 6.40412 19.5684 8.47092 18.2948 9.06797L12.4401 11.8128C11.1968 12.3957 9.80332 12.3957 8.55996 11.8128L2.70515 9.06797C1.43161 8.47088 1.43162 6.40408 2.70515 5.80702L8.55988 3.06219Z" stroke="currentColor" strokeWidth="1.5" />
                   <path d="M1.75 7.4375V12.25" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                  <path d="M16.625 10.0625V14.5472C16.625 15.4292 16.1844 16.255 15.4129 16.6824C14.128 17.3939 12.0715 18.375 10.5 18.375C8.9285 18.375 6.87199 17.3939 5.58716 16.6824C4.81556 16.255 4.375 15.4292 4.375 14.5472V10.0625" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  <path d="M16.625 10.0625V14.5472C16.625 15.4292 16.1844 16.255 15.4129 16.6824C14.128 17.3939 12.0715 18.375 10.5 18.375C8.9285 18.375 6.87199 17.3939 5.58716 16.6824C4.81556 16.255 4.375 15.4292 4.375 14.875C4.375 14.5472V10.0625" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                 </svg>
                 <span>Aprende</span>
               </div>
@@ -117,7 +124,8 @@ export function SiteNavbar() {
             <div className="flex items-center gap-4">
               {/* Botón Dashboard */}
               <Link
-                href="https://dashboard.lokl.life/dashboard/income"
+                href="/dashboard"
+                // href={`${DASHBOARD_URL}/dashboard/income`}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-[#F3F3F3] transition-colors"
               >
                 <ChartBarDecreasing className="w-5 h-5 text-[#1C274C]" />

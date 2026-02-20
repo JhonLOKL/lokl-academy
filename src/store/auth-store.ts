@@ -48,6 +48,7 @@ type User = UserProfile;
 // Definir la interfaz para el estado de autenticación
 interface AuthState {
   user: User | null;
+  token: string | null; // Re-added token for fallback
   isLoading: boolean;
   error: string | null;
   
@@ -78,6 +79,7 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       user: null,
+      token: null, // Initialize token
       isLoading: false,
       error: null,
 
@@ -88,7 +90,9 @@ export const useAuthStore = create<AuthState>()(
           const response = await signInAction({ email, password });
           
           if (response?.success) {
-            // Ya no guardamos el token, usamos cookie HttpOnly
+            // Guardamos el token en el store como fallback
+            const token = response.token || null;
+            set({ token: token });
             
             // Obtener el perfil completo del usuario
             await get().fetchUserProfile();
@@ -131,7 +135,9 @@ export const useAuthStore = create<AuthState>()(
           const response = await signUpAction(serviceData);
           
           if (response?.success) {
-            // Ya no guardamos el token, usamos cookie HttpOnly
+            // Guardamos el token en el store como fallback
+            const token = response.token || null;
+            set({ token: token });
             
             // Obtener el perfil completo del usuario
             await get().fetchUserProfile();
@@ -162,7 +168,7 @@ export const useAuthStore = create<AuthState>()(
           console.error('Error durante logout:', error);
         } finally {
           // Limpiar estado local independientemente del resultado del servidor
-          set({ user: null });
+          set({ user: null, token: null });
           
           // Opcional: Redirigir si es necesario, pero usualmente lo hace el componente
           if (typeof window !== 'undefined') {
@@ -201,7 +207,7 @@ export const useAuthStore = create<AuthState>()(
           } else {
             // Si hay un error 403 (Forbidden) o 401, cerrar sesión
             if (response?.status === 403 || response?.status === 401) {
-              set({ user: null, isLoading: false });
+              set({ user: null, token: null, isLoading: false });
             } else {
               set({ 
                 error: response?.message || 'Error al obtener el perfil del usuario', 
@@ -221,7 +227,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'lokl-auth-storage', // Nombre para localStorage
-      partialize: (state) => ({ user: state.user }), // Solo persistir usuario
+      partialize: (state) => ({ user: state.user, token: state.token }), // Persistir usuario y token
     }
   )
 );

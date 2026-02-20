@@ -10,11 +10,18 @@ const api = axios.create({
   },
 });
 
-// Interceptor de solicitud (ya no se añade el token manual)
+// Interceptor de solicitud
 api.interceptors.request.use(
   (config) => {
-    // Ya no es necesario añadir Authorization: Bearer token
-    // Las cookies HttpOnly se encargan de la autenticación
+    // Fallback: Añadir token si existe en el store
+    // Las cookies HttpOnly son el método principal, pero si fallan o están bloqueadas,
+    // el backend puede aceptar el header Authorization como respaldo.
+    const token = useAuthStore.getState().token;
+    
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    
     return config;
   },
   (error) => Promise.reject(error)
