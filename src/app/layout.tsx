@@ -6,6 +6,7 @@ import Script from "next/script";
 import { Suspense } from "react";
 import GAListener from "@/components/analytics/ga-listener";
 import UtmTracker from "@/components/analytics/utm-tracker";
+import SessionInitializer from "@/components/auth/session-initializer";
 import { Toaster } from "@/components/design-system";
 
 const inter = Inter({
@@ -224,6 +225,7 @@ export default function RootLayout({
           <GAListener />
           <UtmTracker />
         </Suspense>
+        <SessionInitializer />
         <SiteNavbar />
         {children}
         <Toaster />
