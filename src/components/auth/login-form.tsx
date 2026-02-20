@@ -96,7 +96,9 @@ export default function LoginForm() {
   // Redirigir si ya está autenticado (respeta redirect almacenado o de la URL)
   useEffect(() => {
     if (user && !navigatedRef.current) {
-      const target = consumePostLoginRedirect() || searchParams.get("redirect") || "/";
+      // Si el usuario ya está autenticado, redirigir al dashboard o a la página objetivo
+      // Esto evita que usuarios logueados vean la pantalla de login
+      const target = consumePostLoginRedirect() || searchParams.get("redirect") || "/dashboard";
       navigatedRef.current = true;
       router.push(target);
     }
@@ -137,7 +139,7 @@ export default function LoginForm() {
     const success = await login(email, password);
 
     if (success) {
-      const target = consumePostLoginRedirect() || searchParams.get("redirect") || "/";
+      const target = consumePostLoginRedirect() || searchParams.get("redirect") || "/dashboard";
       if (!navigatedRef.current) {
         navigatedRef.current = true;
         router.push(target);

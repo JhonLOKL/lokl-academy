@@ -93,7 +93,7 @@ export default function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const navigatedRef = useRef(false);
-  const { register, error, isLoading, clearError, token } = useAuthStore();
+  const { register, error, isLoading, clearError, token, user } = useAuthStore();
   
   // Si viene ?redirect en la URL, guardarlo para post-login
   useEffect(() => {
@@ -105,12 +105,13 @@ export default function RegisterForm() {
 
   // Redirigir si ya está autenticado (respeta redirect almacenado o de la URL)
   useEffect(() => {
-    if (token && !navigatedRef.current) {
-      const target = consumePostLoginRedirect() || searchParams.get("redirect") || "/";
+    if ((token || user) && !navigatedRef.current) {
+      // Si el usuario ya está autenticado, redirigir al dashboard o a la página objetivo
+      const target = consumePostLoginRedirect() || searchParams.get("redirect") || "/dashboard";
       navigatedRef.current = true;
       router.push(target);
     }
-  }, [token, router, searchParams]);
+  }, [token, user, router, searchParams]);
   
   // Estados para los campos del formulario
   const [firstName, setFirstName] = useState("");
@@ -201,7 +202,7 @@ export default function RegisterForm() {
         });
       }
 
-      const target = consumePostLoginRedirect() || searchParams.get("redirect") || "/";
+      const target = consumePostLoginRedirect() || searchParams.get("redirect") || "/dashboard";
       if (!navigatedRef.current) {
         navigatedRef.current = true;
         router.push(target);
