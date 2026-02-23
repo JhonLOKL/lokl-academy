@@ -24,6 +24,12 @@ export function AuthLayout({
 }: AuthLayoutProps) {
   const [currentDesktopImageIndex, setCurrentDesktopImageIndex] = useState(0);
   const [currentMobileImageIndex, setCurrentMobileImageIndex] = useState(0);
+  const diagonalCutPercent = 92;
+  const clipRadiusPx = 32; // debe coincidir con rounded-[32px]
+  const clipPath =
+    imageSide === "left"
+      ? `polygon(0% 0%, 100% 0%, ${diagonalCutPercent}% 100%, 0% 100% round ${clipRadiusPx}px)` // diagonal en la derecha
+      : `polygon(0% 0%, 100% 0%, 100% 100%, ${100 - diagonalCutPercent}% 100% round ${clipRadiusPx}px)`; // diagonal en la izquierda (espejo)
 
   // Rotación automática de imágenes móviles
   useEffect(() => {
@@ -45,7 +51,7 @@ export function AuthLayout({
 
   return (
     <div className="min-h-screen w-full bg-white flex items-center justify-center p-4 lg:p-6 overflow-hidden">
-      <div className="w-full max-w-[1440px] grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 lg:items-center">
+      <div className="w-full max-w-[1440px] grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8 lg:items-center">
         
         {/* Columna Imagen */}
         <motion.div
@@ -53,77 +59,64 @@ export function AuthLayout({
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
           className={cn(
-            "relative w-full h-[320px] lg:h-[560px] rounded-[32px] overflow-hidden order-first shadow-xl",
+            "relative w-full h-[320px] lg:h-[560px] rounded-[32px] overflow-hidden order-first shadow-xl hidden lg:block bg-white",
             imageSide === "right" ? "lg:order-last" : "lg:order-first"
           )}
         >
-          {/* Fondo Desktop */}
-          <div className="hidden lg:block absolute inset-0">
-            {desktopImages.map((imageUrl, index) => (
-              <motion.div
-                key={`desktop-${index}`}
-                initial={{ opacity: 0 }}
-                animate={{ 
-                  opacity: index === currentDesktopImageIndex ? 1 : 0,
-                  scale: index === currentDesktopImageIndex ? 1.05 : 1
-                }}
-                transition={{ duration: 1.5 }}
-                className="absolute inset-0"
-              >
-                <Image
-                  src={imageUrl}
-                  alt={`LOKL Academy ${index + 1}`}
-                  fill
-                  className="object-cover object-center"
-                  priority={index === 0}
-                  quality={90}
-                />
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Fondo Móvil */}
-          <div className="lg:hidden absolute inset-0">
-            {mobileImages.map((imageUrl, index) => (
-              <motion.div
-                key={`mobile-${index}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: index === currentMobileImageIndex ? 1 : 0 }}
-                transition={{ duration: 1 }}
-                className="absolute inset-0"
-              >
-                <Image
-                  src={imageUrl}
-                  alt={`LOKL Academy ${index + 1}`}
-                  fill
-                  className="object-cover object-center"
-                  priority={index === 0}
-                  quality={90}
-                />
-              </motion.div>
-            ))}
-          </div>
-          
-          {/* Overlay y Texto sobre imagen */}
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="absolute inset-0 flex flex-col justify-center items-center text-white z-10 p-8 text-center space-y-6">
-            
-            <div className="space-y-2">
-              <h3 className="text-2xl lg:text-3xl font-bold tracking-tight">¿Por qué invertir en LOKL?</h3>
-              <p className="text-lg lg:text-xl font-medium">
-                Ya somos <span className="text-primary-foreground font-bold text-3xl">+ 1000</span>
-                <br/>
-                inversionistas creciendo juntos
-              </p>
+          {/* Ayuda a suavizar bordes del clip en algunos navegadores */}
+          <div aria-hidden="true" className="absolute inset-0 [transform:translateZ(0)]" />
+          {/* Contenido recortado con borde diagonal a la derecha */}
+          <div
+            className="absolute inset-0 will-change-[clip-path]"
+            style={{
+              clipPath,
+              WebkitClipPath: clipPath,
+            }}
+          >
+            {/* Fondo Desktop */}
+            <div className="absolute inset-0">
+              {desktopImages.map((imageUrl, index) => (
+                <motion.div
+                  key={`desktop-${index}`}
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: index === currentDesktopImageIndex ? 1 : 0,
+                    scale: index === currentDesktopImageIndex ? 1.05 : 1,
+                  }}
+                  transition={{ duration: 1.5 }}
+                  className="absolute inset-0"
+                >
+                  <Image
+                    src={imageUrl}
+                    alt={`LOKL Academy ${index + 1}`}
+                    fill
+                    className="object-cover object-center"
+                    priority={index === 0}
+                    quality={90}
+                  />
+                </motion.div>
+              ))}
             </div>
 
-            <div className="space-y-2 pt-4">
-              <p className="text-xl font-medium">Invierte de manera</p>
-              <h2 className="text-3xl lg:text-4xl font-extrabold tracking-tight">
-                Simple, transparente, <br/> y flexible
-              </h2>
-            </div>
+            {/* Overlay y Texto sobre imagen */}
+            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 flex flex-col justify-center items-center text-white z-10 p-8 text-center space-y-6">
+              <div className="space-y-2">
+                <h3 className="text-2xl lg:text-3xl font-bold tracking-tight">¿Por qué invertir en LOKL?</h3>
+                <p className="text-lg lg:text-xl font-medium">
+                  Ya somos <span className="text-primary-foreground font-bold text-3xl">+ 1000</span>
+                  <br />
+                  inversionistas creciendo juntos
+                </p>
+              </div>
 
+              <div className="space-y-2 pt-4">
+                <p className="text-xl font-medium">Invierte de manera</p>
+                <h2 className="text-3xl lg:text-4xl font-extrabold tracking-tight">
+                  Simple, transparente, <br /> y flexible
+                </h2>
+              </div>
+            </div>
           </div>
         </motion.div>
 
