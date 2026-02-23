@@ -21,6 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/design-system";
 import { H2, Paragraph, Text } from "@/components/design-system";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription } from "@/components/design-system";
+import { Eye, EyeOff } from "lucide-react";
 
 interface WindowWithDataLayer extends Window {
   dataLayer: Record<string, unknown>[];
@@ -50,10 +51,9 @@ const PhoneInput = ({
   setPhone: (phone: string) => void; 
   error?: string;
 }) => {
-  // Lista de códigos de país comunes
+  // Lista completa de códigos de país
   const countryCodes = [
     { code: "+1", country: "US/CA" },
-    { code: "+34", country: "ES" },
     { code: "+52", country: "MX" },
     { code: "+57", country: "CO" },
     { code: "+54", country: "AR" },
@@ -61,16 +61,56 @@ const PhoneInput = ({
     { code: "+51", country: "PE" },
     { code: "+58", country: "VE" },
     { code: "+55", country: "BR" },
+    { code: "+34", country: "ES" },
     { code: "+44", country: "GB" },
+    { code: "+33", country: "FR" },
+    { code: "+49", country: "DE" },
+    { code: "+39", country: "IT" },
+    { code: "+31", country: "NL" },
+    { code: "+32", country: "BE" },
+    { code: "+41", country: "CH" },
+    { code: "+43", country: "AT" },
+    { code: "+351", country: "PT" },
+    { code: "+353", country: "IE" },
+    { code: "+45", country: "DK" },
+    { code: "+46", country: "SE" },
+    { code: "+47", country: "NO" },
+    { code: "+358", country: "FI" },
+    { code: "+48", country: "PL" },
+    { code: "+420", country: "CZ" },
+    { code: "+36", country: "HU" },
+    { code: "+40", country: "RO" },
+    { code: "+30", country: "GR" },
+    { code: "+7", country: "RU" },
+    { code: "+90", country: "TR" },
+    { code: "+971", country: "AE" },
+    { code: "+966", country: "SA" },
+    { code: "+972", country: "IL" },
+    { code: "+20", country: "EG" },
+    { code: "+27", country: "ZA" },
+    { code: "+61", country: "AU" },
+    { code: "+64", country: "NZ" },
+    { code: "+81", country: "JP" },
+    { code: "+82", country: "KR" },
+    { code: "+86", country: "CN" },
+    { code: "+91", country: "IN" },
+    { code: "+65", country: "SG" },
+    { code: "+60", country: "MY" },
+    { code: "+66", country: "TH" },
+    { code: "+62", country: "ID" },
+    { code: "+63", country: "PH" },
+    { code: "+84", country: "VN" },
+    { code: "+852", country: "HK" },
+    { code: "+886", country: "TW" },
   ];
 
   return (
-    <div className="grid grid-cols-[100px_1fr] gap-2">
+    <div className="grid grid-cols-[140px_1fr] gap-2">
       <Select value={countryCode} onValueChange={setCountryCode}>
         <SelectTrigger>
           <SelectValue placeholder="Código" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="max-h-[300px]">
           {countryCodes.map((country) => (
             <SelectItem key={country.code} value={country.code}>
               {country.code} {country.country}
@@ -168,6 +208,10 @@ export default function RegisterForm() {
   const [referralCode, setReferralCode] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [recaptchaCompleted, setRecaptchaCompleted] = useState(false);
+  
+  // Estados para mostrar/ocultar contraseñas
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
   // Estado para errores de validación
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
@@ -388,15 +432,28 @@ export default function RegisterForm() {
             
             {/* Contraseña */}
             <FormField label="Contraseña" htmlFor="password">
-
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Mínimo 8 caracteres"
-                className={validationErrors.password ? "border-[#FF3B30]" : ""}
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Mínimo 8 caracteres"
+                  className={`pr-10 ${validationErrors.password ? "border-[#FF3B30]" : ""}`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                  aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                >
+                  {showPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
+                </button>
+              </div>
               {validationErrors.password && (
                 <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.password}</p>
               )}
@@ -404,14 +461,28 @@ export default function RegisterForm() {
             
             {/* Confirmar Contraseña */}
             <FormField label="Confirmar contraseña" htmlFor="confirmPassword">
-              <Input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Repite tu contraseña"
-                className={validationErrors.confirmPassword ? "border-[#FF3B30]" : ""}
-              />
+              <div className="relative">
+                <Input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Repite tu contraseña"
+                  className={`pr-10 ${validationErrors.confirmPassword ? "border-[#FF3B30]" : ""}`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                  aria-label={showConfirmPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
+                </button>
+              </div>
               {validationErrors.confirmPassword && (
                 <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.confirmPassword}</p>
               )}
