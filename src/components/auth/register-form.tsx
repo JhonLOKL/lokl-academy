@@ -27,9 +27,11 @@ import {
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { countryCodes } from "@/lib/country-codes";
-import { Eye, EyeOff, Check, ChevronsUpDown, ArrowRight, ArrowLeft } from "lucide-react";
+import { Eye, EyeOff, Check, ChevronsUpDown, ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
 import { AuthLayout } from "./auth-layout";
 import { motion, AnimatePresence } from "framer-motion";
+import { upsertLeadAction } from "@/actions/user-action";
+import { useUtmStore } from "@/store/utm-store";
 
 interface WindowWithDataLayer extends Window {
   dataLayer: Record<string, unknown>[];
@@ -185,6 +187,11 @@ export default function RegisterForm() {
   // Estado para errores de validación
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [isSavingLead, setIsSavingLead] = useState(false);
+  const isSubmitting = isLoading || isSavingLead;
+  const [stepAttempted, setStepAttempted] = useState<Record<number, boolean>>({});
+
+  const { utmSource, utmMedium, utmCampaign, utmTerm, utmContent } = useUtmStore();
   
   // Función para validar el paso actual
   const validateStep = (step: number) => {
@@ -234,6 +241,7 @@ export default function RegisterForm() {
   };
 
   const handleNextStep = () => {
+    setStepAttempted((prev) => ({ ...prev, [currentStep]: true }));
     if (validateStep(currentStep)) {
       setCurrentStep((prev) => {
         const next = Math.min(prev + 1, totalSteps);
@@ -259,6 +267,7 @@ export default function RegisterForm() {
     e.preventDefault();
     
     if (currentStep !== totalSteps) return;
+    setStepAttempted((prev) => ({ ...prev, [currentStep]: true }));
     if (!validateStep(currentStep)) return;
     
     const success = await register({
@@ -271,10 +280,41 @@ export default function RegisterForm() {
       howDidYouHearAboutUs,
       referralCode,
       termsAccepted,
-      pageOrigin: "LOKL Academy"
+      pageOrigin: "LOKL Academy",
+      ...(utmSource && { utmSource }),
+      ...(utmMedium && { utmMedium }),
+      ...(utmCampaign && { utmCampaign }),
+      ...(utmTerm && { utmTerm }),
+      ...(utmContent && { utmContent }),
     });
     
     if (success) {
+      // Guardar lead (Sheets/CRM) SOLO si el registro fue exitoso.
+      // No bloquea el flujo si falla; es best-effort.
+      try {
+        setIsSavingLead(true);
+        const prefix = countryCodes.find((c) => c.country === countryIso)?.code || "";
+        const fullPhone = `${prefix}${phone}`.replace(/\s+/g, " ").trim();
+
+        await upsertLeadAction({
+          email,
+          firstName,
+          ...(fullPhone && { phone: fullPhone.replace(/\+/g, "") }),
+          // Mantener "origin" fijo para el canal, pero leadOrigin debe reflejar lo que eligió el usuario
+          origin: "Registro academy",
+          leadOrigin: howDidYouHearAboutUs,
+          ...(utmSource && { utmSource }),
+          ...(utmMedium && { utmMedium }),
+          ...(utmCampaign && { utmCampaign }),
+          ...(utmTerm && { utmTerm }),
+          ...(utmContent && { utmContent }),
+        });
+      } catch {
+        // noop
+      } finally {
+        setIsSavingLead(false);
+      }
+
       // Evento GA: Registro exitoso
       if (typeof window !== "undefined") {
         const w = window as unknown as WindowWithDataLayer;
@@ -395,9 +435,9 @@ export default function RegisterForm() {
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                         placeholder="Tu nombre"
-                        className={cn("h-12 bg-gray-50", validationErrors.firstName && "border-[#FF3B30]")}
+                        className={cn("h-12 bg-gray-50", stepAttempted[1] && validationErrors.firstName && "border-[#FF3B30]")}
                       />
-                      {validationErrors.firstName && (
+                      {stepAttempted[1] && validationErrors.firstName && (
                         <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.firstName}</p>
                       )}
                     </FormField>
@@ -408,9 +448,9 @@ export default function RegisterForm() {
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                         placeholder="Tu apellido"
-                        className={cn("h-12 bg-gray-50", validationErrors.lastName && "border-[#FF3B30]")}
+                        className={cn("h-12 bg-gray-50", stepAttempted[1] && validationErrors.lastName && "border-[#FF3B30]")}
                       />
-                      {validationErrors.lastName && (
+                      {stepAttempted[1] && validationErrors.lastName && (
                         <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.lastName}</p>
                       )}
                     </FormField>
@@ -422,9 +462,9 @@ export default function RegisterForm() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="tu@email.com"
-                      className={cn("h-12 bg-gray-50", validationErrors.email && "border-[#FF3B30]")}
+                      className={cn("h-12 bg-gray-50", stepAttempted[1] && validationErrors.email && "border-[#FF3B30]")}
                     />
-                    {validationErrors.email && (
+                    {stepAttempted[1] && validationErrors.email && (
                       <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.email}</p>
                     )}
                   </FormField>
@@ -441,7 +481,7 @@ export default function RegisterForm() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Mínimo 8 caracteres"
-                        className={cn("h-12 bg-gray-50 pr-10", validationErrors.password && "border-[#FF3B30]")}
+                        className={cn("h-12 bg-gray-50 pr-10", stepAttempted[2] && validationErrors.password && "border-[#FF3B30]")}
                       />
                       <button
                         type="button"
@@ -452,7 +492,7 @@ export default function RegisterForm() {
                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                       </button>
                     </div>
-                    {validationErrors.password && (
+                    {stepAttempted[2] && validationErrors.password && (
                       <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.password}</p>
                     )}
                   </FormField>
@@ -466,7 +506,7 @@ export default function RegisterForm() {
                         placeholder="Repite tu contraseña"
                         className={cn(
                           "h-12 bg-gray-50 pr-10",
-                          validationErrors.confirmPassword && "border-[#FF3B30]"
+                          stepAttempted[2] && validationErrors.confirmPassword && "border-[#FF3B30]"
                         )}
                       />
                       <button
@@ -478,7 +518,7 @@ export default function RegisterForm() {
                         {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                       </button>
                     </div>
-                    {validationErrors.confirmPassword && (
+                    {stepAttempted[2] && validationErrors.confirmPassword && (
                       <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.confirmPassword}</p>
                     )}
                   </FormField>
@@ -493,13 +533,13 @@ export default function RegisterForm() {
                       setCountryIso={setCountryIso}
                       phone={phone}
                       setPhone={setPhone}
-                      error={validationErrors.phone}
+                      error={stepAttempted[3] ? validationErrors.phone : undefined}
                     />
                   </FormField>
                   <FormField label="¿Cómo nos conociste?" htmlFor="howDidYouHearAboutUs">
                     <Select value={howDidYouHearAboutUs} onValueChange={setHowDidYouHearAboutUs}>
                       <SelectTrigger
-                        className={cn("h-12 bg-gray-50", validationErrors.howDidYouHearAboutUs && "border-[#FF3B30]")}
+                        className={cn("h-12 bg-gray-50", stepAttempted[3] && validationErrors.howDidYouHearAboutUs && "border-[#FF3B30]")}
                       >
                         <SelectValue placeholder="Selecciona una opción" />
                       </SelectTrigger>
@@ -511,7 +551,7 @@ export default function RegisterForm() {
                         ))}
                       </SelectContent>
                     </Select>
-                    {validationErrors.howDidYouHearAboutUs && (
+                    {stepAttempted[3] && validationErrors.howDidYouHearAboutUs && (
                       <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.howDidYouHearAboutUs}</p>
                     )}
                   </FormField>
@@ -536,10 +576,10 @@ export default function RegisterForm() {
                       <Checkbox
                         checked={recaptchaCompleted}
                         onCheckedChange={handleRecaptchaChange}
-                        className={validationErrors.recaptcha ? "border-[#FF3B30]" : ""}
+                        className={stepAttempted[4] && validationErrors.recaptcha ? "border-[#FF3B30]" : ""}
                       />
                     </div>
-                    {validationErrors.recaptcha && (
+                    {stepAttempted[4] && validationErrors.recaptcha && (
                       <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.recaptcha}</p>
                     )}
                   </div>
@@ -549,7 +589,7 @@ export default function RegisterForm() {
                       id="terms"
                       checked={termsAccepted}
                       onCheckedChange={(checked) => setTermsAccepted(checked === true)}
-                      className={validationErrors.termsAccepted ? "border-[#FF3B30]" : "mt-1"}
+                      className={stepAttempted[4] && validationErrors.termsAccepted ? "border-[#FF3B30]" : "mt-1"}
                     />
                     <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer leading-tight">
                       Acepto los{" "}
@@ -564,7 +604,7 @@ export default function RegisterForm() {
                       </Link>
                     </label>
                   </div>
-                  {validationErrors.termsAccepted && (
+                  {stepAttempted[4] && validationErrors.termsAccepted && (
                     <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.termsAccepted}</p>
                   )}
                 </>
@@ -575,20 +615,20 @@ export default function RegisterForm() {
           {/* Navegación */}
           {currentStep === 1 ? (
             <div className="flex items-center justify-end pt-1">
-              <Button type="button" onClick={handleNextStep} className="h-11 px-5">
+              <Button type="button" onClick={handleNextStep} className="h-11 px-5" disabled={isSubmitting}>
                 Siguiente
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
           ) : (
             <div className="flex items-center justify-between pt-1">
-              <Button type="button" variant="outline" onClick={handlePrevStep} className="h-11 px-4">
+              <Button type="button" variant="outline" onClick={handlePrevStep} className="h-11 px-4" disabled={isSubmitting}>
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Atrás
               </Button>
 
               {currentStep < totalSteps ? (
-                <Button type="button" onClick={handleNextStep} className="h-11 px-5">
+                <Button type="button" onClick={handleNextStep} className="h-11 px-5" disabled={isSubmitting}>
                   Siguiente
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -596,12 +636,25 @@ export default function RegisterForm() {
                 <Button
                   type="submit"
                   className="h-11 px-6 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300"
-                  disabled={isLoading}
+                  disabled={isSubmitting}
                 >
-                  {isLoading ? "Registrando..." : "Crear cuenta"}
+                  {isSubmitting ? (
+                    <span className="inline-flex items-center">
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Creando tu cuenta...
+                    </span>
+                  ) : (
+                    "Crear cuenta"
+                  )}
                 </Button>
               )}
             </div>
+          )}
+
+          {isSubmitting && currentStep === totalSteps && (
+            <p className="text-center text-xs text-gray-500">
+              Estamos creando tu cuenta. Esto puede tardar unos segundos.
+            </p>
           )}
 
           <div className="text-center pt-2 text-sm text-gray-600">

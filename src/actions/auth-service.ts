@@ -20,13 +20,19 @@ export const signUpAction = async ({
     leadOrigin,
     pageOrigin,
     referralCode,
-    termsAccepted
+    termsAccepted,
+    utmSource,
+    utmMedium,
+    utmCampaign,
+    utmTerm,
+    utmContent,
 }: {
     email: string, password: string, countryPhoneCode: string, firstName: string, lastName: string,
-    phone: string, leadOrigin: string, pageOrigin: string, referralCode: string, termsAccepted: boolean
+    phone: string, leadOrigin: string, pageOrigin: string, referralCode: string, termsAccepted: boolean,
+    utmSource?: string, utmMedium?: string, utmCampaign?: string, utmTerm?: string, utmContent?: string
 }) => {
     try {
-        const resp = await signUpService({ email, password, countryPhoneCode, firstName, lastName, phone, leadOrigin, pageOrigin, referralCode, termsAccepted })
+        const resp = await signUpService({ email, password, countryPhoneCode, firstName, lastName, phone, leadOrigin, pageOrigin, referralCode, termsAccepted, utmSource, utmMedium, utmCampaign, utmTerm, utmContent })
         if (!resp?.success) return { success: false, message: resp.message }
         return { success: true, message: resp.message, token: resp.data.token }
     } catch (error) {

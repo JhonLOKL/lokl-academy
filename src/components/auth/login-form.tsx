@@ -164,7 +164,7 @@ export default function LoginForm() {
           </FormField>
 
           {/* Contraseña */}
-          <FormField label="Contraseña" htmlFor="password">
+          <FormField label="" htmlFor="password">
             <div className="flex items-center justify-between mb-2">
               <label htmlFor="password" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Contraseña</label>
               <Link href={`${urls.DASHBOARD_URL}/reset-password`} className="text-xs font-medium text-[#5352F6] hover:text-[#3D3BF3] transition-colors">

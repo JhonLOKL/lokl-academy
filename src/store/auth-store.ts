@@ -72,6 +72,11 @@ interface RegisterData {
   referralCode?: string;
   termsAccepted: boolean;
   pageOrigin: string;
+  utmSource?: string;
+  utmMedium?: string;
+  utmCampaign?: string;
+  utmTerm?: string;
+  utmContent?: string;
 }
 
 // Crear el store con persistencia
@@ -129,7 +134,12 @@ export const useAuthStore = create<AuthState>()(
             leadOrigin: userData.howDidYouHearAboutUs,
             pageOrigin: userData.pageOrigin || 'LOKL Academy',
             referralCode: userData.referralCode || '',
-            termsAccepted: userData.termsAccepted
+            termsAccepted: userData.termsAccepted,
+            ...(userData.utmSource && { utmSource: userData.utmSource }),
+            ...(userData.utmMedium && { utmMedium: userData.utmMedium }),
+            ...(userData.utmCampaign && { utmCampaign: userData.utmCampaign }),
+            ...(userData.utmTerm && { utmTerm: userData.utmTerm }),
+            ...(userData.utmContent && { utmContent: userData.utmContent }),
           };
 
           const response = await signUpAction(serviceData);
