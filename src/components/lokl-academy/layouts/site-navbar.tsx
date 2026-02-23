@@ -13,6 +13,7 @@ import {
   CreditCard,
   FileText,
   TrendingUp,
+  User,
 } from "lucide-react";
 import { TopBanner } from "./top-banner";
 import { urls } from "@/config/urls";
@@ -38,6 +39,55 @@ export function SiteNavbar() {
     router.push("/dashboard");
   };
 
+  const mobileItems = [
+    { label: "Inicio", href: "/" },
+    { label: "Mis inversiones", href: `${urls.DASHBOARD_URL}/dashboard/income` },
+    { label: "Simulador", href: "/#simulator" },
+    { label: "Proyectos", href: "/#featured-projects" },
+    { label: "Contáctanos", href: "https://api.whatsapp.com/send/?phone=573017328112", external: true },
+    { label: "Nosotros", href: `${urls.SITE_URL}/aboutus` },
+    {
+      label: "Aprende",
+      dropdown: [
+        { label: "Cursos", href: "/course" },
+        { label: "Blogs", href: "/blog" },
+        { label: "Webinar", href: "/webinar" },
+        { label: "Reportes", href: "/reports" }
+      ]
+    },
+    { label: "Embajadores", href: `${urls.SITE_URL}/ambassadors` },
+  ];
+
+  if (!user) {
+    mobileItems.push({ 
+        label: "Únete a LOKL", 
+        href: "/register",
+        active: true // Para destacarlo si el navbar lo soporta, o simplemente como un item más
+    });
+  }
+
+  const mobileActions = user ? (
+    <div onClick={goToProfile} className="cursor-pointer">
+      {user.profilePhoto ? (
+        <Image
+          src={user.profilePhoto}
+          alt={`${user.firstName} ${user.lastName}`}
+          width={40}
+          height={40}
+          className="rounded-full object-cover border-[3px] border-[#5352F6]"
+        />
+      ) : (
+        <div className="w-10 h-10 rounded-full bg-[#5352F6] flex items-center justify-center text-white font-semibold border-[3px] border-[#5352F6]">
+          {user.firstName?.[0]?.toUpperCase() || 'U'}
+        </div>
+      )}
+    </div>
+  ) : (
+    <div onClick={goToLogin} className="w-10 h-10 rounded-full bg-black flex items-center justify-center cursor-pointer">
+      <User className="text-white w-5 h-5" />
+    </div>
+  );
+
   return (
     <>
       {pathname === '/' && <TopBanner />}
@@ -54,6 +104,8 @@ export function SiteNavbar() {
             />
           </Link>
         }
+        mobileItems={mobileItems}
+        mobileActions={mobileActions}
         items={[
           {
             label: (
