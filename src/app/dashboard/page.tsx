@@ -175,28 +175,28 @@ export default function DashboardPage() {
     status: "Activo" | "Registrado" | "Pendiente";
     statusVariant: "success" | "info" | "warning";
   }> = [
-    {
-      id: "ref-1",
-      name: "María González",
-      email: "maria.gonzalez@mail.com",
-      status: "Activo",
-      statusVariant: "success",
-    },
-    {
-      id: "ref-2",
-      name: "Carlos Restrepo",
-      email: "carlos.restrepo@mail.com",
-      status: "Registrado",
-      statusVariant: "info",
-    },
-    {
-      id: "ref-3",
-      name: "Ana Patricia Silva",
-      email: "ana.silva@mail.com",
-      status: "Pendiente",
-      statusVariant: "warning",
-    },
-  ];
+      {
+        id: "ref-1",
+        name: "María González",
+        email: "maria.gonzalez@mail.com",
+        status: "Activo",
+        statusVariant: "success",
+      },
+      {
+        id: "ref-2",
+        name: "Carlos Restrepo",
+        email: "carlos.restrepo@mail.com",
+        status: "Registrado",
+        statusVariant: "info",
+      },
+      {
+        id: "ref-3",
+        name: "Ana Patricia Silva",
+        email: "ana.silva@mail.com",
+        status: "Pendiente",
+        statusVariant: "warning",
+      },
+    ];
 
   // ==========================
   // Niveles por proyecto (UI)
@@ -323,14 +323,14 @@ export default function DashboardPage() {
   };
 
   // Estos datos se cargarán desde la API en el futuro
-/*   const recentCourses: never[] = [];
-  const upcomingEvents: never[] = [];
-*/
+  /*   const recentCourses: never[] = [];
+    const upcomingEvents: never[] = [];
+  */
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-[#F5F5F5]">
-          {/* Header con información del usuario - Mejorado con gradiente y mejor espaciado */}
-          <header className="bg-gradient-to-r from-[#5352F6] to-[#4A4AE5] text-white">
+        {/* Header con información del usuario - Mejorado con gradiente y mejor espaciado */}
+        <header className="bg-gradient-to-r from-[#5352F6] to-[#4A4AE5] text-white">
           <div className="container mx-auto px-4 py-8 md:py-12">
             <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
@@ -368,10 +368,10 @@ export default function DashboardPage() {
                   )}
                 </div>
                 <div>
-                  <H1 variant="page-title" color="white" className="mb-1">
+                  <H1 variant="page-title" color="white" className="mb-1 text-center sm:text-left">
                     Bienvenido, {user?.firstName || "Usuario"}
                   </H1>
-                  <Paragraph color="white" className="opacity-90">
+                  <Paragraph color="white" className="opacity-90 text-center sm:text-left">
                     {user?.email}
                   </Paragraph>
                   <div className="flex flex-wrap gap-2 mt-3 justify-center sm:justify-start">
@@ -458,7 +458,7 @@ export default function DashboardPage() {
           <section className="mb-12">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
               <H2 variant="section" id="panel-control">Panel de Control</H2>
-              <Button variant="outline" className="flex items-center gap-2" onClick={() => router.push("/course")} aria-label="Explorar catálogo de cursos">
+              <Button variant="outline" className="hidden sm:flex items-center gap-2" onClick={() => router.push("/course")} aria-label="Explorar catálogo de cursos">
                 <BookOpen size={16} />
                 Explorar cursos
               </Button>
@@ -474,7 +474,7 @@ export default function DashboardPage() {
                     <Text size="sm" color="muted">Atajos a los módulos principales</Text>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
                     {[
                       {
                         title: "Rentabilidad",
@@ -508,12 +508,29 @@ export default function DashboardPage() {
                         className="group block rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5352F6] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F5F5F5]"
                         aria-label={`Ir a ${item.title}`}
                       >
-                        <Card className="relative border-none shadow-sm transition-all group-hover:shadow-md h-full p-5 overflow-hidden min-h-[116px]">
+                        <Card className="relative border-none shadow-sm transition-all group-hover:shadow-md overflow-hidden aspect-square sm:aspect-auto sm:min-h-[116px] p-0 sm:p-5">
                           <div
-                            className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#5352F6] to-[#4A4AE5]"
+                            className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#5352F6] to-[#4A4AE5] hidden sm:block"
                             aria-hidden="true"
                           />
-                          <div className="flex items-start gap-4">
+                          {/* Mobile: cuadrada premium — centrada */}
+                          <div className="flex h-full flex-col sm:hidden relative overflow-hidden items-center justify-center text-center p-4  via-slate-50 to-slate-100">
+                            {/* Ícono centrado y destacado */}
+                            <div
+                              className="mb-3 rounded-2xl bg-white p-3 ring-1 ring-indigo-50 transition-transform group-hover:scale-110"
+                              aria-hidden="true"
+                            >
+                              <item.icon size={24} className="text-[#5352F6]" />
+                            </div>
+
+                            {/* Título centrado */}
+                            <p className="text-[13px] font-semibold text-[#1C274C] leading-tight line-clamp-2 px-1">
+                              {item.title}
+                            </p>
+                          </div>
+
+                          {/* Desktop: layout original (más ancho, con descripción) */}
+                          <div className="hidden sm:flex items-start gap-4">
                             <div
                               className="rounded-xl bg-[#5352F6]/10 p-3 ring-1 ring-[#5352F6]/10 transition-colors group-hover:bg-[#5352F6]/15 flex-none"
                               aria-hidden="true"
@@ -638,7 +655,7 @@ export default function DashboardPage() {
               {/* Columna derecha (1/3 en desktop): Referidos */}
               <div className="space-y-6">
                 <Card className="border-none shadow-sm">
-                  <CardContent className="p-5 space-y-5">
+                  <CardContent className="space-y-5">
                     {/* Header minimal */}
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-start gap-3 min-w-0">
@@ -652,16 +669,6 @@ export default function DashboardPage() {
                           </Text>
                         </div>
                       </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="whitespace-nowrap"
-                        onClick={() => router.push("/ambassadors")}
-                        aria-label="Ver programa de referidos"
-                      >
-                        Ver programa
-                        <ChevronRight size={16} />
-                      </Button>
                     </div>
 
                     {/* Beneficios (colapsable) */}
@@ -723,17 +730,17 @@ export default function DashboardPage() {
                         )}
                       </div>
 
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-col xs:flex-row items-stretch gap-2">
                         <Input
                           value={referralLink || "No disponible"}
                           readOnly
                           aria-label="Link de referidos"
                           icon={<Link2 size={16} />}
-                          className="h-12 bg-[#F5F5F5] border-none focus-visible:ring-offset-0"
+                          className="h-12 bg-[#F5F5F5] border-none focus-visible:ring-offset-0 min-w-0"
                         />
                         <Button
                           variant="primary"
-                          className="h-12 px-4 whitespace-nowrap"
+                          className="h-12 px-4 whitespace-nowrap w-full xs:w-auto"
                           onClick={handleCopyReferralLink}
                           disabled={!referralLink}
                           aria-label="Copiar link de referidos"
@@ -799,7 +806,11 @@ export default function DashboardPage() {
                           <div key={ref.id} className="px-4 py-3">
                             <UserCard
                               name={ref.name}
-                              role={ref.email}
+                              role={
+                                <span className="block truncate max-w-[140px] xs:max-w-[200px] sm:max-w-none text-muted-foreground text-sm">
+                                  {ref.email}
+                                </span> as unknown as string
+                              }
                               className="border-none shadow-none bg-transparent rounded-none !p-0"
                               avatar={
                                 <Avatar className="h-10 w-10">
@@ -813,6 +824,18 @@ export default function DashboardPage() {
                           </div>
                         );
                       })}
+                    </div>
+
+                    <div className="flex justify-end pt-1">
+                      <Button
+                        variant="ghost"
+                        className="flex items-center gap-2"
+                        onClick={() => router.push("/ambassadors")}
+                        aria-label="Ver programa de referidos"
+                      >
+                        Ver programa
+                        <ChevronRight size={16} />
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -873,7 +896,7 @@ export default function DashboardPage() {
             </div>
           </section>
         </main>
-        
+
         {/* Footer con información adicional */}
         <footer className="bg-white border-t border-[#E5E5E5] py-6" role="contentinfo">
           <div className="container mx-auto px-4 text-center">

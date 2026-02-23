@@ -131,14 +131,14 @@ InvestmentCard.displayName = "InvestmentCard";
 
 const UserCard = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & {
+  Omit<React.HTMLAttributes<HTMLDivElement>, "role"> & {
     avatar?: React.ReactNode;
     name: string;
-    role?: string;
+    role?: string | React.ReactNode;
     actions?: React.ReactNode;
   }
 >(({ className, avatar, name, role, actions, ...props }, ref) => (
-  <Card variant="user" className={cn("flex items-center gap-4", className)} ref={ref} {...props}>
+  <Card variant="user" className={cn("flex flex-col md:flex-row items-center gap-4", className)} ref={ref} {...props}>
     {avatar && (
       <div className="flex-shrink-0">{avatar}</div>
     )}
