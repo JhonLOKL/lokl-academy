@@ -3,23 +3,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { useAuthStore } from "@/store/auth-store";
 import { consumePostLoginRedirect, setPostLoginRedirect } from "@/lib/auth-utils";
-import { 
-  Card, 
-  CardHeader, 
-  CardContent, 
-  CardFooter, 
-  CardTitle, 
-  CardDescription 
-} from "@/components/design-system";
 import { Button } from "@/components/design-system";
 import { Input } from "@/components/design-system";
 import { FormField } from "@/components/design-system";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/design-system";
 import { Checkbox } from "@/components/design-system";
-import { H2, Paragraph, Text } from "@/components/design-system";
+import { Text } from "@/components/design-system";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription } from "@/components/design-system";
 import { 
   Popover,
@@ -36,7 +27,9 @@ import {
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { countryCodes } from "@/lib/country-codes";
-import { Eye, EyeOff, Check, ChevronsUpDown } from "lucide-react";
+import { Eye, EyeOff, Check, ChevronsUpDown, ArrowRight, ArrowLeft } from "lucide-react";
+import { AuthLayout } from "./auth-layout";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface WindowWithDataLayer extends Window {
   dataLayer: Record<string, unknown>[];
@@ -148,36 +141,6 @@ export default function RegisterForm() {
     "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_INDIE.png",
     "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_NDA.png"
   ];
-
-  // Estados para controlar los índices de imágenes
-  const [currentMobileImageIndex, setCurrentMobileImageIndex] = useState(0);
-  const [currentDesktopImageIndex, setCurrentDesktopImageIndex] = useState(0);
-
-  // Rotación automática de imágenes móviles cada 5 segundos
-  useEffect(() => {
-    if (mobileHeroImages.length === 0) return;
-
-    const interval = setInterval(() => {
-      setCurrentMobileImageIndex(
-        (prev) => (prev + 1) % mobileHeroImages.length,
-      );
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [mobileHeroImages.length]);
-
-  // Rotación automática de imágenes desktop cada 5 segundos
-  useEffect(() => {
-    if (desktopHeroImages.length === 0) return;
-
-    const interval = setInterval(() => {
-      setCurrentDesktopImageIndex(
-        (prev) => (prev + 1) % desktopHeroImages.length,
-      );
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [desktopHeroImages.length]);
   
   // Si viene ?redirect en la URL, guardarlo para post-login
   useEffect(() => {
@@ -210,6 +173,11 @@ export default function RegisterForm() {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [recaptchaCompleted, setRecaptchaCompleted] = useState(false);
   
+  // Estado para el paso actual
+  const [currentStep, setCurrentStep] = useState(1);
+  const [maxStepReached, setMaxStepReached] = useState(1);
+  const totalSteps = 4;
+
   // Estados para mostrar/ocultar contraseñas
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -218,54 +186,80 @@ export default function RegisterForm() {
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [showErrorDialog, setShowErrorDialog] = useState(false);
   
-  // Función para validar el formulario
-  const validateForm = () => {
+  // Función para validar el paso actual
+  const validateStep = (step: number) => {
     const errors: Record<string, string> = {};
-    
-    if (!firstName) errors.firstName = "El nombre es obligatorio";
-    if (!lastName) errors.lastName = "El apellido es obligatorio";
-    
-    if (!email) {
-      errors.email = "El correo electrónico es obligatorio";
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      errors.email = "El correo electrónico no es válido";
+    let isValid = true;
+
+    if (step === 1) {
+      if (!firstName) errors.firstName = "El nombre es obligatorio";
+      if (!lastName) errors.lastName = "El apellido es obligatorio";
+      if (!email) {
+        errors.email = "El correo electrónico es obligatorio";
+      } else if (!/\S+@\S+\.\S+/.test(email)) {
+        errors.email = "El correo electrónico no es válido";
+      }
     }
-    
-    if (!password) {
-      errors.password = "La contraseña es obligatoria";
-    } else if (password.length < 8) {
-      errors.password = "La contraseña debe tener al menos 8 caracteres";
+
+    if (step === 2) {
+      if (!password) {
+        errors.password = "La contraseña es obligatoria";
+      } else if (password.length < 8) {
+        errors.password = "La contraseña debe tener al menos 8 caracteres";
+      }
+      
+      if (password !== confirmPassword) {
+        errors.confirmPassword = "Las contraseñas no coinciden";
+      }
     }
-    
-    if (password !== confirmPassword) {
-      errors.confirmPassword = "Las contraseñas no coinciden";
+
+    if (step === 3) {
+      if (!phone) errors.phone = "El teléfono es obligatorio";
+      if (!howDidYouHearAboutUs) errors.howDidYouHearAboutUs = "Este campo es obligatorio";
     }
-    
-    if (!phone) {
-      errors.phone = "El teléfono es obligatorio";
+
+    if (step === 4) {
+      if (!termsAccepted) errors.termsAccepted = "Debes aceptar los términos y condiciones";
+      if (!recaptchaCompleted) errors.recaptcha = "Por favor, completa el captcha";
     }
-    
-    if (!howDidYouHearAboutUs) {
-      errors.howDidYouHearAboutUs = "Este campo es obligatorio";
+
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      isValid = false;
+    } else {
+      setValidationErrors({});
     }
-    
-    if (!termsAccepted) {
-      errors.termsAccepted = "Debes aceptar los términos y condiciones";
+
+    return isValid;
+  };
+
+  const handleNextStep = () => {
+    if (validateStep(currentStep)) {
+      setCurrentStep((prev) => {
+        const next = Math.min(prev + 1, totalSteps);
+        setMaxStepReached((m) => Math.max(m, next));
+        return next;
+      });
     }
-    
-    if (!recaptchaCompleted) {
-      errors.recaptcha = "Por favor, completa el captcha";
+  };
+
+  const handlePrevStep = () => {
+    setCurrentStep((prev) => Math.max(prev - 1, 1));
+  };
+
+  const handleGoToStep = (step: number) => {
+    if (step <= maxStepReached) {
+      setCurrentStep(step);
+      setValidationErrors({});
     }
-    
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
   };
   
   // Función para manejar el envío del formulario
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm()) return;
+    if (currentStep !== totalSteps) return;
+    if (!validateStep(currentStep)) return;
     
     const success = await register({
       firstName,
@@ -312,291 +306,315 @@ export default function RegisterForm() {
   };
   
   return (
-    <div className="relative min-h-screen w-full">
-      {/* Fondo */}
-      <div className="absolute inset-0 z-0">
-        {/* Fondo Desktop */}
-        <div className="hidden md:block absolute inset-0 overflow-hidden">
-          {desktopHeroImages.map((imageUrl, index) => (
-            <div
-              key={index}
-              aria-hidden="true"
-              className={`absolute inset-0 transition-opacity duration-1000 ${index === currentDesktopImageIndex
-                  ? "opacity-100"
-                  : "opacity-0"
-                }`}
+    <div className="relative min-h-screen w-full bg-white">
+      <AuthLayout
+        title="Regístrate y únete a LOKL"
+        subtitle="Comienza tu camino en inversiones inmobiliarias hoy mismo."
+        imageSide="right"
+        desktopImages={desktopHeroImages}
+        mobileImages={mobileHeroImages}
+      >
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Stepper compacto (progresivo): NO se muestra en el inicio */}
+          {currentStep > 1 && (() => {
+            const steps = [
+              { step: 1, label: "Datos" },
+              { step: 2, label: "Seguridad" },
+              { step: 3, label: "Contacto" },
+              { step: 4, label: "Confirmar" },
+            ];
+            const visibleSteps = steps.filter((s) => s.step <= maxStepReached);
+            const currentLabel = steps.find((s) => s.step === currentStep)?.label ?? "";
+
+            return (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-500">
+                    Paso <span className="font-semibold text-gray-700">{currentStep}</span> de{" "}
+                    <span className="font-semibold text-gray-700">{totalSteps}</span>
+                  </p>
+                  <p className="text-sm font-semibold text-gray-800">{currentLabel}</p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {visibleSteps.map((s, idx) => {
+                    const isActive = currentStep === s.step;
+                    const isComplete = s.step < currentStep;
+
+                    return (
+                      <div key={s.step} className="flex items-center gap-2 flex-1">
+                        <button
+                          type="button"
+                          onClick={() => handleGoToStep(s.step)}
+                          aria-current={isActive ? "step" : undefined}
+                          className={cn(
+                            "h-8 w-8 rounded-full border text-sm font-semibold transition-colors",
+                            isActive
+                              ? "border-[#5352F6] bg-[#5352F6] text-white"
+                              : isComplete
+                                ? "border-[#5352F6] bg-[#5352F6]/10 text-[#5352F6] hover:bg-[#5352F6]/15"
+                                : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
+                          )}
+                          title={s.label}
+                        >
+                          {s.step}
+                        </button>
+
+                        {idx < visibleSteps.length - 1 && (
+                          <div
+                            className={cn(
+                              "h-[2px] w-full rounded-full",
+                              s.step < currentStep ? "bg-[#5352F6]" : "bg-gray-200"
+                            )}
+                          />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
+
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={currentStep}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.18 }}
+              className="space-y-5"
             >
-              <Image
-                src={imageUrl}
-                alt={`LOKL Academy - Registro desktop ${index + 1}`}
-                fill
-                className="object-cover object-center"
-                priority={true}
-                quality={90}
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Fondo Móvil */}
-        <div className="md:hidden absolute inset-0 overflow-hidden">
-          {mobileHeroImages.map((imageUrl, index) => (
-            <div
-              key={index}
-              aria-hidden="true"
-              className={`absolute inset-0 transition-opacity duration-1000 ${index === currentMobileImageIndex
-                  ? "opacity-100"
-                  : "opacity-0"
-                }`}
-            >
-              <Image
-                src={imageUrl}
-                alt={`LOKL Academy - Registro móvil ${index + 1}`}
-                fill
-                className="object-cover object-center"
-                priority={true}
-                quality={90}
-              />
-            </div>
-          ))}
-        </div>
-
-        <div className="absolute inset-0 bg-black/40" />
-      </div>
-      
-      <div className="relative z-10 flex min-h-screen w-full items-center justify-center px-4 py-16">
-        <Card className="mx-auto max-w-lg backdrop-blur-sm bg-white/95 shadow-xl">
-        <CardHeader>
-          <CardTitle>
-            <H2 variant="section" className="text-center">
-              Crear una cuenta
-            </H2>
-          </CardTitle>
-          <CardDescription>
-            <Paragraph variant="lead" color="muted" className="text-center">
-              Únete a LOKL Academy y comienza tu camino en inversiones inmobiliarias
-            </Paragraph>
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {/* Nombre */}
-              <FormField label="Nombre" htmlFor="firstName">
-
-                <Input
-                  id="firstName"
-                  type="text"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  placeholder="Tu nombre"
-                  className={validationErrors.firstName ? "border-[#FF3B30]" : ""}
-                />
-                {validationErrors.firstName && (
-                  <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.firstName}</p>
-                )}
-              </FormField>
-              
-              {/* Apellido */}
-              <FormField label="Apellido" htmlFor="lastName">
-
-                <Input
-                  id="lastName"
-                  type="text"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  placeholder="Tu apellido"
-                  className={validationErrors.lastName ? "border-[#FF3B30]" : ""}
-                />
-                {validationErrors.lastName && (
-                  <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.lastName}</p>
-                )}
-              </FormField>
-            </div>
-            
-            {/* Email */}
-            <FormField label="Correo electrónico" htmlFor="email">
-
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="tu@email.com"
-                className={validationErrors.email ? "border-[#FF3B30]" : ""}
-              />
-              {validationErrors.email && (
-                <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.email}</p>
+              {currentStep === 1 && (
+                <>
+                  <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                    <FormField label="Nombre" htmlFor="firstName">
+                      <Input
+                        id="firstName"
+                        type="text"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        placeholder="Tu nombre"
+                        className={cn("h-12 bg-gray-50", validationErrors.firstName && "border-[#FF3B30]")}
+                      />
+                      {validationErrors.firstName && (
+                        <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.firstName}</p>
+                      )}
+                    </FormField>
+                    <FormField label="Apellido" htmlFor="lastName">
+                      <Input
+                        id="lastName"
+                        type="text"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        placeholder="Tu apellido"
+                        className={cn("h-12 bg-gray-50", validationErrors.lastName && "border-[#FF3B30]")}
+                      />
+                      {validationErrors.lastName && (
+                        <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.lastName}</p>
+                      )}
+                    </FormField>
+                  </div>
+                  <FormField label="Correo electrónico" htmlFor="email">
+                    <Input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="tu@email.com"
+                      className={cn("h-12 bg-gray-50", validationErrors.email && "border-[#FF3B30]")}
+                    />
+                    {validationErrors.email && (
+                      <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.email}</p>
+                    )}
+                  </FormField>
+                </>
               )}
-            </FormField>
-            
-            {/* Contraseña */}
-            <FormField label="Contraseña" htmlFor="password">
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Mínimo 8 caracteres"
-                  className={`pr-10 ${validationErrors.password ? "border-[#FF3B30]" : ""}`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
-                  aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                >
-                  {showPassword ? (
-                    <EyeOff size={18} />
-                  ) : (
-                    <Eye size={18} />
+
+              {currentStep === 2 && (
+                <>
+                  <FormField label="Contraseña" htmlFor="password">
+                    <div className="relative">
+                      <Input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Mínimo 8 caracteres"
+                        className={cn("h-12 bg-gray-50 pr-10", validationErrors.password && "border-[#FF3B30]")}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                        aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                    {validationErrors.password && (
+                      <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.password}</p>
+                    )}
+                  </FormField>
+                  <FormField label="Confirmar contraseña" htmlFor="confirmPassword">
+                    <div className="relative">
+                      <Input
+                        id="confirmPassword"
+                        type={showConfirmPassword ? "text" : "password"}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="Repite tu contraseña"
+                        className={cn(
+                          "h-12 bg-gray-50 pr-10",
+                          validationErrors.confirmPassword && "border-[#FF3B30]"
+                        )}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                        aria-label={showConfirmPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                      >
+                        {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                    {validationErrors.confirmPassword && (
+                      <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.confirmPassword}</p>
+                    )}
+                  </FormField>
+                </>
+              )}
+
+              {currentStep === 3 && (
+                <>
+                  <FormField label="Teléfono" htmlFor="phone">
+                    <PhoneInput
+                      countryIso={countryIso}
+                      setCountryIso={setCountryIso}
+                      phone={phone}
+                      setPhone={setPhone}
+                      error={validationErrors.phone}
+                    />
+                  </FormField>
+                  <FormField label="¿Cómo nos conociste?" htmlFor="howDidYouHearAboutUs">
+                    <Select value={howDidYouHearAboutUs} onValueChange={setHowDidYouHearAboutUs}>
+                      <SelectTrigger
+                        className={cn("h-12 bg-gray-50", validationErrors.howDidYouHearAboutUs && "border-[#FF3B30]")}
+                      >
+                        <SelectValue placeholder="Selecciona una opción" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {referralOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {validationErrors.howDidYouHearAboutUs && (
+                      <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.howDidYouHearAboutUs}</p>
+                    )}
+                  </FormField>
+                  <FormField label="Código de referido (opcional)" htmlFor="referralCode">
+                    <Input
+                      id="referralCode"
+                      type="text"
+                      value={referralCode}
+                      onChange={(e) => setReferralCode(e.target.value)}
+                      placeholder="Si tienes un código de referido"
+                      className="h-12 bg-gray-50"
+                    />
+                  </FormField>
+                </>
+              )}
+
+              {currentStep === 4 && (
+                <>
+                  <div className="border border-[#E5E5E5] p-4 rounded-md bg-gray-50/50">
+                    <div className="flex items-center justify-between">
+                      <Text>No soy un robot</Text>
+                      <Checkbox
+                        checked={recaptchaCompleted}
+                        onCheckedChange={handleRecaptchaChange}
+                        className={validationErrors.recaptcha ? "border-[#FF3B30]" : ""}
+                      />
+                    </div>
+                    {validationErrors.recaptcha && (
+                      <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.recaptcha}</p>
+                    )}
+                  </div>
+
+                  <div className="flex items-start space-x-2 pt-1">
+                    <Checkbox
+                      id="terms"
+                      checked={termsAccepted}
+                      onCheckedChange={(checked) => setTermsAccepted(checked === true)}
+                      className={validationErrors.termsAccepted ? "border-[#FF3B30]" : "mt-1"}
+                    />
+                    <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer leading-tight">
+                      Acepto los{" "}
+                      <Link
+                        href="https://drive.google.com/file/d/1R6aOvsRjYVo-d398PskWJjwL4_WrY9PP/view"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#5352F6] font-medium hover:underline"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        términos y condiciones
+                      </Link>
+                    </label>
+                  </div>
+                  {validationErrors.termsAccepted && (
+                    <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.termsAccepted}</p>
                   )}
-                </button>
-              </div>
-              {validationErrors.password && (
-                <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.password}</p>
+                </>
               )}
-            </FormField>
-            
-            {/* Confirmar Contraseña */}
-            <FormField label="Confirmar contraseña" htmlFor="confirmPassword">
-              <div className="relative">
-                <Input
-                  id="confirmPassword"
-                  type={showConfirmPassword ? "text" : "password"}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Repite tu contraseña"
-                  className={`pr-10 ${validationErrors.confirmPassword ? "border-[#FF3B30]" : ""}`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
-                  aria-label={showConfirmPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Navegación */}
+          {currentStep === 1 ? (
+            <div className="flex items-center justify-end pt-1">
+              <Button type="button" onClick={handleNextStep} className="h-11 px-5">
+                Siguiente
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between pt-1">
+              <Button type="button" variant="outline" onClick={handlePrevStep} className="h-11 px-4">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Atrás
+              </Button>
+
+              {currentStep < totalSteps ? (
+                <Button type="button" onClick={handleNextStep} className="h-11 px-5">
+                  Siguiente
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  className="h-11 px-6 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300"
+                  disabled={isLoading}
                 >
-                  {showConfirmPassword ? (
-                    <EyeOff size={18} />
-                  ) : (
-                    <Eye size={18} />
-                  )}
-                </button>
-              </div>
-              {validationErrors.confirmPassword && (
-                <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.confirmPassword}</p>
-              )}
-            </FormField>
-            
-            {/* Teléfono */}
-            <FormField label="Teléfono" htmlFor="phone">
-
-              <PhoneInput
-                countryIso={countryIso}
-                setCountryIso={setCountryIso}
-                phone={phone}
-                setPhone={setPhone}
-                error={validationErrors.phone}
-              />
-            </FormField>
-            
-            {/* ¿Cómo nos conociste? */}
-            <FormField label="¿Cómo nos conociste?" htmlFor="howDidYouHearAboutUs">
-
-              <Select 
-                value={howDidYouHearAboutUs} 
-                onValueChange={setHowDidYouHearAboutUs}
-              >
-                <SelectTrigger className={validationErrors.howDidYouHearAboutUs ? "border-[#FF3B30]" : ""}>
-                  <SelectValue placeholder="Selecciona una opción" />
-                </SelectTrigger>
-                <SelectContent>
-                  {referralOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {validationErrors.howDidYouHearAboutUs && (
-                <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.howDidYouHearAboutUs}</p>
-              )}
-            </FormField>
-            
-            {/* Código de referido (opcional) */}
-            <FormField label="Código de referido (opcional)" htmlFor="referralCode">
-
-              <Input
-                id="referralCode"
-                type="text"
-                value={referralCode}
-                onChange={(e) => setReferralCode(e.target.value)}
-                placeholder="Si tienes un código de referido"
-              />
-            </FormField>
-            
-            {/* reCAPTCHA */}
-            <div className="border border-[#E5E5E5] p-4 rounded-md">
-              <div className="flex items-center justify-between">
-                <Text>No soy un robot</Text>
-                <Checkbox 
-                  checked={recaptchaCompleted}
-                  onCheckedChange={handleRecaptchaChange}
-                  className={validationErrors.recaptcha ? "border-[#FF3B30]" : ""}
-                />
-              </div>
-              {validationErrors.recaptcha && (
-                <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.recaptcha}</p>
+                  {isLoading ? "Registrando..." : "Crear cuenta"}
+                </Button>
               )}
             </div>
-            
-            {/* Términos y condiciones */}
-            <div className="flex items-start space-x-2">
-              <Checkbox 
-                id="terms" 
-                checked={termsAccepted}
-                onCheckedChange={(checked) => setTermsAccepted(checked === true)}
-                className={validationErrors.termsAccepted ? "border-[#FF3B30]" : "mt-1"}
-              />
-              <label htmlFor="terms" className="text-sm text-gray-700 cursor-pointer">
-                Acepto los{" "}
-                <Link 
-                  href="https://drive.google.com/file/d/1R6aOvsRjYVo-d398PskWJjwL4_WrY9PP/view" 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#5352F6] hover:underline"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  términos y condiciones
-                </Link>
-              </label>
-            </div>
-            {validationErrors.termsAccepted && (
-              <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.termsAccepted}</p>
-            )}
-            
-            {/* Botón de registro */}
-            <Button 
-              type="submit" 
-              className="w-full" 
-              disabled={isLoading}
-            >
-              {isLoading ? "Registrando..." : "Crear cuenta"}
-            </Button>
-          </form>
-        </CardContent>
-        
-        <CardFooter className="flex justify-center">
-          <Text>
+          )}
+
+          <div className="text-center pt-2 text-sm text-gray-600">
             ¿Ya tienes una cuenta?{" "}
-            <Link href={searchParams.get("redirect") ? `/login?redirect=${encodeURIComponent(searchParams.get("redirect") || "")}` : "/login"} className="text-[#5352F6] hover:underline">
+            <Link
+              href={searchParams.get("redirect") ? `/login?redirect=${encodeURIComponent(searchParams.get("redirect") || "")}` : "/login"}
+              className="text-[#5352F6] font-semibold hover:underline"
+            >
               Inicia sesión
             </Link>
-          </Text>
-        </CardFooter>
-      </Card>
-      </div>
+          </div>
+        </form>
+      </AuthLayout>
       
       {/* Diálogo de error */}
       <AlertDialog open={showErrorDialog} onOpenChange={handleCloseErrorDialog}>
