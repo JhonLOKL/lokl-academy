@@ -21,7 +21,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/design-system";
 import { H2, Paragraph, Text } from "@/components/design-system";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription } from "@/components/design-system";
-import { Eye, EyeOff } from "lucide-react";
+import { 
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/design-system";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { cn } from "@/lib/utils";
+import { countryCodes } from "@/lib/country-codes";
+import { Eye, EyeOff, Check, ChevronsUpDown } from "lucide-react";
 
 interface WindowWithDataLayer extends Window {
   dataLayer: Record<string, unknown>[];
@@ -39,85 +54,71 @@ const referralOptions = [
 
 // Componente para seleccionar el código de país y teléfono
 const PhoneInput = ({ 
-  countryCode, 
-  setCountryCode, 
+  countryIso, 
+  setCountryIso, 
   phone, 
   setPhone, 
   error 
 }: { 
-  countryCode: string; 
-  setCountryCode: (code: string) => void; 
+  countryIso: string; 
+  setCountryIso: (iso: string) => void; 
   phone: string; 
   setPhone: (phone: string) => void; 
   error?: string;
 }) => {
-  // Lista completa de códigos de país
-  const countryCodes = [
-    { code: "+1", country: "US/CA" },
-    { code: "+52", country: "MX" },
-    { code: "+57", country: "CO" },
-    { code: "+54", country: "AR" },
-    { code: "+56", country: "CL" },
-    { code: "+51", country: "PE" },
-    { code: "+58", country: "VE" },
-    { code: "+55", country: "BR" },
-    { code: "+34", country: "ES" },
-    { code: "+44", country: "GB" },
-    { code: "+33", country: "FR" },
-    { code: "+49", country: "DE" },
-    { code: "+39", country: "IT" },
-    { code: "+31", country: "NL" },
-    { code: "+32", country: "BE" },
-    { code: "+41", country: "CH" },
-    { code: "+43", country: "AT" },
-    { code: "+351", country: "PT" },
-    { code: "+353", country: "IE" },
-    { code: "+45", country: "DK" },
-    { code: "+46", country: "SE" },
-    { code: "+47", country: "NO" },
-    { code: "+358", country: "FI" },
-    { code: "+48", country: "PL" },
-    { code: "+420", country: "CZ" },
-    { code: "+36", country: "HU" },
-    { code: "+40", country: "RO" },
-    { code: "+30", country: "GR" },
-    { code: "+7", country: "RU" },
-    { code: "+90", country: "TR" },
-    { code: "+971", country: "AE" },
-    { code: "+966", country: "SA" },
-    { code: "+972", country: "IL" },
-    { code: "+20", country: "EG" },
-    { code: "+27", country: "ZA" },
-    { code: "+61", country: "AU" },
-    { code: "+64", country: "NZ" },
-    { code: "+81", country: "JP" },
-    { code: "+82", country: "KR" },
-    { code: "+86", country: "CN" },
-    { code: "+91", country: "IN" },
-    { code: "+65", country: "SG" },
-    { code: "+60", country: "MY" },
-    { code: "+66", country: "TH" },
-    { code: "+62", country: "ID" },
-    { code: "+63", country: "PH" },
-    { code: "+84", country: "VN" },
-    { code: "+852", country: "HK" },
-    { code: "+886", country: "TW" },
-  ];
+  const [open, setOpen] = useState(false);
+  const selectedCountry = countryCodes.find((c) => c.country === countryIso);
 
   return (
     <div className="grid grid-cols-[140px_1fr] gap-2">
-      <Select value={countryCode} onValueChange={setCountryCode}>
-        <SelectTrigger>
-          <SelectValue placeholder="Código" />
-        </SelectTrigger>
-        <SelectContent className="max-h-[300px]">
-          {countryCodes.map((country) => (
-            <SelectItem key={country.code} value={country.code}>
-              {country.code} {country.country}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="w-full justify-between px-3 font-normal"
+          >
+            {selectedCountry ? (
+               <span className="truncate flex items-center">
+                {selectedCountry.code} <span className="ml-1 text-xs text-muted-foreground hidden sm:inline">{selectedCountry.country}</span>
+               </span>
+            ) : (
+              "Código"
+            )}
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[300px] p-0" align="start">
+          <Command>
+            <CommandInput placeholder="Buscar país o código..." />
+            <CommandList>
+              <CommandEmpty>No se encontró el país.</CommandEmpty>
+              <CommandGroup>
+                {countryCodes.map((country) => (
+                  <CommandItem
+                    key={`${country.country}-${country.code}`}
+                    value={`${country.name} ${country.code}`} 
+                    onSelect={() => {
+                      setCountryIso(country.country);
+                      setOpen(false);
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        countryIso === country.country ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    <span className="mr-2 font-medium">{country.code}</span>
+                    <span className="truncate text-muted-foreground">{country.name}</span>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
       <Input 
         type="tel" 
         placeholder="Número de teléfono" 
@@ -202,7 +203,7 @@ export default function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [countryCode, setCountryCode] = useState("+34");
+  const [countryIso, setCountryIso] = useState("CO");
   const [phone, setPhone] = useState("");
   const [howDidYouHearAboutUs, setHowDidYouHearAboutUs] = useState("");
   const [referralCode, setReferralCode] = useState("");
@@ -272,7 +273,7 @@ export default function RegisterForm() {
       email,
       password,
       phone,
-      countryPhoneCode: countryCode.replace("+", ""),
+      countryPhoneCode: countryCodes.find(c => c.country === countryIso)?.code.replace("+", "") || "34",
       howDidYouHearAboutUs,
       referralCode,
       termsAccepted,
@@ -492,8 +493,8 @@ export default function RegisterForm() {
             <FormField label="Teléfono" htmlFor="phone">
 
               <PhoneInput
-                countryCode={countryCode}
-                setCountryCode={setCountryCode}
+                countryIso={countryIso}
+                setCountryIso={setCountryIso}
                 phone={phone}
                 setPhone={setPhone}
                 error={validationErrors.phone}
