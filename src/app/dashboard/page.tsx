@@ -51,6 +51,7 @@ import {
   Rocket,
   Trophy,
   Sparkles,
+  Crown,
 } from "lucide-react";
 
 export default function DashboardPage() {
@@ -254,6 +255,45 @@ export default function DashboardPage() {
     return `${clean.slice(0, 12)}…`;
   };
 
+  const getPlanChip = (planType: string | undefined | null) => {
+    const raw = String(planType || "").toLowerCase();
+    const baseChip =
+      "bg-white/15 text-white backdrop-blur-md border border-white/25 shadow-sm shadow-black/10";
+
+    if (raw === "investor" || raw === "inversionista") {
+      return {
+        label: "Plan Inversionista",
+        className: baseChip,
+        icon: Crown,
+        iconClass: "text-yellow-200",
+        dotClass: "bg-yellow-300",
+      };
+    }
+
+    if (raw === "basic" || raw === "básico" || raw === "basico") {
+      return {
+        label: "Plan Básico",
+        className: baseChip,
+        icon: Sparkles,
+        iconClass: "text-white/80",
+        dotClass: "bg-white/70",
+      };
+    }
+
+    if (!raw) {
+      return null;
+    }
+
+    // Fallback para planes/tiers futuros
+    return {
+      label: `Plan ${planType}`,
+      className: baseChip,
+      icon: Sparkles,
+      iconClass: "text-white/80",
+      dotClass: "bg-white/70",
+    };
+  };
+
   // Estos datos se cargarán desde la API en el futuro
 /*   const recentCourses: never[] = [];
   const upcomingEvents: never[] = [];
@@ -307,11 +347,20 @@ export default function DashboardPage() {
                     {user?.email}
                   </Paragraph>
                   <div className="flex flex-wrap gap-2 mt-3 justify-center sm:justify-start">
-                    {user?.planType && (
-                      <Badge className="bg-white/30 text-white hover:bg-white/40 transition-colors">
-                        Plan {user.planType === "investor" ? "Inversionista" : user.planType === "basic" ? "Básico" : user.planType}
-                      </Badge>
-                    )}
+                    {(() => {
+                      const plan = getPlanChip(user?.planType);
+                      if (!plan) return null;
+                      const Icon = plan.icon;
+                      return (
+                        <Badge className={["px-3 py-1", plan.className].join(" ")}>
+                          <span className="inline-flex items-center gap-2">
+                            <span className={["h-1.5 w-1.5 rounded-full", plan.dotClass].join(" ")} aria-hidden="true" />
+                            <Icon size={14} className={plan.iconClass} aria-hidden="true" />
+                            <span className="text-xs font-semibold">{plan.label}</span>
+                          </span>
+                        </Badge>
+                      );
+                    })()}
                     {user?.uniqueCode && (
                       <Badge className="bg-white/20 text-white hover:bg-white/30 transition-colors">
                         Código: {user.uniqueCode}
