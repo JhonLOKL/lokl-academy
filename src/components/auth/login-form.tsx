@@ -20,9 +20,9 @@ import { FormField } from "@/components/design-system";
 import { H2, Paragraph, Text } from "@/components/design-system";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription } from "@/components/design-system";
 import { AlertCircle, Cookie } from "lucide-react";
+import { urls } from "@/config/urls";
 
 // URL base del dashboard, usar variable de entorno o fallback
-const DASHBOARD_URL = process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.lokl.life";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -268,7 +268,7 @@ export default function LoginForm() {
               {/* Contraseña */}
               <FormField label="Contraseña" htmlFor="password">
                 <div className="flex items-center justify-between">
-                  <Link href={`${DASHBOARD_URL}/reset-password`} className="text-sm text-[#5352F6] hover:underline">
+                  <Link href={`${urls.DASHBOARD_URL}/reset-password`} className="text-sm text-[#5352F6] hover:underline">
                     ¿Olvidaste tu contraseña?
                   </Link>
                 </div>

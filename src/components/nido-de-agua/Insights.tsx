@@ -4,6 +4,7 @@ import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import Image from 'next/image';
+import { urls } from '@/config/urls';
 
 // CSS de Swiper movido a globals.css para optimizar la carga
 
@@ -37,7 +38,7 @@ const insightsData = [
 export function Insights() {
   const handleGoToBuy = () => {
     window.location.href =
-      'https://dashboard.lokl.life/checkout/invest?projectId=a6775860-635a-4622-80f8-7d0de0c3eef0';
+      `${urls.DASHBOARD_URL}/checkout/invest?projectId=a6775860-635a-4622-80f8-7d0de0c3eef0`;
   };
 
   return (

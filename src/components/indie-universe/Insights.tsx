@@ -4,10 +4,11 @@ import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import Image from 'next/image';
+import { urls } from '@/config/urls';
 
 // CSS de Swiper movido a globals.css para optimizar la carga
 
-const INVEST_URL = 'https://dashboard.lokl.life/checkout/invest?projectId=c3f50b31-1e1b-4ebe-881e-0d390458f471';
+const INVEST_URL = `${urls.DASHBOARD_URL}/checkout/invest?projectId=c3f50b31-1e1b-4ebe-881e-0d390458f471`;
 
 const insightsData = [
   {

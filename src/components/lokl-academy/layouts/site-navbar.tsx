@@ -9,9 +9,6 @@ import { useRouter, usePathname } from "next/navigation";
 import { ChartBarDecreasing } from "lucide-react";
 import { TopBanner } from "./top-banner";
 
-// URL base del dashboard, usar variable de entorno o fallback
-const DASHBOARD_URL = process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.lokl.life";
-
 export function SiteNavbar() {
   const { user } = useAuthStore();
   const router = useRouter();

@@ -2,6 +2,7 @@
 
 import type { MouseEvent } from "react";
 import { UserPlus, Search, TrendingUp, Sparkles, Zap, CheckCircle2 } from 'lucide-react';
+import { urls } from "@/config/urls";
 
 type Step = {
   number: string;
@@ -106,7 +107,7 @@ export default function HowItWorks() {
       cardStyle: 'white', // Tarjeta blanca
       badge: 'Fácil y rápido',
       badgeIcon: Zap,
-      href: 'https://dashboard.lokl.life/register',
+      href: `${urls.DASHBOARD_URL}/register`,
       target: '_self'
     },
     {

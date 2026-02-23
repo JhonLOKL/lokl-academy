@@ -19,6 +19,7 @@ import { getNidoDeAguaHomeInfoAction } from '@/actions/project-actions';
 import type { ProjectHomePageInfo } from '@/services/projectService';
 import Benefits from '@/components/landing/new-home/benefits';
 import dynamic from 'next/dynamic';
+import { urls } from '@/config/urls';
 
 const FloatingWhatsAppButton = dynamic(
   () => import('@/components/shared/floating-whatsapp-button'),
@@ -111,7 +112,7 @@ function NidoDeAguaContent() {
         subtitle="y crece como socio invirtiendo en proyectos con LOKL"
         ctaLabel="Invertir ahora"
         targetId="insights"
-        ctaHref="https://dashboard.lokl.life/register?redirect_to=/checkout/invest?"
+        ctaHref={`${urls.DASHBOARD_URL}/register?redirect_to=/checkout/invest?`}
         countdownLabel="Aumento del Unit en"
         deadline="2025-12-01T00:00:00-05:00"
       />

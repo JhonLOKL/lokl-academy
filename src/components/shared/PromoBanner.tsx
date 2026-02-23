@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { urls } from '@/config/urls';
 
 type TimeLeft = {
   days: string;
@@ -31,7 +32,7 @@ const defaultTimeLeft: TimeLeft = {
   isExpired: false,
 };
 
-const INVEST_URL = "https://dashboard.lokl.life/checkout/invest?";
+const INVEST_URL = `${urls.DASHBOARD_URL}/checkout/invest?`;
 
 export function PromoBanner({
   title,

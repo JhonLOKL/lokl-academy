@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Star, Play, Eye, Calculator, Info, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import type { ProjectHomePageInfo } from '@/services/projectService';
+import { urls } from '@/config/urls';
 
 const getEndOfMonth = () => {
   const now = new Date();
@@ -518,8 +519,7 @@ const mapHomeInfoToProjectData = (
   return projectData;
 };
 
-const INVEST_URL =
-  "https://dashboard.lokl.life/checkout/invest?projectId=a6775860-635a-4622-80f8-7d0de0c3eef0";
+const INVEST_URL = `${urls.DASHBOARD_URL}/checkout/invest?projectId=a6775860-635a-4622-80f8-7d0de0c3eef0`;
 
 const numberFormatter = new Intl.NumberFormat("es-CO", {
   minimumFractionDigits: 0,

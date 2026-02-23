@@ -7,6 +7,7 @@ import { MapPin, ChevronLeft, ChevronRight, Building2, Waves, Flame, UtensilsCro
 import { ImageWithFallback } from '@/components/ui/image-with-fallback';
 import { useIsMobile } from '@/hooks/use-is-mobile';
 import { ProjectCard } from '@/schemas/project-card-schema';
+import { urls } from '@/config/urls';
 
 interface FeaturedProjectsProps {
   projectsData?: ProjectCard[];
@@ -935,9 +936,9 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                                 let url = '';
                                 const projectName = project.name.toLowerCase();
                                 if (projectName.includes('aldea')) {
-                                  url = 'https://dashboard.lokl.life/project-signup/aldea';
+                                  url = `${urls.DASHBOARD_URL}/project-signup/aldea`;
                                 } else if (projectName.includes('patito')) {
-                                  url = 'https://dashboard.lokl.life/project-signup/patito-feo';
+                                  url = `${urls.DASHBOARD_URL}/project-signup/patito-feo`;
                                 }
                                 
                                 if (url) {
@@ -1076,9 +1077,9 @@ export default function FeaturedProjects({ projectsData }: FeaturedProjectsProps
                                 } else if (projectName.includes('indie')) {
                                   url = '/indie-universe';
                                 } else if (projectName.includes('aldea')) {
-                                  url = 'https://dashboard.lokl.life/project-signup/aldea';
+                                  url = `${urls.DASHBOARD_URL}/project-signup/aldea`;
                                 } else if (projectName.includes('patito')) {
-                                  url = 'https://dashboard.lokl.life/project-signup/patito-feo';
+                                  url = `${urls.DASHBOARD_URL}/project-signup/patito-feo`;
                                 }
                                 
                                 if (url) {

@@ -5,9 +5,6 @@ import Link from "next/link";
 import { Button } from "@/components/design-system";
 // import { useRouter } from "next/navigation";
 
-// URL base del dashboard, usar variable de entorno o fallback
-const DASHBOARD_URL = process.env.NEXT_PUBLIC_DASHBOARD_URL || "https://dashboard.lokl.life";
-
 export default function AuthNav() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { user, logout } = useAuthStore();
