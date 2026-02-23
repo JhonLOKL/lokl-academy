@@ -47,6 +47,12 @@ import {
   FileText,
   Users,
   Copy,
+  Link2,
+  MessageCircle,
+  Linkedin,
+  Twitter,
+  ChevronDown,
+  ChevronUp,
   Award,
   Rocket,
   Trophy,
@@ -59,6 +65,8 @@ export default function DashboardPage() {
   const router = useRouter();
 
   const [copied, setCopied] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
+  const [benefitsOpen, setBenefitsOpen] = useState(false);
 
   // Proyectos / niveles (desde /api/dashboard/projects)
   const [loadingProjects, setLoadingProjects] = useState<boolean>(true);
@@ -128,6 +136,7 @@ export default function DashboardPage() {
   };
 
   const referralCode = user?.uniqueCode || "";
+  const referralLink = referralCode ? `${urls.SITE_URL}?code=${encodeURIComponent(referralCode)}` : "";
 
   const handleCopyReferralCode = async () => {
     if (!referralCode) return;
@@ -138,6 +147,25 @@ export default function DashboardPage() {
     } catch {
       setCopied(false);
     }
+  };
+
+  const handleCopyReferralLink = async () => {
+    if (!referralLink) return;
+    try {
+      await navigator.clipboard.writeText(referralLink);
+      setCopiedLink(true);
+      window.setTimeout(() => setCopiedLink(false), 1500);
+    } catch {
+      setCopiedLink(false);
+    }
+  };
+
+  const shareText = "Únete a LOKL con mi link y empecemos a crecer juntos:";
+  const shareMessage = referralLink ? `${shareText} ${referralLink}` : shareText;
+  const shareLinks = {
+    whatsapp: `https://wa.me/?text=${encodeURIComponent(shareMessage)}`,
+    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralLink || urls.SITE_URL)}`,
+    twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMessage)}`,
   };
 
   const mockReferrals: Array<{
@@ -610,89 +638,183 @@ export default function DashboardPage() {
               {/* Columna derecha (1/3 en desktop): Referidos */}
               <div className="space-y-6">
                 <Card className="border-none shadow-sm">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="flex items-center gap-2">
-                      <Users size={20} className="text-[#5352F6]" />
-                      Referidos
-                    </CardTitle>
-                    <CardDescription>Invita amigos y haz crecer tu red</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <Text size="sm" color="muted">Tu código</Text>
+                  <CardContent className="p-5 space-y-5">
+                    {/* Header minimal */}
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-start gap-3 min-w-0">
+                        <div className="rounded-2xl bg-[#5352F6]/10 p-3 ring-1 ring-[#5352F6]/15 flex-none" aria-hidden="true">
+                          <Users size={20} className="text-[#5352F6]" />
+                        </div>
+                        <div className="min-w-0 ">
+                          <Text weight="semibold" className="leading-tight">Referidos </Text>
+                          <Text size="sm" color="muted" className="mt-1">
+                            - Comparte tu link y acumula beneficios.
+                          </Text>
+                        </div>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="whitespace-nowrap"
+                        onClick={() => router.push("/ambassadors")}
+                        aria-label="Ver programa de referidos"
+                      >
+                        Ver programa
+                        <ChevronRight size={16} />
+                      </Button>
+                    </div>
+
+                    {/* Beneficios (colapsable) */}
+                    {/* <div className="rounded-2xl bg-[#F5F5F5] overflow-hidden">
+                      <button
+                        type="button"
+                        className="w-full flex items-center justify-between gap-3 px-4 py-3 hover:bg-[#EEEEFE] transition-colors"
+                        onClick={() => setBenefitsOpen((v) => !v)}
+                        aria-expanded={benefitsOpen}
+                        aria-controls="referral-benefits"
+                      >
+                        <div className="min-w-0 text-left">
+                          <Text weight="semibold">Beneficios del programa</Text>
+                          <Text size="sm" color="muted">Comisión, bonos y eventos</Text>
+                        </div>
+                        {benefitsOpen ? (
+                          <ChevronUp size={18} className="text-[#6D6C6C]" aria-hidden="true" />
+                        ) : (
+                          <ChevronDown size={18} className="text-[#6D6C6C]" aria-hidden="true" />
+                        )}
+                      </button>
+                      {benefitsOpen && (
+                        <div id="referral-benefits" className="px-4 pb-4">
+                          <div className="space-y-2 pt-1">
+                            {[
+                              "Comisión por cada referido",
+                              "Bonos adicionales por volumen",
+                              "Acceso a eventos exclusivos",
+                            ].map((t) => (
+                              <div key={t} className="flex items-start gap-2">
+                                <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[#5352F6]" aria-hidden="true" />
+                                <Text size="sm" color="muted">{t}</Text>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div> */}
+
+                    {/* Acción principal (debajo de beneficios) */}
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <Text size="sm" weight="semibold">Tu link de referido</Text>
+                        {referralCode && (
+                          <span className="inline-flex items-center gap-2">
+                            <Badge className="bg-[#5352F6]/10 text-[#5352F6] border border-[#5352F6]/15">
+                              Código: {referralCode}
+                            </Badge>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 px-2"
+                              onClick={handleCopyReferralCode}
+                              aria-label="Copiar código de referidos"
+                            >
+                              <Copy size={14} />
+                            </Button>
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <Input
+                          value={referralLink || "No disponible"}
+                          readOnly
+                          aria-label="Link de referidos"
+                          icon={<Link2 size={16} />}
+                          className="h-12 bg-[#F5F5F5] border-none focus-visible:ring-offset-0"
+                        />
+                        <Button
+                          variant="primary"
+                          className="h-12 px-4 whitespace-nowrap"
+                          onClick={handleCopyReferralLink}
+                          disabled={!referralLink}
+                          aria-label="Copiar link de referidos"
+                        >
+                          {copiedLink ? "Copiado" : "Copiar"}
+                        </Button>
+                      </div>
+
+                      {/* Share icons (sin bordes) */}
+                      <div className="flex items-center justify-between gap-3">
+                        <Text size="sm" color="muted">Compartir</Text>
                         <div className="flex items-center gap-2">
-                          <Input
-                            value={referralCode || "No disponible"}
-                            readOnly
-                            aria-label="Código de referidos"
-                            icon={<Users size={16} />}
-                          />
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={handleCopyReferralCode}
-                            disabled={!referralCode}
-                            aria-label="Copiar código de referidos"
+                          <a
+                            href={shareLinks.whatsapp}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#F5F5F5] hover:bg-[#EEEEFE] transition-colors"
+                            aria-label="Compartir por WhatsApp"
+                            title="WhatsApp"
                           >
-                            <Copy size={16} />
-                          </Button>
-                        </div>
-                        <div aria-live="polite">
-                          {copied && (
-                            <Text size="sm" color="muted">Copiado al portapapeles</Text>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <Text size="sm" weight="semibold">Últimos referidos</Text>
-                        <Badge variant="info">{mockReferrals.length}</Badge>
-                      </div>
-
-                      <div className="space-y-3">
-                        <div className="divide-y divide-[#E5E5E5]">
-                        {mockReferrals.map((ref) => {
-                          const initials = ref.name
-                            .split(" ")
-                            .filter(Boolean)
-                            .slice(0, 2)
-                            .map((p) => p[0]?.toUpperCase())
-                            .join("");
-
-                          return (
-                            <div key={ref.id} className="py-3">
-                              <UserCard
-                                name={ref.name}
-                                role={ref.email}
-                                className="border-none shadow-none bg-transparent rounded-none !p-0"
-                                avatar={
-                                  <Avatar className="h-10 w-10">
-                                    <AvatarFallback className="text-[#5352F6] bg-[#5352F6]/10 font-semibold">
-                                      {initials || "U"}
-                                    </AvatarFallback>
-                                  </Avatar>
-                                }
-                                actions={<Badge variant={ref.statusVariant}>{ref.status}</Badge>}
-                              />
-                            </div>
-                          );
-                        })}
+                            <MessageCircle size={18} className="text-[#5352F6]" />
+                          </a>
+                          <a
+                            href={shareLinks.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#F5F5F5] hover:bg-[#EEEEFE] transition-colors"
+                            aria-label="Compartir en LinkedIn"
+                            title="LinkedIn"
+                          >
+                            <Linkedin size={18} className="text-[#5352F6]" />
+                          </a>
+                          <a
+                            href={shareLinks.twitter}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#F5F5F5] hover:bg-[#EEEEFE] transition-colors"
+                            aria-label="Compartir en X"
+                            title="X"
+                          >
+                            <Twitter size={18} className="text-[#5352F6]" />
+                          </a>
                         </div>
                       </div>
                     </div>
+
+                    {/* Últimos referidos */}
+                    <div className="flex items-center justify-between">
+                      <Text size="sm" weight="semibold">Últimos referidos</Text>
+                      <Badge variant="info">{mockReferrals.length}</Badge>
+                    </div>
+
+                    <div className="divide-y divide-[#E5E5E5] rounded-2xl bg-white">
+                      {mockReferrals.map((ref) => {
+                        const initials = ref.name
+                          .split(" ")
+                          .filter(Boolean)
+                          .slice(0, 2)
+                          .map((p) => p[0]?.toUpperCase())
+                          .join("");
+
+                        return (
+                          <div key={ref.id} className="px-4 py-3">
+                            <UserCard
+                              name={ref.name}
+                              role={ref.email}
+                              className="border-none shadow-none bg-transparent rounded-none !p-0"
+                              avatar={
+                                <Avatar className="h-10 w-10">
+                                  <AvatarFallback className="text-[#5352F6] bg-[#5352F6]/10 font-semibold">
+                                    {initials || "U"}
+                                  </AvatarFallback>
+                                </Avatar>
+                              }
+                              actions={<Badge variant={ref.statusVariant}>{ref.status}</Badge>}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
                   </CardContent>
-                  <CardFooter>
-                    <Button
-                      variant="ghost"
-                      className="ml-auto flex items-center gap-2"
-                      onClick={() => router.push("/ambassadors")}
-                      aria-label="Ver programa de referidos"
-                    >
-                      Ver programa
-                      <ChevronRight size={16} />
-                    </Button>
-                  </CardFooter>
                 </Card>
 
                 {/* Niveles por proyecto */}
