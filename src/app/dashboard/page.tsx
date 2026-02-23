@@ -367,14 +367,14 @@ export default function DashboardPage() {
                     </div>
                   )}
                 </div>
-                <div>
-                  <H1 variant="page-title" color="white" className="mb-1 text-center sm:text-left">
+                <div className="min-w-0 flex-1 w-full">
+                  <H1 variant="page-title" color="white" className="mb-1 text-center sm:text-left truncate">
                     Bienvenido, {user?.firstName || "Usuario"}
                   </H1>
-                  <Paragraph color="white" className="opacity-90 text-center sm:text-left">
+                  <Paragraph color="white" className="opacity-90 text-center sm:text-left truncate">
                     {user?.email}
                   </Paragraph>
-                  <div className="flex flex-wrap gap-2 mt-3 justify-center sm:justify-start">
+                  <div className="flex flex-wrap gap-2 mt-3 justify-center sm:justify-start w-full">
                     {(() => {
                       const plan = getPlanChip(user?.planType);
                       if (!plan) return null;
@@ -395,37 +395,56 @@ export default function DashboardPage() {
                       </Badge>
                     )}
                     {projectLevelTags.length > 0 && (
-                      <div className="flex flex-wrap gap-2 justify-center sm:justify-start w-full">
-                        {projectLevelTags.slice(0, 3).map((t) => {
-                          const emblem = getLevelEmblem(t.level);
-                          const Icon = emblem.icon;
-                          return (
-                            <span
-                              key={`${t.projectName}-${t.level}`}
-                              title={`${t.projectName}: ${emblem.label}`}
-                            >
-                              <Badge
-                                className={[
-                                  "px-3 py-1",
-                                  emblem.chipClass,
-                                ].join(" ")}
-                              >
-                                <span className="inline-flex items-center gap-2">
-                                  <span className={["h-1.5 w-1.5 rounded-full", emblem.dotClass].join(" ")} aria-hidden="true" />
-                                  <Icon size={14} className={emblem.iconClass} aria-hidden="true" />
-                                  <span className="text-xs font-semibold">
-                                    {formatProjectTag(t.projectName)} · {emblem.label}
+                      <div className="w-full max-w-[calc(100vw-48px)] sm:max-w-none mt-2">
+                        {/* Mobile: Swiper horizontal (todos los tags) */}
+                        <div className="flex sm:hidden overflow-x-auto gap-2 pb-2 scroll-smooth snap-x snap-mandatory [scrollbar-width:none] items-center">
+                          {projectLevelTags.map((t) => {
+                            const emblem = getLevelEmblem(t.level);
+                            const Icon = emblem.icon;
+                            return (
+                              <div key={`mobile-${t.projectName}-${t.level}`} className="snap-start flex-none">
+                                <Badge className={["px-3 py-1 whitespace-nowrap", emblem.chipClass].join(" ")}>
+                                  <span className="inline-flex items-center gap-2">
+                                    <span className={["h-1.5 w-1.5 rounded-full", emblem.dotClass].join(" ")} aria-hidden="true" />
+                                    <Icon size={14} className={emblem.iconClass} aria-hidden="true" />
+                                    <span className="text-xs font-semibold">
+                                      {formatProjectTag(t.projectName)} · {emblem.label}
+                                    </span>
                                   </span>
-                                </span>
-                              </Badge>
-                            </span>
-                          );
-                        })}
-                        {projectLevelTags.length > 3 && (
-                          <Badge className="bg-white/20 text-white hover:bg-white/30 transition-colors">
-                            +{projectLevelTags.length - 3}
-                          </Badge>
-                        )}
+                                </Badge>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* Desktop: Wrap con límite (max 3) */}
+                        <div className="hidden sm:flex flex-wrap gap-2 justify-start">
+                          {projectLevelTags.slice(0, 3).map((t) => {
+                            const emblem = getLevelEmblem(t.level);
+                            const Icon = emblem.icon;
+                            return (
+                              <span
+                                key={`${t.projectName}-${t.level}`}
+                                title={`${t.projectName}: ${emblem.label}`}
+                              >
+                                <Badge className={["px-3 py-1", emblem.chipClass].join(" ")}>
+                                  <span className="inline-flex items-center gap-2">
+                                    <span className={["h-1.5 w-1.5 rounded-full", emblem.dotClass].join(" ")} aria-hidden="true" />
+                                    <Icon size={14} className={emblem.iconClass} aria-hidden="true" />
+                                    <span className="text-xs font-semibold">
+                                      {formatProjectTag(t.projectName)} · {emblem.label}
+                                    </span>
+                                  </span>
+                                </Badge>
+                              </span>
+                            );
+                          })}
+                          {projectLevelTags.length > 3 && (
+                            <Badge className="bg-white/20 text-white hover:bg-white/30 transition-colors">
+                              +{projectLevelTags.length - 3}
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                     )}
                   </div>
