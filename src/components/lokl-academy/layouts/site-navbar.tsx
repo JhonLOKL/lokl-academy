@@ -6,7 +6,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuthStore } from "@/store/auth-store";
 import { useRouter, usePathname } from "next/navigation";
-import { ChartBarDecreasing } from "lucide-react";
+import {
+  BarChart3,
+  ChartBarDecreasing,
+  ChevronDown,
+  CreditCard,
+  FileText,
+  TrendingUp,
+} from "lucide-react";
 import { TopBanner } from "./top-banner";
 import { urls } from "@/config/urls";
 
@@ -121,14 +128,58 @@ export function SiteNavbar() {
           user ? (
             <div className="flex items-center gap-4">
               {/* Botón Dashboard */}
-              <Link
-                href="/dashboard"
-                // href={`${DASHBOARD_URL}/dashboard/income`}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-[#F3F3F3] transition-colors"
-              >
-                <ChartBarDecreasing className="w-5 h-5 text-[#1C274C]" />
-                <span className="text-sm font-medium text-foreground hidden lg:block">Dashboard</span>
-              </Link>
+              <div className="relative group">
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-[#F3F3F3] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5352F6]"
+                  aria-haspopup="menu"
+                >
+                  <ChartBarDecreasing className="w-5 h-5 text-[#1C274C]" />
+                  <span className="text-sm font-medium text-foreground hidden lg:block">Dashboard</span>
+                  <ChevronDown className="w-4 h-4 text-[#6D6C6C] hidden lg:block" />
+                </Link>
+
+                {/* Submenu (hover / focus) */}
+                <div
+                  className="absolute left-0 top-full z-50 mt-2 w-64 rounded-2xl bg-[#E8E8E8] p-2 shadow-lg opacity-0 invisible translate-y-1 transition-all duration-150 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible group-focus-within:translate-y-0"
+                  role="menu"
+                  aria-label="Submenú de Dashboard"
+                >
+                  {[
+                    {
+                      label: "Rentabilidad",
+                      href: `${urls.DASHBOARD_URL}/dashboard/income`,
+                      icon: TrendingUp,
+                    },
+                    {
+                      label: "Proyectos",
+                      href: `${urls.DASHBOARD_URL}/dashboard/projects`,
+                      icon: BarChart3,
+                    },
+                    {
+                      label: "Suscripciones",
+                      href: `${urls.DASHBOARD_URL}/dashboard/subscriptions`,
+                      icon: CreditCard,
+                    },
+                    {
+                      label: "Documentos",
+                      href: `${urls.DASHBOARD_URL}/dashboard/documents`,
+                      icon: FileText,
+                    },
+                  ].map((item) => (
+                    <Link
+                      key={item.label}
+                      href={item.href}
+                      prefetch={false}
+                      className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-foreground hover:bg-white/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5352F6]"
+                      role="menuitem"
+                    >
+                      <item.icon className="h-5 w-5 text-[#1C274C]" />
+                      <span>{item.label}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
 
               {/* Separador vertical */}
               <div className="h-8 w-px bg-gray-300"></div>
