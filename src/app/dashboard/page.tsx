@@ -6,7 +6,8 @@ import { useAuthStore } from "@/store/auth-store";
 import ProtectedRoute from "@/components/auth/protected-route";
 import ProfileAvatar from "@/components/auth/profile-avatar";
 import { urls } from "@/config/urls";
-import { getDashboardProjectsService, type DashboardProject } from "@/services/dashboard-projects-service";
+import { getDashboardProjectsAction } from "@/actions/dashboard-projects-action";
+import { type DashboardProject } from "@/services/dashboard-projects-service";
 import {
   getCurrentLevelFromNextLevelName,
   getHighestLevel,
@@ -96,7 +97,7 @@ export default function DashboardPage() {
       setLoadingProjects(true);
       setProjectsError(null);
       try {
-        const res = await getDashboardProjectsService();
+        const res = await getDashboardProjectsAction();
         if (!mounted) return;
         if (res?.success) {
           setProjects(res.projects || []);
