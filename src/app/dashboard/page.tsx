@@ -6,6 +6,13 @@ import { useAuthStore } from "@/store/auth-store";
 import ProtectedRoute from "@/components/auth/protected-route";
 import ProfileAvatar from "@/components/auth/profile-avatar";
 import { urls } from "@/config/urls";
+import { getDashboardProjectsService, type DashboardProject } from "@/services/dashboard-projects-service";
+import {
+  getCurrentLevelFromNextLevelName,
+  getHighestLevel,
+  translateLevel,
+  type LevelKey,
+} from "@/helpers/levels";
 import {
   H1,
   H2,
@@ -47,6 +54,11 @@ export default function DashboardPage() {
 
   const [copied, setCopied] = useState(false);
 
+  // Proyectos / niveles (desde /api/dashboard/projects)
+  const [loadingProjects, setLoadingProjects] = useState<boolean>(true);
+  const [projects, setProjects] = useState<DashboardProject[]>([]);
+  const [projectsError, setProjectsError] = useState<string | null>(null);
+
   // Cursos del usuario
   const [loadingCourses, setLoadingCourses] = useState<boolean>(true);
   const [userCourses, setUserCourses] = useState<Course[]>([]);
@@ -74,6 +86,33 @@ export default function DashboardPage() {
       }
     }
     loadUserCourses();
+    return () => { mounted = false; };
+  }, []);
+
+  // Cargar proyectos (niveles)
+  useEffect(() => {
+    let mounted = true;
+    async function loadProjects() {
+      setLoadingProjects(true);
+      setProjectsError(null);
+      try {
+        const res = await getDashboardProjectsService();
+        if (!mounted) return;
+        if (res?.success) {
+          setProjects(res.projects || []);
+        } else {
+          setProjects([]);
+          setProjectsError(res?.message || "No fue posible cargar los proyectos");
+        }
+      } catch {
+        if (!mounted) return;
+        setProjects([]);
+        setProjectsError("No fue posible cargar los proyectos");
+      } finally {
+        if (mounted) setLoadingProjects(false);
+      }
+    }
+    loadProjects();
     return () => { mounted = false; };
   }, []);
 
@@ -125,6 +164,36 @@ export default function DashboardPage() {
     },
   ];
 
+  // ==========================
+  // Niveles por proyecto (UI)
+  // ==========================
+  const projectLevels = projects.map((p) => {
+    const nextLevelName = (p?.levelUp as { nextLevelName?: string | null } | undefined)?.nextLevelName ?? null;
+    const currentLevel = getCurrentLevelFromNextLevelName(nextLevelName);
+    const rawProjectName =
+      (typeof p?.name === "string" && p.name) ||
+      (typeof p?.code === "string" && p.code) ||
+      (typeof p?.id === "string" && p.id) ||
+      "Proyecto";
+
+    const projectName = (() => {
+      const name = String(rawProjectName || "").trim();
+      if (!name) return "Proyecto";
+      return name.charAt(0).toUpperCase() + name.slice(1);
+    })();
+
+    return { projectName, currentLevel, nextLevelName };
+  });
+
+  const highestLevel: LevelKey = getHighestLevel(projectLevels.map((x) => x.currentLevel));
+
+  const getLevelBadge = (level: LevelKey) => {
+    if (level === "hero") return { variant: "success" as const, label: translateLevel(level) };
+    if (level === "adventurer") return { variant: "warning" as const, label: translateLevel(level) };
+    if (level === "explorer") return { variant: "info" as const, label: translateLevel(level) };
+    return { variant: "default" as const, label: translateLevel(level) };
+  };
+
   // Estos datos se cargarán desde la API en el futuro
 /*   const recentCourses: never[] = [];
   const upcomingEvents: never[] = [];
@@ -137,13 +206,22 @@ export default function DashboardPage() {
           <div className="container mx-auto px-4 py-8 md:py-12">
             <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
-                <ProfileAvatar
-                  profilePhoto={user?.profilePhoto}
-                  firstName={user?.firstName}
-                  lastName={user?.lastName}
-                  size="lg"
-                  className="ring-4 ring-white/20"
-                />
+                <div className="relative">
+                  <ProfileAvatar
+                    profilePhoto={user?.profilePhoto}
+                    firstName={user?.firstName}
+                    lastName={user?.lastName}
+                    size="lg"
+                    className="ring-4 ring-white/20"
+                  />
+                  {highestLevel !== "Sin nivel" && (
+                    <div className="absolute -bottom-2 left-1/2 -translate-x-1/2">
+                      <span className="inline-flex items-center rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#5352F6] shadow-sm">
+                        {translateLevel(highestLevel)}
+                      </span>
+                    </div>
+                  )}
+                </div>
                 <div>
                   <H1 variant="page-title" color="white" className="mb-1">
                     Bienvenido, {user?.firstName || "Usuario"}
@@ -455,6 +533,59 @@ export default function DashboardPage() {
                       <ChevronRight size={16} />
                     </Button>
                   </CardFooter>
+                </Card>
+
+                {/* Niveles por proyecto */}
+                <Card className="border-none shadow-sm">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp size={20} className="text-[#5352F6]" />
+                      Niveles por proyecto
+                    </CardTitle>
+                    <CardDescription>Tu nivel actual en cada inversión</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {loadingProjects ? (
+                      <div className="space-y-3">
+                        {[...Array(3)].map((_, i) => (
+                          <div key={i} className="flex items-center justify-between">
+                            <Skeleton className="h-4 w-40" />
+                            <Skeleton className="h-5 w-24 rounded-full" />
+                          </div>
+                        ))}
+                      </div>
+                    ) : projectsError ? (
+                      <div className="space-y-3">
+                        <Text size="sm" color="muted">{projectsError}</Text>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            // Reintento simple sin duplicar lógica (recargar la página)
+                            window.location.reload();
+                          }}
+                        >
+                          Reintentar
+                        </Button>
+                      </div>
+                    ) : projectLevels.length > 0 ? (
+                      <div className="divide-y divide-[#E5E5E5]">
+                        {projectLevels.map((p, idx) => {
+                          const b = getLevelBadge(p.currentLevel);
+                          return (
+                            <div key={`${p.projectName}-${idx}`} className="flex items-center justify-between py-3">
+                              <div className="min-w-0">
+                                <Text weight="medium" className="truncate">{p.projectName}</Text>
+                              </div>
+                              <Badge variant={b.variant}>{b.label}</Badge>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <Text size="sm" color="muted">Aún no tienes proyectos con nivel.</Text>
+                    )}
+                  </CardContent>
                 </Card>
               </div>
             </div>
