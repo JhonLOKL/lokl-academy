@@ -6,6 +6,7 @@ import Script from "next/script";
 import { Suspense } from "react";
 import GAListener from "@/components/analytics/ga-listener";
 import UtmTracker from "@/components/analytics/utm-tracker";
+import ReferralTracker from "@/components/analytics/referral-tracker";
 import SessionInitializer from "@/components/auth/session-initializer";
 import { Toaster } from "@/components/design-system";
 
@@ -224,6 +225,7 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <GAListener />
           <UtmTracker />
+          <ReferralTracker />
         </Suspense>
         <SessionInitializer />
         <SiteNavbar />

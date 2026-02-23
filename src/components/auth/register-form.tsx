@@ -32,6 +32,7 @@ import { AuthLayout } from "./auth-layout";
 import { motion, AnimatePresence } from "framer-motion";
 import { upsertLeadAction } from "@/actions/user-action";
 import { useUtmStore } from "@/store/utm-store";
+import { useReferralStore } from "@/store/referral-store";
 
 interface WindowWithDataLayer extends Window {
   dataLayer: Record<string, unknown>[];
@@ -192,6 +193,14 @@ export default function RegisterForm() {
   const [stepAttempted, setStepAttempted] = useState<Record<number, boolean>>({});
 
   const { utmSource, utmMedium, utmCampaign, utmTerm, utmContent } = useUtmStore();
+  const { code: referralCodeFromUrl } = useReferralStore();
+
+  // Si viene `?code` en la URL (persistido por ReferralTracker), precargarlo en el input
+  useEffect(() => {
+    if (!referralCode && referralCodeFromUrl) {
+      setReferralCode(referralCodeFromUrl);
+    }
+  }, [referralCode, referralCodeFromUrl]);
   
   // Función para validar el paso actual
   const validateStep = (step: number) => {
