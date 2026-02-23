@@ -524,10 +524,10 @@ export default function DashboardPage() {
                         key={item.title}
                         href={item.href}
                         prefetch={false}
-                        className="group block rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5352F6] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F5F5F5]"
+                        className="group block rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5352F6] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F5F5F5] h-full"
                         aria-label={`Ir a ${item.title}`}
                       >
-                        <Card className="relative border-none shadow-sm transition-all group-hover:shadow-md overflow-hidden aspect-square sm:aspect-auto sm:min-h-[116px] p-0 sm:p-5">
+                        <Card className="relative border-none shadow-sm transition-all group-hover:shadow-md overflow-hidden aspect-square sm:aspect-auto sm:min-h-[116px] h-full p-0 sm:p-5">
                           <div
                             className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#5352F6] to-[#4A4AE5] hidden sm:block"
                             aria-hidden="true"
