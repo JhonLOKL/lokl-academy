@@ -142,8 +142,8 @@ const UserCard = React.forwardRef<
     {avatar && (
       <div className="flex-shrink-0">{avatar}</div>
     )}
-    <div className="flex-grow">
-      <div className="font-semibold">{name}</div>
+    <div className="flex-grow min-w-0">
+      <div className="font-semibold truncate">{name}</div>
       {role && <div className="text-sm text-[#6D6C6C]">{role}</div>}
     </div>
     {actions && (

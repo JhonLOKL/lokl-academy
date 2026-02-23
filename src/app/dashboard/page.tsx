@@ -8,6 +8,8 @@ import ProfileAvatar from "@/components/auth/profile-avatar";
 import { urls } from "@/config/urls";
 import { getDashboardProjectsAction } from "@/actions/dashboard-projects-action";
 import { type DashboardProject } from "@/services/dashboard-projects-service";
+import { getUserReferralsAction } from "@/actions/user-referrals-action";
+import { type ReferralUser } from "@/schemas/user-referrals-schema";
 import {
   getCurrentLevelFromNextLevelName,
   getHighestLevel,
@@ -73,6 +75,10 @@ export default function DashboardPage() {
   const [projects, setProjects] = useState<DashboardProject[]>([]);
   const [projectsError, setProjectsError] = useState<string | null>(null);
 
+  // Referidos
+  const [loadingReferrals, setLoadingReferrals] = useState<boolean>(true);
+  const [referrals, setReferrals] = useState<ReferralUser[]>([]);
+
   // Cursos del usuario
   const [loadingCourses, setLoadingCourses] = useState<boolean>(true);
   const [userCourses, setUserCourses] = useState<Course[]>([]);
@@ -130,6 +136,34 @@ export default function DashboardPage() {
     return () => { mounted = false; };
   }, []);
 
+  // Cargar referidos
+  useEffect(() => {
+    let mounted = true;
+    async function loadReferrals() {
+      setLoadingReferrals(true);
+      try {
+        const res = await getUserReferralsAction();
+        if (!mounted) return;
+        if (res.success && res.data) {
+          setReferrals(res.data);
+        } else {
+          setReferrals([]);
+        }
+      } catch (error) {
+        console.error("Error cargando referidos:", error);
+        if (!mounted) return;
+        setReferrals([]);
+      } finally {
+        if (mounted) setLoadingReferrals(false);
+      }
+    }
+    // Solo cargar si el usuario tiene código (ya está logueado y cargado)
+    if (user?.uniqueCode) {
+      loadReferrals();
+    }
+    return () => { mounted = false; };
+  }, [user?.uniqueCode]);
+
   const handleLogout = () => {
     logout();
     router.push("/");
@@ -168,35 +202,18 @@ export default function DashboardPage() {
     twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMessage)}`,
   };
 
-  const mockReferrals: Array<{
-    id: string;
-    name: string;
-    email: string;
-    status: "Activo" | "Registrado" | "Pendiente";
-    statusVariant: "success" | "info" | "warning";
-  }> = [
-      {
-        id: "ref-1",
-        name: "María González",
-        email: "maria.gonzalez@mail.com",
-        status: "Activo",
-        statusVariant: "success",
-      },
-      {
-        id: "ref-2",
-        name: "Carlos Restrepo",
-        email: "carlos.restrepo@mail.com",
-        status: "Registrado",
-        statusVariant: "info",
-      },
-      {
-        id: "ref-3",
-        name: "Ana Patricia Silva",
-        email: "ana.silva@mail.com",
-        status: "Pendiente",
-        statusVariant: "warning",
-      },
-    ];
+  const totalGenerated = referrals.reduce((total, ref) => {
+    const userTotal = ref.investments?.reduce((sum, inv) => sum + (inv.contributionAmount || 0), 0) || 0;
+    return total + userTotal;
+  }, 0);
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("es-CO", {
+      style: "currency",
+      currency: "COP",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
 
   // ==========================
   // Niveles por proyecto (UI)
@@ -806,43 +823,89 @@ export default function DashboardPage() {
                       </div>
                     </div>
 
-                    {/* Últimos referidos */}
-                    <div className="flex items-center justify-between">
-                      <Text size="sm" weight="semibold">Últimos referidos</Text>
-                      <Badge variant="info">{mockReferrals.length}</Badge>
+                    {/* Resumen de ganancia */}
+                    <div className="rounded-xl bg-[#F5F5F5] p-4 flex items-center justify-between">
+                      <div>
+                        <Text size="sm" color="muted">Total ganado: </Text>
+                        <Text size="xl" weight="bold" className="text-[#5352F6]">{formatCurrency(totalGenerated)}</Text>
+                      </div>
+                      <div className="text-right flex flex-col items-end justify-center">
+                        <div className="flex items-baseline gap-1.5">
+                          <Text size="lg" weight="bold" className="text-[#1C274C] leading-none">{referrals.length}</Text>
+                          <Text size="xs" color="muted">Referidos</Text>
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="divide-y divide-[#E5E5E5] rounded-2xl bg-white">
-                      {mockReferrals.map((ref) => {
-                        const initials = ref.name
-                          .split(" ")
-                          .filter(Boolean)
-                          .slice(0, 2)
-                          .map((p) => p[0]?.toUpperCase())
-                          .join("");
+                    {/* Últimos referidos */}
+                    <div className="flex items-center justify-between mt-2">
+                      <Text size="sm" weight="semibold">Tus referidos</Text>
+                    </div>
 
-                        return (
-                          <div key={ref.id} className="px-4 py-3">
-                            <UserCard
-                              name={ref.name}
-                              role={
-                                <span className="block truncate max-w-[140px] xs:max-w-[200px] sm:max-w-none text-muted-foreground text-sm">
-                                  {ref.email}
-                                </span> as unknown as string
-                              }
-                              className="border-none shadow-none bg-transparent rounded-none !p-0"
-                              avatar={
-                                <Avatar className="h-10 w-10">
-                                  <AvatarFallback className="text-[#5352F6] bg-[#5352F6]/10 font-semibold">
-                                    {initials || "U"}
-                                  </AvatarFallback>
-                                </Avatar>
-                              }
-                              actions={<Badge variant={ref.statusVariant}>{ref.status}</Badge>}
-                            />
-                          </div>
-                        );
-                      })}
+                    <div className="divide-y divide-[#E5E5E5] rounded-2xl bg-white overflow-hidden">
+                      {loadingReferrals ? (
+                        <div className="p-4 space-y-3">
+                          <Skeleton className="h-12 w-full" />
+                          <Skeleton className="h-12 w-full" />
+                          <Skeleton className="h-12 w-full" />
+                        </div>
+                      ) : referrals.length > 0 ? (
+                        referrals.map((ref, idx) => {
+                          const initials = (ref.firstName || ref.email)
+                            .split(" ")
+                            .filter(Boolean)
+                            .slice(0, 2)
+                            .map((p) => p[0]?.toUpperCase())
+                            .join("");
+
+                          const investmentsSum = ref.investments?.reduce((s, i) => s + (i.contributionAmount || 0), 0) || 0;
+                          const hasInvested = investmentsSum > 0 || ref.status === 'invested';
+
+                          return (
+                            <div key={`${ref.email}-${idx}`} className="px-4 py-3">
+                              <UserCard
+                                name={`${ref.firstName} ${ref.lastName || ''}`.trim() || 'Usuario'}
+                                role={
+                                  <span className="block truncate max-w-[140px] xs:max-w-[200px] sm:max-w-none text-muted-foreground text-sm">
+                                    {ref.email}
+                                  </span> as unknown as string
+                                }
+                                className="border-none shadow-none bg-transparent rounded-none !p-0"
+                                avatar={
+                                  <Avatar className="h-10 w-10">
+                                    <AvatarFallback className="text-[#5352F6] bg-[#5352F6]/10 font-semibold">
+                                      {initials || "U"}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                }
+                                actions={
+                                  hasInvested ? (
+                                    <div className="flex flex-col items-end">
+                                      <Badge variant="success" className="mb-1">Inversionista</Badge>
+                                      {investmentsSum > 0 && (
+                                        <Text size="xs" weight="medium" className="text-[#5352F6]">
+                                          +{formatCurrency(investmentsSum)}
+                                        </Text>
+                                      )}
+                                    </div>
+                                  ) : (
+                                    <div className="flex flex-col items-end gap-1">
+                                      <Badge variant="warning">Registrado</Badge>
+                                      <Text size="xs" color="muted" className="italic">¡Anímalo a invertir!</Text>
+                                    </div>
+                                  )
+                                }
+                              />
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <div className="p-8 text-center">
+                          <Users className="mx-auto h-8 w-8 text-gray-300 mb-2" />
+                          <Text size="sm" color="muted">Aún no tienes referidos.</Text>
+                          <Text size="xs" color="muted" className="mt-1">Comparte tu link para empezar.</Text>
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex justify-end pt-1">
