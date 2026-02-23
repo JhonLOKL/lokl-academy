@@ -94,6 +94,49 @@ export default function RegisterForm() {
   const searchParams = useSearchParams();
   const navigatedRef = useRef(false);
   const { register, error, isLoading, clearError, token, user } = useAuthStore();
+
+  // Imágenes para el hero móvil
+  const mobileHeroImages = [
+    "https://lokl-assets.s3.us-east-1.amazonaws.com/home/Hero-indie-movil.png",
+    "https://lokl-assets.s3.us-east-1.amazonaws.com/home/Hero-nido-movil.png"
+  ];
+
+  // Imágenes para el hero desktop
+  const desktopHeroImages = [
+    "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_ALDEA.png",
+    "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_INDIE.png",
+    "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_NDA.png"
+  ];
+
+  // Estados para controlar los índices de imágenes
+  const [currentMobileImageIndex, setCurrentMobileImageIndex] = useState(0);
+  const [currentDesktopImageIndex, setCurrentDesktopImageIndex] = useState(0);
+
+  // Rotación automática de imágenes móviles cada 5 segundos
+  useEffect(() => {
+    if (mobileHeroImages.length === 0) return;
+
+    const interval = setInterval(() => {
+      setCurrentMobileImageIndex(
+        (prev) => (prev + 1) % mobileHeroImages.length,
+      );
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [mobileHeroImages.length]);
+
+  // Rotación automática de imágenes desktop cada 5 segundos
+  useEffect(() => {
+    if (desktopHeroImages.length === 0) return;
+
+    const interval = setInterval(() => {
+      setCurrentDesktopImageIndex(
+        (prev) => (prev + 1) % desktopHeroImages.length,
+      );
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [desktopHeroImages.length]);
   
   // Si viene ?redirect en la URL, guardarlo para post-login
   useEffect(() => {
@@ -227,14 +270,53 @@ export default function RegisterForm() {
     <div className="relative min-h-screen w-full">
       {/* Fondo */}
       <div className="absolute inset-0 z-0">
-        <Image
-          src="/images/skyscraper-bw.jpg"
-          alt="LOKL Academy - Registro"
-          fill
-          className="object-cover grayscale"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#5352F6]/80 via-[#5352F6]/50 to-[#5352F6]/30" />
+        {/* Fondo Desktop */}
+        <div className="hidden md:block absolute inset-0 overflow-hidden">
+          {desktopHeroImages.map((imageUrl, index) => (
+            <div
+              key={index}
+              aria-hidden="true"
+              className={`absolute inset-0 transition-opacity duration-1000 ${index === currentDesktopImageIndex
+                  ? "opacity-100"
+                  : "opacity-0"
+                }`}
+            >
+              <Image
+                src={imageUrl}
+                alt={`LOKL Academy - Registro desktop ${index + 1}`}
+                fill
+                className="object-cover object-center"
+                priority={true}
+                quality={90}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Fondo Móvil */}
+        <div className="md:hidden absolute inset-0 overflow-hidden">
+          {mobileHeroImages.map((imageUrl, index) => (
+            <div
+              key={index}
+              aria-hidden="true"
+              className={`absolute inset-0 transition-opacity duration-1000 ${index === currentMobileImageIndex
+                  ? "opacity-100"
+                  : "opacity-0"
+                }`}
+            >
+              <Image
+                src={imageUrl}
+                alt={`LOKL Academy - Registro móvil ${index + 1}`}
+                fill
+                className="object-cover object-center"
+                priority={true}
+                quality={90}
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="absolute inset-0 bg-black/40" />
       </div>
       
       <div className="relative z-10 flex min-h-screen w-full items-center justify-center px-4 py-16">
@@ -403,9 +485,20 @@ export default function RegisterForm() {
                 id="terms" 
                 checked={termsAccepted}
                 onCheckedChange={(checked) => setTermsAccepted(checked === true)}
-                className={validationErrors.termsAccepted ? "border-[#FF3B30]" : ""}
+                className={validationErrors.termsAccepted ? "border-[#FF3B30]" : "mt-1"}
               />
-
+              <label htmlFor="terms" className="text-sm text-gray-700 cursor-pointer">
+                Acepto los{" "}
+                <Link 
+                  href="https://drive.google.com/file/d/1R6aOvsRjYVo-d398PskWJjwL4_WrY9PP/view" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#5352F6] hover:underline"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  términos y condiciones
+                </Link>
+              </label>
             </div>
             {validationErrors.termsAccepted && (
               <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.termsAccepted}</p>
