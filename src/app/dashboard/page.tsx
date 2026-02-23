@@ -47,6 +47,10 @@ import {
   FileText,
   Users,
   Copy,
+  Award,
+  Rocket,
+  Trophy,
+  Sparkles,
 } from "lucide-react";
 
 export default function DashboardPage() {
@@ -195,6 +199,61 @@ export default function DashboardPage() {
     return { variant: "default" as const, label: translateLevel(level) };
   };
 
+  const getLevelEmblem = (level: LevelKey) => {
+    const baseChip =
+      "bg-white/15 text-white backdrop-blur-md border border-white/25 shadow-sm shadow-black/10";
+
+    if (level === "hero") {
+      return {
+        label: "Héroe",
+        icon: Trophy,
+        chipClass: baseChip,
+        iconClass: "text-yellow-200",
+        dotClass: "bg-yellow-300",
+      };
+    }
+    if (level === "adventurer") {
+      return {
+        label: "Aventurero",
+        icon: Rocket,
+        chipClass: baseChip,
+        iconClass: "text-pink-200",
+        dotClass: "bg-pink-300",
+      };
+    }
+    if (level === "explorer") {
+      return {
+        label: "Explorador",
+        icon: Award,
+        chipClass: baseChip,
+        iconClass: "text-sky-200",
+        dotClass: "bg-sky-300",
+      };
+    }
+    return {
+      label: "Sin nivel",
+      icon: Sparkles,
+      chipClass: baseChip,
+      iconClass: "text-white/80",
+      dotClass: "bg-white/70",
+    };
+  };
+
+  const projectLevelTags = projectLevels
+    .filter((p) => p.projectName && p.currentLevel !== "Sin nivel")
+    .map((p) => ({
+      projectName: p.projectName,
+      level: p.currentLevel,
+    }));
+
+  const formatProjectTag = (name: string) => {
+    const clean = String(name || "").trim();
+    if (!clean) return "Proyecto";
+    // Compacto pero legible (evita chips enormes en header)
+    if (clean.length <= 14) return clean;
+    return `${clean.slice(0, 12)}…`;
+  };
+
   // Estos datos se cargarán desde la API en el futuro
 /*   const recentCourses: never[] = [];
   const upcomingEvents: never[] = [];
@@ -216,10 +275,27 @@ export default function DashboardPage() {
                     className="ring-4 ring-white/20"
                   />
                   {highestLevel !== "Sin nivel" && (
-                    <div className="absolute -bottom-2 left-1/2 -translate-x-1/2">
-                      <span className="inline-flex items-center rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#5352F6] shadow-sm">
-                        {translateLevel(highestLevel)}
-                      </span>
+                    <div className="absolute -right-2 -bottom-2">
+                      {(() => {
+                        const emblem = getLevelEmblem(highestLevel);
+                        const Icon = emblem.icon;
+                        return (
+                          <div
+                            className={[
+                              "inline-flex items-center gap-2 rounded-full px-3 py-1.5",
+                              emblem.chipClass,
+                            ].join(" ")}
+                            title={`Nivel más alto: ${emblem.label}`}
+                            aria-label={`Nivel más alto: ${emblem.label}`}
+                          >
+                            <span className={["h-2 w-2 rounded-full", emblem.dotClass].join(" ")} aria-hidden="true" />
+                            <Icon size={14} className={[emblem.iconClass].join(" ")} aria-hidden="true" />
+                            <span className="text-[11px] font-semibold tracking-wide leading-none">
+                              {emblem.label}
+                            </span>
+                          </div>
+                        );
+                      })()}
                     </div>
                   )}
                 </div>
@@ -240,6 +316,40 @@ export default function DashboardPage() {
                       <Badge className="bg-white/20 text-white hover:bg-white/30 transition-colors">
                         Código: {user.uniqueCode}
                       </Badge>
+                    )}
+                    {projectLevelTags.length > 0 && (
+                      <div className="flex flex-wrap gap-2 justify-center sm:justify-start w-full">
+                        {projectLevelTags.slice(0, 3).map((t) => {
+                          const emblem = getLevelEmblem(t.level);
+                          const Icon = emblem.icon;
+                          return (
+                            <span
+                              key={`${t.projectName}-${t.level}`}
+                              title={`${t.projectName}: ${emblem.label}`}
+                            >
+                              <Badge
+                                className={[
+                                  "px-3 py-1",
+                                  emblem.chipClass,
+                                ].join(" ")}
+                              >
+                                <span className="inline-flex items-center gap-2">
+                                  <span className={["h-1.5 w-1.5 rounded-full", emblem.dotClass].join(" ")} aria-hidden="true" />
+                                  <Icon size={14} className={emblem.iconClass} aria-hidden="true" />
+                                  <span className="text-xs font-semibold">
+                                    {formatProjectTag(t.projectName)} · {emblem.label}
+                                  </span>
+                                </span>
+                              </Badge>
+                            </span>
+                          );
+                        })}
+                        {projectLevelTags.length > 3 && (
+                          <Badge className="bg-white/20 text-white hover:bg-white/30 transition-colors">
+                            +{projectLevelTags.length - 3}
+                          </Badge>
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>
