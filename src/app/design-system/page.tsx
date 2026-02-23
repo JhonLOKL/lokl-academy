@@ -4,6 +4,7 @@ import React from "react";
 import { Navbar, Footer, Button, Card, CardHeader, CardTitle, CardDescription, CardContent, H1, H2, H3, Paragraph } from "@/components/design-system";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { urls } from "@/config/urls";
 
 export default function DesignSystemPage() {
   const sections = [
@@ -80,21 +81,21 @@ export default function DesignSystemPage() {
       <Navbar
         logo={<span className="text-xl font-bold">LOKL <span className="text-[#5352F6]">Design System</span></span>}
         items={[
-          { label: "Proyectos", href: "https://lokl.life/" },
+          { label: "Proyectos", href: urls.SITE_URL },
           { label: "Contáctanos", href: "https://api.whatsapp.com/send/?phone=573017328112" },
-          { label: "Nosotros", href: "https://lokl.life/about-us" },
-          { label: "Embajadores", href: "https://lokl.life/ambassadors" },
+          { label: "Nosotros", href: `${urls.SITE_URL}/about-us` },
+          { label: "Embajadores", href: `${urls.SITE_URL}/ambassadors` },
         ]}
         actions={
           <div className="flex items-center space-x-4">
             <a
-              href="https://lokl.life/login?redirect_to=/"
+              href={`${urls.SITE_URL}/login?redirect_to=/` }
               className="text-sm font-medium text-[#0F0F0F] transition-colors hover:text-[#5352F6]"
             >
               Inicia sesión
             </a>
             <a
-              href="https://lokl.life/register?redirect_to=/"
+              href={`${urls.SITE_URL}/register?redirect_to=/`}
               className="rounded-md bg-[#5352F6] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#4A4AE5]"
             >
               Regístrate

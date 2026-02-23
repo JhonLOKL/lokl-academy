@@ -8,6 +8,7 @@ import { useAuthStore } from "@/store/auth-store";
 import { useRouter, usePathname } from "next/navigation";
 import { ChartBarDecreasing } from "lucide-react";
 import { TopBanner } from "./top-banner";
+import { urls } from "@/config/urls";
 
 export function SiteNavbar() {
   const { user } = useAuthStore();
@@ -84,7 +85,7 @@ export function SiteNavbar() {
                 <span>Nosotros</span>
               </div>
             ),
-            href: "https://lokl.life/aboutus"
+            href: `${urls.SITE_URL}/aboutus`
           },
           {
             label: (
@@ -113,7 +114,7 @@ export function SiteNavbar() {
                 <span>Embajadores</span>
               </div>
             ),
-            href: "https://lokl.life/ambassadors"
+            href: `${urls.SITE_URL}/ambassadors`
           },
         ]}
         actions={
