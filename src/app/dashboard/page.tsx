@@ -567,7 +567,7 @@ export default function DashboardPage() {
                   variant="dark"
                   size="lg"
                   className="flex-1 sm:flex-none flex items-center justify-center gap-2 shadow-sm hover:shadow transition-all px-3"
-                  onClick={() => { window.location.href = `${urls.DASHBOARD_URL}/dashboard/perfil`; }}
+                  onClick={() => { window.location.href = `${urls.DASHBOARD_URL}/dashboard/perfil?scrollTo=complete-profile`; }}
                   aria-label="Abrir configuración"
                 >
                   <Settings size={18} className="flex-shrink-0" />
