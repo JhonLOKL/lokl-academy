@@ -1,6 +1,13 @@
 import axios from 'axios';
 import { useAuthStore } from '@/store/auth-store';
 
+// Rutas de autenticación que NO deben disparar auto-logout en 401/403
+// (para evitar bucles: login falla → logout → logout falla → logout ...)
+const AUTH_ROUTES = ['/api/auth/signIn', '/api/auth/signUp', '/api/auth/logout'];
+
+// Flag para evitar múltiples llamadas simultáneas a logout desde el interceptor
+let _isHandling401 = false;
+
 // Crear una instancia de axios
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || '/api',
@@ -31,18 +38,29 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Si el error es 401 (No autorizado) o 403 (Forbidden), cerrar sesión
-    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-      // Evitar bucle infinito si la llamada de logout falla
-      // Solo llamar a logout si no estamos ya en proceso de logout o login
-      // Pero authStore.logout() es síncrono y limpia el estado local
-      useAuthStore.getState().logout();
-      
-      // Redirigir a la página de inicio de sesión si estamos en el navegador
-      if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
-        window.location.href = '/login';
-      }
+    const status = error.response?.status;
+    const requestUrl = error.config?.url || '';
+
+    // Solo manejar 401/403 si:
+    // 1. No es una ruta de auth (evita bucles)
+    // 2. No hay otro 401 siendo procesado (evita llamadas duplicadas a logout)
+    if (
+      (status === 401 || status === 403) &&
+      !AUTH_ROUTES.some(route => requestUrl.includes(route)) &&
+      !_isHandling401
+    ) {
+      _isHandling401 = true;
+
+      // Cerrar sesión y redirigir
+      useAuthStore.getState().logout().finally(() => {
+        _isHandling401 = false;
+
+        if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+          window.location.href = '/login';
+        }
+      });
     }
+
     return Promise.reject(error);
   }
 );

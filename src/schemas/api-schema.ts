@@ -1,6 +1,5 @@
 import { urls } from "@/config/urls";
 import axios from "axios";
-// import jwt from "jsonwebtoken";
 import { useAuthStore } from "@/store/auth-store";
 
 // Función para validar si el token está activo y no expirado
@@ -30,20 +29,15 @@ const getHeaders = (isNeedToken: boolean) => {
 
 // =======================
 // GET
+// NOTA: El manejo de errores 401/403 se hace SOLO en el interceptor global
+// de axios-config.ts para evitar llamadas duplicadas a logout().
 // =======================
 export const getApi = async (siteUrl: string, isNeedToken = false) => {
-  try {
-    const response = await axios.get(urls.URL_BASE_PATH + siteUrl, {
-      headers: getHeaders(isNeedToken),
-      withCredentials: true, // Habilitar envío de cookies
-    });
-    return response.data;
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error) && (error.response?.status === 401 || error.response?.status === 403)) {
-      useAuthStore.getState().logout();
-    }
-    throw error;
-  }
+  const response = await axios.get(urls.URL_BASE_PATH + siteUrl, {
+    headers: getHeaders(isNeedToken),
+    withCredentials: true,
+  });
+  return response.data;
 };
 
 // =======================
@@ -55,18 +49,11 @@ export const postApi = async (
   body: any = {},
   isNeedToken = false
 ) => {
-  try {
-    const response = await axios.post(urls.URL_BASE_PATH + siteUrl, body, {
-      headers: getHeaders(isNeedToken),
-      withCredentials: true, // Habilitar envío de cookies
-    });
-    return response.data;
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error) && (error.response?.status === 401 || error.response?.status === 403)) {
-      useAuthStore.getState().logout();
-    }
-    throw error;
-  }
+  const response = await axios.post(urls.URL_BASE_PATH + siteUrl, body, {
+    headers: getHeaders(isNeedToken),
+    withCredentials: true,
+  });
+  return response.data;
 };
 
 // =======================
@@ -78,18 +65,11 @@ export const putApi = async (
   body: any = {},
   isNeedToken = false
 ) => {
-  try {
-    const response = await axios.put(urls.URL_BASE_PATH + siteUrl, body, {
-      headers: getHeaders(isNeedToken),
-      withCredentials: true, // Habilitar envío de cookies
-    });
-    return response.data;
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error) && (error.response?.status === 401 || error.response?.status === 403)) {
-      useAuthStore.getState().logout();
-    }
-    throw error;
-  }
+  const response = await axios.put(urls.URL_BASE_PATH + siteUrl, body, {
+    headers: getHeaders(isNeedToken),
+    withCredentials: true,
+  });
+  return response.data;
 };
 
 // =======================
@@ -101,16 +81,9 @@ export const patchApi = async (
   body: any = {},
   isNeedToken = false
 ) => {
-  try {
-    const response = await axios.patch(urls.URL_BASE_PATH + siteUrl, body, {
-      headers: getHeaders(isNeedToken),
-      withCredentials: true, // Habilitar envío de cookies
-    });
-    return response.data;
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error) && (error.response?.status === 401 || error.response?.status === 403)) {
-      useAuthStore.getState().logout();
-    }
-    throw error;
-  }
+  const response = await axios.patch(urls.URL_BASE_PATH + siteUrl, body, {
+    headers: getHeaders(isNeedToken),
+    withCredentials: true,
+  });
+  return response.data;
 };

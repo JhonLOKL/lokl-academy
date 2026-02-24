@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { useAuthStore } from "@/store/auth-store";
 import Link from "next/link";
 import Image from "next/image";
@@ -8,15 +7,12 @@ import { Button } from "@/components/design-system";
 import { useRouter } from "next/navigation";
 
 export default function UserProfileWidget() {
-  const { user, fetchUserProfile, logout } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const router = useRouter();
   
-  // Obtener el perfil completo del usuario si hay usuario pero no hay datos completos
-  useEffect(() => {
-    if (user && (!user.profilePhoto)) {
-      fetchUserProfile();
-    }
-  }, [user, fetchUserProfile]);
+  // NOTA: fetchUserProfile ya lo hace SessionInitializer al cargar la app.
+  // No es necesario volver a llamarlo aquí. El perfil (incluyendo profilePhoto)
+  // se obtiene completo en una sola llamada cacheada.
   
   const handleLogout = () => {
     logout();

@@ -2,7 +2,9 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { signInAction, signUpAction } from '@/actions/auth-service';
 import { getUserProfileService } from '@/services/user-service';
-import { postApi } from '@/schemas/api-schema';
+import axios from 'axios';
+import { urls } from '@/config/urls';
+import { clearSessionCache, cachedFetch, CACHE_KEYS } from '@/services/session-cache';
 
 // Definir la interfaz para el usuario
 interface UserProfile {
@@ -78,6 +80,9 @@ interface RegisterData {
   utmTerm?: string;
   utmContent?: string;
 }
+
+// Flag de re-entrancia para evitar bucle infinito de logout
+let _isLoggingOut = false;
 
 // Crear el store con persistencia
 export const useAuthStore = create<AuthState>()(
@@ -171,25 +176,35 @@ export const useAuthStore = create<AuthState>()(
 
       // Método para cerrar sesión
       logout: async () => {
+        // Guard de re-entrancia: evita bucle infinito si el endpoint de logout
+        // responde 401 y el interceptor intenta llamar logout() de nuevo
+        if (_isLoggingOut) return;
+        _isLoggingOut = true;
+
         try {
-          // Llamar al endpoint de logout para limpiar la cookie
-          await postApi('/api/auth/logout');
-        } catch (error) {
-          console.error('Error durante logout:', error);
+          // Usar axios directo (sin postApi ni interceptores) para evitar
+          // que un 401 en esta llamada dispare logout() recursivamente
+          await axios.post(
+            `${urls.URL_BASE_PATH}/api/auth/logout`,
+            {},
+            { withCredentials: true }
+          ).catch(() => {
+            // Silenciar errores: si falla el logout en backend, igual limpiamos local
+          });
         } finally {
           // Limpiar estado local independientemente del resultado del servidor
           set({ user: null, token: null });
-          
+
+          // Limpiar cache de sesión para evitar datos viejos si se logea otra cuenta
+          clearSessionCache();
+
           // Eliminar el token del localStorage manualmente si existe
-          // Esto asegura que cuando se cierra sesión en otro dominio (localhost:3000),
-          // el token también se elimine aquí (localhost:4000)
           if (typeof window !== 'undefined') {
             try {
               const storageKey = 'lokl-auth-storage';
               const stored = localStorage.getItem(storageKey);
               if (stored) {
                 const parsed = JSON.parse(stored);
-                // Si existe el token en el localStorage, eliminarlo
                 if (parsed.state?.token) {
                   parsed.state.token = null;
                   localStorage.setItem(storageKey, JSON.stringify(parsed));
@@ -199,11 +214,8 @@ export const useAuthStore = create<AuthState>()(
               console.error('Error limpiando token del localStorage:', e);
             }
           }
-          
-          // Opcional: Redirigir si es necesario, pero usualmente lo hace el componente
-          if (typeof window !== 'undefined') {
-             // window.location.href = '/login'; 
-          }
+
+          _isLoggingOut = false;
         }
       },
 
@@ -213,10 +225,14 @@ export const useAuthStore = create<AuthState>()(
       },
 
       // Método para obtener el perfil completo del usuario
+      // NOTA: NO setea isLoading globalmente para evitar re-renders en cascada
+      // en ProtectedRoute y otros componentes. Solo se usa isLoading en login/register.
       fetchUserProfile: async () => {
-        set({ isLoading: true, error: null });
         try {
-          const response = await getUserProfileService();
+          const response = await cachedFetch(
+            CACHE_KEYS.USER_PROFILE,
+            () => getUserProfileService()
+          );
           
           if (response?.success && response.data) {
             // Asegurar que planType siempre tenga un valor (default: 'basic')
@@ -232,16 +248,15 @@ export const useAuthStore = create<AuthState>()(
               ...response.data,
               planType: rawPlan,
             };
-            set({ user: userData, isLoading: false });
+            set({ user: userData });
             return true;
           } else {
             // Si hay un error 403 (Forbidden) o 401, cerrar sesión
             if (response?.status === 403 || response?.status === 401) {
-              set({ user: null, token: null, isLoading: false });
+              set({ user: null, token: null });
             } else {
               set({ 
                 error: response?.message || 'Error al obtener el perfil del usuario', 
-                isLoading: false 
               });
             }
             return false;
@@ -249,7 +264,6 @@ export const useAuthStore = create<AuthState>()(
         } catch (error) {
           set({ 
             error: error instanceof Error ? error.message : 'Error desconocido', 
-            isLoading: false 
           });
           return false;
         }

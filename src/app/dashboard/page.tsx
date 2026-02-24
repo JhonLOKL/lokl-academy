@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
@@ -14,6 +14,7 @@ import { getDashboardProjectsAction } from "@/actions/dashboard-projects-action"
 import { type DashboardProject } from "@/services/dashboard-projects-service";
 import { getUserReferralsAction } from "@/actions/user-referrals-action";
 import { type ReferralUser } from "@/schemas/user-referrals-schema";
+import { cachedFetch, CACHE_KEYS, invalidateCache } from "@/services/session-cache";
 import {
   getCurrentLevelFromNextLevelName,
   getHighestLevel,
@@ -100,84 +101,56 @@ export default function DashboardPage() {
   const [loadingCourses, setLoadingCourses] = useState<boolean>(true);
   const [userCourses, setUserCourses] = useState<Course[]>([]);
 
-  // Eliminar logs de depuración en producción
-
-  // Cargar cursos del usuario
+  // =========================================================================
+  // CARGA CONSOLIDADA: Un solo useEffect con Promise.all + cache de sesión.
+  // Las 3 llamadas se lanzan en paralelo y se deduplicacin via cachedFetch.
+  // Si el usuario navega fuera y vuelve dentro de 30s, obtiene datos del cache.
+  // =========================================================================
   useEffect(() => {
     let mounted = true;
-    async function loadUserCourses() {
-      setLoadingCourses(true);
-      try {
-        const res = await getUserCoursesAction();
-        if (!mounted) return;
-        if (res.success) {
-          setUserCourses(res.data || []);
-        } else {
-          setUserCourses([]);
-        }
-      } catch {
-        if (!mounted) return;
+
+    async function loadDashboardData() {
+      // Lanzar las 3 peticiones en paralelo (cada una usa cachedFetch)
+      const [coursesResult, projectsResult, referralsResult] = await Promise.allSettled([
+        cachedFetch(CACHE_KEYS.USER_COURSES, getUserCoursesAction),
+        cachedFetch(CACHE_KEYS.DASHBOARD_PROJECTS, getDashboardProjectsAction),
+        user?.uniqueCode
+          ? cachedFetch(CACHE_KEYS.USER_REFERRALS, getUserReferralsAction)
+          : Promise.resolve({ success: true, data: [] }),
+      ]);
+
+      if (!mounted) return;
+
+      // Procesar cursos
+      if (coursesResult.status === 'fulfilled' && coursesResult.value?.success) {
+        setUserCourses(coursesResult.value.data || []);
+      } else {
         setUserCourses([]);
-      } finally {
-        if (mounted) setLoadingCourses(false);
       }
-    }
-    loadUserCourses();
-    return () => { mounted = false; };
-  }, []);
+      setLoadingCourses(false);
 
-  // Cargar proyectos (niveles)
-  useEffect(() => {
-    let mounted = true;
-    async function loadProjects() {
-      setLoadingProjects(true);
-      setProjectsError(null);
-      try {
-        const res = await getDashboardProjectsAction();
-        if (!mounted) return;
-        if (res?.success) {
-          setProjects(res.projects || []);
-        } else {
-          setProjects([]);
-          setProjectsError(res?.message || "No fue posible cargar los proyectos");
-        }
-      } catch {
-        if (!mounted) return;
+      // Procesar proyectos
+      if (projectsResult.status === 'fulfilled' && projectsResult.value?.success) {
+        setProjects(projectsResult.value.projects || []);
+      } else {
         setProjects([]);
-        setProjectsError("No fue posible cargar los proyectos");
-      } finally {
-        if (mounted) setLoadingProjects(false);
+        const msg = projectsResult.status === 'fulfilled'
+          ? projectsResult.value?.message
+          : "No fue posible cargar los proyectos";
+        setProjectsError(msg || "No fue posible cargar los proyectos");
       }
-    }
-    loadProjects();
-    return () => { mounted = false; };
-  }, []);
+      setLoadingProjects(false);
 
-  // Cargar referidos
-  useEffect(() => {
-    let mounted = true;
-    async function loadReferrals() {
-      setLoadingReferrals(true);
-      try {
-        const res = await getUserReferralsAction();
-        if (!mounted) return;
-        if (res.success && res.data) {
-          setReferrals(res.data);
-        } else {
-          setReferrals([]);
-        }
-      } catch (error) {
-        console.error("Error cargando referidos:", error);
-        if (!mounted) return;
+      // Procesar referidos
+      if (referralsResult.status === 'fulfilled' && referralsResult.value?.success && referralsResult.value?.data) {
+        setReferrals(referralsResult.value.data);
+      } else {
         setReferrals([]);
-      } finally {
-        if (mounted) setLoadingReferrals(false);
       }
+      setLoadingReferrals(false);
     }
-    // Solo cargar si el usuario tiene código (ya está logueado y cargado)
-    if (user?.uniqueCode) {
-      loadReferrals();
-    }
+
+    loadDashboardData();
     return () => { mounted = false; };
   }, [user?.uniqueCode]);
 
@@ -249,6 +222,8 @@ export default function DashboardPage() {
           description: "Tu foto de perfil se ha actualizado correctamente.",
           variant: "success",
         });
+        // Invalidar cache del perfil para forzar re-fetch con nueva foto
+        invalidateCache(CACHE_KEYS.USER_PROFILE);
         await fetchUserProfile();
       } else {
         toast({
@@ -280,23 +255,23 @@ export default function DashboardPage() {
     twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMessage)}`,
   };
 
-  const totalGenerated = referrals.reduce((total, ref) => {
+  const totalGenerated = useMemo(() => referrals.reduce((total, ref) => {
     const userTotal = ref.investments?.reduce((sum, inv) => sum + (inv.contributionAmount || 0), 0) || 0;
     return total + userTotal;
-  }, 0);
+  }, 0), [referrals]);
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = useCallback((amount: number) => {
     return new Intl.NumberFormat("es-CO", {
       style: "currency",
       currency: "COP",
       maximumFractionDigits: 0,
     }).format(amount);
-  };
+  }, []);
 
   // ==========================
-  // Niveles por proyecto (UI)
+  // Niveles por proyecto (UI) - memoizado para evitar recálculos en cada render
   // ==========================
-  const projectLevels = projects.map((p) => {
+  const projectLevels = useMemo(() => projects.map((p) => {
     const nextLevelName = (p?.levelUp as { nextLevelName?: string | null } | undefined)?.nextLevelName ?? null;
     const currentLevel = getCurrentLevelFromNextLevelName(nextLevelName);
     const rawProjectName =
@@ -312,9 +287,12 @@ export default function DashboardPage() {
     })();
 
     return { projectName, currentLevel, nextLevelName };
-  });
+  }), [projects]);
 
-  const highestLevel: LevelKey = getHighestLevel(projectLevels.map((x) => x.currentLevel));
+  const highestLevel: LevelKey = useMemo(
+    () => getHighestLevel(projectLevels.map((x) => x.currentLevel)),
+    [projectLevels]
+  );
 
   const getLevelBadge = (level: LevelKey) => {
     if (level === "hero") return { variant: "success" as const, label: translateLevel(level) };
@@ -363,12 +341,12 @@ export default function DashboardPage() {
     };
   };
 
-  const projectLevelTags = projectLevels
+  const projectLevelTags = useMemo(() => projectLevels
     .filter((p) => p.projectName && p.currentLevel !== "Sin nivel")
     .map((p) => ({
       projectName: p.projectName,
       level: p.currentLevel,
-    }));
+    })), [projectLevels]);
 
   const formatProjectTag = (name: string) => {
     const clean = String(name || "").trim();

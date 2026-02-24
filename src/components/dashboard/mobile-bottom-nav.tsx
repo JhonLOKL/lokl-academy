@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
 import { urls } from "@/config/urls";
 
 // Iconos SVG personalizados
@@ -64,7 +63,7 @@ export function MobileBottomNav() {
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[#E5E5E5] px-2 py-2 sm:hidden shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
       <nav className="flex justify-around items-center">
         {items.map((item) => {
-          const isActive = pathname === item.href || pathname?.startsWith(item.href);
+          /* const isActive = pathname === item.href || pathname?.startsWith(item.href); */
 
           return (
             <Link
