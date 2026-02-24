@@ -5,6 +5,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import Image from "next/image";
 import Link from "next/link";
 import { useAuthStore } from "@/store/auth-store";
 import ProtectedRoute from "@/components/auth/protected-route";
@@ -100,6 +101,10 @@ export default function DashboardPage() {
   // Cursos del usuario
   const [loadingCourses, setLoadingCourses] = useState<boolean>(true);
   const [userCourses, setUserCourses] = useState<Course[]>([]);
+
+  // Control para mostrar más referidos (reduce DOM nodes en mobile)
+  const [showAllReferrals, setShowAllReferrals] = useState(false);
+  const REFERRALS_INITIAL_LIMIT = 5;
 
   // =========================================================================
   // CARGA CONSOLIDADA: Un solo useEffect con Promise.all + cache de sesión.
@@ -301,9 +306,11 @@ export default function DashboardPage() {
     return { variant: "default" as const, label: translateLevel(level) };
   };
 
-  const getLevelEmblem = (level: LevelKey) => {
+  const getLevelEmblem = useCallback((level: LevelKey) => {
+    // NOTA: Se eliminó backdrop-blur-md porque es MUY costoso en mobile (GPU recompose cada frame durante scroll)
+    // Se reemplaza con bg sólido semi-transparente que es muchísimo más eficiente
     const baseChip =
-      "bg-white/15 text-white backdrop-blur-md border border-white/25 shadow-sm shadow-black/10";
+      "bg-[#4a49d6] text-white border border-white/25 shadow-sm shadow-black/10";
 
     if (level === "hero") {
       return {
@@ -339,7 +346,7 @@ export default function DashboardPage() {
       iconClass: "text-white/80",
       dotClass: "bg-white/70",
     };
-  };
+  }, []);
 
   const projectLevelTags = useMemo(() => projectLevels
     .filter((p) => p.projectName && p.currentLevel !== "Sin nivel")
@@ -359,7 +366,7 @@ export default function DashboardPage() {
   const getPlanChip = (planType: string | undefined | null) => {
     const raw = String(planType || "").toLowerCase();
     const baseChip =
-      "bg-white/15 text-white backdrop-blur-md border border-white/25 shadow-sm shadow-black/10";
+      "bg-[#4a49d6] text-white border border-white/25 shadow-sm shadow-black/10";
 
     if (raw === "investor" || raw === "inversionista") {
       return {
@@ -494,7 +501,7 @@ export default function DashboardPage() {
                     {projectLevelTags.length > 0 && (
                       <div className="w-full max-w-[calc(100vw-48px)] sm:max-w-none mt-2">
                         {/* Mobile: Swiper horizontal (todos los tags) */}
-                        <div className="flex sm:hidden overflow-x-auto gap-2 pb-2 scroll-smooth snap-x snap-mandatory [scrollbar-width:none] items-center">
+                        <div className="flex sm:hidden overflow-x-auto gap-2 pb-2 snap-x [scrollbar-width:none] items-center [-webkit-overflow-scrolling:touch]">
                           {projectLevelTags.map((t) => {
                             const emblem = getLevelEmblem(t.level);
                             const Icon = emblem.icon;
@@ -552,7 +559,7 @@ export default function DashboardPage() {
                 <Button
                   variant="dark"
                   size="lg"
-                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 shadow-sm hover:shadow transition-all px-3"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 shadow-sm hover:shadow transition-shadow px-3"
                   onClick={() => { window.location.href = `${urls.DASHBOARD_URL}/dashboard/perfil?scrollTo=complete-profile`; }}
                   aria-label="Abrir configuración"
                 >
@@ -562,7 +569,7 @@ export default function DashboardPage() {
                 <Button
                   variant="secondary"
                   size="lg"
-                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 shadow-sm hover:shadow transition-all px-3"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 shadow-sm hover:shadow transition-shadow px-3"
                   onClick={handleLogout}
                   aria-label="Cerrar sesión"
                 >
@@ -630,7 +637,7 @@ export default function DashboardPage() {
                         className="group block rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5352F6] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F5F5F5] h-full"
                         aria-label={`Ir a ${item.title}`}
                       >
-                        <Card className="relative border-none shadow-sm transition-all group-hover:shadow-md overflow-hidden aspect-square sm:aspect-auto sm:min-h-[116px] h-full p-0 sm:p-5">
+                        <Card className="relative border-none shadow-sm transition-shadow group-hover:shadow-md overflow-hidden aspect-square sm:aspect-auto sm:min-h-[116px] h-full p-0 sm:p-5">
                           <div
                             className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#5352F6] to-[#4A4AE5] hidden sm:block"
                             aria-hidden="true"
@@ -639,7 +646,7 @@ export default function DashboardPage() {
                           <div className="flex h-full flex-col sm:hidden relative overflow-hidden items-center justify-center text-center p-4  via-slate-50 to-slate-100">
                             {/* Ícono centrado y destacado */}
                             <div
-                              className="mb-3 rounded-2xl bg-white p-3 ring-1 ring-indigo-50 transition-transform group-hover:scale-110"
+                              className="mb-3 rounded-2xl bg-white p-3 ring-1 ring-indigo-50"
                               aria-hidden="true"
                             >
                               <item.icon size={24} className="text-[#5352F6]" />
@@ -717,19 +724,23 @@ export default function DashboardPage() {
 
                     return (
                       <Card
-                        className="relative overflow-hidden border-none bg-[#1C1C1C] text-white shadow-lg group"
+                        className="relative overflow-hidden border-none bg-[#1C1C1C] text-white shadow-lg"
                       >
-                        {/* Background Image & Gradient */}
+                        {/* Background Image — usando next/image para lazy loading y optimización automática */}
                         <div className="absolute inset-0 bg-gradient-to-r from-[#0F0F0F] via-[#0F0F0F]/80 to-transparent z-10 pointer-events-none" />
-                        <div
-                          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-60 sm:opacity-100"
-                          style={{ backgroundImage: `url(${bgImage})` }}
+                        <Image
+                          src={bgImage}
+                          alt={proj.name || 'Proyecto'}
+                          fill
+                          className="object-cover opacity-40 sm:opacity-70"
+                          sizes="(max-width: 768px) 100vw, 66vw"
+                          loading="lazy"
                         />
 
-                        <div className="relative z-20 p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                          <div className="space-y-4 max-w-2xl flex-1">
+                        <div className="relative z-20 p-5 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6">
+                          <div className="space-y-3 max-w-2xl flex-1">
                             <div className="flex items-center gap-3">
-                              <Badge className="border border-white/30 text-white bg-white/10 backdrop-blur-md hover:bg-white/20 transition-colors">
+                              <Badge className="border border-white/30 text-white bg-[#3a3a3a]">
                                 {proj.name}
                               </Badge>
                               <span className="text-xs sm:text-sm text-gray-300">
@@ -738,19 +749,19 @@ export default function DashboardPage() {
                             </div>
 
                             <div>
-                              <h3 className="text-2xl sm:text-3xl font-bold mb-2 text-white">
+                              <h3 className="text-xl sm:text-3xl font-bold mb-1 sm:mb-2 text-white">
                                 Sube a nivel <span className="text-[#5352F6]">{nextLvlName}</span>
                               </h3>
-                              <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
-                                Te faltan <span className="font-semibold text-white">{unitsNeeded} {unitsNeeded === 1 ? 'unidad' : 'unidades'}</span> <span className="text-white/70 text-xs sm:text-sm">({formatCurrency(amountNeeded)})</span> para desbloquear beneficios exclusivos.
+                              <p className="text-gray-300 text-sm leading-relaxed">
+                                Te faltan <span className="font-semibold text-white">{unitsNeeded} {unitsNeeded === 1 ? 'unidad' : 'unidades'}</span> <span className="text-white/70 text-xs">({formatCurrency(amountNeeded)})</span> para desbloquear beneficios exclusivos.
                               </p>
                             </div>
 
-                            {/* Beneficios */}
+                            {/* Beneficios — solo en desktop para reducir DOM mobile */}
                             {proj.levelUp?.benefits && proj.levelUp.benefits.length > 0 && (
-                              <div className="flex flex-wrap gap-2 pt-1">
+                              <div className="hidden sm:flex flex-wrap gap-2 pt-1">
                                 {proj.levelUp.benefits.slice(0, 3).map((benefit, i) => (
-                                  <div key={i} className="flex items-center gap-1.5 text-xs sm:text-sm bg-white/10 px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-sm text-gray-100">
+                                  <div key={i} className="flex items-center gap-1.5 text-xs sm:text-sm bg-[#2a2a2a] px-3 py-1.5 rounded-full border border-white/10 text-gray-100">
                                     <Check size={14} className="text-[#5352F6]" />
                                     {benefit}
                                   </div>
@@ -798,19 +809,6 @@ export default function DashboardPage() {
                           </SwiperSlide>
                         ))}
                       </Swiper>
-                      <style jsx global>{`
-                        .dashboard-level-up-swiper .swiper-pagination-bullet {
-                          background: white;
-                          opacity: 0.5;
-                        }
-                        .dashboard-level-up-swiper .swiper-pagination-bullet-active {
-                          background: #5352F6;
-                          opacity: 1;
-                        }
-                        .dashboard-level-up-swiper .swiper-pagination {
-                          bottom: 10px !important;
-                        }
-                      `}</style>
                     </div>
                   );
                 })()}
@@ -831,22 +829,20 @@ export default function DashboardPage() {
 
                 {loadingCourses ? (
                   <div
-                    className="flex gap-4 overflow-x-auto pb-2 scroll-smooth snap-x snap-mandatory [scrollbar-width:thin]"
+                    className="flex gap-4 overflow-x-auto pb-2 [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]"
                     role="region"
                     aria-label="Cargando cursos"
-                    tabIndex={0}
                   >
-                    {[...Array(4)].map((_, i) => (
+                    {[...Array(3)].map((_, i) => (
                       <div
                         key={i}
-                        className="flex-none w-[280px] sm:w-[320px] md:w-[360px] snap-start overflow-hidden rounded-lg border border-[#E5E5E5] bg-white shadow-sm"
+                        className="flex-none w-[260px] sm:w-[320px] md:w-[360px] overflow-hidden rounded-lg border border-[#E5E5E5] bg-white shadow-sm"
                       >
-                        <Skeleton className="h-48 w-full" />
+                        <Skeleton className="h-40 w-full" />
                         <div className="p-4">
                           <Skeleton className="mb-2 h-4 w-24" />
                           <Skeleton className="mb-2 h-6 w-full" />
                           <Skeleton className="mb-4 h-4 w-3/4" />
-                          <Skeleton className="mb-3 h-4 w-32" />
                           <Skeleton className="h-2 w-full" />
                         </div>
                       </div>
@@ -854,15 +850,14 @@ export default function DashboardPage() {
                   </div>
                 ) : userCourses.length > 0 ? (
                   <div
-                    className="flex gap-4 overflow-x-auto pb-2 scroll-smooth snap-x snap-mandatory [scrollbar-width:thin]"
+                    className="flex gap-4 overflow-x-auto pb-2 [scrollbar-width:thin] [-webkit-overflow-scrolling:touch]"
                     role="region"
                     aria-label="Cursos inscritos"
-                    tabIndex={0}
                   >
                     {userCourses.map((course) => (
                       <div
                         key={course.id}
-                        className="flex-none w-[280px] sm:w-[320px] md:w-[360px] snap-start"
+                        className="flex-none w-[260px] sm:w-[320px] md:w-[360px]"
                       >
                         <CourseCard course={course} showProgress={true} />
                       </div>
@@ -1060,55 +1055,67 @@ export default function DashboardPage() {
                           <Skeleton className="h-12 w-full" />
                         </div>
                       ) : referrals.length > 0 ? (
-                        referrals.map((ref, idx) => {
-                          const initials = (ref.firstName || ref.email)
-                            .split(" ")
-                            .filter(Boolean)
-                            .slice(0, 2)
-                            .map((p) => p[0]?.toUpperCase())
-                            .join("");
+                        <>
+                          {(showAllReferrals ? referrals : referrals.slice(0, REFERRALS_INITIAL_LIMIT)).map((ref, idx) => {
+                            const initials = (ref.firstName || ref.email)
+                              .split(" ")
+                              .filter(Boolean)
+                              .slice(0, 2)
+                              .map((p) => p[0]?.toUpperCase())
+                              .join("");
 
-                          const investmentsSum = ref.investments?.reduce((s, i) => s + (i.contributionAmount || 0), 0) || 0;
-                          const hasInvested = investmentsSum > 0 || ref.status === 'invested';
+                            const investmentsSum = ref.investments?.reduce((s, i) => s + (i.contributionAmount || 0), 0) || 0;
+                            const hasInvested = investmentsSum > 0 || ref.status === 'invested';
 
-                          return (
-                            <div key={`${ref.email}-${idx}`} className="px-4 py-3">
-                              <UserCard
-                                name={`${ref.firstName} ${ref.lastName || ''}`.trim() || 'Usuario'}
-                                role={
-                                  <span className="block truncate max-w-[120px] xs:max-w-[160px] sm:max-w-none text-muted-foreground text-xs sm:text-sm">
-                                    {ref.email}
-                                  </span> as unknown as string
-                                }
-                                className="border-none shadow-none bg-transparent rounded-none !p-0 !flex-row items-center gap-3"
-                                avatar={
-                                  <Avatar className="h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0">
-                                    <AvatarFallback className="text-[#5352F6] bg-[#5352F6]/10 font-semibold text-xs sm:text-sm">
-                                      {initials || "U"}
-                                    </AvatarFallback>
-                                  </Avatar>
-                                }
-                                actions={
-                                  hasInvested ? (
-                                    <div className="flex flex-col items-end min-w-[90px] text-right">
-                                      <Badge variant="success" className="mb-0.5 px-2 py-0.5 text-[10px] sm:text-xs">Inversionista</Badge>
-                                      {investmentsSum > 0 && (
-                                        <Text size="xs" weight="medium" className="text-[#5352F6] text-[10px] sm:text-xs">
-                                          +{formatCurrency(investmentsSum)}
-                                        </Text>
-                                      )}
-                                    </div>
-                                  ) : (
-                                    <div className="flex flex-col items-end gap-0.5 min-w-[90px] text-right">
-                                      <Badge variant="warning" className="px-2 py-0.5 text-[10px] sm:text-xs">Registrado</Badge>
-                                      <Text size="xs" color="muted" className="italic text-[10px] sm:text-xs">¡Anímalo!</Text>
-                                    </div>
-                                  )
-                                }
-                              />
-                            </div>
-                          );
-                        })
+                            return (
+                              <div key={`${ref.email}-${idx}`} className="px-4 py-3">
+                                <UserCard
+                                  name={`${ref.firstName} ${ref.lastName || ''}`.trim() || 'Usuario'}
+                                  role={
+                                    <span className="block truncate max-w-[120px] xs:max-w-[160px] sm:max-w-none text-muted-foreground text-xs sm:text-sm">
+                                      {ref.email}
+                                    </span> as unknown as string
+                                  }
+                                  className="border-none shadow-none bg-transparent rounded-none !p-0 !flex-row items-center gap-3"
+                                  avatar={
+                                    <Avatar className="h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0">
+                                      <AvatarFallback className="text-[#5352F6] bg-[#5352F6]/10 font-semibold text-xs sm:text-sm">
+                                        {initials || "U"}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                  }
+                                  actions={
+                                    hasInvested ? (
+                                      <div className="flex flex-col items-end min-w-[90px] text-right">
+                                        <Badge variant="success" className="mb-0.5 px-2 py-0.5 text-[10px] sm:text-xs">Inversionista</Badge>
+                                        {investmentsSum > 0 && (
+                                          <Text size="xs" weight="medium" className="text-[#5352F6] text-[10px] sm:text-xs">
+                                            +{formatCurrency(investmentsSum)}
+                                          </Text>
+                                        )}
+                                      </div>
+                                    ) : (
+                                      <div className="flex flex-col items-end gap-0.5 min-w-[90px] text-right">
+                                        <Badge variant="warning" className="px-2 py-0.5 text-[10px] sm:text-xs">Registrado</Badge>
+                                        <Text size="xs" color="muted" className="italic text-[10px] sm:text-xs">¡Anímalo!</Text>
+                                      </div>
+                                    )
+                                  }
+                                />
+                              </div>
+                            );
+                          })}
+                          {/* Botón "ver más" si hay más de 5 referidos */}
+                          {referrals.length > REFERRALS_INITIAL_LIMIT && !showAllReferrals && (
+                            <button
+                              type="button"
+                              onClick={() => setShowAllReferrals(true)}
+                              className="w-full py-3 text-sm font-medium text-[#5352F6] hover:bg-[#F5F5F5] transition-colors"
+                            >
+                              Ver todos ({referrals.length})
+                            </button>
+                          )}
+                        </>
                       ) : (
                         <div className="p-8 text-center">
                           <Users className="mx-auto h-8 w-8 text-gray-300 mb-2" />
@@ -1203,7 +1210,7 @@ export default function DashboardPage() {
                       <Link
                         key={item.label}
                         href={item.href}
-                        className="group flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-[#5352F6]/30 transition-all duration-200"
+                        className="group flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-[#5352F6]/30 transition-[box-shadow,border-color] duration-200"
                       >
                         <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-[#F5F5F5] text-[#6D6C6C] group-hover:bg-[#5352F6] group-hover:text-white transition-colors duration-200">
                           <item.icon size={16} />
@@ -1211,7 +1218,7 @@ export default function DashboardPage() {
                         <span className="text-sm font-medium text-[#0F0F0F] group-hover:text-[#5352F6] transition-colors duration-200 truncate">
                           {item.label}
                         </span>
-                        <ChevronRight size={14} className="ml-auto text-gray-300 group-hover:text-[#5352F6] transition-colors duration-200 opacity-0 group-hover:opacity-100" />
+                        <ChevronRight size={14} className="ml-auto text-gray-300 group-hover:text-[#5352F6] transition-colors duration-200 sm:opacity-0 sm:group-hover:opacity-100" />
                       </Link>
                     ))}
                   </div>

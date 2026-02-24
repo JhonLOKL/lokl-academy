@@ -51,8 +51,13 @@ export async function cachedFetch<T>(
   // 3. No hay cache ni petición en vuelo: ejecutar el fetcher
   const promise = fetcher()
     .then((data) => {
-      // Guardar en cache con timestamp
-      cache.set(key, { data, timestamp: Date.now() });
+      // Solo cachear respuestas exitosas.
+      // Si el objeto tiene { success: false }, NO cachear (ej: 401 antes de login).
+      // Esto evita que una respuesta fallida pre-login bloquee el fetch post-login.
+      const isFailedResponse = data && typeof data === 'object' && 'success' in data && !(data as Record<string, unknown>).success;
+      if (!isFailedResponse) {
+        cache.set(key, { data, timestamp: Date.now() });
+      }
       // Limpiar de in-flight
       inFlight.delete(key);
       return data;

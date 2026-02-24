@@ -48,6 +48,8 @@ export default function ProfileAvatar({
           alt={`${firstName} ${lastName}`}
           fill
           className="object-cover"
+          sizes={size === 'sm' ? '40px' : size === 'md' ? '64px' : '96px'}
+          loading="lazy"
           onError={() => setImageError(true)}
         />
       ) : (

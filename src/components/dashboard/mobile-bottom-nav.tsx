@@ -34,7 +34,6 @@ const FileIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 export function MobileBottomNav() {
-  const pathname = usePathname();
 
   const items = [
     {
@@ -60,27 +59,27 @@ export function MobileBottomNav() {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[#E5E5E5] px-2 py-2 sm:hidden shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+    <div
+      className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[#E5E5E5] px-2 py-2 sm:hidden shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]"
+      style={{ willChange: 'transform', transform: 'translateZ(0)' }}
+    >
       <nav className="flex justify-around items-center">
-        {items.map((item) => {
-          /* const isActive = pathname === item.href || pathname?.startsWith(item.href); */
-
-          return (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={"text-black flex flex-col items-center justify-center p-2 rounded-xl min-w-[70px] transition-colors"}
-            >
-              <item.icon
-                style={{ width: 33, height: 33 }}
-                className="mb-1"
-              />
-              <span className="text-[10px] font-medium leading-none">
-                {item.label}
-              </span>
-            </Link>
-          );
-        })}
+        {items.map((item) => (
+          <Link
+            key={item.label}
+            href={item.href}
+            prefetch={false}
+            className="text-black flex flex-col items-center justify-center p-2 rounded-xl min-w-[70px]"
+          >
+            <item.icon
+              style={{ width: 28, height: 28 }}
+              className="mb-1"
+            />
+            <span className="text-[10px] font-medium leading-none">
+              {item.label}
+            </span>
+          </Link>
+        ))}
       </nav>
     </div>
   );

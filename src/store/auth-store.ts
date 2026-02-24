@@ -104,10 +104,20 @@ export const useAuthStore = create<AuthState>()(
             const token = response.token || null;
             set({ token: token });
             
+            // IMPORTANTE: Limpiar cache ANTES de fetchUserProfile.
+            // Si SessionInitializer hizo un fetch antes del login (sin cookie),
+            // la respuesta fallida ({ success: false }) quedó cacheada.
+            // Sin limpiar, fetchUserProfile devolvería esa respuesta vieja.
+            clearSessionCache();
+            
             // Obtener el perfil completo del usuario
-            await get().fetchUserProfile();
+            const profileOk = await get().fetchUserProfile();
             set({ isLoading: false });
-            return true;
+            
+            if (!profileOk) {
+              set({ error: 'No se pudo cargar el perfil del usuario' });
+            }
+            return profileOk;
           } else {
             set({ 
               error: response?.message || 'Error al iniciar sesión', 
@@ -154,10 +164,17 @@ export const useAuthStore = create<AuthState>()(
             const token = response.token || null;
             set({ token: token });
             
+            // Limpiar cache antes de fetch (mismo motivo que en login)
+            clearSessionCache();
+            
             // Obtener el perfil completo del usuario
-            await get().fetchUserProfile();
+            const profileOk = await get().fetchUserProfile();
             set({ isLoading: false });
-            return true;
+            
+            if (!profileOk) {
+              set({ error: 'No se pudo cargar el perfil del usuario' });
+            }
+            return profileOk;
           } else {
             set({ 
               error: response?.message || 'Error al registrarse', 

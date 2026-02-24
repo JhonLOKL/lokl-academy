@@ -3,7 +3,7 @@ import { signInService, signUpService } from "@/services/auth-service";
 export const signInAction = async ({ email, password }: { email: string, password: string }) => {
     try {
         const resp = await signInService({ email, password })
-        if (!resp?.success) return { success: false, message: resp.message }
+        if (!resp?.success) return { success: false, message: resp?.message ?? "Error al iniciar sesión" }
         return { success: true, message: resp.message, token: resp.data }
     } catch (error) {
         console.error(error)
@@ -33,7 +33,7 @@ export const signUpAction = async ({
 }) => {
     try {
         const resp = await signUpService({ email, password, countryPhoneCode, firstName, lastName, phone, leadOrigin, pageOrigin, referralCode, termsAccepted, utmSource, utmMedium, utmCampaign, utmTerm, utmContent })
-        if (!resp?.success) return { success: false, message: resp.message }
+        if (!resp?.success) return { success: false, message: resp?.message ?? "Error al registrarse" }
         return { success: true, message: resp.message, token: resp.data.token }
     } catch (error) {
         console.error(error)

@@ -97,7 +97,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
   const cardContent = (
     <div
       className={`
-        group relative overflow-hidden rounded-lg border bg-white shadow-sm transition-all
+        group relative overflow-hidden rounded-lg border bg-white shadow-sm transition-shadow
         ${isLocked ? "border-gray-300 opacity-75" : "border-[#E5E5E5] hover:shadow-md"}
         ${variant === "horizontal" ? "flex flex-col md:flex-row" : "flex flex-col"}
         ${variant === "compact" ? "max-w-xs" : ""}
@@ -158,10 +158,10 @@ const CourseCard: React.FC<CourseCardProps> = ({
           src={course.thumbnail?.url || '/images/course/placeholder.jpg'}
           alt={course.thumbnail?.alt || course.title}
           fill
-          className={`object-cover transition-all duration-500 ${
+          className={`object-cover ${
             isLocked
               ? "grayscale"
-              : "grayscale group-hover:grayscale-0 group-hover:scale-110"
+              : "grayscale sm:group-hover:grayscale-0"
           }`}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />

@@ -387,3 +387,16 @@
     animation-duration: 0s;
   }
 }
+
+/* Dashboard level-up swiper pagination */
+.dashboard-level-up-swiper .swiper-pagination-bullet {
+  background: white;
+  opacity: 0.5;
+}
+.dashboard-level-up-swiper .swiper-pagination-bullet-active {
+  background: #5352F6;
+  opacity: 1;
+}
+.dashboard-level-up-swiper .swiper-pagination {
+  bottom: 10px !important;
+}
