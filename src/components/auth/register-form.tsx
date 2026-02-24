@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/design-system";
 import { Text } from "@/components/design-system";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription } from "@/components/design-system";
-import { 
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -49,17 +49,17 @@ const referralOptions = [
 ];
 
 // Componente para seleccionar el código de país y teléfono
-const PhoneInput = ({ 
-  countryIso, 
-  setCountryIso, 
-  phone, 
-  setPhone, 
-  error 
-}: { 
-  countryIso: string; 
-  setCountryIso: (iso: string) => void; 
-  phone: string; 
-  setPhone: (phone: string) => void; 
+const PhoneInput = ({
+  countryIso,
+  setCountryIso,
+  phone,
+  setPhone,
+  error
+}: {
+  countryIso: string;
+  setCountryIso: (iso: string) => void;
+  phone: string;
+  setPhone: (phone: string) => void;
   error?: string;
 }) => {
   const [open, setOpen] = useState(false);
@@ -76,9 +76,9 @@ const PhoneInput = ({
             className="w-full justify-between px-3 font-normal"
           >
             {selectedCountry ? (
-               <span className="truncate flex items-center">
+              <span className="truncate flex items-center">
                 {selectedCountry.code} <span className="ml-1 text-xs text-muted-foreground hidden sm:inline">{selectedCountry.country}</span>
-               </span>
+              </span>
             ) : (
               "Código"
             )}
@@ -94,7 +94,7 @@ const PhoneInput = ({
                 {countryCodes.map((country) => (
                   <CommandItem
                     key={`${country.country}-${country.code}`}
-                    value={`${country.name} ${country.code}`} 
+                    value={`${country.name} ${country.code}`}
                     onSelect={() => {
                       setCountryIso(country.country);
                       setOpen(false);
@@ -115,11 +115,11 @@ const PhoneInput = ({
           </Command>
         </PopoverContent>
       </Popover>
-      <Input 
-        type="tel" 
-        placeholder="Número de teléfono" 
-        value={phone} 
-        onChange={(e) => setPhone(e.target.value)} 
+      <Input
+        type="tel"
+        placeholder="Número de teléfono"
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
       />
       {error && <p className="col-span-2 text-sm text-[#FF3B30]">{error}</p>}
     </div>
@@ -144,7 +144,7 @@ export default function RegisterForm() {
     "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_INDIE.png",
     "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_NDA.png"
   ];
-  
+
   // Si viene ?redirect en la URL, guardarlo para post-login
   useEffect(() => {
     const redirectParam = searchParams.get("redirect");
@@ -162,7 +162,7 @@ export default function RegisterForm() {
       router.push(target);
     }
   }, [token, user, router, searchParams]);
-  
+
   // Estados para los campos del formulario
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -175,7 +175,7 @@ export default function RegisterForm() {
   const [referralCode, setReferralCode] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [recaptchaCompleted, setRecaptchaCompleted] = useState(false);
-  
+
   // Estado para el paso actual
   const [currentStep, setCurrentStep] = useState(1);
   const [maxStepReached, setMaxStepReached] = useState(1);
@@ -184,7 +184,7 @@ export default function RegisterForm() {
   // Estados para mostrar/ocultar contraseñas
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
+
   // Estado para errores de validación
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [showErrorDialog, setShowErrorDialog] = useState(false);
@@ -201,7 +201,7 @@ export default function RegisterForm() {
       setReferralCode(referralCodeFromUrl);
     }
   }, [referralCode, referralCodeFromUrl]);
-  
+
   // Función para validar el paso actual
   const validateStep = (step: number) => {
     const errors: Record<string, string> = {};
@@ -223,7 +223,7 @@ export default function RegisterForm() {
       } else if (password.length < 8) {
         errors.password = "La contraseña debe tener al menos 8 caracteres";
       }
-      
+
       if (password !== confirmPassword) {
         errors.confirmPassword = "Las contraseñas no coinciden";
       }
@@ -270,15 +270,15 @@ export default function RegisterForm() {
       setValidationErrors({});
     }
   };
-  
+
   // Función para manejar el envío del formulario
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (currentStep !== totalSteps) return;
     setStepAttempted((prev) => ({ ...prev, [currentStep]: true }));
     if (!validateStep(currentStep)) return;
-    
+
     const success = await register({
       firstName,
       lastName,
@@ -296,7 +296,7 @@ export default function RegisterForm() {
       ...(utmTerm && { utmTerm }),
       ...(utmContent && { utmContent }),
     });
-    
+
     if (success) {
       // Guardar lead (Sheets/CRM) SOLO si el registro fue exitoso.
       // No bloquea el flujo si falla; es best-effort.
@@ -342,18 +342,18 @@ export default function RegisterForm() {
       setShowErrorDialog(true);
     }
   };
-  
+
   // Función para cerrar el diálogo de error
   const handleCloseErrorDialog = () => {
     setShowErrorDialog(false);
     clearError();
   };
-  
+
   // Simulación de reCAPTCHA (en producción usaríamos react-google-recaptcha)
   const handleRecaptchaChange = () => {
     setRecaptchaCompleted(true);
   };
-  
+
   return (
     <div className="relative min-h-screen w-full bg-white">
       <AuthLayout
@@ -483,50 +483,50 @@ export default function RegisterForm() {
               {currentStep === 2 && (
                 <>
                   <FormField label="Contraseña" htmlFor="password">
-                    <div className="relative">
-                      <Input
-                        id="password"
-                        type={showPassword ? "text" : "password"}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Mínimo 8 caracteres"
-                        className={cn("h-12 bg-gray-50 pr-10", stepAttempted[2] && validationErrors.password && "border-[#FF3B30]")}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
-                        aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                      >
-                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                      </button>
-                    </div>
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Mínimo 8 caracteres"
+                      className={cn("h-12 bg-gray-50", stepAttempted[2] && validationErrors.password && "border-[#FF3B30]")}
+                      suffix={
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="flex items-center justify-center focus:outline-none hover:text-[#5352F6] transition-colors"
+                          aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                        >
+                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                      }
+                    />
                     {stepAttempted[2] && validationErrors.password && (
                       <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.password}</p>
                     )}
                   </FormField>
                   <FormField label="Confirmar contraseña" htmlFor="confirmPassword">
-                    <div className="relative">
-                      <Input
-                        id="confirmPassword"
-                        type={showConfirmPassword ? "text" : "password"}
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="Repite tu contraseña"
-                        className={cn(
-                          "h-12 bg-gray-50 pr-10",
-                          stepAttempted[2] && validationErrors.confirmPassword && "border-[#FF3B30]"
-                        )}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
-                        aria-label={showConfirmPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                      >
-                        {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                      </button>
-                    </div>
+                    <Input
+                      id="confirmPassword"
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Repite tu contraseña"
+                      className={cn(
+                        "h-12 bg-gray-50",
+                        stepAttempted[2] && validationErrors.confirmPassword && "border-[#FF3B30]"
+                      )}
+                      suffix={
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          className="flex items-center justify-center focus:outline-none hover:text-[#5352F6] transition-colors"
+                          aria-label={showConfirmPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                        >
+                          {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                      }
+                    />
                     {stepAttempted[2] && validationErrors.confirmPassword && (
                       <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.confirmPassword}</p>
                     )}
@@ -677,7 +677,7 @@ export default function RegisterForm() {
           </div>
         </form>
       </AuthLayout>
-      
+
       {/* Diálogo de error */}
       <AlertDialog open={showErrorDialog} onOpenChange={handleCloseErrorDialog}>
         <AlertDialogContent>

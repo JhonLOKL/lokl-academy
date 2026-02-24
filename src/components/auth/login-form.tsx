@@ -9,7 +9,7 @@ import { Button } from "@/components/design-system";
 import { Input } from "@/components/design-system";
 import { FormField } from "@/components/design-system";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription } from "@/components/design-system";
-import { Cookie } from "lucide-react";
+import { Cookie, Eye, EyeOff } from "lucide-react";
 import { urls } from "@/config/urls";
 import { AuthLayout } from "./auth-layout";
 import { cn } from "@/lib/utils";
@@ -67,6 +67,7 @@ export default function LoginForm() {
   // Estados para los campos del formulario
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   // Estado para errores de validación
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
@@ -127,7 +128,7 @@ export default function LoginForm() {
         {/* Aviso de cookies deshabilitadas */}
         {showCookieWarning && (
           <div className="mb-6 w-full rounded-lg bg-amber-50 p-4 border border-amber-200 shadow-sm relative animate-in fade-in slide-in-from-top-4">
-            <button 
+            <button
               onClick={() => setShowCookieWarning(false)}
               className="absolute top-2 right-2 text-amber-500 hover:text-amber-700"
             >
@@ -173,11 +174,21 @@ export default function LoginForm() {
             </div>
             <Input
               id="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Tu contraseña"
               className={cn("h-12 bg-gray-50", validationErrors.password && "border-[#FF3B30]")}
+              suffix={
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="flex items-center justify-center focus:outline-none hover:text-[#5352F6] transition-colors"
+                  aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              }
             />
             {validationErrors.password && (
               <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.password}</p>
