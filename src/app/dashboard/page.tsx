@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { useAuthStore } from "@/store/auth-store";
 import ProtectedRoute from "@/components/auth/protected-route";
@@ -17,6 +17,8 @@ import {
   type LevelKey,
 } from "@/helpers/levels";
 import { MobileBottomNav } from "@/components/dashboard/mobile-bottom-nav";
+import { uploadProfilePhotoAction } from "@/actions/profile-action";
+import { resizeImage } from "@/helpers/image-utils";
 import {
   H1,
   H2,
@@ -32,6 +34,7 @@ import {
   Text,
   Input,
   UserCard,
+  useToast,
 } from "@/components/design-system";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -61,15 +64,20 @@ import {
   Trophy,
   Sparkles,
   Crown,
+  Camera,
+  Loader2,
 } from "lucide-react";
 
 export default function DashboardPage() {
-  const { user, logout } = useAuthStore();
+  const { user, logout, fetchUserProfile } = useAuthStore();
   const router = useRouter();
+  const { toast } = useToast();
 
   const [copied, setCopied] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [benefitsOpen, setBenefitsOpen] = useState(false);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Proyectos / niveles (desde /api/dashboard/projects)
   const [loadingProjects, setLoadingProjects] = useState<boolean>(true);
@@ -192,6 +200,67 @@ export default function DashboardPage() {
       window.setTimeout(() => setCopiedLink(false), 1500);
     } catch {
       setCopiedLink(false);
+    }
+  };
+
+  const handleAvatarClick = () => {
+    if (isUploadingPhoto) return;
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast({
+        title: "Formato no válido",
+        description: "Por favor selecciona un archivo de imagen.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "Archivo muy pesado",
+        description: "El tamaño máximo permitido es 5MB.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsUploadingPhoto(true);
+    try {
+      const resizedFile = await resizeImage(file, 500);
+      const result = await uploadProfilePhotoAction(resizedFile);
+
+      if (result.success) {
+        toast({
+          title: "Foto actualizada",
+          description: "Tu foto de perfil se ha actualizado correctamente.",
+          variant: "success",
+        });
+        await fetchUserProfile();
+      } else {
+        toast({
+          title: "Error al subir foto",
+          description: result.message || "No se pudo actualizar la foto.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error procesando imagen:", error);
+      toast({
+        title: "Error inesperado",
+        description: "Ocurrió un error al procesar la imagen.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploadingPhoto(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
   };
 
@@ -352,16 +421,33 @@ export default function DashboardPage() {
           <div className="container mx-auto px-4 py-8 md:py-12">
             <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
-                <div className="relative">
+                <div 
+                  className="relative cursor-pointer group" 
+                  onClick={handleAvatarClick}
+                  title="Cambiar foto de perfil"
+                >
                   <ProfileAvatar
                     profilePhoto={user?.profilePhoto}
                     firstName={user?.firstName}
                     lastName={user?.lastName}
                     size="lg"
-                    className="ring-4 ring-white/20"
+                    className={`ring-4 ring-white/20 transition-opacity ${isUploadingPhoto ? 'opacity-60' : ''}`}
                   />
+                  
+                  {/* Overlay Hover */}
+                  <div className="absolute inset-0 rounded-full bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    <Camera className="text-white w-7 h-7 drop-shadow-sm" />
+                  </div>
+
+                  {/* Loading State */}
+                  {isUploadingPhoto && (
+                    <div className="absolute inset-0 flex items-center justify-center z-20">
+                      <Loader2 className="text-white w-8 h-8 animate-spin drop-shadow-md" />
+                    </div>
+                  )}
+
                   {highestLevel !== "Sin nivel" && (
-                    <div className="absolute -right-2 -bottom-2">
+                    <div className="absolute -right-2 -bottom-2 z-30">
                       {(() => {
                         const emblem = getLevelEmblem(highestLevel);
                         const Icon = emblem.icon;
@@ -385,6 +471,13 @@ export default function DashboardPage() {
                     </div>
                   )}
                 </div>
+                <input 
+                  ref={fileInputRef} 
+                  type="file" 
+                  accept="image/*" 
+                  className="hidden" 
+                  onChange={handleFileChange} 
+                />
                 <div className="min-w-0 flex-1 w-full">
                   <H1 variant="page-title" color="white" className="mb-1 text-center sm:text-left truncate">
                     Bienvenido, {user?.firstName || "Usuario"}
