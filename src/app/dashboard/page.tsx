@@ -469,20 +469,26 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              <div className="flex flex-wrap justify-center sm:justify-end gap-3 mt-4 md:mt-0">
+              <div className="flex flex-nowrap w-full sm:w-auto justify-center sm:justify-end gap-3 mt-4 md:mt-0">
                 <Button
                   variant="dark"
                   size="lg"
-                  className="flex items-center gap-2 shadow-sm hover:shadow transition-all"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 shadow-sm hover:shadow transition-all px-3"
                   onClick={() => { window.location.href = `${urls.DASHBOARD_URL}/dashboard/perfil`; }}
                   aria-label="Abrir configuración"
                 >
-                  <Settings size={18} />
-                  Configuración
+                  <Settings size={18} className="flex-shrink-0" />
+                  <span className="truncate">Configuración</span>
                 </Button>
-                <Button variant="secondary" size="lg" className="flex items-center gap-2 shadow-sm hover:shadow transition-all" onClick={handleLogout} aria-label="Cerrar sesión">
-                  <LogOut size={18} />
-                  Cerrar sesión
+                <Button 
+                  variant="secondary" 
+                  size="lg" 
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 shadow-sm hover:shadow transition-all px-3" 
+                  onClick={handleLogout} 
+                  aria-label="Cerrar sesión"
+                >
+                  <LogOut size={18} className="flex-shrink-0" />
+                  <span className="truncate">Salir</span>
                 </Button>
               </div>
             </div>
