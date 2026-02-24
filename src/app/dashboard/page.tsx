@@ -16,6 +16,7 @@ import {
   translateLevel,
   type LevelKey,
 } from "@/helpers/levels";
+import { MobileBottomNav } from "@/components/dashboard/mobile-bottom-nav";
 import {
   H1,
   H2,
@@ -345,9 +346,9 @@ export default function DashboardPage() {
   */
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-[#F5F5F5]">
+      <div className="min-h-screen bg-[#F5F5F5] pb-24 sm:pb-0">
         {/* Header con información del usuario - Mejorado con gradiente y mejor espaciado */}
-        <header className="bg-gradient-to-r from-[#5352F6] to-[#4A4AE5] text-white">
+        <header className="bg-gradient-to-r from-[#5352F6] to-[#4A4AE5] text-white rounded-b-[45px] md:rounded-b-none pb-6 md:pb-0">
           <div className="container mx-auto px-4 py-8 md:py-12">
             <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
@@ -503,8 +504,8 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Columna izquierda (2/3 en desktop): resumen + accesos + cursos */}
               <div className="lg:col-span-2">
-                {/* Accesos rápidos (antes de cursos) */}
-                <div className="mb-8">
+                {/* Accesos rápidos (antes de cursos) - Oculto en mobile, reemplazado por MobileBottomNav */}
+                <div className="mb-8 hidden sm:block">
                   <div className="flex flex-col gap-1 mb-4">
                     <H2 variant="card" id="accesos-rapidos">Accesos rápidos</H2>
                     <Text size="sm" color="muted">Atajos a los módulos principales</Text>
@@ -985,6 +986,7 @@ export default function DashboardPage() {
             <Text size="sm" color="muted">© {new Date().getFullYear()} LOKL Academy. Todos los derechos reservados.</Text>
           </div>
         </footer>
+        <MobileBottomNav />
       </div>
     </ProtectedRoute>
   );

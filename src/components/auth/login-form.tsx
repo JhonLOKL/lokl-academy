@@ -119,7 +119,7 @@ export default function LoginForm() {
     <div className="relative min-h-screen w-full bg-white">
       <AuthLayout
         title="¡Hola de nuevo!"
-        subtitle="Accede a tu cuenta de LOKL Academy para continuar aprendiendo."
+        subtitle="Accede a tu cuenta de LOKL para continuar."
         imageSide="left"
         desktopImages={desktopHeroImages}
         mobileImages={mobileHeroImages}
