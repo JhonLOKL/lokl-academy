@@ -65,15 +65,12 @@ export function MobileBottomNav() {
       <nav className="flex justify-around items-center">
         {items.map((item) => {
           const isActive = pathname === item.href || pathname?.startsWith(item.href);
-          
+
           return (
             <Link
               key={item.label}
               href={item.href}
-              className={cn(
-                "flex flex-col items-center justify-center p-2 rounded-xl min-w-[70px] transition-colors",
-                isActive ? "text-[#5352F6]" : "text-[#6D6C6C]"
-              )}
+              className={"text-black flex flex-col items-center justify-center p-2 rounded-xl min-w-[70px] transition-colors"}
             >
               <item.icon
                 style={{ width: 33, height: 33 }}
