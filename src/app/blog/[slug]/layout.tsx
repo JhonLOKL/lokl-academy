@@ -133,7 +133,7 @@ export default async function BlogLayout({ children, params }: Props) {
     };
 
     // Función para limpiar recursivamente URLs y ELIMINAR IDs internos en un objeto de datos estructurados
-    const cleanStructuredData = (obj: unknown): any => {
+    const cleanStructuredData = (obj: unknown): unknown => {
         if (!obj) return obj;
         if (typeof obj === 'string') {
             if (obj.startsWith('http')) {
