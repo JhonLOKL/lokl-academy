@@ -28,6 +28,28 @@ export default function SessionInitializer() {
           // Si falla catastróficamente, mejor limpiar para evitar estados inconsistentes
           logout();
         }
+      } else {
+        // Si tenemos usuario pero la cookie fue eliminada en otro dominio,
+        // el siguiente request fallará con 401/403 y se limpiará automáticamente.
+        // Pero también limpiamos cualquier token residual en localStorage aquí
+        // para asegurar consistencia en SSO multi-dominio
+        if (typeof window !== 'undefined') {
+          try {
+            const storageKey = 'lokl-auth-storage';
+            const stored = localStorage.getItem(storageKey);
+            if (stored) {
+              const parsed = JSON.parse(stored);
+              // Si existe un token en localStorage pero no debería estar ahí (SSO con cookies),
+              // lo eliminamos para mantener consistencia
+              if (parsed.state?.token) {
+                parsed.state.token = null;
+                localStorage.setItem(storageKey, JSON.stringify(parsed));
+              }
+            }
+          } catch (e) {
+            // Silenciar errores de parsing, no es crítico
+          }
+        }
       }
     };
 

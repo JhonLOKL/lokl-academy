@@ -180,6 +180,26 @@ export const useAuthStore = create<AuthState>()(
           // Limpiar estado local independientemente del resultado del servidor
           set({ user: null, token: null });
           
+          // Eliminar el token del localStorage manualmente si existe
+          // Esto asegura que cuando se cierra sesión en otro dominio (localhost:3000),
+          // el token también se elimine aquí (localhost:4000)
+          if (typeof window !== 'undefined') {
+            try {
+              const storageKey = 'lokl-auth-storage';
+              const stored = localStorage.getItem(storageKey);
+              if (stored) {
+                const parsed = JSON.parse(stored);
+                // Si existe el token en el localStorage, eliminarlo
+                if (parsed.state?.token) {
+                  parsed.state.token = null;
+                  localStorage.setItem(storageKey, JSON.stringify(parsed));
+                }
+              }
+            } catch (e) {
+              console.error('Error limpiando token del localStorage:', e);
+            }
+          }
+          
           // Opcional: Redirigir si es necesario, pero usualmente lo hace el componente
           if (typeof window !== 'undefined') {
              // window.location.href = '/login'; 
@@ -237,7 +257,14 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'lokl-auth-storage', // Nombre para localStorage
-      partialize: (state) => ({ user: state.user, token: state.token }), // Persistir usuario y token
+      // NOTA: El token NO se persiste en localStorage para SSO con cookies compartidas.
+      // El token solo se mantiene en memoria como fallback si las cookies fallan.
+      // Cuando se cierra sesión en otro dominio (ej: localhost:3000), la cookie se elimina
+      // y este dominio (localhost:4000) debe detectar la sesión cerrada sin depender del token en localStorage.
+      partialize: (state) => ({ 
+        user: state.user, 
+        // token: state.token, // COMENTADO: No persistir token en localStorage para SSO
+      }),
     }
   )
 );
