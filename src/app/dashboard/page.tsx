@@ -16,6 +16,7 @@ import {
   translateLevel,
   type LevelKey,
 } from "@/helpers/levels";
+import { capitalizeFirstLetter } from "@/helpers/string-utils";
 import { MobileBottomNav } from "@/components/dashboard/mobile-bottom-nav";
 import { uploadProfilePhotoAction } from "@/actions/profile-action";
 import { resizeImage } from "@/helpers/image-utils";
@@ -66,6 +67,13 @@ import {
   Crown,
   Camera,
   Loader2,
+  UserCog,
+  ShieldCheck,
+  Landmark,
+  Banknote,
+  RefreshCw,
+  Check,
+  ArrowRight,
 } from "lucide-react";
 
 export default function DashboardPage() {
@@ -480,7 +488,7 @@ export default function DashboardPage() {
                 />
                 <div className="min-w-0 flex-1 w-full">
                   <H1 variant="page-title" color="white" className="mb-1 text-center sm:text-left truncate">
-                    Bienvenido, {user?.firstName || "Usuario"}
+                    Bienvenido, {capitalizeFirstLetter(user?.firstName || "Usuario")}
                   </H1>
                   <Paragraph color="white" className="opacity-90 text-center sm:text-left truncate">
                     {user?.email}
@@ -704,6 +712,99 @@ export default function DashboardPage() {
                     ))}
                   </div>
                 </div>
+
+                {/* Banner Siguiente Nivel */}
+                {(() => {
+                  const nextLevelProject = projects.find(p => p.levelUp?.nextLevelName);
+                  
+                  if (!nextLevelProject || !nextLevelProject.levelUp?.nextLevelName) return null;
+
+                  const nextLvlName = translateLevel(nextLevelProject.levelUp.nextLevelName);
+                  const amountNeeded = nextLevelProject.levelUp.nextLevelAmount || 0;
+                  const unitsNeeded = nextLevelProject.levelUp.nextLevelUnits || 0;
+                  
+                  // Mapa de imágenes estáticas (match por nombre)
+                  const projectImages: Record<string, string> = {
+                    "indie universe": "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_INDIE.png",
+                    "nido de agua": "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_NDA.png",
+                    "aldea": "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_ALDEA.png",
+                  };
+
+                  const normalizedName = nextLevelProject.name?.toLowerCase().trim() || "";
+                  // Buscar coincidencia (contiene el nombre clave)
+                  const imageKey = Object.keys(projectImages).find(key => normalizedName.includes(key));
+                  const bgImage = imageKey ? projectImages[imageKey] : null;
+
+                  // Si no hay imagen del proyecto, no mostramos el banner
+                  if (!bgImage) return null;
+
+                  const targetUrl = `${urls.DASHBOARD_URL}/dashboard/reinvestment?projectId=${nextLevelProject.id}&units=${nextLevelProject.levelUp?.nextLevelUnits || 1}`;
+
+                  return (
+                    <div className="mb-8">
+                       <Card 
+                          className="relative overflow-hidden border-none bg-[#1C1C1C] text-white shadow-lg group cursor-pointer"
+                          onClick={() => router.push(targetUrl)}
+                       >
+                          {/* Background Image & Gradient */}
+                          <div className="absolute inset-0 bg-gradient-to-r from-[#0F0F0F] via-[#0F0F0F]/80 to-transparent z-10 pointer-events-none" />
+                          <div 
+                            className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-60 sm:opacity-100"
+                            style={{ backgroundImage: `url(${bgImage})` }}
+                          />
+                          
+                          <div className="relative z-20 p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                             <div className="space-y-4 max-w-2xl flex-1">
+                                <div className="flex items-center gap-3">
+                                   <Badge className="border border-white/30 text-white bg-white/10 backdrop-blur-md hover:bg-white/20 transition-colors">
+                                      {nextLevelProject.name}
+                                   </Badge>
+                                   <span className="text-xs sm:text-sm text-gray-300">
+                                      Nivel actual: {translateLevel(getCurrentLevelFromNextLevelName(nextLevelProject.levelUp.nextLevelName))}
+                                   </span>
+                                </div>
+                                
+                                <div>
+                                   <h3 className="text-2xl sm:text-3xl font-bold mb-2 text-white">
+                                      Sube a nivel <span className="text-[#5352F6]">{nextLvlName}</span>
+                                   </h3>
+                                   <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
+                                      Te faltan <span className="font-semibold text-white">{unitsNeeded} {unitsNeeded === 1 ? 'unidad' : 'unidades'}</span> <span className="text-white/70 text-xs sm:text-sm">({formatCurrency(amountNeeded)})</span> para desbloquear beneficios exclusivos.
+                                   </p>
+                                </div>
+
+                                {/* Beneficios */}
+                                {nextLevelProject.levelUp.benefits && nextLevelProject.levelUp.benefits.length > 0 && (
+                                   <div className="flex flex-wrap gap-2 pt-1">
+                                      {nextLevelProject.levelUp.benefits.slice(0, 3).map((benefit, i) => (
+                                         <div key={i} className="flex items-center gap-1.5 text-xs sm:text-sm bg-white/10 px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-sm text-gray-100">
+                                            <Check size={14} className="text-[#5352F6]" />
+                                            {benefit}
+                                         </div>
+                                      ))}
+                                   </div>
+                                )}
+                             </div>
+
+                             <div className="flex-shrink-0 w-full md:w-auto">
+                                <Button 
+                                  variant="secondary" 
+                                  size="lg" 
+                                  className="w-full md:w-auto font-semibold shadow-xl hover:bg-gray-100 transition-colors border-none text-[#0F0F0F]"
+                                  onClick={(e) => {
+                                     e.stopPropagation();
+                                     router.push(targetUrl);
+                                  }}
+                                >
+                                   <span>Ver oportunidad</span>
+                                   <ArrowRight size={18} className="ml-2" />
+                                </Button>
+                             </div>
+                          </div>
+                       </Card>
+                    </div>
+                  );
+                })()}
 
                 {/* Mis cursos */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
@@ -1074,6 +1175,38 @@ export default function DashboardPage() {
                     )}
                   </CardContent>
                 </Card>
+
+                {/* Gestión de cuenta - Nueva Ubicación (Columna Derecha - Final) */}
+                <div className="pt-4">
+                  <div className="flex items-center justify-between mb-4">
+                     <H2 variant="card" className="text-base font-semibold text-gray-900">Mi Cuenta</H2>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    {[
+                      { label: "Editar información básica", icon: UserCog, href: `${urls.DASHBOARD_URL}/dashboard/perfil?open=info` },
+                      { label: "Validación de identidad", icon: ShieldCheck, href: `${urls.DASHBOARD_URL}/dashboard/perfil?open=identity` },
+                      { label: "Métodos de pago", icon: CreditCard, href: `${urls.DASHBOARD_URL}/dashboard/perfil?open=payoutSources` },
+                      { label: "Cuentas bancarias", icon: Landmark, href: `${urls.DASHBOARD_URL}/dashboard/withdrawal` },
+                      { label: "Retiros", icon: Banknote, href: `${urls.DASHBOARD_URL}/dashboard/withdrawal` },
+                      { label: "Reinversión", icon: RefreshCw, href: `${urls.DASHBOARD_URL}/dashboard/reinvestment` },
+                    ].map((item) => (
+                      <Link
+                        key={item.label}
+                        href={item.href}
+                        className="group flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-[#5352F6]/30 transition-all duration-200"
+                      >
+                        <div className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg bg-[#F5F5F5] text-[#6D6C6C] group-hover:bg-[#5352F6] group-hover:text-white transition-colors duration-200">
+                          <item.icon size={16} />
+                        </div>
+                        <span className="text-sm font-medium text-[#0F0F0F] group-hover:text-[#5352F6] transition-colors duration-200 truncate">
+                          {item.label}
+                        </span>
+                        <ChevronRight size={14} className="ml-auto text-gray-300 group-hover:text-[#5352F6] transition-colors duration-200 opacity-0 group-hover:opacity-100" />
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </section>
