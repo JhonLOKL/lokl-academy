@@ -27,7 +27,6 @@ interface FAQAccordionProps {
 
 export function FAQAccordion({
   category,
-  icon,
   question,
   answer,
   value,

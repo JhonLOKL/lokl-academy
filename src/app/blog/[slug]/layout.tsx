@@ -63,7 +63,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
                 },
             ],
             locale: seo.ogLocale || 'es_ES',
-            type: (seo.ogType as any) || 'article',
+            type: (seo.ogType === 'website' ? 'website' : 'article'),
             publishedTime: blog.publishedAt,
             modifiedTime: blog.updatedAt,
             authors: [blog.author.name],
@@ -72,7 +72,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
         // Configuración de Twitter
         twitter: {
-            card: (seo.twitterCard as any) || 'summary_large_image',
+            card: (seo.twitterCard === 'summary' ? 'summary' : 'summary_large_image'),
             title: seo.twitterTitle || seo.title,
             description: seo.twitterDescription || seo.description,
             images: seo.twitterImage?.src ? [seo.twitterImage.src] : [seo.ogImage.url],
@@ -113,13 +113,16 @@ export default async function BlogLayout({ children, params }: Props) {
     const canonical = getFullUrl(seo.canonicalUrl, blog.slug);
 
     // Procesar el cuerpo del artículo para SEO (convertir bloques a texto plano si es necesario)
-    const processArticleBody = (body: any): string => {
+    const processArticleBody = (body: unknown): string => {
         if (typeof body === 'string') return body;
         if (Array.isArray(body)) {
             return body
                 .map(block => {
-                    if (block.type === 'paragraph' || block.type === 'heading') {
-                        return block.content || '';
+                    if (block && typeof block === 'object' && 'type' in block) {
+                        const b = block as { type: string; content?: string };
+                        if (b.type === 'paragraph' || b.type === 'heading') {
+                            return b.content || '';
+                        }
                     }
                     return '';
                 })
@@ -130,7 +133,7 @@ export default async function BlogLayout({ children, params }: Props) {
     };
 
     // Función para limpiar recursivamente URLs y ELIMINAR IDs internos en un objeto de datos estructurados
-    const cleanStructuredData = (obj: any): any => {
+    const cleanStructuredData = (obj: unknown): unknown => {
         if (!obj) return obj;
         if (typeof obj === 'string') {
             if (obj.startsWith('http')) {
@@ -143,13 +146,14 @@ export default async function BlogLayout({ children, params }: Props) {
             return obj.map(item => cleanStructuredData(item));
         }
         if (typeof obj === 'object') {
-            const cleaned: any = {};
+            const cleaned: Record<string, unknown> = {};
             // Lista de propiedades a omitir (IDs internos o sensibles)
             const propertiesToOmit = ['id', '_id', 'uuid', 'internal_id'];
 
-            for (const key in obj) {
+            const typedObj = obj as Record<string, unknown>;
+            for (const key in typedObj) {
                 if (propertiesToOmit.includes(key)) continue;
-                cleaned[key] = cleanStructuredData(obj[key]);
+                cleaned[key] = cleanStructuredData(typedObj[key]);
             }
             return cleaned;
         }
@@ -157,11 +161,11 @@ export default async function BlogLayout({ children, params }: Props) {
     };
 
     // Construir o refinar los datos estructurados del artículo
-    let articleStructuredData: any = {};
+    let articleStructuredData: Record<string, unknown> = {};
 
     if (seo.structuredData) {
         // Si la API ya envía datos, los limpiamos y normalizamos
-        articleStructuredData = cleanStructuredData(seo.structuredData);
+        articleStructuredData = cleanStructuredData(seo.structuredData) as Record<string, unknown>;
         // Normalizar headline (Schema.org usa headline en minúsculas)
         if (articleStructuredData.headLine && !articleStructuredData.headline) {
             articleStructuredData.headline = articleStructuredData.headLine;
@@ -220,10 +224,16 @@ export default async function BlogLayout({ children, params }: Props) {
         }
     ];
 
+    interface BreadcrumbItem {
+        name: string;
+        url: string;
+        position: number;
+    }
+
     const breadcrumbStructuredData = {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
-        itemListElement: cleanStructuredData(rawBreadcrumbs).map((item: any) => ({
+        itemListElement: (cleanStructuredData(rawBreadcrumbs) as BreadcrumbItem[]).map((item) => ({
             '@type': 'ListItem',
             position: item.position,
             name: item.name,

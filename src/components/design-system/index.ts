@@ -191,5 +191,5 @@ export {
 // Layout Components
 export { HeroSection } from "./layouts/hero-section";
 export { StepsSection, StepsContainer, StepItem } from "./layouts/steps-section";
-export { Navbar } from "./layouts/navbar";
+export { Navbar, type NavbarProps } from "./layouts/navbar";
 export { Footer } from "./layouts/footer";

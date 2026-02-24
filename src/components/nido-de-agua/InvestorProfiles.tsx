@@ -7,6 +7,7 @@ import { Autoplay } from 'swiper/modules';
 import Image from 'next/image';
 import MenuTabs from './MenuTabs';
 import type { ProjectHomePageInfo } from '@/services/projectService';
+import { urls } from '@/config/urls';
 
 // CSS de Swiper movido a globals.css para optimizar la carga
 
@@ -219,7 +220,7 @@ function InvestorProfile({ type, img, price, benefits, amount, swiperRef }: Inve
       localStorage.setItem('instalmentValue', price.toString());
       localStorage.setItem('installments', '1');
       // Redirigir a checkout
-      window.location.href = 'https://dashboard.lokl.life/checkout/invest?';
+      window.location.href = `${urls.DASHBOARD_URL}/checkout/invest?`;
     }
   };
 

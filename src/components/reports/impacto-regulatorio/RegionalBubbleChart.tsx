@@ -103,9 +103,9 @@ const RegionalBubbleChart = () => {
         callbacks: {
            label: (context) => {
              const label = context.dataset.label || '';
-             // @ts-ignore
+             // @ts-expect-error - ChartJS types workaround
              const x = context.raw.x;
-             // @ts-ignore
+             // @ts-expect-error - ChartJS types workaround
              const y = context.raw.y;
              return `${label}: Inf. ${x}, Dep. ${y}`;
            }

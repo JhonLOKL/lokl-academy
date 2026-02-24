@@ -1,9 +1,7 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import {
-    ArrowLeft,
     ExternalLink,
     TrendingUp,
     Layout,
@@ -17,7 +15,7 @@ import {
     Briefcase
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { MarketingFooter } from '@/components/footer/marketing-footer';
+import Image from 'next/image';
 import { ReportJsonLd } from '@/components/reports/ReportJsonLd';
 
 const OrienteAnalytics2025 = () => {
@@ -346,7 +344,7 @@ const OrienteAnalytics2025 = () => {
                                             <Briefcase size={12} />
                                         </div>
                                         <p className="text-[11px] text-gray-500 leading-normal">
-                                            <strong className="text-gray-700">Perfil:</strong> Comprador de "Hogar Definitivo". Baja rotación de inventario y alta resiliencia de precios.
+                                            <strong className="text-gray-700">Perfil:</strong> Comprador de &quot;Hogar Definitivo&quot;. Baja rotación de inventario y alta resiliencia de precios.
                                         </p>
                                     </div>
                                 </div>
@@ -378,7 +376,7 @@ const OrienteAnalytics2025 = () => {
                                             { zona: "San Antonio", activo: "Aptos Medio-Alto", precio: "$6M - $8M", renta: "$3.5M - $5.0M", liquidez: "Alta", liqColor: "green", riesgo: "Regulación Airbnb" },
                                             { zona: "La Ceja", activo: "Residencial Medio", precio: "$4.5M - $6.5M", renta: "$1.8M - $2.5M", liquidez: "Alta", liqColor: "green", riesgo: "Exceso Oferta Futura" },
                                             { zona: "San Vicente", activo: "Lotes / Rural", precio: "Variable", renta: "N/A", liquidez: "Muy Baja", liqColor: "red", riesgo: "Especulativo" },
-                                        ].map((row, i) => (
+                                        ].map((row) => (
                                             <motion.tr
                                                 key={row.zona}
                                                 whileHover={{ backgroundColor: "rgba(249, 250, 251, 0.5)" }}
@@ -556,10 +554,11 @@ const OrienteAnalytics2025 = () => {
                             {/* Card 1: Nido de Agua */}
                             <div className="bg-white border border-[#E5E5E5] rounded-xl overflow-hidden group hover:shadow-xl hover:border-[#5352F6] transition-all duration-300">
                                 <div className="h-80 bg-gray-200 relative">
-                                    <img
+                                    <Image
                                         src="https://lokl-assets.s3.us-east-1.amazonaws.com/nido-de-agua/nido-de-agua.jpg"
                                         alt="Nido de Agua"
-                                        className="w-full h-full object-cover"
+                                        fill
+                                        className="object-cover"
                                     />
                                 </div>
                                 <div className="p-8">
@@ -579,10 +578,11 @@ const OrienteAnalytics2025 = () => {
                             {/* Card 2: Indie Universe */}
                             <div className="bg-white border border-[#E5E5E5] rounded-xl overflow-hidden group hover:shadow-xl hover:border-[#5352F6] transition-all duration-300">
                                 <div className="h-80 bg-gray-200 relative">
-                                    <img
+                                    <Image
                                         src="https://lokl-assets.s3.us-east-1.amazonaws.com/indie-universe/Indie_Page/Landing_Banner.png"
                                         alt="Indie Universe"
-                                        className="w-full h-full object-cover"
+                                        fill
+                                        className="object-cover"
                                     />
                                 </div>
                                 <div className="p-8">

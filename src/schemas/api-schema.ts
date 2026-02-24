@@ -1,38 +1,13 @@
 import { urls } from "@/config/urls";
 import axios from "axios";
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
 import { useAuthStore } from "@/store/auth-store";
 
 // Función para validar si el token está activo y no expirado
+// Deprecado: La validación ahora se maneja por cookies en el backend.
+// Se mantiene por compatibilidad pero siempre retorna true.
 export const validateToken = (): boolean => {
-  const token = useAuthStore.getState().token;
-  const logout = useAuthStore.getState().logout;
-  
-  if (!token) return false;
-  
-  try {
-    const payload = jwt.decode(token) as { exp: number } | null;
-    
-    if (!payload || !payload.exp) {
-      console.error('Token inválido o sin fecha de expiración');
-      logout();
-      return false;
-    }
-    
-    const isExpired = Date.now() >= payload.exp * 1000;
-    
-    if (isExpired) {
-      console.log('Token expirado, cerrando sesión');
-      logout();
-      return false;
-    }
-    
-    return true;
-  } catch (error) {
-    console.error('Error al decodificar el token:', error);
-    logout();
-    return false;
-  }
+  return true;
 };
 
 // ⚡ función para armar headers dinámicos
@@ -41,13 +16,15 @@ const getHeaders = (isNeedToken: boolean) => {
     "Content-Type": "application/json",
   };
 
+  // El token ya no se envía en los headers por defecto, se usa cookie HttpOnly
+  // Sin embargo, si hay un token en el store (fallback), lo enviamos
   if (isNeedToken) {
     const token = useAuthStore.getState().token;
-    if (token && validateToken()) {
+    if (token) {
       headers.Authorization = `Bearer ${token}`;
     }
   }
-
+  
   return headers;
 };
 
@@ -58,6 +35,7 @@ export const getApi = async (siteUrl: string, isNeedToken = false) => {
   try {
     const response = await axios.get(urls.URL_BASE_PATH + siteUrl, {
       headers: getHeaders(isNeedToken),
+      withCredentials: true, // Habilitar envío de cookies
     });
     return response.data;
   } catch (error: unknown) {
@@ -80,6 +58,7 @@ export const postApi = async (
   try {
     const response = await axios.post(urls.URL_BASE_PATH + siteUrl, body, {
       headers: getHeaders(isNeedToken),
+      withCredentials: true, // Habilitar envío de cookies
     });
     return response.data;
   } catch (error: unknown) {
@@ -102,6 +81,7 @@ export const putApi = async (
   try {
     const response = await axios.put(urls.URL_BASE_PATH + siteUrl, body, {
       headers: getHeaders(isNeedToken),
+      withCredentials: true, // Habilitar envío de cookies
     });
     return response.data;
   } catch (error: unknown) {
@@ -124,6 +104,7 @@ export const patchApi = async (
   try {
     const response = await axios.patch(urls.URL_BASE_PATH + siteUrl, body, {
       headers: getHeaders(isNeedToken),
+      withCredentials: true, // Habilitar envío de cookies
     });
     return response.data;
   } catch (error: unknown) {

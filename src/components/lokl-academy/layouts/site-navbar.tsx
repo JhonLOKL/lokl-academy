@@ -1,30 +1,92 @@
 "use client";
 
 import React from "react";
-import { Navbar } from "@/components/design-system";
+import { Navbar, type NavbarProps } from "@/components/design-system";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuthStore } from "@/store/auth-store";
 import { useRouter, usePathname } from "next/navigation";
-import { ChartBarDecreasing } from "lucide-react";
+import {
+  BarChart3,
+  ChartBarDecreasing,
+  ChevronDown,
+  CreditCard,
+  FileText,
+  TrendingUp,
+  User,
+} from "lucide-react";
 import { TopBanner } from "./top-banner";
+import { urls } from "@/config/urls";
 
 export function SiteNavbar() {
-  const { token, user } = useAuthStore();
+  const { user } = useAuthStore();
   const router = useRouter();
   const pathname = usePathname();
 
   const goToLogin = () => {
-    router.push("https://dashboard.lokl.life/login");
+    // router.push(`${DASHBOARD_URL}/login`);
+    router.push("/login");
   };
 
   const goToRegister = () => {
-    router.push("https://dashboard.lokl.life/register");
+    // router.push(`${DASHBOARD_URL}/register`);
+    router.push("/register");
   };
 
   const goToProfile = () => {
-    router.push("https://dashboard.lokl.life/dashboard/perfil");
+    // Si estamos en local, ir a la ruta relativa. Si no, usar la URL del dashboard.
+    // router.push(`${DASHBOARD_URL}/dashboard/perfil`);
+    router.push("/dashboard");
   };
+
+  const mobileItems: NonNullable<NavbarProps["mobileItems"]> = [
+    { label: "Inicio", href: "/" },
+    { label: "Mis inversiones", href: `${urls.DASHBOARD_URL}/dashboard/income` },
+    { label: "Simulador", href: "/#simulator" },
+    { label: "Proyectos", href: "/#featured-projects" },
+    { label: "Contáctanos", href: "https://api.whatsapp.com/send/?phone=573017328112", external: true },
+    { label: "Nosotros", href: `${urls.SITE_URL}/aboutus` },
+    {
+      label: "Aprende",
+      dropdown: [
+        { label: "Cursos", href: "/course" },
+        { label: "Blogs", href: "/blog" },
+        { label: "Webinar", href: "/webinar" },
+        { label: "Reportes", href: "/reports" }
+      ]
+    },
+    { label: "Embajadores", href: `${urls.SITE_URL}/ambassadors` },
+  ];
+
+  if (!user) {
+    mobileItems.push({
+      label: "Únete a LOKL",
+      href: "/register",
+      active: true // Para destacarlo si el navbar lo soporta, o simplemente como un item más
+    });
+  }
+
+  const mobileActions = user ? (
+    <div onClick={goToProfile} className="cursor-pointer">
+      {user.profilePhoto ? (
+        <Image
+          src={user.profilePhoto}
+          alt={`${user.firstName} ${user.lastName}`}
+          width={40}
+          height={40}
+          className="rounded-full object-cover border-[3px] border-[#5352F6]"
+        />
+      ) : (
+        <div className="w-10 h-10 rounded-full bg-[#5352F6] flex items-center justify-center text-white font-semibold border-[3px] border-[#5352F6]">
+          {user.firstName?.[0]?.toUpperCase() || 'U'}
+        </div>
+      )}
+    </div>
+  ) : (
+    <div onClick={goToLogin} className="w-10 h-10 rounded-full bg-black flex items-center justify-center cursor-pointer">
+      <User className="text-white w-5 h-5" />
+    </div>
+  );
 
   return (
     <>
@@ -42,6 +104,8 @@ export function SiteNavbar() {
             />
           </Link>
         }
+        mobileItems={mobileItems}
+        mobileActions={mobileActions}
         items={[
           {
             label: (
@@ -80,7 +144,7 @@ export function SiteNavbar() {
                 <span>Nosotros</span>
               </div>
             ),
-            href: "https://lokl.life/aboutus"
+            href: `${urls.SITE_URL}/aboutus`
           },
           {
             label: (
@@ -88,7 +152,7 @@ export function SiteNavbar() {
                 <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M8.55988 3.06219C9.80324 2.47927 11.1967 2.47927 12.44 3.06219L18.2948 5.80706C19.5684 6.40412 19.5684 8.47092 18.2948 9.06797L12.4401 11.8128C11.1968 12.3957 9.80332 12.3957 8.55996 11.8128L2.70515 9.06797C1.43161 8.47088 1.43162 6.40408 2.70515 5.80702L8.55988 3.06219Z" stroke="currentColor" strokeWidth="1.5" />
                   <path d="M1.75 7.4375V12.25" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                  <path d="M16.625 10.0625V14.5472C16.625 15.4292 16.1844 16.255 15.4129 16.6824C14.128 17.3939 12.0715 18.375 10.5 18.375C8.9285 18.375 6.87199 17.3939 5.58716 16.6824C4.81556 16.255 4.375 15.4292 4.375 14.5472V10.0625" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  <path d="M16.625 10.0625V14.5472C16.625 15.4292 16.1844 16.255 15.4129 16.6824C14.128 17.3939 12.0715 18.375 10.5 18.375C8.9285 18.375 6.87199 17.3939 5.58716 16.6824C4.81556 16.255 4.375 15.4292 4.375 14.875C4.375 14.5472V10.0625" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                 </svg>
                 <span>Aprende</span>
               </div>
@@ -109,20 +173,65 @@ export function SiteNavbar() {
                 <span>Embajadores</span>
               </div>
             ),
-            href: "https://lokl.life/ambassadors"
+            href: `${urls.SITE_URL}/ambassadors`
           },
         ]}
         actions={
-          token ? (
+          user ? (
             <div className="flex items-center gap-4">
               {/* Botón Dashboard */}
-              <Link
-                href="https://dashboard.lokl.life/dashboard/income"
-                className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-[#F3F3F3] transition-colors"
-              >
-                <ChartBarDecreasing className="w-5 h-5 text-[#1C274C]" />
-                <span className="text-sm font-medium text-foreground hidden lg:block">Dashboard</span>
-              </Link>
+              <div className="relative group">
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-[#F3F3F3] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5352F6]"
+                  aria-haspopup="menu"
+                >
+                  <ChartBarDecreasing className="w-5 h-5 text-[#1C274C]" />
+                  <span className="text-sm font-medium text-foreground hidden lg:block">Dashboard</span>
+                  <ChevronDown className="w-4 h-4 text-[#6D6C6C] hidden lg:block" />
+                </Link>
+
+                {/* Submenu (hover / focus) */}
+                <div
+                  className="absolute left-0 top-full z-50 mt-2 w-64 rounded-2xl bg-[#E8E8E8] p-2 shadow-lg opacity-0 invisible translate-y-1 transition-all duration-150 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible group-focus-within:translate-y-0"
+                  role="menu"
+                  aria-label="Submenú de Dashboard"
+                >
+                  {[
+                    {
+                      label: "Rentabilidad",
+                      href: `${urls.DASHBOARD_URL}/dashboard/income`,
+                      icon: TrendingUp,
+                    },
+                    {
+                      label: "Proyectos",
+                      href: `${urls.DASHBOARD_URL}/dashboard/projects`,
+                      icon: BarChart3,
+                    },
+                    {
+                      label: "Suscripciones",
+                      href: `${urls.DASHBOARD_URL}/dashboard/subscriptions`,
+                      icon: CreditCard,
+                    },
+                    {
+                      label: "Documentos",
+                      href: `${urls.DASHBOARD_URL}/dashboard/documents`,
+                      icon: FileText,
+                    },
+                  ].map((item) => (
+                    <Link
+                      key={item.label}
+                      href={item.href}
+                      prefetch={false}
+                      className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-foreground hover:bg-white/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5352F6]"
+                      role="menuitem"
+                    >
+                      <item.icon className="h-5 w-5 text-[#1C274C]" />
+                      <span>{item.label}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
 
               {/* Separador vertical */}
               <div className="h-8 w-px bg-gray-300"></div>

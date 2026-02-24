@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useUtmStore } from "@/store/utm-store";
 import { 
     createInvestorProfileAction, 
@@ -572,12 +573,12 @@ export function InvestorProfileForm({ onBack }: InvestorProfileFormProps) {
                             </div>
 
                             <div className="mt-12">
-                                <a
+                                <Link
                                     href="/#newprojects"
                                     className="inline-block w-full bg-[#3533FF] text-white py-3 px-6 rounded-lg font-semibold text-lg transition-all duration-300 hover:opacity-90 hover:shadow-lg hover:-translate-y-1 text-center"
                                 >
                                     {data.cta}
-                                </a>
+                                </Link>
                                 <button
                                     onClick={onBack}
                                     className="w-full mt-4 py-3 rounded-lg text-gray-500 font-medium transition-colors hover:text-[#3533FF]"

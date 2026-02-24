@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 export function CountdownCalendar() {
     const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-    const [isCampaignActive, setIsCampaignActive] = useState(false);
+    // const [isCampaignActive, setIsCampaignActive] = useState(false);
     const [showCountdown, setShowCountdown] = useState(true);
 
     useEffect(() => {
@@ -15,8 +15,7 @@ export function CountdownCalendar() {
             const campaignStart = new Date('2025-12-13T00:00:00'); // Fecha de inicio actualizada al 13
             const campaignEnd = new Date('2025-12-24T23:59:59');
 
-            const campaignActive = now >= campaignStart && now <= campaignEnd;
-            setIsCampaignActive(campaignActive);
+            // setIsCampaignActive(campaignActive);
 
             let targetDate = new Date();
             targetDate.setHours(24, 0, 0, 0); // Apuntar a la siguiente medianoche por defecto

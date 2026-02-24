@@ -61,7 +61,7 @@ export default function CoursePage() {
     loadBlogs();
   }, []);
   
-  const { token, user } = useAuthStore();
+  const { user } = useAuthStore();
   const userPlan: UserPlanType = (user?.planType as UserPlanType) || 'basic';
 
   const [userCourses, setUserCourses] = useState<Course[]>([]);
@@ -75,7 +75,7 @@ export default function CoursePage() {
       try {
         const [allRes, userRes] = await Promise.all([
           getAllCoursesAction(),
-          token ? getUserCoursesAction() : Promise.resolve({ success: true, data: [] as Course[] })
+          user ? getUserCoursesAction() : Promise.resolve({ success: true, data: [] as Course[] })
         ]);
         if (!mounted) return;
         if (allRes.success) setAllCourses(allRes.data || []);
@@ -90,7 +90,7 @@ export default function CoursePage() {
     }
     loadCourses();
     return () => { mounted = false; };
-  }, [token]);
+  }, [user]);
 
   const inProgressCourses = useMemo(() => userCourses, [userCourses]);
   const remainingCourses = useMemo(

@@ -33,10 +33,11 @@ const CourseCard: React.FC<CourseCardProps> = ({
   showInstructor = true,
   showStats = true,
 }) => {
+  const { user } = useAuthStore();
+
   // Guard clause: si no hay curso, no renderizar nada para evitar errores
   if (!course) return null;
 
-  const { user } = useAuthStore();
   const userPlan: UserPlanType = (user?.planType as UserPlanType) || "basic";
 
   // Lógica de acceso basada en el plan del usuario

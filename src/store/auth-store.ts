@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { signInAction, signUpAction } from '@/actions/auth-service';
 import { getUserProfileService } from '@/services/user-service';
+import { postApi } from '@/schemas/api-schema';
 
 // Definir la interfaz para el usuario
 interface UserProfile {
@@ -47,15 +48,14 @@ type User = UserProfile;
 // Definir la interfaz para el estado de autenticación
 interface AuthState {
   user: User | null;
-  token: string | null;
+  token: string | null; // Re-added token for fallback
   isLoading: boolean;
   error: string | null;
   
   // Métodos
   login: (email: string, password: string) => Promise<boolean>;
   register: (userData: RegisterData) => Promise<boolean>;
-  logout: () => void;
-  updateToken: (token: string) => void;
+  logout: () => Promise<void>;
   clearError: () => void;
   fetchUserProfile: () => Promise<boolean>;
 }
@@ -72,6 +72,11 @@ interface RegisterData {
   referralCode?: string;
   termsAccepted: boolean;
   pageOrigin: string;
+  utmSource?: string;
+  utmMedium?: string;
+  utmCampaign?: string;
+  utmTerm?: string;
+  utmContent?: string;
 }
 
 // Crear el store con persistencia
@@ -79,7 +84,7 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       user: null,
-      token: null,
+      token: null, // Initialize token
       isLoading: false,
       error: null,
 
@@ -89,12 +94,14 @@ export const useAuthStore = create<AuthState>()(
         try {
           const response = await signInAction({ email, password });
           
-          if (response?.success && response.token) {
-            // Guardar el token - el token ya viene directamente en response.token
-            set({ token: response.token, isLoading: false });
+          if (response?.success) {
+            // Guardamos el token en el store como fallback
+            const token = response.token || null;
+            set({ token: token });
             
             // Obtener el perfil completo del usuario
             await get().fetchUserProfile();
+            set({ isLoading: false });
             return true;
           } else {
             set({ 
@@ -127,17 +134,24 @@ export const useAuthStore = create<AuthState>()(
             leadOrigin: userData.howDidYouHearAboutUs,
             pageOrigin: userData.pageOrigin || 'LOKL Academy',
             referralCode: userData.referralCode || '',
-            termsAccepted: userData.termsAccepted
+            termsAccepted: userData.termsAccepted,
+            ...(userData.utmSource && { utmSource: userData.utmSource }),
+            ...(userData.utmMedium && { utmMedium: userData.utmMedium }),
+            ...(userData.utmCampaign && { utmCampaign: userData.utmCampaign }),
+            ...(userData.utmTerm && { utmTerm: userData.utmTerm }),
+            ...(userData.utmContent && { utmContent: userData.utmContent }),
           };
 
           const response = await signUpAction(serviceData);
           
-          if (response?.success && response.token) {
-            // Guardar el token - el token ya viene directamente en response.token
-            set({ token: response.token, isLoading: false });
+          if (response?.success) {
+            // Guardamos el token en el store como fallback
+            const token = response.token || null;
+            set({ token: token });
             
             // Obtener el perfil completo del usuario
             await get().fetchUserProfile();
+            set({ isLoading: false });
             return true;
           } else {
             set({ 
@@ -156,13 +170,21 @@ export const useAuthStore = create<AuthState>()(
       },
 
       // Método para cerrar sesión
-      logout: () => {
-        set({ user: null, token: null });
-      },
-
-      // Método para actualizar el token
-      updateToken: (token: string) => {
-        set({ token });
+      logout: async () => {
+        try {
+          // Llamar al endpoint de logout para limpiar la cookie
+          await postApi('/api/auth/logout');
+        } catch (error) {
+          console.error('Error durante logout:', error);
+        } finally {
+          // Limpiar estado local independientemente del resultado del servidor
+          set({ user: null, token: null });
+          
+          // Opcional: Redirigir si es necesario, pero usualmente lo hace el componente
+          if (typeof window !== 'undefined') {
+             // window.location.href = '/login'; 
+          }
+        }
       },
 
       // Método para limpiar errores
@@ -193,8 +215,8 @@ export const useAuthStore = create<AuthState>()(
             set({ user: userData, isLoading: false });
             return true;
           } else {
-            // Si hay un error 403 (Forbidden), cerrar sesión
-            if (response?.status === 403) {
+            // Si hay un error 403 (Forbidden) o 401, cerrar sesión
+            if (response?.status === 403 || response?.status === 401) {
               set({ user: null, token: null, isLoading: false });
             } else {
               set({ 
@@ -215,7 +237,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'lokl-auth-storage', // Nombre para localStorage
-      partialize: (state) => ({ user: state.user, token: state.token }), // Solo persistir usuario y token
+      partialize: (state) => ({ user: state.user, token: state.token }), // Persistir usuario y token
     }
   )
 );

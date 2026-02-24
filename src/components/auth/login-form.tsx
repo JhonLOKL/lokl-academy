@@ -3,28 +3,34 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { useAuthStore } from "@/store/auth-store";
 import { consumePostLoginRedirect, setPostLoginRedirect } from "@/lib/auth-utils";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardFooter,
-  CardTitle,
-  CardDescription
-} from "@/components/design-system";
 import { Button } from "@/components/design-system";
 import { Input } from "@/components/design-system";
 import { FormField } from "@/components/design-system";
-import { H2, Paragraph, Text } from "@/components/design-system";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription } from "@/components/design-system";
+import { Cookie } from "lucide-react";
+import { urls } from "@/config/urls";
+import { AuthLayout } from "./auth-layout";
+import { cn } from "@/lib/utils";
+
+// URL base del dashboard, usar variable de entorno o fallback
 
 export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const navigatedRef = useRef(false);
-  const { login, error, isLoading, clearError, token } = useAuthStore();
+  const { login, error, isLoading, clearError, user } = useAuthStore();
+
+  // Detección de cookies
+  const [showCookieWarning, setShowCookieWarning] = useState(false);
+
+  useEffect(() => {
+    // Verificar si las cookies están habilitadas
+    if (typeof navigator !== 'undefined' && !navigator.cookieEnabled) {
+      setShowCookieWarning(true);
+    }
+  }, []);
 
   // Imágenes para el hero móvil
   const mobileHeroImages = [
@@ -39,36 +45,6 @@ export default function LoginForm() {
     "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_NDA.png"
   ];
 
-  // Estados para controlar los índices de imágenes
-  const [currentMobileImageIndex, setCurrentMobileImageIndex] = useState(0);
-  const [currentDesktopImageIndex, setCurrentDesktopImageIndex] = useState(0);
-
-  // Rotación automática de imágenes móviles cada 5 segundos
-  useEffect(() => {
-    if (mobileHeroImages.length === 0) return;
-
-    const interval = setInterval(() => {
-      setCurrentMobileImageIndex(
-        (prev) => (prev + 1) % mobileHeroImages.length,
-      );
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [mobileHeroImages.length]);
-
-  // Rotación automática de imágenes desktop cada 5 segundos
-  useEffect(() => {
-    if (desktopHeroImages.length === 0) return;
-
-    const interval = setInterval(() => {
-      setCurrentDesktopImageIndex(
-        (prev) => (prev + 1) % desktopHeroImages.length,
-      );
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [desktopHeroImages.length]);
-
   // Si viene ?redirect en la URL, guardarlo para post-login
   useEffect(() => {
     const redirectParam = searchParams.get("redirect");
@@ -79,12 +55,14 @@ export default function LoginForm() {
 
   // Redirigir si ya está autenticado (respeta redirect almacenado o de la URL)
   useEffect(() => {
-    if (token && !navigatedRef.current) {
-      const target = consumePostLoginRedirect() || searchParams.get("redirect") || "/";
+    if (user && !navigatedRef.current) {
+      // Si el usuario ya está autenticado, redirigir al dashboard o a la página objetivo
+      // Esto evita que usuarios logueados vean la pantalla de login
+      const target = consumePostLoginRedirect() || searchParams.get("redirect") || "/dashboard";
       navigatedRef.current = true;
       router.push(target);
     }
-  }, [token, router, searchParams]);
+  }, [user, router, searchParams]);
 
   // Estados para los campos del formulario
   const [email, setEmail] = useState("");
@@ -121,7 +99,7 @@ export default function LoginForm() {
     const success = await login(email, password);
 
     if (success) {
-      const target = consumePostLoginRedirect() || searchParams.get("redirect") || "/";
+      const target = consumePostLoginRedirect() || searchParams.get("redirect") || "/dashboard";
       if (!navigatedRef.current) {
         navigatedRef.current = true;
         router.push(target);
@@ -138,131 +116,91 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="relative min-h-screen w-full">
-      {/* Fondo */}
-      <div className="absolute inset-0 z-0">
-        {/* Fondo Desktop */}
-        <div className="hidden md:block absolute inset-0 overflow-hidden">
-          {desktopHeroImages.map((imageUrl, index) => (
-            <div
-              key={index}
-              aria-hidden="true"
-              className={`absolute inset-0 transition-opacity duration-1000 ${index === currentDesktopImageIndex
-                  ? "opacity-100"
-                  : "opacity-0"
-                }`}
+    <div className="relative min-h-screen w-full bg-white">
+      <AuthLayout
+        title="¡Hola de nuevo!"
+        subtitle="Accede a tu cuenta de LOKL para continuar."
+        imageSide="left"
+        desktopImages={desktopHeroImages}
+        mobileImages={mobileHeroImages}
+      >
+        {/* Aviso de cookies deshabilitadas */}
+        {showCookieWarning && (
+          <div className="mb-6 w-full rounded-lg bg-amber-50 p-4 border border-amber-200 shadow-sm relative animate-in fade-in slide-in-from-top-4">
+            <button 
+              onClick={() => setShowCookieWarning(false)}
+              className="absolute top-2 right-2 text-amber-500 hover:text-amber-700"
             >
-              <Image
-                src={imageUrl}
-                alt={`LOKL Academy - Iniciar sesión desktop ${index + 1}`}
-                fill
-                className="object-cover object-center"
-                priority={true}
-                quality={90}
-              />
+              ×
+            </button>
+            <div className="flex items-start gap-3">
+              <div className="p-2 bg-amber-100 rounded-full shrink-0 text-amber-600">
+                <Cookie size={20} />
+              </div>
+              <div>
+                <h4 className="font-semibold text-amber-900 text-sm">Cookies deshabilitadas</h4>
+                <p className="text-amber-800 text-xs mt-1">
+                  Hemos detectado que las cookies están bloqueadas. Algunas funciones podrían limitarse.
+                </p>
+              </div>
             </div>
-          ))}
-        </div>
+          </div>
+        )}
 
-        {/* Fondo Móvil */}
-        <div className="md:hidden absolute inset-0 overflow-hidden">
-          {mobileHeroImages.map((imageUrl, index) => (
-            <div
-              key={index}
-              aria-hidden="true"
-              className={`absolute inset-0 transition-opacity duration-1000 ${index === currentMobileImageIndex
-                  ? "opacity-100"
-                  : "opacity-0"
-                }`}
-            >
-              <Image
-                src={imageUrl}
-                alt={`LOKL Academy - Iniciar sesión móvil ${index + 1}`}
-                fill
-                className="object-cover object-center"
-                priority={true}
-                quality={90}
-              />
-            </div>
-          ))}
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Email */}
+          <FormField label="Correo electrónico" htmlFor="email">
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="tu@email.com"
+              className={cn("h-12 bg-gray-50", validationErrors.email && "border-[#FF3B30]")}
+            />
+            {validationErrors.email && (
+              <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.email}</p>
+            )}
+          </FormField>
 
-        <div className="absolute inset-0 bg-black/40" />
-      </div>
-
-      <div className="relative z-10 flex min-h-screen w-full items-center justify-center px-4 py-16">
-        <Card className="mx-auto max-w-md backdrop-blur-sm bg-white/95 shadow-xl">
-          <CardHeader>
-            <CardTitle>
-              <H2 variant="section" className="text-center">
-                Iniciar sesión
-              </H2>
-            </CardTitle>
-            <CardDescription>
-              <Paragraph variant="lead" color="muted" className="text-center">
-                Accede a tu cuenta de LOKL Academy
-              </Paragraph>
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Email */}
-              <FormField label="Correo electrónico" htmlFor="email">
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="tu@email.com"
-                  className={validationErrors.email ? "border-[#FF3B30]" : ""}
-                />
-                {validationErrors.email && (
-                  <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.email}</p>
-                )}
-              </FormField>
-
-              {/* Contraseña */}
-              <FormField label="Contraseña" htmlFor="password">
-                <div className="flex items-center justify-between">
-                  <Link href="https://dashboard.lokl.life/reset-password" className="text-sm text-[#5352F6] hover:underline">
-                    ¿Olvidaste tu contraseña?
-                  </Link>
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Tu contraseña"
-                  className={validationErrors.password ? "border-[#FF3B30]" : ""}
-                />
-                {validationErrors.password && (
-                  <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.password}</p>
-                )}
-              </FormField>
-
-              {/* Botón de inicio de sesión */}
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isLoading}
-              >
-                {isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
-              </Button>
-            </form>
-          </CardContent>
-
-          <CardFooter className="flex justify-center">
-            <Text>
-              ¿No tienes una cuenta?{" "}
-              <Link href={searchParams.get("redirect") ? `/register?redirect=${encodeURIComponent(searchParams.get("redirect") || "")}` : "/register"} className="text-[#5352F6] hover:underline">
-                Regístrate
+          {/* Contraseña */}
+          <FormField label="" htmlFor="password">
+            <div className="flex items-center justify-between mb-2">
+              <label htmlFor="password" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Contraseña</label>
+              <Link href={`${urls.DASHBOARD_URL}/reset-password`} className="text-xs font-medium text-[#5352F6] hover:text-[#3D3BF3] transition-colors">
+                ¿Olvidaste tu contraseña?
               </Link>
-            </Text>
-          </CardFooter>
-        </Card>
-      </div>
+            </div>
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Tu contraseña"
+              className={cn("h-12 bg-gray-50", validationErrors.password && "border-[#FF3B30]")}
+            />
+            {validationErrors.password && (
+              <p className="mt-1 text-sm text-[#FF3B30]">{validationErrors.password}</p>
+            )}
+          </FormField>
+
+          {/* Botón de inicio de sesión */}
+          <Button
+            type="submit"
+            className="w-full h-12 text-lg font-medium shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300"
+            disabled={isLoading}
+          >
+            {isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
+          </Button>
+
+          <div className="text-center pt-4 text-sm text-gray-600">
+            ¿No tienes una cuenta?{" "}
+            <Link href={searchParams.get("redirect") ? `/register?redirect=${encodeURIComponent(searchParams.get("redirect") || "")}` : "/register"} className="text-[#5352F6] font-semibold hover:underline">
+              Regístrate
+            </Link>
+          </div>
+        </form>
+      </AuthLayout>
 
       {/* Diálogo de error */}
       <AlertDialog open={showErrorDialog} onOpenChange={handleCloseErrorDialog}>

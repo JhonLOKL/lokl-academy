@@ -11,18 +11,18 @@ interface ProtectedRouteProps {
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const router = useRouter();
-  const { token } = useAuthStore();
+  const { user } = useAuthStore();
   const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
-    // Verificar si el token es válido
+    // Verificar si el usuario está autenticado
     if (!isAuthenticated()) {
       router.push("/login");
     } else {
       // Si está autenticado, ya no estamos cargando
       setIsLoading(false);
     }
-  }, [token, router]);
+  }, [user, router]);
   
   // Si no hay token válido o estamos cargando, mostrar pantalla de carga
   if (!isAuthenticated() || isLoading) {

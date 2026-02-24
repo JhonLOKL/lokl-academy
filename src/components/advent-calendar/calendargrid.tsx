@@ -129,12 +129,12 @@ export function CalendarGrid() {
     const [claimedRewards, setClaimedRewards] = useState<number[]>([]);
 
     // Get authentication state
-    const { token, user } = useAuthStore();
+    const { user } = useAuthStore();
 
     // Cargar recompensas reclamadas al iniciar
     useEffect(() => {
         const fetchClaimedRewards = async () => {
-            if (token) {
+            if (user) {
                 const response = await getEnrollPageService();
                 if (response && response.success && response.data && response.data.notes) {
                     const claimed = response.data.notes.claimedRewards || [];
@@ -143,13 +143,13 @@ export function CalendarGrid() {
             }
         };
         fetchClaimedRewards();
-    }, [token]);
+    }, [user]);
 
     const handleGiftClick = async (day: number) => {
         const reward = rewards.find((r) => r.day === day);
         if (reward && isUnlocked(day)) {
-            // Verificar si el usuario está autenticado (tiene token)
-            if (!token) {
+            // Verificar si el usuario está autenticado (tiene user)
+            if (!user) {
                 // Si no está autenticado, guardar el regalo pendiente y mostrar formulario de registro
                 setPendingReward(reward);
                 setShowRegistration(true);
