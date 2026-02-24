@@ -867,32 +867,32 @@ export default function DashboardPage() {
                               <UserCard
                                 name={`${ref.firstName} ${ref.lastName || ''}`.trim() || 'Usuario'}
                                 role={
-                                  <span className="block truncate max-w-[140px] xs:max-w-[200px] sm:max-w-none text-muted-foreground text-sm">
+                                  <span className="block truncate max-w-[120px] xs:max-w-[160px] sm:max-w-none text-muted-foreground text-xs sm:text-sm">
                                     {ref.email}
                                   </span> as unknown as string
                                 }
-                                className="border-none shadow-none bg-transparent rounded-none !p-0"
+                                className="border-none shadow-none bg-transparent rounded-none !p-0 !flex-row items-center gap-3"
                                 avatar={
-                                  <Avatar className="h-10 w-10">
-                                    <AvatarFallback className="text-[#5352F6] bg-[#5352F6]/10 font-semibold">
+                                  <Avatar className="h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0">
+                                    <AvatarFallback className="text-[#5352F6] bg-[#5352F6]/10 font-semibold text-xs sm:text-sm">
                                       {initials || "U"}
                                     </AvatarFallback>
                                   </Avatar>
                                 }
                                 actions={
                                   hasInvested ? (
-                                    <div className="flex flex-col items-end">
-                                      <Badge variant="success" className="mb-1">Inversionista</Badge>
+                                    <div className="flex flex-col items-end min-w-[90px] text-right">
+                                      <Badge variant="success" className="mb-0.5 px-2 py-0.5 text-[10px] sm:text-xs">Inversionista</Badge>
                                       {investmentsSum > 0 && (
-                                        <Text size="xs" weight="medium" className="text-[#5352F6]">
+                                        <Text size="xs" weight="medium" className="text-[#5352F6] text-[10px] sm:text-xs">
                                           +{formatCurrency(investmentsSum)}
                                         </Text>
                                       )}
                                     </div>
                                   ) : (
-                                    <div className="flex flex-col items-end gap-1">
-                                      <Badge variant="warning">Registrado</Badge>
-                                      <Text size="xs" color="muted" className="italic">¡Anímalo a invertir!</Text>
+                                    <div className="flex flex-col items-end gap-0.5 min-w-[90px] text-right">
+                                      <Badge variant="warning" className="px-2 py-0.5 text-[10px] sm:text-xs">Registrado</Badge>
+                                      <Text size="xs" color="muted" className="italic text-[10px] sm:text-xs">¡Anímalo!</Text>
                                     </div>
                                   )
                                 }
