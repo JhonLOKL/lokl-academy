@@ -717,7 +717,7 @@ export default function DashboardPage() {
 
                   const nextLvlName = translateLevel(nextLevelProject.levelUp.nextLevelName);
                   const amountNeeded = nextLevelProject.levelUp.nextLevelAmount || 0;
-                  const unitsNeeded = nextLevelProject.levelUp.nextLevelUnits || 0;
+                  const unitsNeeded = Math.ceil(nextLevelProject.levelUp.nextLevelUnits || 0);
 
                   // Mapa de imágenes estáticas (match por nombre)
                   const projectImages: Record<string, string> = {
@@ -734,7 +734,7 @@ export default function DashboardPage() {
                   // Si no hay imagen del proyecto, no mostramos el banner
                   if (!bgImage) return null;
 
-                  const targetUrl = `${urls.DASHBOARD_URL}/dashboard/reinvestment?projectId=${nextLevelProject.id}&units=${nextLevelProject.levelUp?.nextLevelUnits || 1}`;
+                  const targetUrl = `${urls.DASHBOARD_URL}/dashboard/reinvestment?projectId=${nextLevelProject.id}&units=${unitsNeeded || 1}`;
 
                   return (
                     <div className="mb-8">
