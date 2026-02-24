@@ -1,6 +1,10 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
 import Link from "next/link";
 import { useAuthStore } from "@/store/auth-store";
 import ProtectedRoute from "@/components/auth/protected-route";
@@ -709,35 +713,31 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                {/* Banner Siguiente Nivel */}
+                {/* Banner Siguiente Nivel - Swiper si hay múltiples */}
                 {(() => {
-                  const nextLevelProject = projects.find(p => p.levelUp?.nextLevelName);
+                  const levelUpProjects = projects.filter(p => p.levelUp?.nextLevelName);
+                  if (levelUpProjects.length === 0) return null;
 
-                  if (!nextLevelProject || !nextLevelProject.levelUp?.nextLevelName) return null;
-
-                  const nextLvlName = translateLevel(nextLevelProject.levelUp.nextLevelName);
-                  const amountNeeded = nextLevelProject.levelUp.nextLevelAmount || 0;
-                  const unitsNeeded = Math.ceil(nextLevelProject.levelUp.nextLevelUnits || 0);
-
-                  // Mapa de imágenes estáticas (match por nombre)
                   const projectImages: Record<string, string> = {
                     "indie universe": "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_INDIE.png",
                     "nido de agua": "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_NDA.png",
                     "aldea": "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_ALDEA.png",
                   };
 
-                  const normalizedName = nextLevelProject.name?.toLowerCase().trim() || "";
-                  // Buscar coincidencia (contiene el nombre clave)
-                  const imageKey = Object.keys(projectImages).find(key => normalizedName.includes(key));
-                  const bgImage = imageKey ? projectImages[imageKey] : null;
+                  const renderBanner = (proj: DashboardProject) => {
+                    const nextLvlName = proj.levelUp?.nextLevelName ? translateLevel(proj.levelUp.nextLevelName) : "";
+                    const amountNeeded = proj.levelUp?.nextLevelAmount || 0;
+                    const unitsNeeded = Math.ceil(proj.levelUp?.nextLevelUnits || 0);
 
-                  // Si no hay imagen del proyecto, no mostramos el banner
-                  if (!bgImage) return null;
+                    const normalizedName = proj.name?.toLowerCase().trim() || "";
+                    const imageKey = Object.keys(projectImages).find(key => normalizedName.includes(key));
+                    const bgImage = imageKey ? projectImages[imageKey] : null;
 
-                  const targetUrl = `${urls.DASHBOARD_URL}/dashboard/reinvestment?projectId=${nextLevelProject.id}&units=${unitsNeeded || 1}`;
+                    if (!bgImage) return null;
 
-                  return (
-                    <div className="mb-8">
+                    const targetUrl = `${urls.DASHBOARD_URL}/dashboard/reinvestment?projectId=${proj.id}&units=${unitsNeeded || 1}`;
+
+                    return (
                       <Card
                         className="relative overflow-hidden border-none bg-[#1C1C1C] text-white shadow-lg group cursor-pointer"
                         onClick={() => router.push(targetUrl)}
@@ -753,10 +753,10 @@ export default function DashboardPage() {
                           <div className="space-y-4 max-w-2xl flex-1">
                             <div className="flex items-center gap-3">
                               <Badge className="border border-white/30 text-white bg-white/10 backdrop-blur-md hover:bg-white/20 transition-colors">
-                                {nextLevelProject.name}
+                                {proj.name}
                               </Badge>
                               <span className="text-xs sm:text-sm text-gray-300">
-                                Nivel actual: {translateLevel(getCurrentLevelFromNextLevelName(nextLevelProject.levelUp.nextLevelName))}
+                                Nivel actual: {proj.levelUp?.nextLevelName ? translateLevel(getCurrentLevelFromNextLevelName(proj.levelUp.nextLevelName)) : ""}
                               </span>
                             </div>
 
@@ -770,9 +770,9 @@ export default function DashboardPage() {
                             </div>
 
                             {/* Beneficios */}
-                            {nextLevelProject.levelUp.benefits && nextLevelProject.levelUp.benefits.length > 0 && (
+                            {proj.levelUp?.benefits && proj.levelUp.benefits.length > 0 && (
                               <div className="flex flex-wrap gap-2 pt-1">
-                                {nextLevelProject.levelUp.benefits.slice(0, 3).map((benefit, i) => (
+                                {proj.levelUp.benefits.slice(0, 3).map((benefit, i) => (
                                   <div key={i} className="flex items-center gap-1.5 text-xs sm:text-sm bg-white/10 px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-sm text-gray-100">
                                     <Check size={14} className="text-[#5352F6]" />
                                     {benefit}
@@ -798,6 +798,42 @@ export default function DashboardPage() {
                           </div>
                         </div>
                       </Card>
+                    );
+                  };
+
+                  if (levelUpProjects.length === 1) {
+                    return <div className="mb-8">{renderBanner(levelUpProjects[0])}</div>;
+                  }
+
+                  return (
+                    <div className="mb-8 dashboard-level-up-swiper">
+                      <Swiper
+                        modules={[Autoplay, Pagination]}
+                        autoplay={{ delay: 5000, disableOnInteraction: false }}
+                        pagination={{ clickable: true }}
+                        loop={true}
+                        spaceBetween={20}
+                        className="rounded-xl"
+                      >
+                        {levelUpProjects.map((p) => (
+                          <SwiperSlide key={p.id}>
+                            {renderBanner(p)}
+                          </SwiperSlide>
+                        ))}
+                      </Swiper>
+                      <style jsx global>{`
+                        .dashboard-level-up-swiper .swiper-pagination-bullet {
+                          background: white;
+                          opacity: 0.5;
+                        }
+                        .dashboard-level-up-swiper .swiper-pagination-bullet-active {
+                          background: #5352F6;
+                          opacity: 1;
+                        }
+                        .dashboard-level-up-swiper .swiper-pagination {
+                          bottom: 10px !important;
+                        }
+                      `}</style>
                     </div>
                   );
                 })()}
