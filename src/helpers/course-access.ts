@@ -1,68 +1,126 @@
-import type { AccessPlan, PricingType } from "@/lib/course/schema";
+import type { AccessPlan, PricingType, CoursePrincing, AccessRequirements, PrincingRule } from "@/lib/course/schema";
 
 // ===================================================================
-// UTILIDADES DE ACCESO Y PRICING PARA CURSOS
+// UTILIDADES DE ACCESO Y PRINCING PARA CURSOS
 // ===================================================================
 
-export type UserPlanType = 'basic' | 'investor' | 'premium';
+export type UserPlanType = AccessPlan;
 
-interface CourseAccessInput {
-  pricingType: PricingType;
-  price?: number;
-  accessPlan: AccessPlan;
+interface UserContext {
+  plan: AccessPlan;
+  isInvestor?: boolean;
 }
 
 /**
- * Verifica si un usuario tiene acceso a un curso basado en su plan.
- *
- * Jerarquía de planes:
- *   - basic → solo cursos con plan 'any' o 'basic'
- *   - premium → cursos 'any', 'basic', 'premium'
- *   - investor → cursos 'any', 'basic', 'premium', 'investor'
+ * Verifica si un usuario puede VER/ACCEDER a la página de un curso.
+ * No implica que sea gratis, solo que es elegible para verlo.
  */
-export function hasAccessToCourse(
-  userPlan: UserPlanType,
-  requiredPlan: AccessPlan
+export function canUserViewCourse(
+  user: UserContext,
+  requirements: AccessRequirements
 ): boolean {
-  if (requiredPlan === 'any' || requiredPlan === 'basic') return true;
-  if (requiredPlan === 'premium') return userPlan === 'premium' || userPlan === 'investor';
-  if (requiredPlan === 'investor') return userPlan === 'investor';
-  return false;
+  // 1. Requisito de Inversionista
+  if (requirements.requiresInvestor && !user.isInvestor) {
+    return false;
+  }
+
+  // 2. Requisito de Planes específicos
+  if (requirements.allowedPlans && requirements.allowedPlans.length > 0) {
+    // 'any' permite a cualquiera
+    if (requirements.allowedPlans.includes('any')) return true;
+
+    if (!requirements.allowedPlans.includes(user.plan)) {
+      return false;
+    }
+  }
+
+  // Si no hay requisitos específicos, cualquiera puede verlo
+  return true;
 }
 
 /**
- * Determina la etiqueta visual a mostrar según pricing y access plan.
+ * Calcula el precio final para un usuario basado en las reglas del curso.
  */
-export function getCourseAccessLabel(input: CourseAccessInput): {
-  label: string;
-  variant: 'free' | 'premium' | 'investor' | 'paid';
+export function calculatePrincingForUser(
+  user: UserContext,
+  princing: CoursePrincing
+): {
+  price: number;
+  isFree: boolean;
+  isBlocked: boolean;
+  appliedRule?: PrincingRule;
 } {
-  const { pricingType, price, accessPlan } = input;
+  // Ordenar reglas por prioridad (mayor primero)
+  const sortedRules = [...(princing.rules || [])].sort((a, b) => b.priority - a.priority);
 
-  // 1. Prioridad absoluta: Si hay precio, es de pago (Pago Único)
-  // Esto arregla casos donde el tipo viene mal (ej. 'free' por defecto) pero sí tiene precio
-  if (price && price > 0) {
-    return { label: `$${price.toLocaleString('es-CO')}`, variant: 'paid' };
+  for (const rule of sortedRules) {
+    let planMatch = true;
+    if (rule.plans && rule.plans.length > 0) {
+      planMatch = rule.plans.includes(user.plan);
+    }
+
+    let investorMatch = true;
+    if (rule.isInvestor !== undefined) {
+      investorMatch = rule.isInvestor === !!user.isInvestor;
+    }
+
+    if (planMatch && investorMatch) {
+      return {
+        price: rule.price,
+        isFree: rule.price === 0,
+        isBlocked: !!rule.isBlocked,
+        appliedRule: rule
+      };
+    }
   }
 
-  // Investor exclusivo
-  if (accessPlan === 'investor' || pricingType === 'investor') {
-    return { label: 'Inversionista', variant: 'investor' };
+  // Si ninguna regla aplica, usar precio base
+  return {
+    price: princing.basePrice,
+    isFree: princing.basePrice === 0,
+    isBlocked: false
+  };
+}
+
+/**
+ * Determina la etiqueta visual a mostrar según princing y access requirements.
+ */
+export function getCourseAccessLabel(
+  user: UserContext,
+  princing: CoursePrincing,
+  requirements: AccessRequirements
+): {
+  label: string;
+  variant: 'free' | 'premium' | 'investor' | 'paid' | 'blocked';
+} {
+  const result = calculatePrincingForUser(user, princing);
+
+  if (result.isBlocked) {
+    return { label: 'No disponible', variant: 'blocked' };
   }
 
-  // Premium (incluido en suscripción)
-  if (accessPlan === 'premium' || pricingType === 'premium') {
-    return { label: 'Premium', variant: 'premium' };
+  if (result.isFree) {
+    // Si es gratis por una regla de plan
+    if (result.appliedRule?.plans && result.appliedRule.plans.length > 0) {
+      return { label: 'Incluido en Plan', variant: 'premium' };
+    }
+    // Si es gratis por ser inversionista
+    if (result.appliedRule?.isInvestor) {
+      return { label: 'Inversionista', variant: 'investor' };
+    }
+    return { label: 'Gratis', variant: 'free' };
   }
 
-  // Si llegamos aquí, es gratis
-  return { label: 'Gratis', variant: 'free' };
+  return {
+    label: `$${result.price.toLocaleString('es-CO')}`,
+    variant: 'paid'
+  };
 }
 
 /**
  * Obtiene las clases CSS para la etiqueta de acceso.
  */
-export function getAccessBadgeClasses(variant: 'free' | 'premium' | 'investor' | 'paid'): string {
+export function getAccessBadgeClasses(variant: 'free' | 'premium' | 'investor' | 'paid' | 'blocked'): string {
   switch (variant) {
     case 'free':
       return 'bg-green-100 text-green-700';
@@ -72,6 +130,8 @@ export function getAccessBadgeClasses(variant: 'free' | 'premium' | 'investor' |
       return 'bg-[#5352F6]/10 text-[#5352F6]';
     case 'paid':
       return 'bg-blue-100 text-blue-700';
+    case 'blocked':
+      return 'bg-red-100 text-red-700';
     default:
       return 'bg-gray-100 text-gray-700';
   }
@@ -80,15 +140,17 @@ export function getAccessBadgeClasses(variant: 'free' | 'premium' | 'investor' |
 /**
  * Genera el mensaje de restricción para cursos bloqueados.
  */
-export function getAccessRestrictionMessage(requiredPlan: AccessPlan): string {
-  switch (requiredPlan) {
-    case 'premium':
-      return 'Este curso requiere un plan Premium o Inversionista. Actualiza tu plan para acceder.';
-    case 'investor':
-      return 'Este curso es exclusivo para inversionistas LOKL. Invierte con LOKL para desbloquear este contenido.';
-    default:
-      return 'Tu plan actual no permite acceder a este curso.';
+export function getAccessRestrictionMessage(requirements: AccessRequirements): string {
+  if (requirements.requiresInvestor) {
+    return 'Este contenido es exclusivo para inversionistas LOKL. Invierte con nosotros para desbloquearlo.';
   }
+
+  if (requirements.allowedPlans && requirements.allowedPlans.length > 0) {
+    const plans = requirements.allowedPlans.map(p => getPlanDisplayName(p)).join(', ');
+    return `Este curso requiere uno de los siguientes planes: ${plans}.`;
+  }
+
+  return 'Tu cuenta actual no tiene acceso a este contenido.';
 }
 
 /**
@@ -96,11 +158,16 @@ export function getAccessRestrictionMessage(requiredPlan: AccessPlan): string {
  */
 export function getPlanDisplayName(plan: string): string {
   switch (plan) {
+    case 'dreamer':
+      return 'Dreamer';
+    case 'visionary':
+      return 'Visionary';
+    case 'developer':
+      return 'Developer';
     case 'investor':
       return 'Inversionista';
-    case 'premium':
-      return 'Premium';
-    case 'basic':
+    case 'none':
+      return 'Sin Plan';
     default:
       return 'Básico';
   }

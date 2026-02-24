@@ -40,6 +40,8 @@ interface UserProfile {
   inArrearsAmount?: number;
   pendingAmount?: number;
   planType: string;
+  plan: string;
+  isInvestor?: boolean;
 }
 
 // Alias para compatibilidad con código existente
@@ -51,7 +53,7 @@ interface AuthState {
   token: string | null; // Re-added token for fallback
   isLoading: boolean;
   error: string | null;
-  
+
   // Métodos
   login: (email: string, password: string) => Promise<boolean>;
   register: (userData: RegisterData) => Promise<boolean>;
@@ -93,27 +95,27 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
         try {
           const response = await signInAction({ email, password });
-          
+
           if (response?.success) {
             // Guardamos el token en el store como fallback
             const token = response.token || null;
             set({ token: token });
-            
+
             // Obtener el perfil completo del usuario
             await get().fetchUserProfile();
             set({ isLoading: false });
             return true;
           } else {
-            set({ 
-              error: response?.message || 'Error al iniciar sesión', 
-              isLoading: false 
+            set({
+              error: response?.message || 'Error al iniciar sesión',
+              isLoading: false
             });
             return false;
           }
         } catch (error) {
-          set({ 
-            error: error instanceof Error ? error.message : 'Error desconocido', 
-            isLoading: false 
+          set({
+            error: error instanceof Error ? error.message : 'Error desconocido',
+            isLoading: false
           });
           return false;
         }
@@ -143,27 +145,27 @@ export const useAuthStore = create<AuthState>()(
           };
 
           const response = await signUpAction(serviceData);
-          
+
           if (response?.success) {
             // Guardamos el token en el store como fallback
             const token = response.token || null;
             set({ token: token });
-            
+
             // Obtener el perfil completo del usuario
             await get().fetchUserProfile();
             set({ isLoading: false });
             return true;
           } else {
-            set({ 
-              error: response?.message || 'Error al registrarse', 
-              isLoading: false 
+            set({
+              error: response?.message || 'Error al registrarse',
+              isLoading: false
             });
             return false;
           }
         } catch (error) {
-          set({ 
-            error: error instanceof Error ? error.message : 'Error desconocido', 
-            isLoading: false 
+          set({
+            error: error instanceof Error ? error.message : 'Error desconocido',
+            isLoading: false
           });
           return false;
         }
@@ -179,7 +181,7 @@ export const useAuthStore = create<AuthState>()(
         } finally {
           // Limpiar estado local independientemente del resultado del servidor
           set({ user: null, token: null });
-          
+
           // Eliminar el token del localStorage manualmente si existe
           // Esto asegura que cuando se cierra sesión en otro dominio (localhost:3000),
           // el token también se elimine aquí (localhost:4000)
@@ -199,10 +201,10 @@ export const useAuthStore = create<AuthState>()(
               console.error('Error limpiando token del localStorage:', e);
             }
           }
-          
+
           // Opcional: Redirigir si es necesario, pero usualmente lo hace el componente
           if (typeof window !== 'undefined') {
-             // window.location.href = '/login'; 
+            // window.location.href = '/login'; 
           }
         }
       },
@@ -217,12 +219,12 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
         try {
           const response = await getUserProfileService();
-          
+
           if (response?.success && response.data) {
             // Asegurar que planType siempre tenga un valor (default: 'basic')
             // Normalizar el plan buscando múltiples propiedades posibles
-            let rawPlan = response.data.planType || response.data.plan || response.data.subscription || 'basic';
-            
+            let rawPlan = response.data.planType || response.data.plan || response.data.subscription || 'none';
+
             // Normalizar a minúsculas
             if (typeof rawPlan === 'string') {
               rawPlan = rawPlan.toLowerCase();
@@ -231,6 +233,8 @@ export const useAuthStore = create<AuthState>()(
             const userData = {
               ...response.data,
               planType: rawPlan,
+              plan: rawPlan,
+              isInvestor: !!response.data.isInvestor || rawPlan === 'investor'
             };
             set({ user: userData, isLoading: false });
             return true;
@@ -239,17 +243,17 @@ export const useAuthStore = create<AuthState>()(
             if (response?.status === 403 || response?.status === 401) {
               set({ user: null, token: null, isLoading: false });
             } else {
-              set({ 
-                error: response?.message || 'Error al obtener el perfil del usuario', 
-                isLoading: false 
+              set({
+                error: response?.message || 'Error al obtener el perfil del usuario',
+                isLoading: false
               });
             }
             return false;
           }
         } catch (error) {
-          set({ 
-            error: error instanceof Error ? error.message : 'Error desconocido', 
-            isLoading: false 
+          set({
+            error: error instanceof Error ? error.message : 'Error desconocido',
+            isLoading: false
           });
           return false;
         }
@@ -261,8 +265,8 @@ export const useAuthStore = create<AuthState>()(
       // El token solo se mantiene en memoria como fallback si las cookies fallan.
       // Cuando se cierra sesión en otro dominio (ej: localhost:3000), la cookie se elimina
       // y este dominio (localhost:4000) debe detectar la sesión cerrada sin depender del token en localStorage.
-      partialize: (state) => ({ 
-        user: state.user, 
+      partialize: (state) => ({
+        user: state.user,
         // token: state.token, // COMENTADO: No persistir token en localStorage para SSO
       }),
     }

@@ -13,7 +13,8 @@ import { getCourseBySlugAction, enrollCourseAction } from "@/actions/course-acti
 import { useAuthStore } from "@/store/auth-store";
 import { ensureLoginOrRedirect } from "@/lib/auth-utils";
 import {
-  hasAccessToCourse,
+  canUserViewCourse,
+  calculatePrincingForUser,
   getCourseAccessLabel,
   getAccessBadgeClasses,
   getAccessRestrictionMessage,
@@ -35,8 +36,8 @@ export default function CourseDetailPage() {
   // Verificar si el curso está completado - definido antes de cualquier return
   const isCourseCompleted = useMemo(() => {
     if (!course) return false;
-    return course?.content?.modules?.every(m => 
-      m.lessons.every(l => l.isCompleted) && 
+    return course?.content?.modules?.every(m =>
+      m.lessons.every(l => l.isCompleted) &&
       (!m.quiz || m.quiz.isCompleted)
     ) || false;
   }, [course]);
@@ -118,7 +119,7 @@ export default function CourseDetailPage() {
       </div>
     );
   }
-  
+
   if (!course) return null;
 
   // Aseguramos que course.stats siempre tenga valores por defecto
@@ -133,49 +134,43 @@ export default function CourseDetailPage() {
       averageTimeToComplete: 0,
     };
   }
-  
-  const isInvestorExclusive = Boolean(course && course.accessRequirements.plan === "investor");
-  
-  // Normalización defensiva para pricing (typo 'princing')
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pricing = course ? (course.pricing || (course as any).princing) : null;
-  const price = pricing?.price;
-  const pricingType = pricing?.type || "free";
 
   // Lógica de acceso basada en plan
-  const userPlan: UserPlanType = (user?.planType as UserPlanType) || "basic";
-  const requiredPlan = course?.accessRequirements?.plan || "any";
-  const userHasAccess = hasAccessToCourse(userPlan, requiredPlan);
+  const userPlan: UserPlanType = (user?.plan as UserPlanType) || "none";
+  const isInvestor = !!user?.isInvestor || userPlan === 'investor';
+  const userContext = { plan: userPlan, isInvestor };
+
+  const userHasAccess = course ? canUserViewCourse(userContext, course.accessRequirements) : false;
   const isLoggedIn = !!user;
   const isLocked = isLoggedIn && !userHasAccess;
-  
+
+  const princing = course?.princing;
+  const princingResult = course ? calculatePrincingForUser(userContext, course.princing) : { price: 0, isFree: true, isBlocked: false };
+  const price = princingResult.price;
+
   // Pricing info
-  const accessLabel = course ? getCourseAccessLabel({
-    pricingType: pricingType,
-    price: price,
-    accessPlan: requiredPlan,
-  }) : { label: "Gratis", variant: "free" as const };
+  const accessLabel = course ? getCourseAccessLabel(userContext, course.princing, course.accessRequirements) : { label: "Gratis", variant: "free" as const };
   const badgeClasses = getAccessBadgeClasses(accessLabel.variant);
-  
+
   const progressPercentage = course?.progress?.overallProgress || 0;
-  
+
   // Formatear la duración
   const formatDuration = (minutes: number): string => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-    
+
     if (hours === 0) return `${mins} min`;
     if (mins === 0) return `${hours} h`;
     return `${hours} h ${mins} min`;
   };
-  
+
   // Formatear la fecha
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat('es-ES', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return new Intl.DateTimeFormat('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     }).format(date);
   };
 
@@ -188,10 +183,10 @@ export default function CourseDetailPage() {
     if (!ok) return;
 
     // Validación de plan usando helpers centralizados
-    if (!hasAccessToCourse(userPlan, course.accessRequirements.plan)) {
+    if (!canUserViewCourse(userContext, course.accessRequirements)) {
       toast({
         title: "Acceso restringido",
-        description: getAccessRestrictionMessage(course.accessRequirements.plan),
+        description: getAccessRestrictionMessage(course.accessRequirements),
         variant: "destructive",
         icon: <AlertTriangle className="h-5 w-5 text-red-600" />,
       });
@@ -233,98 +228,95 @@ export default function CourseDetailPage() {
 
   return (
     <>
-      
+
       <div className="min-h-screen bg-[#FAFAFA]">
-      {/* Hero Section */}
-      <section className="relative">
-        {/* Imagen de fondo */}
-        <div className="relative h-[300px] w-full md:h-[400px]">
-          {loading ? (
-            <div className="h-full w-full animate-pulse bg-gray-200" />
-          ) : (
-            course && (
-              <Image
-                src={course.coverImage?.url || course.thumbnail.url}
-                alt={course.title}
-                fill
-                className="object-cover grayscale"
-                priority
-              />
-            )
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />
-          
-          {/* Etiqueta de plan/pricing */}
-          {!loading && course && (accessLabel.variant !== 'free') && (
-            <div className={`absolute right-4 top-4 z-10 px-3 py-1.5 text-sm font-medium text-white rounded-md ${
-              accessLabel.variant === 'investor' ? 'bg-[#5352F6]' :
-              accessLabel.variant === 'premium' ? 'bg-amber-500' :
-              accessLabel.variant === 'paid' ? 'bg-blue-600' : 'bg-gray-600'
-            }`}>
-              {accessLabel.variant === 'investor' && 'Inversionista'}
-              {accessLabel.variant === 'premium' && 'Premium'}
-              {accessLabel.variant === 'paid' && `$${course.pricing?.price?.toLocaleString('es-CO')}`}
-            </div>
-          )}
-          {isLocked && !loading && (
-            <div className="absolute left-4 top-4 z-10 flex items-center gap-1.5 bg-red-600 px-3 py-1.5 text-sm font-medium text-white rounded-md">
-              <Lock size={14} />
-              Bloqueado
-            </div>
-          )}
-        </div>
-        
-        {/* Contenido del hero */}
-        <div className="container mx-auto px-4">
-          <div className="relative -mt-20 rounded-xl bg-white p-6 shadow-md md:p-8">
-            <div className="flex flex-col md:flex-row md:items-start md:gap-8">
-              {/* Miniatura del curso */}
-              <div className="relative mb-6 h-48 w-full shrink-0 overflow-hidden rounded-lg md:mb-0 md:h-64 md:w-64">
-                {loading ? (
-                  <div className="h-full w-full animate-pulse bg-gray-200" style={{ animationDuration: '1.2s' }} />
-                ) : course?.thumbnail?.url ? (
-                  <Image
-                    src={course.thumbnail.url}
-                    alt={course.title}
-                    fill
-                    className="object-cover grayscale"
-                  />
-                ) : (
-                  <div className="h-full w-full flex items-center justify-center bg-gray-100 text-[#6D6C6C]">
-                    Sin imagen
-                  </div>
-                )}
+        {/* Hero Section */}
+        <section className="relative">
+          {/* Imagen de fondo */}
+          <div className="relative h-[300px] w-full md:h-[400px]">
+            {loading ? (
+              <div className="h-full w-full animate-pulse bg-gray-200" />
+            ) : (
+              course && (
+                <Image
+                  src={course.coverImage?.url || course.thumbnail.url}
+                  alt={course.title}
+                  fill
+                  className="object-cover grayscale"
+                  priority
+                />
+              )
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />
+
+            {/* Etiqueta de plan/pricing */}
+            {!loading && course && (accessLabel.variant !== 'free') && (
+              <div className={`absolute right-4 top-4 z-10 px-3 py-1.5 text-sm font-medium text-white rounded-md ${accessLabel.variant === 'investor' ? 'bg-[#5352F6]' :
+                accessLabel.variant === 'premium' ? 'bg-amber-500' :
+                  accessLabel.variant === 'paid' ? 'bg-blue-600' : 'bg-gray-600'
+                }`}>
+                {accessLabel.label}
               </div>
-              
-              {/* Información del curso */}
-              <div className="flex-1">
-                <div className="mb-4 flex flex-wrap items-center gap-3">
-                  <Badge variant="outline" className="bg-[#F5F5F5] text-xs font-medium text-[#5352F6]">
-                    {loading ? 'Cargando…' : course?.category.name}
-                  </Badge>
-                  <span className="flex items-center text-xs text-[#6D6C6C]">
-                    <Clock size={14} className="mr-1 text-[#5352F6]" />
-                    {loading ? '—' : formatDuration(course?.content.totalDuration || 0)}
-                  </span>
-                  <span className="flex items-center text-xs text-[#6D6C6C]">
-                    <Calendar size={14} className="mr-1 text-[#5352F6]" />
-                    {loading ? 'Actualizado: —' : `Actualizado: ${formatDate(course!.updatedAt)}`}
-                  </span>
+            )}
+            {isLocked && !loading && (
+              <div className="absolute left-4 top-4 z-10 flex items-center gap-1.5 bg-red-600 px-3 py-1.5 text-sm font-medium text-white rounded-md">
+                <Lock size={14} />
+                Bloqueado
+              </div>
+            )}
+          </div>
+
+          {/* Contenido del hero */}
+          <div className="container mx-auto px-4">
+            <div className="relative -mt-20 rounded-xl bg-white p-6 shadow-md md:p-8">
+              <div className="flex flex-col md:flex-row md:items-start md:gap-8">
+                {/* Miniatura del curso */}
+                <div className="relative mb-6 h-48 w-full shrink-0 overflow-hidden rounded-lg md:mb-0 md:h-64 md:w-64">
+                  {loading ? (
+                    <div className="h-full w-full animate-pulse bg-gray-200" style={{ animationDuration: '1.2s' }} />
+                  ) : course?.thumbnail?.url ? (
+                    <Image
+                      src={course.thumbnail.url}
+                      alt={course.title}
+                      fill
+                      className="object-cover grayscale"
+                    />
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center bg-gray-100 text-[#6D6C6C]">
+                      Sin imagen
+                    </div>
+                  )}
                 </div>
-                
-                <h1 className="mb-2 text-2xl font-bold tracking-tight md:text-3xl lg:text-4xl">
-                  {loading ? 'Cargando curso…' : course?.title}
-                </h1>
-                
-                {!loading && course?.subtitle && (
-                  <p className="mb-4 text-lg text-[#6D6C6C]">{course.subtitle}</p>
-                )}
-                
-                <p className="mb-6 text-[#6D6C6C]">{loading ? 'Cargando descripción…' : course?.description}</p>
-                
-                {/* Estadísticas */}
-                <div className="mb-6 flex flex-wrap gap-6 text-sm text-[#6D6C6C]">
-{/*                   <div className="flex items-center">
+
+                {/* Información del curso */}
+                <div className="flex-1">
+                  <div className="mb-4 flex flex-wrap items-center gap-3">
+                    <Badge variant="outline" className="bg-[#F5F5F5] text-xs font-medium text-[#5352F6]">
+                      {loading ? 'Cargando…' : course?.category.name}
+                    </Badge>
+                    <span className="flex items-center text-xs text-[#6D6C6C]">
+                      <Clock size={14} className="mr-1 text-[#5352F6]" />
+                      {loading ? '—' : formatDuration(course?.content.totalDuration || 0)}
+                    </span>
+                    <span className="flex items-center text-xs text-[#6D6C6C]">
+                      <Calendar size={14} className="mr-1 text-[#5352F6]" />
+                      {loading ? 'Actualizado: —' : `Actualizado: ${formatDate(course!.updatedAt)}`}
+                    </span>
+                  </div>
+
+                  <h1 className="mb-2 text-2xl font-bold tracking-tight md:text-3xl lg:text-4xl">
+                    {loading ? 'Cargando curso…' : course?.title}
+                  </h1>
+
+                  {!loading && course?.subtitle && (
+                    <p className="mb-4 text-lg text-[#6D6C6C]">{course.subtitle}</p>
+                  )}
+
+                  <p className="mb-6 text-[#6D6C6C]">{loading ? 'Cargando descripción…' : course?.description}</p>
+
+                  {/* Estadísticas */}
+                  <div className="mb-6 flex flex-wrap gap-6 text-sm text-[#6D6C6C]">
+                    {/*                   <div className="flex items-center">
                     <Users size={16} className="mr-2 text-[#5352F6]" />
                     <span>{loading || !course?.stats ? '—' : `${course.stats.enrolledCount} estudiantes`}</span>
                   </div>
@@ -332,395 +324,418 @@ export default function CourseDetailPage() {
                     <Star size={16} className="mr-2 text-yellow-400" />
                     <span>{loading || !course?.stats ? '—' : `${course.stats.averageRating.toFixed(1)} (${course.stats.reviewsCount} reseñas)`}</span>
                   </div> */}
-                  <div className="flex items-center">
-                    <BookOpen size={16} className="mr-2 text-[#5352F6]" />
-                    <span>{loading || !course ? '—' : `${course.content.totalLessons} lecciones`}</span>
-                  </div>
-                  {!loading && course && course.certificate?.available && (
                     <div className="flex items-center">
-                      <Award size={16} className="mr-2 text-[#5352F6]" />
-                      <span>Certificado incluido</span>
+                      <BookOpen size={16} className="mr-2 text-[#5352F6]" />
+                      <span>{loading || !course ? '—' : `${course.content.totalLessons} lecciones`}</span>
                     </div>
-                  )}
-                </div>
-                
-                {/* Barra de progreso (si está inscrito) */}
-                {!loading && isEnrolled && course && course.progress && (
-                  <>
-                    {isCourseCompleted ? (
-                      <div className="mb-6 bg-gradient-to-r from-[#F0FDF4] to-[#F7FEF5] p-5 rounded-lg border border-[#86EFAC] shadow-sm">
-                        <div className="flex items-center gap-4">
-                          <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                            <CheckCircle size={24} className="text-green-600" />
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="text-lg font-bold text-green-800 mb-1">¡Felicidades! Curso completado</h4>
-                            <p className="text-sm text-green-700 mb-3">
-                              Has completado todas las lecciones y evaluaciones de este curso. ¡Sigue aprendiendo con más cursos de LOKL Academy!
-                            </p>
-                            <div className="flex flex-wrap gap-2">
-                              <Link href="/course">
-                                <Button variant="outline" size="sm" className="text-xs px-3 py-1 h-auto border-green-600 text-green-700 hover:bg-green-50">
-                                  Ver más cursos
-                                </Button>
-                              </Link>
-{/*                               <Button size="sm" className="text-xs px-3 py-1 h-auto bg-green-600 hover:bg-green-700">
-                                Obtener certificado
-                              </Button> */}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="mb-6 bg-gradient-to-r from-[#F4F6FF] to-[#F8F9FF] p-5 rounded-lg border border-[#E8EAFF] shadow-sm">
-                        <div className="mb-4 flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <div className="h-8 w-8 rounded-full bg-[#5352F6]/10 flex items-center justify-center">
-                              <CheckCircle size={16} className="text-[#5352F6]" />
-                            </div>
-                            <div>
-                              <span className="block font-medium text-[#333]">{progressPercentage}% completado</span>
-                              <span className="block text-xs text-[#6D6C6C]">{course.progress.completedLessons} de {course.content.totalLessons} lecciones</span>
-                            </div>
-                          </div>
-                      <Button variant="outline" size="sm" className="text-xs px-3 py-1 h-auto border-[#5352F6] text-[#5352F6] hover:bg-[#5352F6]/5">
-                        Ver de nuevo
-                      </Button>
-                        </div>
-                        <div className="relative mt-2">
-                          <div className="h-2 w-full bg-[#E8EAFF] rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-gradient-to-r from-[#5352F6] to-[#7A79FF] rounded-full transition-all duration-500 ease-out"
-                              style={{ width: `${progressPercentage}%` }}
-                            />
-                          </div>
-                          <div className="mt-1 flex justify-between text-xs text-[#6D6C6C]">
-                            <span>Progreso</span>
-                            <span className="font-medium text-[#5352F6]">{progressPercentage}%</span>
-                          </div>
-                        </div>
+                    {!loading && course && course.certificate?.available && (
+                      <div className="flex items-center">
+                        <Award size={16} className="mr-2 text-[#5352F6]" />
+                        <span>Certificado incluido</span>
                       </div>
                     )}
-                  </>
-                )}
-                
-                {/* Botones de acción */}
-                <div className="flex flex-col gap-3 sm:flex-row">
-                  {isLocked ? (
+                  </div>
+
+                  {/* Barra de progreso (si está inscrito) */}
+                  {!loading && isEnrolled && course && course.progress && (
                     <>
-                      <Button
-                        size="lg"
-                        className="flex-1 bg-gray-400 hover:bg-gray-400 cursor-not-allowed"
-                        disabled
-                      >
-                        <Lock size={18} className="mr-2" />
-                        Requiere plan {getPlanDisplayName(requiredPlan)}
-                      </Button>
-                      <Link href="/course#planes">
-                        <Button variant="outline" size="lg" className="border-[#5352F6] text-[#5352F6] hover:bg-[#5352F6]/5">
-                          Ver planes
-                        </Button>
-                      </Link>
-                    </>
-                  ) : (
-                    <>
-                      <Button
-                        size="lg"
-                        className="flex-1"
-                        disabled={loading || !course}
-                        onClick={handleStartCourse}
-                      >
-                        {isEnrolled
-                          ? (isCourseCompleted ? 'Ver de nuevo' : 'Continuar curso')
-                          : price != null && price > 0
-                            ? `Comprar por $${price.toLocaleString('es-CO')}`
-                            : isInvestorExclusive
-                              ? 'Iniciar curso'
-                              : 'Iniciar curso gratis'
-                        }
-                      </Button>
-                      <Button variant="outline" size="lg" className="flex items-center gap-2">
-                        <Share2 size={18} />
-                        Compartir
-                      </Button>
+                      {isCourseCompleted ? (
+                        <div className="mb-6 bg-gradient-to-r from-[#F0FDF4] to-[#F7FEF5] p-5 rounded-lg border border-[#86EFAC] shadow-sm">
+                          <div className="flex items-center gap-4">
+                            <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                              <CheckCircle size={24} className="text-green-600" />
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="text-lg font-bold text-green-800 mb-1">¡Felicidades! Curso completado</h4>
+                              <p className="text-sm text-green-700 mb-3">
+                                Has completado todas las lecciones y evaluaciones de este curso. ¡Sigue aprendiendo con más cursos de LOKL Academy!
+                              </p>
+                              <div className="flex flex-wrap gap-2">
+                                <Link href="/course">
+                                  <Button variant="outline" size="sm" className="text-xs px-3 py-1 h-auto border-green-600 text-green-700 hover:bg-green-50">
+                                    Ver más cursos
+                                  </Button>
+                                </Link>
+                                {/*                               <Button size="sm" className="text-xs px-3 py-1 h-auto bg-green-600 hover:bg-green-700">
+                                Obtener certificado
+                              </Button> */}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="mb-6 bg-gradient-to-r from-[#F4F6FF] to-[#F8F9FF] p-5 rounded-lg border border-[#E8EAFF] shadow-sm">
+                          <div className="mb-4 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <div className="h-8 w-8 rounded-full bg-[#5352F6]/10 flex items-center justify-center">
+                                <CheckCircle size={16} className="text-[#5352F6]" />
+                              </div>
+                              <div>
+                                <span className="block font-medium text-[#333]">{progressPercentage}% completado</span>
+                                <span className="block text-xs text-[#6D6C6C]">{course.progress.completedLessons} de {course.content.totalLessons} lecciones</span>
+                              </div>
+                            </div>
+                            <Button variant="outline" size="sm" className="text-xs px-3 py-1 h-auto border-[#5352F6] text-[#5352F6] hover:bg-[#5352F6]/5">
+                              Ver de nuevo
+                            </Button>
+                          </div>
+                          <div className="relative mt-2">
+                            <div className="h-2 w-full bg-[#E8EAFF] rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-gradient-to-r from-[#5352F6] to-[#7A79FF] rounded-full transition-all duration-500 ease-out"
+                                style={{ width: `${progressPercentage}%` }}
+                              />
+                            </div>
+                            <div className="mt-1 flex justify-between text-xs text-[#6D6C6C]">
+                              <span>Progreso</span>
+                              <span className="font-medium text-[#5352F6]">{progressPercentage}%</span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </>
                   )}
+
+                  {/* Botones de acción */}
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    {isLocked ? (
+                      <>
+                        <Button
+                          size="lg"
+                          className="flex-1 bg-gray-400 hover:bg-gray-400 cursor-not-allowed"
+                          disabled
+                        >
+                          <Lock size={18} className="mr-2" />
+                          Acceso restringido
+                        </Button>
+                        <Link href="/course#planes">
+                          <Button variant="outline" size="lg" className="border-[#5352F6] text-[#5352F6] hover:bg-[#5352F6]/5">
+                            Ver planes
+                          </Button>
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          size="lg"
+                          className="flex-1"
+                          disabled={loading || !course}
+                          onClick={handleStartCourse}
+                        >
+                          {isEnrolled
+                            ? (isCourseCompleted ? 'Ver de nuevo' : 'Continuar curso')
+                            : !princingResult.isFree
+                              ? `Comprar por $${price.toLocaleString('es-CO')}`
+                              : 'Iniciar curso'
+                          }
+                        </Button>
+                        <Button variant="outline" size="lg" className="flex items-center gap-2">
+                          <Share2 size={18} />
+                          Compartir
+                        </Button>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-      
-      {/* Contenido principal */}
-      <section className="container mx-auto px-4 py-12">
-        <div className="grid gap-8 md:grid-cols-3">
-          {/* Columna principal */}
-          <div className="md:col-span-2">
-            <Tabs defaultValue="contenido" className="w-full" onValueChange={setActiveTab}>
-              <TabsList className="mb-6 w-full justify-start">
-                <TabsTrigger value="contenido">Contenido del curso</TabsTrigger>
-                <TabsTrigger value="objetivos">Objetivos</TabsTrigger>
-                <TabsTrigger value="requisitos">Requisitos</TabsTrigger>
-                {/* <TabsTrigger value="reviews">Reseñas</TabsTrigger> */}
-              </TabsList>
-              
-              <TabsContent value="contenido" className="space-y-6">
-                <div className="rounded-lg border border-[#E5E5E5] bg-white p-6">
-                  <h2 className="mb-6 text-xl font-bold">{loading ? 'Cargando contenido…' : 'Contenido del curso'}</h2>
-                  
-                  <div className="mb-4 flex items-center justify-between text-sm text-[#6D6C6C]">
-                    <span>{loading || !course ? '—' : `${course.content.modules.length} módulos • ${course.content.totalLessons} lecciones`}</span>
-                    <span>{loading ? '—' : `${formatDuration(course?.content.totalDuration || 0)} de duración total`}</span>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    {loading ? (
-                      <div className="space-y-3">
-                        {[...Array(3)].map((_, i) => (
-                          <div key={i} className="h-16 w-full animate-pulse rounded-lg bg-gray-100" />
-                        ))}
-                      </div>
-                    ) : course && course.content.modules.map((module, moduleIndex) => (
-                      <div key={module.id} className="rounded-lg border border-[#E5E5E5] bg-[#FAFAFA]">
-                        <div className="flex items-center justify-between p-4">
-                          <h3 className="font-medium">
-                            {moduleIndex + 1}. {module.title}
-                          </h3>
-                          <span className="text-sm text-[#6D6C6C]">{formatDuration(module.duration)}</span>
+        </section>
+
+        {/* Contenido principal */}
+        <section className="container mx-auto px-4 py-12">
+          <div className="grid gap-8 md:grid-cols-3">
+            {/* Columna principal */}
+            <div className="md:col-span-2">
+              <Tabs defaultValue="contenido" className="w-full" onValueChange={setActiveTab}>
+                <TabsList className="mb-6 w-full justify-start">
+                  <TabsTrigger value="contenido">Contenido del curso</TabsTrigger>
+                  <TabsTrigger value="objetivos">Objetivos</TabsTrigger>
+                  <TabsTrigger value="requisitos">Requisitos</TabsTrigger>
+                  {/* <TabsTrigger value="reviews">Reseñas</TabsTrigger> */}
+                </TabsList>
+
+                <TabsContent value="contenido" className="space-y-6">
+                  <div className="rounded-lg border border-[#E5E5E5] bg-white p-6">
+                    <h2 className="mb-6 text-xl font-bold">{loading ? 'Cargando contenido…' : 'Contenido del curso'}</h2>
+
+                    <div className="mb-4 flex items-center justify-between text-sm text-[#6D6C6C]">
+                      <span>{loading || !course ? '—' : `${course.content.modules.length} módulos • ${course.content.totalLessons} lecciones`}</span>
+                      <span>{loading ? '—' : `${formatDuration(course?.content.totalDuration || 0)} de duración total`}</span>
+                    </div>
+
+                    <div className="space-y-4">
+                      {loading ? (
+                        <div className="space-y-3">
+                          {[...Array(3)].map((_, i) => (
+                            <div key={i} className="h-16 w-full animate-pulse rounded-lg bg-gray-100" />
+                          ))}
                         </div>
-                        
+                      ) : course && course.content.modules.map((module, moduleIndex) => (
+                        <div key={module.id} className="rounded-lg border border-[#E5E5E5] bg-[#FAFAFA]">
+                          <div className="flex items-center justify-between p-4">
+                            <h3 className="font-medium">
+                              {moduleIndex + 1}. {module.title}
+                            </h3>
+                            <span className="text-sm text-[#6D6C6C]">{formatDuration(module.duration)}</span>
+                          </div>
+
                           <div className="border-t border-[#E5E5E5]">
-                           {module.lessons.map((lesson, lessonIndex) => {
-                             // Determinar si la lección está bloqueada
-                             let isLocked = true; // Por defecto, todas bloqueadas excepto las que cumplen condiciones
-                             
-                             if (course.settings?.enforceOrder) {
-                               // Las lecciones ya completadas nunca están bloqueadas
-                               if (lesson.isCompleted) {
-                                 isLocked = false;
-                               }
-                               // Las lecciones de vista previa nunca están bloqueadas
-                               else if (lesson.isPreview) {
-                                 isLocked = false;
-                               }
-                               // Primera lección del primer módulo siempre está desbloqueada
-                               else if (moduleIndex === 0 && lessonIndex === 0) {
-                                 isLocked = false;
-                               }
-                               // Para las demás, verificar si es la siguiente lección después de una completada
-                               else {
-                                 // Si es la primera lección de un módulo
-                                 if (lessonIndex === 0) {
-                                   // Verificar si el módulo anterior tiene todas sus lecciones completadas o un quiz completado
-                                   if (moduleIndex > 0) {
-                                     const prevModule = course.content.modules[moduleIndex - 1];
-                                     
-                                     // Si todas las lecciones del módulo anterior están completadas
-                                     const allPrevLessonsCompleted = prevModule.lessons.every(l => l.isCompleted);
-                                     
-                                     // Verificar si el quiz del módulo anterior está completado y aprobado (si existe)
-                                     const prevQuizCompletedAndPassed = 
-                                       prevModule.quiz?.isCompleted && prevModule.quiz?.passed || false;
-                                     
-                                     // Desbloquear solo si todas las lecciones están completadas
-                                     // Y si hay quiz, debe estar aprobado
-                                     if (allPrevLessonsCompleted && 
-                                         (!prevModule.quiz || prevQuizCompletedAndPassed)) {
-                                       isLocked = false;
-                                     }
-                                   }
-                                 }
-                                 // Si no es la primera lección del módulo
-                                 else {
-                                   // Desbloquear solo si la lección anterior está completada
-                                   const prevLesson = module.lessons[lessonIndex - 1];
-                                   if (prevLesson.isCompleted) {
-                                     isLocked = false;
-                                   }
-                                 }
-                               }
-                             } else {
-                               // Si no se requiere orden, todas las lecciones están desbloqueadas
-                               isLocked = false;
-                             }
-                             
-                             return (
-                               <div
-                                 key={lesson.id}
-                                 className={`flex items-center justify-between p-4 ${
-                                   lessonIndex < module.lessons.length - 1 ? "border-b border-[#E5E5E5]" : ""
-                                 } ${isLocked ? "opacity-70 cursor-not-allowed" : "hover:bg-[#F5F5F5] cursor-pointer"} transition-colors`}
-                               >
-                                 {isLocked ? (
-                                   <div className="flex items-center gap-3 w-full">
-                                     <div className="h-10 w-16 rounded-md bg-gray-200 flex items-center justify-center flex-shrink-0">
-                                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
-                                         <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
-                                         <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                                       </svg>
-                                     </div>
-                                     <div className="flex flex-col">
-                                       <span className="text-sm text-gray-500">{lesson.title}</span>
-                                       <span className="text-xs text-gray-400">{formatDuration(lesson.duration)}</span>
-                                     </div>
-                                     <div className="ml-auto">
-                                       <Badge variant="outline" className="bg-gray-100 text-gray-500 text-xs border-gray-200">
-                                         Bloqueado
-                                       </Badge>
-                                     </div>
-                                   </div>
-                                ) : (
-                                  isEnrolled ? (
-                                    <Link 
-                                      href={`/course/${course?.slug || ''}/${lesson.slug || lesson.id}`}
-                                      className="flex items-center justify-between w-full"
-                                    >
-                                      <div className="flex items-center gap-3">
-                                        {lesson.thumbnail ? (
-                                          <div className="relative h-10 w-16 overflow-hidden rounded-md flex-shrink-0">
-                                            <Image
-                                              src={lesson.thumbnail.url}
-                                              alt={lesson.thumbnail.alt || lesson.title}
-                                              fill
-                                              className="object-cover"
-                                            />
-                                          </div>
-                                        ) : lesson.isPreview ? (
-                                          <div className="h-10 w-16 rounded-md bg-green-100 flex items-center justify-center flex-shrink-0">
-                                            <BookOpen size={20} className="text-green-600" />
-                                          </div>
-                                        ) : module.lessons.every(l => l.isCompleted) ? (
-                                          <div className="h-10 w-16 rounded-md bg-[#EEEEFE] flex items-center justify-center flex-shrink-0">
-                                            <CheckCircle size={20} className="text-[#5352F6]" />
-                                          </div>
-                                        ) : (
-                                          <div className="h-10 w-16 rounded-md bg-gray-100 flex items-center justify-center flex-shrink-0">
-                                            <span className="text-sm font-medium text-gray-500">{moduleIndex + 1}.{lessonIndex + 1}</span>
-                                          </div>
-                                        )}
-                                        <div className="flex flex-col">
-                                          <span className={`text-sm ${lesson.isPreview ? "font-medium" : ""}`}>
-                                            {lesson.title}
-                                            {lesson.isPreview && (
-                                              <Badge className="ml-2 bg-green-100 text-green-600 text-xs">
-                                                Vista previa
-                                              </Badge>
-                                            )}
-                                          </span>
-                                          <span className="text-xs text-[#6D6C6C]">{formatDuration(lesson.duration)}</span>
-                                        </div>
+                            {module.lessons.map((lesson, lessonIndex) => {
+                              // Determinar si la lección está bloqueada
+                              let isLocked = true; // Por defecto, todas bloqueadas excepto las que cumplen condiciones
+
+                              if (course.settings?.enforceOrder) {
+                                // Las lecciones ya completadas nunca están bloqueadas
+                                if (lesson.isCompleted) {
+                                  isLocked = false;
+                                }
+                                // Las lecciones de vista previa nunca están bloqueadas
+                                else if (lesson.isPreview) {
+                                  isLocked = false;
+                                }
+                                // Primera lección del primer módulo siempre está desbloqueada
+                                else if (moduleIndex === 0 && lessonIndex === 0) {
+                                  isLocked = false;
+                                }
+                                // Para las demás, verificar si es la siguiente lección después de una completada
+                                else {
+                                  // Si es la primera lección de un módulo
+                                  if (lessonIndex === 0) {
+                                    // Verificar si el módulo anterior tiene todas sus lecciones completadas o un quiz completado
+                                    if (moduleIndex > 0) {
+                                      const prevModule = course.content.modules[moduleIndex - 1];
+
+                                      // Si todas las lecciones del módulo anterior están completadas
+                                      const allPrevLessonsCompleted = prevModule.lessons.every(l => l.isCompleted);
+
+                                      // Verificar si el quiz del módulo anterior está completado y aprobado (si existe)
+                                      const prevQuizCompletedAndPassed =
+                                        prevModule.quiz?.isCompleted && prevModule.quiz?.passed || false;
+
+                                      // Desbloquear solo si todas las lecciones están completadas
+                                      // Y si hay quiz, debe estar aprobado
+                                      if (allPrevLessonsCompleted &&
+                                        (!prevModule.quiz || prevQuizCompletedAndPassed)) {
+                                        isLocked = false;
+                                      }
+                                    }
+                                  }
+                                  // Si no es la primera lección del módulo
+                                  else {
+                                    // Desbloquear solo si la lección anterior está completada
+                                    const prevLesson = module.lessons[lessonIndex - 1];
+                                    if (prevLesson.isCompleted) {
+                                      isLocked = false;
+                                    }
+                                  }
+                                }
+                              } else {
+                                // Si no se requiere orden, todas las lecciones están desbloqueadas
+                                isLocked = false;
+                              }
+
+                              return (
+                                <div
+                                  key={lesson.id}
+                                  className={`flex items-center justify-between p-4 ${lessonIndex < module.lessons.length - 1 ? "border-b border-[#E5E5E5]" : ""
+                                    } ${isLocked ? "opacity-70 cursor-not-allowed" : "hover:bg-[#F5F5F5] cursor-pointer"} transition-colors`}
+                                >
+                                  {isLocked ? (
+                                    <div className="flex items-center gap-3 w-full">
+                                      <div className="h-10 w-16 rounded-md bg-gray-200 flex items-center justify-center flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
+                                          <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                        </svg>
                                       </div>
-                                      <div className="flex items-center">
-                                        {lesson.isCompleted && (
-                                          <CheckCircle size={16} className="text-green-500 mr-2" />
-                                        )}
+                                      <div className="flex flex-col">
+                                        <span className="text-sm text-gray-500">{lesson.title}</span>
+                                        <span className="text-xs text-gray-400">{formatDuration(lesson.duration)}</span>
                                       </div>
-                                    </Link>
-                                  ) : (
-                                    <div className="flex items-center justify-between w-full">
-                                      <div className="flex items-center gap-3">
-                                        {lesson.thumbnail ? (
-                                          <div className="relative h-10 w-16 overflow-hidden rounded-md flex-shrink-0">
-                                            <Image
-                                              src={lesson.thumbnail.url}
-                                              alt={lesson.thumbnail.alt || lesson.title}
-                                              fill
-                                              className="object-cover"
-                                            />
-                                          </div>
-                                        ) : lesson.isPreview ? (
-                                          <div className="h-10 w-16 rounded-md bg-green-100 flex items-center justify-center flex-shrink-0">
-                                            <BookOpen size={20} className="text-green-600" />
-                                          </div>
-                                        ) : module.lessons.every(l => l.isCompleted) ? (
-                                          <div className="h-10 w-16 rounded-md bg-[#EEEEFE] flex items-center justify-center flex-shrink-0">
-                                            <CheckCircle size={20} className="text-[#5352F6]" />
-                                          </div>
-                                        ) : (
-                                          <div className="h-10 w-16 rounded-md bg-gray-100 flex items-center justify-center flex-shrink-0">
-                                            <span className="text-sm font-medium text-gray-500">{moduleIndex + 1}.{lessonIndex + 1}</span>
-                                          </div>
-                                        )}
-                                        <div className="flex flex-col">
-                                          <span className={`text-sm ${lesson.isPreview ? "font-medium" : ""}`}>
-                                            {lesson.title}
-                                            {lesson.isPreview && (
-                                              <Badge className="ml-2 bg-green-100 text-green-600 text-xs">
-                                                Vista previa
-                                              </Badge>
-                                            )}
-                                          </span>
-                                          <span className="text-xs text-[#6D6C6C]">{formatDuration(lesson.duration)}</span>
-                                        </div>
-                                      </div>
-                                      <div className="flex items-center">
-                                        {lesson.isCompleted && (
-                                          <CheckCircle size={16} className="text-green-500 mr-2" />
-                                        )}
+                                      <div className="ml-auto">
+                                        <Badge variant="outline" className="bg-gray-100 text-gray-500 text-xs border-gray-200">
+                                          Bloqueado
+                                        </Badge>
                                       </div>
                                     </div>
-                                  )
-                                )}
-                               </div>
-                             );
-                           })}
-                           
-                           {/* Mostrar quiz del módulo si existe */}
-                           {module.quiz && (() => {
-                             // Determinar si el quiz está bloqueado
-                             let isQuizLocked = true;
-                             
-                             if (course.settings?.enforceOrder) {
-                               // Si el quiz ya está completado, no está bloqueado
-                               if (module.quiz.isCompleted) {
-                                 isQuizLocked = false;
-                               }
-                               // Si todas las lecciones del módulo están completadas, el quiz está desbloqueado
-                               else if (module.lessons.every(lesson => lesson.isCompleted)) {
-                                 isQuizLocked = false;
-                               }
-                             } else {
-                               // Si no se requiere orden, el quiz está desbloqueado
-                               isQuizLocked = false;
-                             }
-                             
-                             return (
-                               <div className={`flex items-center justify-between p-4 ${module.lessons.length > 0 ? "border-t border-[#E5E5E5]" : ""} ${isQuizLocked ? "opacity-70" : ""} bg-[#FAFCFF]`}>
-                                 {isQuizLocked ? (
-                                   <div className="flex items-center gap-3 w-full">
-                                     <div className="h-10 w-16 rounded-md bg-gray-200 flex items-center justify-center flex-shrink-0">
-                                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
-                                         <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
-                                         <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                                       </svg>
-                                     </div>
-                                     <div className="flex flex-col">
-                                       <span className="text-sm text-gray-500">
-                                         {module.quiz.title || `Evaluación: ${module.title}`}
-                                         <Badge className="ml-2 bg-gray-100 text-gray-500 text-xs">
-                                           Quiz
-                                         </Badge>
-                                       </span>
-                                       <span className="text-xs text-gray-400">{module.quiz.questions.length} preguntas • Puntaje mínimo: {module.quiz.passingScore}%</span>
-                                     </div>
-                                     <div className="ml-auto">
-                                       <Badge variant="outline" className="bg-gray-100 text-gray-500 text-xs border-gray-200">
-                                         Bloqueado
-                                       </Badge>
-                                     </div>
-                                   </div>
-                                ) : (
-                                  isEnrolled ? (
-                                    <>
-                                      <Link 
-                                        href={`/course/${course.slug}/${module.quiz.slug || module.quiz.id}`}
-                                        className="flex items-center gap-3 hover:text-[#5352F6] transition-colors"
+                                  ) : (
+                                    isEnrolled ? (
+                                      <Link
+                                        href={`/course/${course?.slug || ''}/${lesson.slug || lesson.id}`}
+                                        className="flex items-center justify-between w-full"
                                       >
+                                        <div className="flex items-center gap-3">
+                                          {lesson.thumbnail ? (
+                                            <div className="relative h-10 w-16 overflow-hidden rounded-md flex-shrink-0">
+                                              <Image
+                                                src={lesson.thumbnail.url}
+                                                alt={lesson.thumbnail.alt || lesson.title}
+                                                fill
+                                                className="object-cover"
+                                              />
+                                            </div>
+                                          ) : lesson.isPreview ? (
+                                            <div className="h-10 w-16 rounded-md bg-green-100 flex items-center justify-center flex-shrink-0">
+                                              <BookOpen size={20} className="text-green-600" />
+                                            </div>
+                                          ) : module.lessons.every(l => l.isCompleted) ? (
+                                            <div className="h-10 w-16 rounded-md bg-[#EEEEFE] flex items-center justify-center flex-shrink-0">
+                                              <CheckCircle size={20} className="text-[#5352F6]" />
+                                            </div>
+                                          ) : (
+                                            <div className="h-10 w-16 rounded-md bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                              <span className="text-sm font-medium text-gray-500">{moduleIndex + 1}.{lessonIndex + 1}</span>
+                                            </div>
+                                          )}
+                                          <div className="flex flex-col">
+                                            <span className={`text-sm ${lesson.isPreview ? "font-medium" : ""}`}>
+                                              {lesson.title}
+                                              {lesson.isPreview && (
+                                                <Badge className="ml-2 bg-green-100 text-green-600 text-xs">
+                                                  Vista previa
+                                                </Badge>
+                                              )}
+                                            </span>
+                                            <span className="text-xs text-[#6D6C6C]">{formatDuration(lesson.duration)}</span>
+                                          </div>
+                                        </div>
+                                        <div className="flex items-center">
+                                          {lesson.isCompleted && (
+                                            <CheckCircle size={16} className="text-green-500 mr-2" />
+                                          )}
+                                        </div>
+                                      </Link>
+                                    ) : (
+                                      <div className="flex items-center justify-between w-full">
+                                        <div className="flex items-center gap-3">
+                                          {lesson.thumbnail ? (
+                                            <div className="relative h-10 w-16 overflow-hidden rounded-md flex-shrink-0">
+                                              <Image
+                                                src={lesson.thumbnail.url}
+                                                alt={lesson.thumbnail.alt || lesson.title}
+                                                fill
+                                                className="object-cover"
+                                              />
+                                            </div>
+                                          ) : lesson.isPreview ? (
+                                            <div className="h-10 w-16 rounded-md bg-green-100 flex items-center justify-center flex-shrink-0">
+                                              <BookOpen size={20} className="text-green-600" />
+                                            </div>
+                                          ) : module.lessons.every(l => l.isCompleted) ? (
+                                            <div className="h-10 w-16 rounded-md bg-[#EEEEFE] flex items-center justify-center flex-shrink-0">
+                                              <CheckCircle size={20} className="text-[#5352F6]" />
+                                            </div>
+                                          ) : (
+                                            <div className="h-10 w-16 rounded-md bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                              <span className="text-sm font-medium text-gray-500">{moduleIndex + 1}.{lessonIndex + 1}</span>
+                                            </div>
+                                          )}
+                                          <div className="flex flex-col">
+                                            <span className={`text-sm ${lesson.isPreview ? "font-medium" : ""}`}>
+                                              {lesson.title}
+                                              {lesson.isPreview && (
+                                                <Badge className="ml-2 bg-green-100 text-green-600 text-xs">
+                                                  Vista previa
+                                                </Badge>
+                                              )}
+                                            </span>
+                                            <span className="text-xs text-[#6D6C6C]">{formatDuration(lesson.duration)}</span>
+                                          </div>
+                                        </div>
+                                        <div className="flex items-center">
+                                          {lesson.isCompleted && (
+                                            <CheckCircle size={16} className="text-green-500 mr-2" />
+                                          )}
+                                        </div>
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                              );
+                            })}
+
+                            {/* Mostrar quiz del módulo si existe */}
+                            {module.quiz && (() => {
+                              // Determinar si el quiz está bloqueado
+                              let isQuizLocked = true;
+
+                              if (course.settings?.enforceOrder) {
+                                // Si el quiz ya está completado, no está bloqueado
+                                if (module.quiz.isCompleted) {
+                                  isQuizLocked = false;
+                                }
+                                // Si todas las lecciones del módulo están completadas, el quiz está desbloqueado
+                                else if (module.lessons.every(lesson => lesson.isCompleted)) {
+                                  isQuizLocked = false;
+                                }
+                              } else {
+                                // Si no se requiere orden, el quiz está desbloqueado
+                                isQuizLocked = false;
+                              }
+
+                              return (
+                                <div className={`flex items-center justify-between p-4 ${module.lessons.length > 0 ? "border-t border-[#E5E5E5]" : ""} ${isQuizLocked ? "opacity-70" : ""} bg-[#FAFCFF]`}>
+                                  {isQuizLocked ? (
+                                    <div className="flex items-center gap-3 w-full">
+                                      <div className="h-10 w-16 rounded-md bg-gray-200 flex items-center justify-center flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
+                                          <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                        </svg>
+                                      </div>
+                                      <div className="flex flex-col">
+                                        <span className="text-sm text-gray-500">
+                                          {module.quiz.title || `Evaluación: ${module.title}`}
+                                          <Badge className="ml-2 bg-gray-100 text-gray-500 text-xs">
+                                            Quiz
+                                          </Badge>
+                                        </span>
+                                        <span className="text-xs text-gray-400">{module.quiz.questions.length} preguntas • Puntaje mínimo: {module.quiz.passingScore}%</span>
+                                      </div>
+                                      <div className="ml-auto">
+                                        <Badge variant="outline" className="bg-gray-100 text-gray-500 text-xs border-gray-200">
+                                          Bloqueado
+                                        </Badge>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    isEnrolled ? (
+                                      <>
+                                        <Link
+                                          href={`/course/${course.slug}/${module.quiz.slug || module.quiz.id}`}
+                                          className="flex items-center gap-3 hover:text-[#5352F6] transition-colors"
+                                        >
+                                          <div className="h-10 w-16 rounded-md bg-[#FFF4E5] flex items-center justify-center flex-shrink-0">
+                                            <svg xmlns="http://www.w3.org/200/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500">
+                                              <path d="M9 11l3 3 8-8" />
+                                              <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9" />
+                                            </svg>
+                                          </div>
+                                          <div className="flex flex-col">
+                                            <span className="text-sm font-medium">
+                                              {module.quiz.title || `Evaluación: ${module.title}`}
+                                              <Badge className="ml-2 bg-amber-100 text-amber-600 text-xs">
+                                                Quiz
+                                              </Badge>
+                                            </span>
+                                            <span className="text-xs text-[#6D6C6C]">{module.quiz.questions.length} preguntas • Puntaje mínimo: {module.quiz.passingScore}%</span>
+                                          </div>
+                                        </Link>
+                                        <div className="flex items-center">
+                                          {module.quiz.isCompleted && (
+                                            <Badge className={`${module.quiz.passed ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"} text-xs mr-2`}>
+                                              {module.quiz.passed ? "Aprobado" : "No aprobado"}
+                                            </Badge>
+                                          )}
+                                        </div>
+                                      </>
+                                    ) : (
+                                      <div className="flex items-center gap-3">
                                         <div className="h-10 w-16 rounded-md bg-[#FFF4E5] flex items-center justify-center flex-shrink-0">
-                                          <svg xmlns="http://www.w3.org/200/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500">
-                                            <path d="M9 11l3 3 8-8"/>
-                                            <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/>
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500">
+                                            <path d="M9 11l3 3 8-8" />
+                                            <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9" />
                                           </svg>
                                         </div>
                                         <div className="flex flex-col">
@@ -732,280 +747,241 @@ export default function CourseDetailPage() {
                                           </span>
                                           <span className="text-xs text-[#6D6C6C]">{module.quiz.questions.length} preguntas • Puntaje mínimo: {module.quiz.passingScore}%</span>
                                         </div>
-                                      </Link>
-                                      <div className="flex items-center">
-                                        {module.quiz.isCompleted && (
-                                          <Badge className={`${module.quiz.passed ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"} text-xs mr-2`}>
-                                            {module.quiz.passed ? "Aprobado" : "No aprobado"}
-                                          </Badge>
-                                        )}
                                       </div>
-                                    </>
-                                  ) : (
-                                    <div className="flex items-center gap-3">
-                                      <div className="h-10 w-16 rounded-md bg-[#FFF4E5] flex items-center justify-center flex-shrink-0">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500">
-                                          <path d="M9 11l3 3 8-8"/>
-                                          <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/>
-                                        </svg>
-                                      </div>
-                                      <div className="flex flex-col">
-                                        <span className="text-sm font-medium">
-                                          {module.quiz.title || `Evaluación: ${module.title}`}
-                                          <Badge className="ml-2 bg-amber-100 text-amber-600 text-xs">
-                                            Quiz
-                                          </Badge>
-                                        </span>
-                                        <span className="text-xs text-[#6D6C6C]">{module.quiz.questions.length} preguntas • Puntaje mínimo: {module.quiz.passingScore}%</span>
-                                      </div>
-                                    </div>
-                                  )
-                                )}
-                               </div>
-                             );
-                           })()}
+                                    )
+                                  )}
+                                </div>
+                              );
+                            })()}
                           </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="objetivos" className="space-y-6">
-                <div className="rounded-lg border border-[#E5E5E5] bg-white p-6">
-                  <h2 className="mb-6 text-xl font-bold">Lo que aprenderás</h2>
-                  
-                  <div className="grid gap-4 md:grid-cols-2">
-                    {course.content.learningObjectives.map((objective, index) => (
-                      <div key={index} className="flex items-start">
-                        <div className="mr-3 mt-1 text-[#5352F6]">
-                          <CheckCircle size={16} />
                         </div>
-                        <span>{objective}</span>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-                
-                <div className="rounded-lg border border-[#E5E5E5] bg-white p-6">
-                  <h2 className="mb-6 text-xl font-bold">Habilidades que desarrollarás</h2>
-                  
-                  <div className="flex flex-wrap gap-2">
-                    {course.content.skillsYouWillLearn.map((skill, index) => (
-                      <span 
-                        key={index} 
-                        className="rounded-full bg-[#F5F5F5] px-3 py-1 text-sm"
-                      >
-                        {skill}
-                      </span>
-                    ))}
+                </TabsContent>
+
+                <TabsContent value="objetivos" className="space-y-6">
+                  <div className="rounded-lg border border-[#E5E5E5] bg-white p-6">
+                    <h2 className="mb-6 text-xl font-bold">Lo que aprenderás</h2>
+
+                    <div className="grid gap-4 md:grid-cols-2">
+                      {course.content.learningObjectives.map((objective, index) => (
+                        <div key={index} className="flex items-start">
+                          <div className="mr-3 mt-1 text-[#5352F6]">
+                            <CheckCircle size={16} />
+                          </div>
+                          <span>{objective}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="requisitos" className="space-y-6">
-                <div className="rounded-lg border border-[#E5E5E5] bg-white p-6">
-                  <h2 className="mb-6 text-xl font-bold">Requisitos previos</h2>
-                  
-                  <ul className="space-y-3">
-                    {course.content.requirements.length > 0 ? (
-                      course.content.requirements.map((requirement, index) => (
+
+                  <div className="rounded-lg border border-[#E5E5E5] bg-white p-6">
+                    <h2 className="mb-6 text-xl font-bold">Habilidades que desarrollarás</h2>
+
+                    <div className="flex flex-wrap gap-2">
+                      {course.content.skillsYouWillLearn.map((skill, index) => (
+                        <span
+                          key={index}
+                          className="rounded-full bg-[#F5F5F5] px-3 py-1 text-sm"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="requisitos" className="space-y-6">
+                  <div className="rounded-lg border border-[#E5E5E5] bg-white p-6">
+                    <h2 className="mb-6 text-xl font-bold">Requisitos previos</h2>
+
+                    <ul className="space-y-3">
+                      {course.content.requirements.length > 0 ? (
+                        course.content.requirements.map((requirement, index) => (
+                          <li key={index} className="flex items-start">
+                            <div className="mr-3 mt-1 h-1.5 w-1.5 rounded-full bg-[#5352F6]"></div>
+                            <span>{requirement}</span>
+                          </li>
+                        ))
+                      ) : (
+                        <li>No hay requisitos previos para este curso.</li>
+                      )}
+                    </ul>
+                  </div>
+
+                  <div className="rounded-lg border border-[#E5E5E5] bg-white p-6">
+                    <h2 className="mb-6 text-xl font-bold">Audiencia objetivo</h2>
+
+                    <ul className="space-y-3">
+                      {course.content.targetAudience.map((audience, index) => (
                         <li key={index} className="flex items-start">
                           <div className="mr-3 mt-1 h-1.5 w-1.5 rounded-full bg-[#5352F6]"></div>
-                          <span>{requirement}</span>
+                          <span>{audience}</span>
                         </li>
-                      ))
-                    ) : (
-                      <li>No hay requisitos previos para este curso.</li>
-                    )}
-                  </ul>
-                </div>
-                
-                <div className="rounded-lg border border-[#E5E5E5] bg-white p-6">
-                  <h2 className="mb-6 text-xl font-bold">Audiencia objetivo</h2>
-                  
-                  <ul className="space-y-3">
-                    {course.content.targetAudience.map((audience, index) => (
-                      <li key={index} className="flex items-start">
-                        <div className="mr-3 mt-1 h-1.5 w-1.5 rounded-full bg-[#5352F6]"></div>
-                        <span>{audience}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="reviews" className="space-y-6">
-                <div className="rounded-lg border border-[#E5E5E5] bg-white p-6">
-                  <h2 className="mb-6 text-xl font-bold">Reseñas de estudiantes</h2>
-                  
-                  <div className="mb-6 flex items-center gap-4">
-                    <div className="flex flex-col items-center justify-center">
-                      <div className="text-4xl font-bold text-[#5352F6]">{(course.stats?.averageRating || 0).toFixed(1)}</div>
-                      <div className="flex items-center">
-                        {[...Array(5)].map((_, i) => (
-                          <Star 
-                            key={i} 
-                            size={16} 
-                            className={i < Math.round(course.stats?.averageRating || 0) ? "text-yellow-400" : "text-gray-300"} 
-                            fill={i < Math.round(course.stats?.averageRating || 0) ? "currentColor" : "none"}
-                          />
-                        ))}
-                      </div>
-                      <div className="mt-1 text-sm text-[#6D6C6C]">{course.stats?.reviewsCount || 0} reseñas</div>
-                    </div>
-                    
-                    <div className="flex-1">
-                      {[5, 4, 3, 2, 1].map((rating) => {
-                        const reviewsCount = course.reviews?.filter(r => Math.round(r.rating) === rating).length || 0;
-                        const rc = course.stats?.reviewsCount || 0;
-                        const percentage = rc > 0 
-                          ? (reviewsCount / rc) * 100 
-                          : 0;
-                        
-                        return (
-                          <div key={rating} className="mb-1 flex items-center gap-2">
-                            <div className="flex items-center gap-1">
-                              <span className="text-sm">{rating}</span>
-                              <Star size={12} className="text-yellow-400" fill="currentColor" />
-                            </div>
-                            <div className="h-2 flex-1 rounded-full bg-[#F5F5F5]">
-                              <div 
-                                className="h-2 rounded-full bg-[#5352F6]" 
-                                style={{ width: `${percentage}%` }}
-                              ></div>
-                            </div>
-                            <span className="text-xs text-[#6D6C6C]">{reviewsCount}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
+                      ))}
+                    </ul>
                   </div>
-                  
-                  {/* Lista de reseñas */}
-                  <div className="space-y-6">
-                    {course.reviews?.slice(0, 3).map((review) => (
-                      <div key={review.id} className="border-b border-[#E5E5E5] pb-6 last:border-0">
-                        <div className="mb-2 flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            {review.userAvatar && (
-                              <div className="relative h-10 w-10 overflow-hidden rounded-full">
-                                <Image 
-                                  src={review.userAvatar} 
-                                  alt={review.userName}
-                                  fill
-                                  className="object-cover"
-                                />
-                              </div>
-                            )}
-                            <div>
-                              <div className="font-medium">{review.userName}</div>
-                              <div className="flex items-center">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star 
-                                    key={i} 
-                                    size={14} 
-                                    className={i < Math.round(review.rating) ? "text-yellow-400" : "text-gray-300"} 
-                                    fill={i < Math.round(review.rating) ? "currentColor" : "none"}
-                                  />
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="text-sm text-[#6D6C6C]">
-                            {formatDate(review.createdAt)}
-                          </div>
-                        </div>
-                        
-                        {review.title && (
-                          <h4 className="mb-1 font-medium">{review.title}</h4>
-                        )}
-                        
-                        <p className="text-sm text-[#6D6C6C]">{review.comment}</p>
-                      </div>
-                    ))}
-                    
-                    {(course.reviews?.length || 0) > 3 && (
-                      <div className="text-center">
-                        <Button variant="outline">Ver todas las reseñas</Button>
-                      </div>
-                    )}
-                    
-                    {(!course.reviews || course.reviews.length === 0) && (
-                      <div className="text-center py-8 text-[#6D6C6C]">
-                        <p>No hay reseñas disponibles para este curso.</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </TabsContent>
-            </Tabs>
-          </div>
-          
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Tarjeta de acceso */}
-            <div className={`sticky top-6 z-10 rounded-lg border bg-white p-6 shadow-sm mb-8 ${isLocked ? 'border-red-200' : 'border-[#E5E5E5]'}`}>
-              <h3 className="mb-4 text-lg font-bold">Accede a este curso</h3>
-              
-              {/* Banner de bloqueo si el usuario no tiene acceso */}
-              {isLocked && (
-                <div className="mb-4 rounded-lg bg-red-50 border border-red-200 p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-red-100">
-                      <Lock size={16} className="text-red-600" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-red-800">Acceso restringido</p>
-                      <p className="text-xs text-red-600 mt-1">
-                        {getAccessRestrictionMessage(requiredPlan)}
-                      </p>
-                      <p className="text-xs text-red-500 mt-2">
-                        Tu plan actual: <span className="font-semibold">{getPlanDisplayName(userPlan)}</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
+                </TabsContent>
 
-              {/* Pricing y estado de acceso */}
-              <div className="mb-6">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className={`rounded-full px-3 py-1 text-sm font-medium ${badgeClasses}`}>
-                    {accessLabel.label}
-                  </span>
-                  
-                  {/* Precio del curso si es de pago */}
-                  {price != null && price > 0 && (
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-xl font-bold text-gray-900">
-                        ${price.toLocaleString('es-CO')}
-                      </span>
-                      {pricing?.originalPrice != null && pricing.originalPrice > price && (
-                        <span className="text-sm text-gray-400 line-through">
-                          ${pricing.originalPrice.toLocaleString('es-CO')}
-                        </span>
+                <TabsContent value="reviews" className="space-y-6">
+                  <div className="rounded-lg border border-[#E5E5E5] bg-white p-6">
+                    <h2 className="mb-6 text-xl font-bold">Reseñas de estudiantes</h2>
+
+                    <div className="mb-6 flex items-center gap-4">
+                      <div className="flex flex-col items-center justify-center">
+                        <div className="text-4xl font-bold text-[#5352F6]">{(course.stats?.averageRating || 0).toFixed(1)}</div>
+                        <div className="flex items-center">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              size={16}
+                              className={i < Math.round(course.stats?.averageRating || 0) ? "text-yellow-400" : "text-gray-300"}
+                              fill={i < Math.round(course.stats?.averageRating || 0) ? "currentColor" : "none"}
+                            />
+                          ))}
+                        </div>
+                        <div className="mt-1 text-sm text-[#6D6C6C]">{course.stats?.reviewsCount || 0} reseñas</div>
+                      </div>
+
+                      <div className="flex-1">
+                        {[5, 4, 3, 2, 1].map((rating) => {
+                          const reviewsCount = course.reviews?.filter(r => Math.round(r.rating) === rating).length || 0;
+                          const rc = course.stats?.reviewsCount || 0;
+                          const percentage = rc > 0
+                            ? (reviewsCount / rc) * 100
+                            : 0;
+
+                          return (
+                            <div key={rating} className="mb-1 flex items-center gap-2">
+                              <div className="flex items-center gap-1">
+                                <span className="text-sm">{rating}</span>
+                                <Star size={12} className="text-yellow-400" fill="currentColor" />
+                              </div>
+                              <div className="h-2 flex-1 rounded-full bg-[#F5F5F5]">
+                                <div
+                                  className="h-2 rounded-full bg-[#5352F6]"
+                                  style={{ width: `${percentage}%` }}
+                                ></div>
+                              </div>
+                              <span className="text-xs text-[#6D6C6C]">{reviewsCount}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Lista de reseñas */}
+                    <div className="space-y-6">
+                      {course.reviews?.slice(0, 3).map((review) => (
+                        <div key={review.id} className="border-b border-[#E5E5E5] pb-6 last:border-0">
+                          <div className="mb-2 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              {review.userAvatar && (
+                                <div className="relative h-10 w-10 overflow-hidden rounded-full">
+                                  <Image
+                                    src={review.userAvatar}
+                                    alt={review.userName}
+                                    fill
+                                    className="object-cover"
+                                  />
+                                </div>
+                              )}
+                              <div>
+                                <div className="font-medium">{review.userName}</div>
+                                <div className="flex items-center">
+                                  {[...Array(5)].map((_, i) => (
+                                    <Star
+                                      key={i}
+                                      size={14}
+                                      className={i < Math.round(review.rating) ? "text-yellow-400" : "text-gray-300"}
+                                      fill={i < Math.round(review.rating) ? "currentColor" : "none"}
+                                    />
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="text-sm text-[#6D6C6C]">
+                              {formatDate(review.createdAt)}
+                            </div>
+                          </div>
+
+                          {review.title && (
+                            <h4 className="mb-1 font-medium">{review.title}</h4>
+                          )}
+
+                          <p className="text-sm text-[#6D6C6C]">{review.comment}</p>
+                        </div>
+                      ))}
+
+                      {(course.reviews?.length || 0) > 3 && (
+                        <div className="text-center">
+                          <Button variant="outline">Ver todas las reseñas</Button>
+                        </div>
                       )}
-                      {pricing?.currency && pricing.currency !== 'COP' && (
-                        <span className="text-xs text-gray-500">{pricing.currency}</span>
+
+                      {(!course.reviews || course.reviews.length === 0) && (
+                        <div className="text-center py-8 text-[#6D6C6C]">
+                          <p>No hay reseñas disponibles para este curso.</p>
+                        </div>
                       )}
                     </div>
-                  )}
-                </div>
-                
-                {/* Descuento si aplica */}
-                {pricing?.discountPercentage != null && pricing.discountPercentage > 0 && (
-                  <div className="mt-2">
-                    <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-600">
-                      {pricing.discountPercentage}% de descuento
-                    </span>
-                    {pricing.discountEndsAt && (
-                      <span className="ml-2 text-xs text-gray-500">
-                        Hasta {formatDate(pricing.discountEndsAt)}
-                      </span>
-                    )}
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </div>
+
+            {/* Sidebar */}
+            <div className="space-y-6">
+              {/* Tarjeta de acceso */}
+              <div className={`sticky top-6 z-10 rounded-lg border bg-white p-6 shadow-sm mb-8 ${isLocked ? 'border-red-200' : 'border-[#E5E5E5]'}`}>
+                <h3 className="mb-4 text-lg font-bold">Accede a este curso</h3>
+
+                {/* Banner de bloqueo si el usuario no tiene acceso */}
+                {isLocked && (
+                  <div className="mb-4 rounded-lg bg-red-50 border border-red-200 p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-red-100">
+                        <Lock size={16} className="text-red-600" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-red-800">Acceso restringido</p>
+                        <p className="text-xs text-red-600 mt-1">
+                          {getAccessRestrictionMessage(course.accessRequirements)}
+                        </p>
+                        <p className="text-xs text-red-500 mt-2">
+                          Tu plan actual: <span className="font-semibold">{getPlanDisplayName(userPlan)}</span>
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 )}
+
+                {/* Pricing y estado de acceso */}
+                <div className="mb-6">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className={`rounded-full px-3 py-1 text-sm font-medium ${badgeClasses}`}>
+                      {accessLabel.label}
+                    </span>
+
+                    {/* Precio del curso si es de pago */}
+                    {price != null && price > 0 && (
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-xl font-bold text-gray-900">
+                          ${price.toLocaleString('es-CO')}
+                        </span>
+                        {princing?.originalPrice != null && princing.originalPrice > price && (
+                          <span className="text-sm text-gray-400 line-through">
+                            ${princing.originalPrice.toLocaleString('es-CO')}
+                          </span>
+                        )}
+                        {princing?.currency && princing.currency !== 'COP' && (
+                          <span className="text-xs text-gray-500">{princing.currency}</span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
 
                 {/* Mensajes contextuales según el tipo */}
                 <p className="mt-2 text-sm text-[#6D6C6C]">
@@ -1015,7 +991,7 @@ export default function CourseDetailPage() {
                   {accessLabel.variant === 'paid' && 'Pago único • Acceso de por vida'}
                 </p>
               </div>
-              
+
               <div className="mb-6 space-y-3">
                 <div className="flex items-center gap-2">
                   <CheckCircle size={16} className="text-[#5352F6]" />
@@ -1042,12 +1018,12 @@ export default function CourseDetailPage() {
                   </div>
                 )}
               </div>
-              
+
               {isLocked ? (
                 <div className="space-y-2">
                   <Button className="w-full bg-gray-400 hover:bg-gray-400 cursor-not-allowed" disabled>
                     <Lock size={16} className="mr-2" />
-                    Requiere plan {getPlanDisplayName(requiredPlan)}
+                    Acceso restringido
                   </Button>
                   <Link href="/course#planes" className="block">
                     <Button variant="outline" className="w-full border-[#5352F6] text-[#5352F6] hover:bg-[#5352F6]/5">
@@ -1061,27 +1037,25 @@ export default function CourseDetailPage() {
                 </Link>
               ) : (
                 <Button className="w-full" disabled={loading || !course} onClick={handleStartCourse}>
-                  {course.pricing?.price != null && course.pricing.price > 0
-                    ? `Comprar por $${course.pricing.price.toLocaleString('es-CO')}`
-                    : isInvestorExclusive
-                      ? 'Soy inversionista, ver curso'
-                      : 'Iniciar curso gratis'
+                  {princingResult.price != null && princingResult.price > 0
+                    ? `Comprar por $${princingResult.price.toLocaleString('es-CO')}`
+                    : 'Iniciar curso'
                   }
                 </Button>
               )}
             </div>
-            
+
             {/* Instructor */}
             <div className="rounded-lg border border-[#E5E5E5] bg-white p-6">
               <h3 className="mb-4 text-lg font-bold">Sobre el instructor</h3>
-              
+
               <div className="mb-6 flex items-center">
                 <div className="relative mr-4 h-20 w-20 overflow-hidden border-2 border-[#5352F6]/10 rounded-full shadow-md">
                   {loading ? (
                     <div className="h-full w-full animate-pulse rounded-full bg-gray-200" style={{ animationDuration: '1.2s' }} />
                   ) : course?.instructor?.avatar ? (
-                    <Image 
-                      src={course.instructor.avatar} 
+                    <Image
+                      src={course.instructor.avatar}
                       alt={course.instructor.name || 'Instructor LOKL'}
                       fill
                       className="object-cover"
@@ -1097,8 +1071,8 @@ export default function CourseDetailPage() {
                     <div className="h-4 w-36 animate-pulse rounded bg-gray-200 mb-2" style={{ animationDuration: '1.2s' }} />
                   ) : (
                     <>
-                    <p className="text-lg font-medium text-[#333]">{course?.instructor?.name || 'Instructor LOKL'}</p>
-                    <p className="text-sm text-[#333]">{course?.instructor?.role || ''}</p>
+                      <p className="text-lg font-medium text-[#333]">{course?.instructor?.name || 'Instructor LOKL'}</p>
+                      <p className="text-sm text-[#333]">{course?.instructor?.role || ''}</p>
                     </>
                   )}
                   {loading ? (
@@ -1108,7 +1082,7 @@ export default function CourseDetailPage() {
                   )}
                 </div>
               </div>
-              
+
               {/* Biografía del instructor */}
               {course?.instructor?.bio && (
                 <div className="mb-6">
@@ -1116,7 +1090,7 @@ export default function CourseDetailPage() {
                   <p className="text-sm text-[#6D6C6C] leading-relaxed">{course.instructor.bio}</p>
                 </div>
               )}
-              
+
               {/* Enlaces sociales */}
               {course?.instructor?.socialLinks && typeof course.instructor.socialLinks === 'object' && Object.keys(course.instructor.socialLinks).length > 0 && (
                 <div>
@@ -1124,7 +1098,7 @@ export default function CourseDetailPage() {
                   <div className="flex flex-wrap gap-3">
                     {Object.entries(course.instructor.socialLinks).map(([platform, url], index) => (
                       url && (
-                        <a 
+                        <a
                           key={index}
                           href={url}
                           target="_blank"
@@ -1140,52 +1114,47 @@ export default function CourseDetailPage() {
               )}
             </div>
           </div>
-        </div>
-      </section>
-      
-      {/* CTA final */}
-      <section className={`${isCourseCompleted ? 'bg-gradient-to-r from-green-600 to-green-700' : isLocked ? 'bg-gradient-to-r from-gray-700 to-gray-800' : 'bg-[#5352F6]'} py-16 text-white`}>
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="mb-6 text-3xl font-bold tracking-tight">
-            {isCourseCompleted 
-              ? "¡Felicidades por completar el curso!" 
-              : isLocked
-                ? "Desbloquea este curso"
-                : "¿Listo para comenzar tu aprendizaje?"}
-          </h2>
-          <p className="mx-auto mb-8 max-w-2xl text-lg">
-            {isCourseCompleted 
-              ? "No pares de aprender. Explora más cursos y sigue mejorando tus habilidades con LOKL Academy."
-              : isLocked
-                ? `Este curso requiere un plan ${getPlanDisplayName(requiredPlan)}. Actualiza tu plan para acceder a este y más cursos exclusivos.`
-                : price != null && price > 0
-                  ? `Adquiere este curso por $${price.toLocaleString('es-CO')} y comienza a aprender ahora.`
-                  : isInvestorExclusive 
-                    ? "Conviértete en inversionista LOKL y desbloquea este y muchos más cursos exclusivos."
-                    : "Inscríbete ahora y comienza a aprender con este curso gratuito de alta calidad."
-            }
-          </p>
-          {isLocked ? (
-            <Link href="/course#planes">
-              <Button size="lg" variant="secondary">
-                Ver planes disponibles
-              </Button>
-            </Link>
-          ) : (
-            <Button size="lg" variant="secondary" onClick={handleStartCourse}>
-              {isCourseCompleted 
-                ? "Explorar más cursos" 
-                : price != null && price > 0
-                  ? `Comprar por $${price.toLocaleString('es-CO')}`
-                  : isInvestorExclusive 
-                    ? "Conocer más sobre inversiones LOKL" 
-                    : "Ver curso ahora"
+        </section>
+
+        {/* CTA final */}
+        <section className={`${isCourseCompleted ? 'bg-gradient-to-r from-green-600 to-green-700' : isLocked ? 'bg-gradient-to-r from-gray-700 to-gray-800' : 'bg-[#5352F6]'} py-16 text-white`}>
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="mb-6 text-3xl font-bold tracking-tight">
+              {isCourseCompleted
+                ? "¡Felicidades por completar el curso!"
+                : isLocked
+                  ? "Desbloquea este curso"
+                  : "¿Listo para comenzar tu aprendizaje?"}
+            </h2>
+            <p className="mx-auto mb-8 max-w-2xl text-lg">
+              {isCourseCompleted
+                ? "No pares de aprender. Explora más cursos y sigue mejorando tus habilidades con LOKL Academy."
+                : isLocked
+                  ? `Este contenido está restringido según tu plan actual. Actualiza tu plan para acceder a este y más cursos exclusivos.`
+                  : !princingResult.isFree
+                    ? `Adquiere este curso por $${price.toLocaleString('es-CO')} y comienza a aprender ahora.`
+                    : 'Aprende y crece con este curso de alta calidad.'
               }
-            </Button>
-          )}
-        </div>
-      </section>
-    </div>
+            </p>
+            {isLocked ? (
+              <Link href="/course#planes">
+                <Button size="lg" variant="secondary">
+                  Ver planes disponibles
+                </Button>
+              </Link>
+            ) : (
+              <Button size="lg" variant="secondary" onClick={handleStartCourse}>
+                {isCourseCompleted
+                  ? "Explorar más cursos"
+                  : !princingResult.isFree
+                    ? `Comprar por $${price.toLocaleString('es-CO')}`
+                    : "Ver curso ahora"
+                }
+              </Button>
+            )}
+          </div>
+        </section>
+      </div>
     </>
   );
 }

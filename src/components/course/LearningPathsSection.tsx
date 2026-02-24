@@ -44,11 +44,14 @@ const LearningPathsSection: React.FC<LearningPathsSectionProps> = ({ paths }) =>
                     {path.category.name}
                   </Badge>
                   {/* Etiqueta para rutas exclusivas */}
-                  {path.accessRequirements.plan !== "any" && (
-                    <div className="rounded-md bg-[#5352F6] px-3 py-1 text-xs font-medium text-white">
-                      {path.accessRequirements.plan === "premium" ? "Premium" : "Inversionista"}
-                    </div>
-                  )}
+                  {(path.accessRequirements.requiresInvestor ||
+                    (path.accessRequirements.allowedPlans &&
+                      path.accessRequirements.allowedPlans.length > 0 &&
+                      !path.accessRequirements.allowedPlans.includes('any'))) && (
+                      <div className="rounded-md bg-[#5352F6] px-3 py-1 text-xs font-medium text-white">
+                        Exclusivo
+                      </div>
+                    )}
                 </div>
 
                 <div className="flex flex-col md:flex-row md:gap-8">
@@ -121,19 +124,19 @@ const LearningPathsSection: React.FC<LearningPathsSectionProps> = ({ paths }) =>
                       </div>
                     </div>
 
-                    {/* Precio y CTA */}
+                    {/* Princing y CTA */}
                     <div>
                       <div className="mb-3">
-                        {path.pricing.type === "free" ? (
+                        {path.princing.type === "free" ? (
                           <span className="text-lg font-medium text-green-600">Gratis</span>
                         ) : (
                           <div className="flex items-end">
                             <span className="text-2xl font-bold text-[#5352F6]">
-                              {path.pricing.price ? `$${path.pricing.price.toLocaleString('es-CO')}` : '$0'}
+                              {path.princing.basePrice ? `$${path.princing.basePrice.toLocaleString('es-CO')}` : '$0'}
                             </span>
-                            {path.pricing.individualCoursesPrice && (
-                              <span className="ml-2 text-xs text-[#6D6C6C]">
-                                Ahorro de {`$${path.pricing.savings?.toLocaleString('es-CO')}`}
+                            {path.princing.originalPrice && (
+                              <span className="ml-2 text-xs text-[#6D6C6C] line-through">
+                                {`$${path.princing.originalPrice.toLocaleString('es-CO')}`}
                               </span>
                             )}
                           </div>

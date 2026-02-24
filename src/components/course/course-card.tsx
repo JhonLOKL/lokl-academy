@@ -9,10 +9,12 @@ import { Clock, Users, Star, Lock } from "lucide-react";
 import { Course, UserProgress } from "@/lib/course/schema";
 import { useAuthStore } from "@/store/auth-store";
 import {
-  hasAccessToCourse,
+  canUserViewCourse,
+  calculatePrincingForUser,
   getCourseAccessLabel,
   getAccessBadgeClasses,
   getAccessRestrictionMessage,
+  getPlanDisplayName,
   type UserPlanType,
 } from "@/helpers/course-access";
 
@@ -38,44 +40,24 @@ const CourseCard: React.FC<CourseCardProps> = ({
   // Guard clause: si no hay curso, no renderizar nada para evitar errores
   if (!course) return null;
 
-  const userPlan: UserPlanType = (user?.planType as UserPlanType) || "basic";
+  const userPlan: UserPlanType = (user?.plan as UserPlanType) || 'none';
+  const isInvestor = !!user?.isInvestor || userPlan === 'investor';
+  const userContext = { plan: userPlan, isInvestor };
 
   // Lógica de acceso basada en el plan del usuario
-  const requiredPlan = course.accessRequirements?.plan || "any";
-  const userHasAccess = hasAccessToCourse(userPlan, requiredPlan);
+  const userHasAccess = canUserViewCourse(userContext, course.accessRequirements);
   const isLoggedIn = !!user;
 
-  // =================================================================================
-  // NORMALIZACIÓN ROBUSTA DE PRICING (V2)
-  // =================================================================================
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const rawObj = course as any;
-  // Intentar leer de todas las fuentes posibles, priorizando pricing corregido
-  const pricingObj = course.pricing || rawObj.princing;
-  
-  const pricingType = pricingObj?.type || "free";
-  
-  // Limpieza de precio - Conversión explícita a número y validación
-  let finalPrice: number | undefined = undefined;
-  if (pricingObj?.price !== undefined && pricingObj?.price !== null) {
-      const p = Number(pricingObj.price);
-      // Solo consideramos precio válido si es número y mayor a 0
-      if (!isNaN(p) && p > 0) {
-          finalPrice = p;
-      }
-  }
-  // =================================================================================
+  const princing = course.princing;
+  const princingResult = calculatePrincingForUser(userContext, princing);
+  const finalPrice = princingResult.price;
 
   // Solo bloquear si el usuario ESTÁ logueado y NO tiene acceso
   const isLocked = isLoggedIn && !userHasAccess;
 
   // Obtener etiqueta de pricing usando los datos limpios
-  const accessLabel = getCourseAccessLabel({
-    pricingType: pricingType,
-    price: finalPrice,
-    accessPlan: requiredPlan,
-  });
-  
+  const accessLabel = getCourseAccessLabel(userContext, princing, course.accessRequirements);
+
   const badgeClasses = getAccessBadgeClasses(accessLabel.variant);
 
   // Formatear la duración
@@ -112,7 +94,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
               <Lock size={20} className="text-gray-500" />
             </div>
             <p className="text-xs text-gray-600 leading-relaxed">
-              {getAccessRestrictionMessage(requiredPlan)}
+              {getAccessRestrictionMessage(course.accessRequirements)}
             </p>
           </div>
         </div>
@@ -126,19 +108,15 @@ const CourseCard: React.FC<CourseCardProps> = ({
             Completado
           </span>
         )}
-        
+
         {/* Badge de Plan Requerido (Solo si es Premium/Investor) */}
-        {pricingType === 'premium' && (
-          <span className="bg-amber-500 px-2 py-1 text-xs font-medium text-white">
-            Plan Premium
-          </span>
-        )}
-        
-        {pricingType === 'investor' && (
-          <span className="bg-[#5352F6] px-2 py-1 text-xs font-medium text-white">
-            Plan Inversionista
-          </span>
-        )}
+        {princing.rules?.map(rule => (
+          rule.price === 0 && (rule.plans?.length || rule.isInvestor) ? (
+            <span key={rule.id} className="bg-amber-500 px-2 py-1 text-xs font-medium text-white">
+              Incluido en Plan
+            </span>
+          ) : null
+        ))}
       </div>
 
       {/* Lock icon */}
@@ -150,28 +128,25 @@ const CourseCard: React.FC<CourseCardProps> = ({
 
       {/* Imagen del curso */}
       <div
-        className={`relative overflow-hidden ${
-          variant === "horizontal" ? "h-48 md:h-auto md:w-2/5" : "h-48"
-        }`}
+        className={`relative overflow-hidden ${variant === "horizontal" ? "h-48 md:h-auto md:w-2/5" : "h-48"
+          }`}
       >
         <Image
           src={course.thumbnail?.url || '/images/course/placeholder.jpg'}
           alt={course.thumbnail?.alt || course.title}
           fill
-          className={`object-cover transition-all duration-500 ${
-            isLocked
+          className={`object-cover transition-all duration-500 ${isLocked
               ? "grayscale"
               : "grayscale group-hover:grayscale-0 group-hover:scale-110"
-          }`}
+            }`}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
       </div>
 
       {/* Contenido del curso */}
       <div
-        className={`flex flex-1 flex-col p-4 ${
-          variant === "horizontal" ? "md:p-6" : ""
-        }`}
+        className={`flex flex-1 flex-col p-4 ${variant === "horizontal" ? "md:p-6" : ""
+          }`}
       >
         {/* Categoría y duración */}
         <div className="mb-2 flex items-center justify-between">
@@ -280,18 +255,18 @@ const CourseCard: React.FC<CourseCardProps> = ({
         {!showProgress && !course.progress && (
           <div className="mt-auto pt-2">
             <div className="flex items-center justify-between">
-              
+
               {/* IZQUIERDA: Etiqueta de Acceso (Gratis, o Mensaje de Precio) */}
-              {finalPrice != null ? (
+              {!princingResult.isFree ? (
                 // Si hay precio, mostrar el precio grande y claro
                 <div className="flex flex-col">
                   <span className="text-lg font-bold text-gray-900">
-                    {formatPrice(finalPrice, pricingObj?.currency)}
+                    {formatPrice(finalPrice, princing.currency)}
                   </span>
                   {/* Precio original tachado si aplica */}
-                  {pricingObj?.originalPrice != null && pricingObj.originalPrice > finalPrice && (
+                  {princing.originalPrice != null && princing.originalPrice > finalPrice && (
                     <span className="text-xs text-gray-400 line-through">
-                      {formatPrice(pricingObj.originalPrice, pricingObj?.currency)}
+                      {formatPrice(princing.originalPrice, princing.currency)}
                     </span>
                   )}
                 </div>
@@ -303,25 +278,19 @@ const CourseCard: React.FC<CourseCardProps> = ({
               )}
 
               {/* DERECHA: Información adicional o CTA implícito */}
-              {finalPrice != null && pricingType === 'premium' && (
-                 <div className="text-right">
-                    <span className="text-[10px] uppercase font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded">
-                      o Gratis con Premium
-                    </span>
-                 </div>
+              {!princingResult.isFree && princing.rules?.some(r => r.price === 0) && (
+                <div className="text-right">
+                  <span className="text-[10px] uppercase font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded">
+                    o Gratis con Plan
+                  </span>
+                </div>
               )}
             </div>
-            
+
             {/* Mensaje inferior contextual */}
-            {pricingType === 'premium' && finalPrice == null && (
+            {princingResult.appliedRule?.description && (
               <p className="mt-2 text-xs text-amber-600 font-medium">
-                Incluido en suscripción Premium
-              </p>
-            )}
-            
-            {pricingType === 'investor' && (
-              <p className="mt-2 text-xs text-[#5352F6] font-medium">
-                Solo para inversionistas
+                {princingResult.appliedRule.description}
               </p>
             )}
           </div>

@@ -5,27 +5,26 @@ import { enrollCourseService, getAllCoursesService, getCourseBySlugService, getU
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const normalizeCourseData = (course: any): Course => {
     if (!course) return course;
-    
-    // Corregir typo 'princing' -> 'pricing'
-    // Verificamos explícitamente ambas propiedades
-    const pricingData = course.pricing || course.princing;
-    
-    if (pricingData) {
-        course.pricing = pricingData;
+
+    // El backend retorna 'princing', aseguramos que esté asignado correctamente
+    const princingData = course.princing || course.pricing;
+
+    if (princingData) {
+        course.princing = princingData;
     }
-    
-    // Asegurar que accessRequirements exista
+
+    // Asegurar que accessRequirements exista con la nueva estructura
     if (!course.accessRequirements) {
         course.accessRequirements = {
-            plan: 'basic',
-            minimumLevel: 'any'
+            allowedPlans: ['any'],
+            requiresInvestor: false
         };
     }
 
     return course as Course;
 };
 
-export const enrollCourseAction = async (body: { courseId: string }) : Promise<{ success: boolean, message: string, error?: string }> => {
+export const enrollCourseAction = async (body: { courseId: string }): Promise<{ success: boolean, message: string, error?: string }> => {
     try {
         const response = await enrollCourseService(body)
         if (response && response?.success) {
@@ -45,7 +44,7 @@ export const enrollCourseAction = async (body: { courseId: string }) : Promise<{
     }
 }
 
-export const markLessonCompletedAction = async (body: { courseId: string, lessonId: string }) : Promise<{ 
+export const markLessonCompletedAction = async (body: { courseId: string, lessonId: string }): Promise<{
     success: boolean,
     message: string,
     error?: string,
@@ -67,7 +66,7 @@ export const markLessonCompletedAction = async (body: { courseId: string, lesson
         }
     }
 
- }> => {
+}> => {
     try {
         const response = await markLessonCompletedService(body)
         if (response && response?.success) {
@@ -88,7 +87,7 @@ export const markLessonCompletedAction = async (body: { courseId: string, lesson
     }
 }
 
-export const saveQuizResultAction = async (body: { courseId: string, quizId: string, answers: { questionId: string, answer: string }[] }) : Promise<{ success: boolean, message: string, error?: string }> => {
+export const saveQuizResultAction = async (body: { courseId: string, quizId: string, answers: { questionId: string, answer: string }[] }): Promise<{ success: boolean, message: string, error?: string }> => {
     try {
         const response = await saveQuizResultService(body)
         if (response && response?.success) {
@@ -108,7 +107,7 @@ export const saveQuizResultAction = async (body: { courseId: string, quizId: str
     }
 }
 
-export const getUserCoursesAction = async () : Promise<{ success: boolean,  data?: Course[], error?: string }> => {
+export const getUserCoursesAction = async (): Promise<{ success: boolean, data?: Course[], error?: string }> => {
     try {
         const response = await getUserCoursesService()
         if (!response?.success) {
@@ -118,11 +117,11 @@ export const getUserCoursesAction = async () : Promise<{ success: boolean,  data
                 data: []
             }
         }
-        
+
         // Normalizar cursos
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const normalizedCourses = (response.data || []).map((c: any) => normalizeCourseData(c));
-        
+
         return {
             ...response,
             data: normalizedCourses
@@ -137,7 +136,7 @@ export const getUserCoursesAction = async () : Promise<{ success: boolean,  data
     }
 }
 
-export const getAllCoursesAction = async () : Promise<{ success: boolean,  data?: Course[], error?: string }> => {
+export const getAllCoursesAction = async (): Promise<{ success: boolean, data?: Course[], error?: string }> => {
     try {
         const response = await getAllCoursesService()
         if (!response?.success) {
@@ -147,7 +146,7 @@ export const getAllCoursesAction = async () : Promise<{ success: boolean,  data?
                 data: []
             }
         }
-        
+
         // Normalizar cursos y filtrar solo los publicados
         const normalizedCourses = (response.data || [])
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -168,7 +167,7 @@ export const getAllCoursesAction = async () : Promise<{ success: boolean,  data?
     }
 }
 
-export const getCourseBySlugAction = async (slug: string) : Promise<{ success: boolean,  data?: {course: Course | null, isEnrolled: boolean}, error?: string }> => {
+export const getCourseBySlugAction = async (slug: string): Promise<{ success: boolean, data?: { course: Course | null, isEnrolled: boolean }, error?: string }> => {
     try {
         const response = await getCourseBySlugService(slug)
         if (!response?.success) {

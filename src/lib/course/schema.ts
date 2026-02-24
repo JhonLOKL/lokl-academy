@@ -19,9 +19,11 @@ export type PricingType = typeof PRICING_TYPES[keyof typeof PRICING_TYPES];
 
 // Constantes para planes de acceso
 export const ACCESS_PLANS = {
-  BASIC: 'basic',
+  NONE: 'none',
+  DREAMER: 'dreamer',
+  VISIONARY: 'visionary',
+  DEVELOPER: 'developer',
   INVESTOR: 'investor',
-  PREMIUM: 'premium',
   ANY: 'any'
 } as const;
 
@@ -183,7 +185,8 @@ export interface UserProfile {
   avatar?: string;
 
   // Plan y permisos
-  plan: 'basic' | 'investor' | 'premium';
+  plan: AccessPlan;
+  isInvestor?: boolean;
   permissions: string[];
   subscriptionEndsAt?: string;
 
@@ -359,30 +362,11 @@ export interface Course {
   tags: Tag[];
   instructor: Instructor;
 
-  // Pricing y acceso
-  pricing: {
-    type: PricingType;
-    price?: number;
-    originalPrice?: number;
-    currency?: string;
-    discountPercentage?: number;
-    discountEndsAt?: string;
-  };
+  // Princing y acceso
+  princing: CoursePrincing;
 
-  /*
-  Opción B: Investor incluye Premium
-  basic → solo free
-  premium → free, premium
-  investor → free, premium, investor
-  exclusive → nunca incluido
-  */
-
-  // Requisitos de acceso
-  accessRequirements: {
-    plan: AccessPlan;
-    prerequisites?: string[]; // Course IDs requeridos
-    minimumLevel?: string;
-  };
+  // Requisitos de acceso (visibilidad/elegibilidad)
+  accessRequirements: AccessRequirements;
 
   // Multimedia
   thumbnail: MediaAsset;
@@ -437,6 +421,41 @@ export interface Course {
     showProgress: boolean;
     enforceOrder: boolean; // Lecciones deben completarse en orden
   };
+}
+
+// ===================================================================
+// SISTEMA DE REGLAS DE PRECIOS Y ACCESO
+// ===================================================================
+
+export interface PrincingRule {
+  id: string;
+  description?: string;
+
+  // Condición
+  plans?: AccessPlan[]; // Si se especifica, el usuario debe tener uno de estos planes
+  isInvestor?: boolean; // Si se especifica, el usuario debe/no debe ser inversionista
+
+  // Efecto
+  price: number; // 0 = Gratis
+  isBlocked?: boolean; // Si es true, el usuario no puede comprar ni acceder bajo esta regla
+
+  // Metadata
+  priority: number; // Para ordenar la evaluación
+}
+
+export interface CoursePrincing {
+  type: PricingType;
+  basePrice: number; // Precio por defecto si ninguna regla aplica
+  originalPrice?: number;
+  currency: string;
+  rules: PrincingRule[];
+}
+
+export interface AccessRequirements {
+  allowedPlans?: AccessPlan[]; // Quienes pueden ver/acceder al contenido. Si está vacío, cualquiera.
+  requiresInvestor?: boolean;
+  prerequisites?: string[]; // Course/Path IDs requeridos
+  minimumLevel?: string;
 }
 
 export interface CourseReview {
@@ -519,21 +538,11 @@ export interface LearningPath {
   category: Category;
   tags: Tag[];
 
-  // Pricing
-  pricing: {
-    type: PricingType | 'bundle';
-    price?: number;
-    originalPrice?: number;
-    currency?: string;
-    individualCoursesPrice?: number; // Precio si compras cursos por separado
-    savings?: number; // Ahorro al comprar la ruta completa
-  };
+  // Princing
+  princing: CoursePrincing;
 
   // Acceso
-  accessRequirements: {
-    plan: AccessPlan;
-    prerequisites?: string[]; // Path IDs requeridos
-  };
+  accessRequirements: AccessRequirements;
 
   // Multimedia
   thumbnail: MediaAsset;
@@ -632,8 +641,8 @@ export interface SubscriptionPlan {
   slug: string;
   description: string;
 
-  // Pricing
-  pricing: {
+  // Princing
+  princing: {
     monthly: number;
     yearly: number;
     currency: string;
@@ -694,7 +703,7 @@ export interface PlatformReview {
   comment: string;
 
   // Contexto
-  userPlan: 'basic' | 'investor' | 'premium';
+  userPlan: AccessPlan;
   coursesCompleted: number;
   timeOnPlatform: number; // En meses
 
@@ -821,15 +830,13 @@ export interface CourseCardLite {
   rating?: number | null; // 0-5
   studentsCount?: number | null; // número de estudiantes
   durationMinutes?: number | null; // duración total del curso en minutos
-  pricing: {
+  princing: {
     type: PricingType;
     price: number;
     originalPrice: number;
     currency: string;
   };
-  accessRequirements: {
-    plan: AccessPlan;
-  };
+  accessRequirements: AccessRequirements;
   thumbnail: MediaAsset;
   // Progreso simplificado para la tarjeta
   progress?: {

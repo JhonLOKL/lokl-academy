@@ -7,8 +7,8 @@ import CourseCard from "@/components/course/course-card";
 import BenefitsSection from "@/components/course/benefits-section";
 import PlanComparison from "@/components/course/plan-comparison";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Award, Star, User } from "lucide-react"; 
- 
+import { Award, Star, User } from "lucide-react";
+
 
 // Componentes nuevos
 import LearningPathsSection from "@/components/course/LearningPathsSection";
@@ -18,8 +18,8 @@ import NewsletterSection from "@/components/course/NewsletterSection";
 import ToolsSection from "@/components/course/ToolsSection";
 // import CourseFilters, { FilterOptions } from "@/components/course/CourseFilters";
 
-import { 
-  mockLearningPaths, 
+import {
+  mockLearningPaths,
   mockLearningProfiles,
   mockExternalTools,
   mockPlatformReviews
@@ -57,12 +57,13 @@ export default function CoursePage() {
         setBlogs([]);
       }
     }
-    
+
     loadBlogs();
   }, []);
-  
+
   const { user } = useAuthStore();
-  const userPlan: UserPlanType = (user?.planType as UserPlanType) || 'basic';
+  const userPlan: UserPlanType = (user?.plan as UserPlanType) || 'none';
+  const isInvestor = user?.isInvestor || userPlan === 'investor';
 
   const [userCourses, setUserCourses] = useState<Course[]>([]);
   const [allCourses, setAllCourses] = useState<Course[]>([]);
@@ -107,7 +108,7 @@ export default function CoursePage() {
   return (
     <div className="bg-[#FAFAFA] min-h-screen">
       {/* Hero Section */}
-      <HeroSection 
+      <HeroSection
         title="LOKL"
         subtitle="Aprende sobre inversiones inmobiliarias, IA, crowdfunding y más mientras recibes rentas de tus inversiones"
       />
@@ -117,50 +118,52 @@ export default function CoursePage() {
         {/* Banner de plan del usuario */}
         {user && (
           <div className="mb-10 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md">
-            <div className={`h-1.5 w-full ${
-              userPlan === 'investor' ? 'bg-[#5352F6]' :
-              userPlan === 'premium' ? 'bg-amber-500' :
-              'bg-gray-300'
-            }`} />
+            <div className={`h-1.5 w-full ${isInvestor ? 'bg-[#5352F6]' :
+                userPlan === 'developer' ? 'bg-amber-600' :
+                  userPlan === 'visionary' ? 'bg-amber-500' :
+                    userPlan === 'dreamer' ? 'bg-amber-400' :
+                      'bg-gray-300'
+              }`} />
             <div className="p-6 sm:flex sm:items-center sm:justify-between">
               <div className="flex items-center gap-4">
-                <div className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full ${
-                  userPlan === 'investor' ? 'bg-[#5352F6]/10 text-[#5352F6]' :
-                  userPlan === 'premium' ? 'bg-amber-100 text-amber-600' :
-                  'bg-gray-100 text-gray-500'
-                }`}>
-                  {userPlan === 'investor' ? <Award size={24} /> : 
-                   userPlan === 'premium' ? <Star size={24} /> : 
-                   <User size={24} />}
+                <div className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full ${isInvestor ? 'bg-[#5352F6]/10 text-[#5352F6]' :
+                    (userPlan === 'developer' || userPlan === 'visionary' || userPlan === 'dreamer') ? 'bg-amber-100 text-amber-600' :
+                      'bg-gray-100 text-gray-500'
+                  }`}>
+                  {isInvestor ? <Award size={24} /> :
+                    (userPlan === 'developer' || userPlan === 'visionary' || userPlan === 'dreamer') ? <Star size={24} /> :
+                      <User size={24} />}
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-500">Plan actual</p>
                   <div className="flex flex-wrap items-center gap-2">
                     <h3 className="text-lg font-bold text-gray-900">
-                      {getPlanDisplayName(userPlan)}
+                      {getPlanDisplayName(userPlan)} {isInvestor && userPlan !== 'investor' && '+ Inversionista'}
                     </h3>
-                    {userPlan !== 'investor' && (
+                    {!isInvestor && userPlan === 'none' && (
                       <span className="text-sm text-gray-400">•</span>
                     )}
                     <p className="text-sm text-gray-600">
-                      {userPlan === 'investor' && 'Acceso total a todos los cursos y herramientas.'}
-                      {userPlan === 'premium' && 'Acceso a cursos Premium y contenido exclusivo.'}
-                      {userPlan === 'basic' && 'Explora nuestros cursos gratuitos o mejora tu plan.'}
+                      {isInvestor && 'Acceso total a todos los cursos y herramientas.'}
+                      {!isInvestor && userPlan === 'developer' && 'Acceso a cursos Developer y contenido avanzado.'}
+                      {!isInvestor && userPlan === 'visionary' && 'Acceso a cursos Visionary y contenido premium.'}
+                      {!isInvestor && userPlan === 'dreamer' && 'Acceso a cursos Dreamer y contenido exclusivo.'}
+                      {!isInvestor && userPlan === 'none' && 'Explora nuestros cursos gratuitos o mejora tu plan.'}
                     </p>
                   </div>
                 </div>
               </div>
-              
+
               <div className="mt-4 sm:mt-0 sm:ml-6">
-                {userPlan === 'basic' && (
-                  <Button 
+                {(userPlan === 'none' && !isInvestor) && (
+                  <Button
                     onClick={() => document.getElementById('planes')?.scrollIntoView({ behavior: 'smooth' })}
                     className="w-full sm:w-auto"
                   >
                     Mejorar Plan
                   </Button>
                 )}
-                {userPlan !== 'basic' && (
+                {(userPlan !== 'none' || isInvestor) && (
                   <div className="rounded-lg bg-gray-50 px-3 py-2 text-center sm:text-right">
                     <p className="text-xs font-medium text-gray-500">Estado</p>
                     <p className="text-sm font-bold text-green-600">Activo</p>
@@ -202,7 +205,7 @@ export default function CoursePage() {
                 </div>
               </div>
             )}
-            
+
             {/* Todos los cursos (excluye los ya iniciados) */}
             {allCourses.length > 0 && remainingCourses.length > 0 && (
               <div className="mt-10">
@@ -227,8 +230,8 @@ export default function CoursePage() {
       <LearningPathsSection paths={mockLearningPaths} />
 
       {/* Perfiles de aprendizaje */}
-      <ProfilesSection 
-        profiles={mockLearningProfiles} 
+      <ProfilesSection
+        profiles={mockLearningProfiles}
         userProgress={
           mockLearningProfiles[0] ? {
             profileId: mockLearningProfiles[0].id,
@@ -255,7 +258,7 @@ export default function CoursePage() {
           </div>
 
           <PlanComparison />
-          
+
           <div className="mt-8 text-center">
             <p className="text-[#6D6C6C]">¿Tienes dudas sobre nuestros planes? <a href="#" className="text-[#5352F6] hover:underline">Contáctanos</a></p>
           </div>
@@ -279,7 +282,7 @@ export default function CoursePage() {
           <BlogSection blogs={blogs} />
         </div>
       </section>
-      
+
       {/* Newsletter */}
       <NewsletterSection />
 

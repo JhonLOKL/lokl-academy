@@ -15,13 +15,12 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({
 }) => {
   return (
     <div
-      className={`relative flex flex-col rounded-lg border ${
-        isCurrentPlan
+      className={`relative flex flex-col rounded-lg border ${isCurrentPlan
           ? "border-[#5352F6] bg-[#EEEEFE]/20"
           : plan.isPopular
-          ? "border-[#5352F6]"
-          : "border-[#E5E5E5]"
-      } bg-white p-6 shadow-sm transition-all hover:shadow-md`}
+            ? "border-[#5352F6]"
+            : "border-[#E5E5E5]"
+        } bg-white p-6 shadow-sm transition-all hover:shadow-md`}
     >
       {/* Etiqueta de plan actual o popular */}
       {isCurrentPlan && (
@@ -41,21 +40,21 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({
         <p className="mt-1 text-sm text-[#6D6C6C]">{plan.description}</p>
       </div>
 
-      {/* Precios */}
+      {/* Princing */}
       <div className="mb-6 text-center">
         <div className="flex items-center justify-center">
-          <span className="text-3xl font-bold">{`$${plan.pricing.monthly.toLocaleString('es-CO')}`}</span>
+          <span className="text-3xl font-bold">{`$${plan.princing.monthly.toLocaleString('es-CO')}`}</span>
           <span className="ml-1 text-sm text-[#6D6C6C]">/mes</span>
         </div>
-        
-        {plan.pricing.yearlyDiscount && (
+
+        {plan.princing.yearlyDiscount && (
           <div className="mt-2">
             <div className="text-sm font-medium">
-              <span className="text-[#5352F6]">{`$${plan.pricing.yearly.toLocaleString('es-CO')}`}</span>
+              <span className="text-[#5352F6]">{`$${plan.princing.yearly.toLocaleString('es-CO')}`}</span>
               <span className="ml-1 text-[#6D6C6C]">/año</span>
             </div>
             <div className="mt-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
-              Ahorra {plan.pricing.yearlyDiscount}% anual
+              Ahorra {plan.princing.yearlyDiscount}% anual
             </div>
           </div>
         )}
@@ -64,7 +63,7 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({
       {/* Características */}
       <div className="mb-6 space-y-3">
         <h4 className="font-semibold">Incluye:</h4>
-        
+
         {/* Acceso a contenido */}
         <div className="space-y-2">
           <FeatureItem
@@ -88,7 +87,7 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({
             included={plan.features.podcasts}
           />
         </div>
-        
+
         {/* Soporte y comunidad */}
         <div className="space-y-2 pt-2">
           <FeatureItem
@@ -104,7 +103,7 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({
             included={plan.features.communityAccess}
           />
         </div>
-        
+
         {/* Beneficios de inversión */}
         <div className="space-y-2 pt-2">
           <FeatureItem
@@ -120,7 +119,7 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({
             included={plan.features.investmentTools}
           />
         </div>
-        
+
         {/* Límites técnicos */}
         {plan.features.maxConcurrentCourses && (
           <div className="pt-2 text-sm">
@@ -128,14 +127,14 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({
             <span className="font-medium">{plan.features.maxConcurrentCourses}</span>
           </div>
         )}
-        
+
         {plan.features.downloadLimit && (
           <div className="text-sm">
             <span className="text-[#6D6C6C]">Descargas mensuales: </span>
             <span className="font-medium">{plan.features.downloadLimit}</span>
           </div>
         )}
-        
+
         <FeatureItem
           feature="Certificados incluidos"
           included={plan.features.certificatesIncluded}
@@ -145,11 +144,10 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({
       {/* Botón de acción */}
       <div className="mt-auto">
         <button
-          className={`w-full rounded-md px-4 py-2 text-center text-sm font-medium ${
-            isCurrentPlan
+          className={`w-full rounded-md px-4 py-2 text-center text-sm font-medium ${isCurrentPlan
               ? "bg-[#0F0F0F] text-white hover:bg-black"
               : "bg-[#5352F6] text-white hover:opacity-90"
-          }`}
+            }`}
         >
           {isCurrentPlan ? "Tu plan actual" : "Seleccionar plan"}
         </button>

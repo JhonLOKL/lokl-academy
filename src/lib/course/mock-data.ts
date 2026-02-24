@@ -296,12 +296,15 @@ export const mockCourses: Course[] = [
     tags: [mockTags[0], mockTags[2], mockTags[7]],
     instructor: mockInstructors[0],
 
-    pricing: {
-      type: 'free'
+    princing: {
+      type: 'free',
+      basePrice: 0,
+      currency: 'USD',
+      rules: []
     },
 
     accessRequirements: {
-      plan: 'investor'
+      allowedPlans: ['investor']
     },
 
     thumbnail: {
@@ -418,12 +421,15 @@ export const mockCourses: Course[] = [
     tags: [mockTags[1], mockTags[3], mockTags[7]],
     instructor: mockInstructors[1],
 
-    pricing: {
-      type: 'free'
+    princing: {
+      type: 'free',
+      basePrice: 0,
+      currency: 'USD',
+      rules: []
     },
 
     accessRequirements: {
-      plan: 'basic'
+      allowedPlans: ['any']
     },
 
     thumbnail: {
@@ -535,15 +541,24 @@ export const mockCourses: Course[] = [
     tags: [mockTags[0], mockTags[6], mockTags[7]],
     instructor: mockInstructors[2],
 
-    pricing: {
+    princing: {
       type: 'premium',
-      price: 147,
+      basePrice: 147,
       originalPrice: 197,
-      currency: 'USD'
+      currency: 'USD',
+      rules: [
+        {
+          id: 'rule-investor-free',
+          description: 'Gratis para inversionistas',
+          isInvestor: true,
+          price: 0,
+          priority: 10
+        }
+      ]
     },
 
     accessRequirements: {
-      plan: 'investor'
+      allowedPlans: ['any']
     },
 
     thumbnail: {
@@ -755,12 +770,15 @@ export const mockCourses: Course[] = [
       expertise: ["Inversión inmobiliaria", "Análisis financiero"],
     },
 
-    pricing: {
-      type: "free",
+    princing: {
+      type: 'free',
+      basePrice: 0,
+      currency: 'USD',
+      rules: []
     },
 
     accessRequirements: {
-      plan: "any",
+      allowedPlans: ['any']
     },
 
     thumbnail: {
@@ -897,17 +915,15 @@ export const mockLearningPaths: LearningPath[] = [
     category: mockCategories[0],
     tags: [mockTags[0], mockTags[7]],
 
-    pricing: {
+    princing: {
       type: 'free',
-      price: 0,
-      originalPrice: 0,
+      basePrice: 0,
       currency: 'USD',
-      individualCoursesPrice: 0,
-      savings: 0
+      rules: []
     },
 
     accessRequirements: {
-      plan: 'any'
+      allowedPlans: ['any']
     },
 
     thumbnail: {
@@ -1005,15 +1021,16 @@ export const mockLearningPaths: LearningPath[] = [
     category: mockCategories[1],
     tags: [mockTags[1], mockTags[3], mockTags[4]],
 
-    pricing: {
+    princing: {
       type: 'exclusive',
-      price: 697,
+      basePrice: 697,
       originalPrice: 994,
-      currency: 'USD'
+      currency: 'USD',
+      rules: []
     },
 
     accessRequirements: {
-      plan: 'any'
+      allowedPlans: ['any']
     },
 
     thumbnail: {
@@ -1228,7 +1245,7 @@ export const mockSubscriptionPlans: SubscriptionPlan[] = [
     slug: 'basico',
     description: 'Perfecto para comenzar tu educación financiera con contenido fundamental y acceso a la comunidad.',
  
-    pricing: {
+    princing: {
       monthly: 0,
       yearly: 0,
       currency: 'USD'
@@ -1267,7 +1284,7 @@ export const mockSubscriptionPlans: SubscriptionPlan[] = [
     slug: 'inversionista',
     description: 'El plan más popular para inversores serios que buscan acceso completo a contenido premium y beneficios exclusivos.',
  
-    pricing: {
+    princing: {
       monthly: 97,
       yearly: 970,
       currency: 'USD',
@@ -1301,12 +1318,12 @@ export const mockSubscriptionPlans: SubscriptionPlan[] = [
     updatedAt: '2024-06-15T00:00:00Z'
   },
   {
-    id: 'plan-premium',
-    name: 'Premium',
-    slug: 'premium',
+    // Plan y permisos
+    plan: 'dreamer',
+    isInvestor: true,
     description: 'La experiencia más exclusiva con acceso VIP a todos los contenidos, proyectos exclusivos y soporte personalizado.',
  
-    pricing: {
+    princing: {
       monthly: 197,
       yearly: 1970,
       currency: 'USD',
@@ -1474,7 +1491,7 @@ export const mockPlatformReviews: PlatformReview[] = [
     rating: 5,
     title: 'La mejor plataforma de educación inmobiliaria',
     comment: 'He probado muchas plataformas y LOKL Academy es superior. La combinación de teoría sólida con casos prácticos reales es excepcional. Mis equipos han mejorado significativamente.',
-    userPlan: 'premium',
+    userPlan: 'developer',
     coursesCompleted: 8,
     timeOnPlatform: 14,
     helpful: 45,
