@@ -34,6 +34,7 @@ import {
     Globe,
     Download
 } from 'lucide-react';
+import Image from 'next/image';
 import { ReportJsonLd } from '@/components/reports/ReportJsonLd';
 
 // Register ChartJS components
@@ -423,10 +424,11 @@ const ResilienciaUrbanaPage = () => {
                         {/* NIDO DE AGUA */}
                         <div className="bg-white border border-[#E5E5E5] rounded-xl overflow-hidden group hover:shadow-xl hover:border-[#5352F6] transition-all duration-300">
                             <div className="h-48 sm:h-64 bg-gray-200 relative overflow-hidden">
-                                <img
+                                <Image
                                     src="https://lokl-assets.s3.us-east-1.amazonaws.com/nido-de-agua/nido-de-agua.jpg"
                                     alt="Nido de Agua - Proyecto eco-turístico en Guatapé"
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    fill
+                                    className="object-cover group-hover:scale-105 transition-transform duration-300"
                                 />
                                 <div className="absolute top-4 left-4">
                                     <span className="inline-flex items-center px-3 py-1 bg-[#5352F6] text-white text-xs font-bold uppercase rounded-full">
@@ -453,10 +455,11 @@ const ResilienciaUrbanaPage = () => {
                         {/* INDIE UNIVERSE */}
                         <div className="bg-white border border-[#E5E5E5] rounded-xl overflow-hidden group hover:shadow-xl hover:border-[#5352F6] transition-all duration-300">
                             <div className="h-48 sm:h-64 bg-gray-200 relative overflow-hidden">
-                                <img
+                                <Image
                                     src="https://lokl-assets.s3.us-east-1.amazonaws.com/indie-universe/Indie_Page/Landing_Banner.png"
                                     alt="Indie Universe - Coliving en Medellín"
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    fill
+                                    className="object-cover group-hover:scale-105 transition-transform duration-300"
                                 />
                                 <div className="absolute top-4 left-4">
                                     <span className="inline-flex items-center px-3 py-1 bg-[#5352F6] text-white text-xs font-bold uppercase rounded-full">

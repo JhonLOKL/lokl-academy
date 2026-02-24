@@ -15,9 +15,11 @@ import {
     RadialLinearScale,
     ChartOptions,
     BubbleController,
-    BubbleDataPoint
+    BubbleDataPoint,
+    ScriptableContext
 } from 'chart.js';
 import { Line, Bar, Bubble, Radar } from 'react-chartjs-2';
+import Image from 'next/image';
 import {
     ArrowRight,
     Download,
@@ -293,9 +295,10 @@ const RiskBubbleChart = () => {
                 { x: 5, y: 7, r: 12, label: 'Protestas Gentrificación' },
                 { x: 3, y: 3, r: 8, label: 'Ciberataques PropTech' }
             ] as BubbleDataWithLabel[],
-            backgroundColor: (context: any) => {
-                const val = context.raw?.x;
-                const prob = context.raw?.y;
+            backgroundColor: (context: ScriptableContext<'bubble'>) => {
+                const raw = context.raw as { x: number; y: number } | undefined;
+                const val = raw?.x ?? 0;
+                const prob = raw?.y ?? 0;
                 if (val > 8 && prob > 5) return 'rgba(239, 68, 68, 0.9)';
                 if (val > 7) return 'rgba(239, 68, 68, 0.7)';
                 if (val > 5) return 'rgba(245, 158, 11, 0.7)';
@@ -358,22 +361,22 @@ const HorizonteEstrategico2026 = () => {
             <header className="relative overflow-hidden -mx-4 md:-mx-10 mb-16">
                 {/* Background con patrón de grid */}
                 <div className="absolute inset-0 bg-white"></div>
-                <div 
+                <div
                     className="absolute inset-0 opacity-[0.4]"
                     style={{
                         backgroundImage: `radial-gradient(circle at 1px 1px, #E5E5FF 1px, transparent 0)`,
                         backgroundSize: '40px 40px'
                     }}
                 ></div>
-                
+
                 {/* Formas decorativas */}
                 <div className="absolute top-10 left-10 w-72 h-72 bg-gradient-to-br from-[#5352F6] to-[#A1A0FB] rounded-full opacity-10 blur-3xl"></div>
                 <div className="absolute bottom-0 right-20 w-96 h-96 bg-gradient-to-tl from-[#5352F6] to-[#7C7BF7] rounded-full opacity-10 blur-3xl"></div>
-                
+
                 {/* Líneas decorativas */}
                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#5352F6]/20 to-transparent"></div>
                 <div className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-transparent via-[#5352F6]/30 to-transparent"></div>
-                
+
                 <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10 py-16 md:py-20">
                     {/* Badge superior */}
                     <div className="mb-8">
@@ -763,10 +766,11 @@ const HorizonteEstrategico2026 = () => {
                         {/* Card 1: Nido de Agua */}
                         <div className="bg-white border border-[#E5E5E5] rounded-xl overflow-hidden group hover:shadow-xl hover:border-[#5352F6] transition-all duration-300">
                             <div className="h-64 bg-gray-200 relative overflow-hidden">
-                                <img
+                                <Image
                                     src="https://lokl-assets.s3.us-east-1.amazonaws.com/nido-de-agua/nido-de-agua.jpg"
                                     alt="Nido de Agua - Proyecto eco-turístico en Guatapé"
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    fill
+                                    className="object-cover group-hover:scale-105 transition-transform duration-300"
                                 />
                                 <div className="absolute top-4 left-4">
                                     <span className="inline-flex items-center px-3 py-1 bg-[#06B6D4] text-white text-xs font-bold uppercase rounded-full">
@@ -793,10 +797,11 @@ const HorizonteEstrategico2026 = () => {
                         {/* Card 2: Indie Universe */}
                         <div className="bg-white border border-[#E5E5E5] rounded-xl overflow-hidden group hover:shadow-xl hover:border-[#5352F6] transition-all duration-300">
                             <div className="h-64 bg-gray-200 relative overflow-hidden">
-                                <img
+                                <Image
                                     src="https://lokl-assets.s3.us-east-1.amazonaws.com/indie-universe/Indie_Page/Landing_Banner.png"
                                     alt="Indie Universe - Coliving en Medellín"
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    fill
+                                    className="object-cover group-hover:scale-105 transition-transform duration-300"
                                 />
                                 <div className="absolute top-4 left-4">
                                     <span className="inline-flex items-center px-3 py-1 bg-[#5352F6] text-white text-xs font-bold uppercase rounded-full">

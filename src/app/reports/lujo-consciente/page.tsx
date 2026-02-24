@@ -102,7 +102,7 @@ const LujoConscientePage = () => {
                   <div>
                     <h4 className="font-bold text-[#0F0F0F] text-sm">Materiales y Procesos</h4>
                     <p className="text-sm text-[#6D6C6C] mt-1">
-                      Uso de materiales exóticos (pieles raras), minería extractiva y procesos industriales opacos. El desperdicio es irrelevante si el resultado es "perfecto".
+                      Uso de materiales exóticos (pieles raras), minería extractiva y procesos industriales opacos. El desperdicio es irrelevante si el resultado es &quot;perfecto&quot;.
                     </p>
                   </div>
                 </li>
@@ -192,7 +192,7 @@ const LujoConscientePage = () => {
               </div>
               <div className="text-5xl font-extrabold mb-3">+180%</div>
               <p className="text-sm text-[#D4D4D4] leading-relaxed">
-                Aumento en búsquedas de "Moda Ética" y "Lujo Sostenible" en comparación con marcas tradicionales.
+                Aumento en búsquedas de &quot;Moda Ética&quot; y &quot;Lujo Sostenible&quot; en comparación con marcas tradicionales.
               </p>
             </div>
 
@@ -229,7 +229,7 @@ const LujoConscientePage = () => {
             <div className="flex flex-col md:flex-row items-center">
               <div className="md:w-1/2 md:pr-12 text-left md:text-right pl-20 md:pl-0">
                 <h3 className="text-xl font-bold text-[#0F0F0F] group-hover:text-[#EF4444] transition-colors">1. El Punto de Quiebre</h3>
-                <h4 className="text-sm font-bold text-[#6D6C6C] uppercase mb-2">"Luxury Shame"</h4>
+                <h4 className="text-sm font-bold text-[#6D6C6C] uppercase mb-2">&quot;Luxury Shame&quot;</h4>
                 <p className="text-[#6D6C6C] text-sm leading-relaxed">
                   La crisis climática convirtió la ostentación en algo de mal gusto. Sentirse culpable por poseer algo que daña al planeta se volvió la norma.
                 </p>
@@ -252,7 +252,7 @@ const LujoConscientePage = () => {
                 <h3 className="text-xl font-bold text-[#0F0F0F] group-hover:text-[#5352F6] transition-colors">2. La Redefinición</h3>
                 <h4 className="text-sm font-bold text-[#6D6C6C] uppercase mb-2">Trazabilidad Total</h4>
                 <p className="text-[#6D6C6C] text-sm leading-relaxed">
-                  Las marcas cambiaron los códigos. "Caro" se convirtió en "Trazable". La historia del artesano y el impacto en la comunidad se volvieron el nuevo valor añadido.
+                  Las marcas cambiaron los códigos. &quot;Caro&quot; se convirtió en &quot;Trazable&quot;. La historia del artesano y el impacto en la comunidad se volvieron el nuevo valor añadido.
                 </p>
               </div>
             </div>
@@ -299,7 +299,7 @@ const LujoConscientePage = () => {
               </div>
               <h3 className="text-xl font-bold text-[#0F0F0F] mb-2">Proyectos en Guatapé</h3>
               <p className="text-sm text-[#6D6C6C] mb-6">
-                Descubre "Nido de Agua". Inversión en turismo regenerativo rodeado de naturaleza.
+                Descubre &quot;Nido de Agua&quot;. Inversión en turismo regenerativo rodeado de naturaleza.
               </p>
               <span className="text-[#5352F6] font-bold text-sm flex items-center gap-2">
                 Ver Oportunidad <ArrowDown className="rotate-[-90deg]" size={16} />
@@ -318,7 +318,7 @@ const LujoConscientePage = () => {
               </div>
               <h3 className="text-xl font-bold text-[#0F0F0F] mb-2">Oportunidades en Medellín</h3>
               <p className="text-sm text-[#6D6C6C] mb-6">
-                Explora "Indie Universe". Co-living urbano diseñado para la nueva generación creativa.
+                Explora &quot;Indie Universe&quot;. Co-living urbano diseñado para la nueva generación creativa.
               </p>
               <span className="text-[#5352F6] font-bold text-sm flex items-center gap-2">
                 Ver Oportunidad <ArrowDown className="rotate-[-90deg]" size={16} />

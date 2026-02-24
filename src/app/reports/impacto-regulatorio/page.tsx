@@ -5,6 +5,7 @@ import {
   Download,
   ExternalLink,
 } from 'lucide-react';
+import Image from 'next/image';
 
 import SupplyShockChart from '@/components/reports/impacto-regulatorio/SupplyShockChart';
 import RegionalBubbleChart from '@/components/reports/impacto-regulatorio/RegionalBubbleChart';
@@ -33,7 +34,7 @@ const ImpactoRegulatorioPage = () => {
             <span className="text-[#5352F6]">La Transformación del Turismo Andino</span>
           </h1>
           <p className="text-xl text-[#444444] max-w-2xl leading-relaxed mb-8">
-            Un análisis basado en datos sobre el Decreto del 18 de Diciembre, el riesgo de "apagón digital" y las lecciones aprendidas de Nueva York y Barcelona.
+            Un análisis basado en datos sobre el Decreto del 18 de Diciembre, el riesgo de &quot;apagón digital&quot; y las lecciones aprendidas de Nueva York y Barcelona.
           </p>
 
           {/* Action Buttons */}
@@ -290,11 +291,11 @@ const ImpactoRegulatorioPage = () => {
             {/* Card 1: Nido de Agua */}
             <div className="bg-white border border-[#E5E5E5] rounded-xl overflow-hidden group hover:shadow-xl hover:border-[#5352F6] transition-all duration-300">
               <div className="h-80 bg-gray-200 relative">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src="https://lokl-assets.s3.us-east-1.amazonaws.com/nido-de-agua/nido-de-agua.jpg"
                   alt="Nido de Agua"
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
                 />
               </div>
               <div className="p-8">
@@ -314,11 +315,11 @@ const ImpactoRegulatorioPage = () => {
             {/* Card 2: Indie Universe */}
             <div className="bg-white border border-[#E5E5E5] rounded-xl overflow-hidden group hover:shadow-xl hover:border-[#5352F6] transition-all duration-300">
               <div className="h-80 bg-gray-200 relative">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src="https://lokl-assets.s3.us-east-1.amazonaws.com/indie-universe/Indie_Page/Landing_Banner.png"
                   alt="Indie Universe"
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
                 />
               </div>
               <div className="p-8">

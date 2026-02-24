@@ -17,9 +17,8 @@ import {
     LogarithmicScale
 } from 'chart.js';
 import { Line, Bar, Doughnut, Radar } from 'react-chartjs-2';
-import {
-    Download,
-} from 'lucide-react';
+import { Download } from 'lucide-react';
+import Image from 'next/image';
 import { ReportJsonLd } from '@/components/reports/ReportJsonLd';
 
 // Register ChartJS components
@@ -502,10 +501,11 @@ const HousingAssetVsLiabilityReport = () => {
                         {/* Card 1: Nido de Agua */}
                         <a href="https://lokl.life/nido-de-agua" target="_blank" className="bg-white border border-[#E5E5E5] rounded-xl overflow-hidden group hover:shadow-xl hover:border-[#5352F6] transition-all duration-300 block">
                             <div className="h-48 bg-gray-200 relative">
-                                <img
+                                <Image
                                     src="https://lokl-assets.s3.us-east-1.amazonaws.com/nido-de-agua/nido-de-agua.jpg"
                                     alt="Nido de Agua"
-                                    className="w-full h-full object-cover"
+                                    fill
+                                    className="object-cover"
                                 />
                                 <div className="absolute inset-0 bg-[#5352F6]/0 group-hover:bg-[#5352F6]/5 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                                     <span className="bg-white text-[#5352F6] px-4 py-2 rounded-full font-bold text-sm shadow-sm">Ver Proyecto</span>
@@ -523,10 +523,11 @@ const HousingAssetVsLiabilityReport = () => {
                         {/* Card 2: Indie Universe */}
                         <a href="https://lokl.life/indie-universe" target="_blank" className="bg-white border border-[#E5E5E5] rounded-xl overflow-hidden group hover:shadow-xl hover:border-[#5352F6] transition-all duration-300 block">
                             <div className="h-48 bg-gray-200 relative">
-                                <img
+                                <Image
                                     src="https://lokl-assets.s3.us-east-1.amazonaws.com/indie-universe/Indie_Page/Landing_Banner.png"
                                     alt="Indie Universe"
-                                    className="w-full h-full object-cover"
+                                    fill
+                                    className="object-cover"
                                 />
                                 <div className="absolute inset-0 bg-[#5352F6]/0 group-hover:bg-[#5352F6]/5 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                                     <span className="bg-white text-[#5352F6] px-4 py-2 rounded-full font-bold text-sm shadow-sm">Ver Proyecto</span>
