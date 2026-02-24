@@ -78,6 +78,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const { toast } = useToast();
 
+  const [copied, setCopied] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -424,8 +425,8 @@ export default function DashboardPage() {
           <div className="container mx-auto px-4 py-8 md:py-12">
             <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
-                <div 
-                  className="relative cursor-pointer group" 
+                <div
+                  className="relative cursor-pointer group"
                   onClick={handleAvatarClick}
                   title="Cambiar foto de perfil"
                 >
@@ -436,7 +437,7 @@ export default function DashboardPage() {
                     size="lg"
                     className={`ring-4 ring-white/20 transition-opacity ${isUploadingPhoto ? 'opacity-60' : ''}`}
                   />
-                  
+
                   {/* Overlay Hover */}
                   <div className="absolute inset-0 rounded-full bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
                     <Camera className="text-white w-7 h-7 drop-shadow-sm" />
@@ -474,12 +475,12 @@ export default function DashboardPage() {
                     </div>
                   )}
                 </div>
-                <input 
-                  ref={fileInputRef} 
-                  type="file" 
-                  accept="image/*" 
-                  className="hidden" 
-                  onChange={handleFileChange} 
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFileChange}
                 />
                 <div className="min-w-0 flex-1 w-full">
                   <H1 variant="page-title" color="white" className="mb-1 text-center sm:text-left truncate">
@@ -576,11 +577,11 @@ export default function DashboardPage() {
                   <Settings size={18} className="flex-shrink-0" />
                   <span className="truncate">Configuración</span>
                 </Button>
-                <Button 
-                  variant="secondary" 
-                  size="lg" 
-                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 shadow-sm hover:shadow transition-all px-3" 
-                  onClick={handleLogout} 
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2 shadow-sm hover:shadow transition-all px-3"
+                  onClick={handleLogout}
                   aria-label="Cerrar sesión"
                 >
                   <LogOut size={18} className="flex-shrink-0" />
@@ -711,13 +712,13 @@ export default function DashboardPage() {
                 {/* Banner Siguiente Nivel */}
                 {(() => {
                   const nextLevelProject = projects.find(p => p.levelUp?.nextLevelName);
-                  
+
                   if (!nextLevelProject || !nextLevelProject.levelUp?.nextLevelName) return null;
 
                   const nextLvlName = translateLevel(nextLevelProject.levelUp.nextLevelName);
                   const amountNeeded = nextLevelProject.levelUp.nextLevelAmount || 0;
                   const unitsNeeded = nextLevelProject.levelUp.nextLevelUnits || 0;
-                  
+
                   // Mapa de imágenes estáticas (match por nombre)
                   const projectImages: Record<string, string> = {
                     "indie universe": "https://lokl-assets.s3.us-east-1.amazonaws.com/home/HeroLoklPage/IMG_INDIE.png",
@@ -737,66 +738,66 @@ export default function DashboardPage() {
 
                   return (
                     <div className="mb-8">
-                       <Card 
-                          className="relative overflow-hidden border-none bg-[#1C1C1C] text-white shadow-lg group cursor-pointer"
-                          onClick={() => router.push(targetUrl)}
-                       >
-                          {/* Background Image & Gradient */}
-                          <div className="absolute inset-0 bg-gradient-to-r from-[#0F0F0F] via-[#0F0F0F]/80 to-transparent z-10 pointer-events-none" />
-                          <div 
-                            className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-60 sm:opacity-100"
-                            style={{ backgroundImage: `url(${bgImage})` }}
-                          />
-                          
-                          <div className="relative z-20 p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                             <div className="space-y-4 max-w-2xl flex-1">
-                                <div className="flex items-center gap-3">
-                                   <Badge className="border border-white/30 text-white bg-white/10 backdrop-blur-md hover:bg-white/20 transition-colors">
-                                      {nextLevelProject.name}
-                                   </Badge>
-                                   <span className="text-xs sm:text-sm text-gray-300">
-                                      Nivel actual: {translateLevel(getCurrentLevelFromNextLevelName(nextLevelProject.levelUp.nextLevelName))}
-                                   </span>
-                                </div>
-                                
-                                <div>
-                                   <h3 className="text-2xl sm:text-3xl font-bold mb-2 text-white">
-                                      Sube a nivel <span className="text-[#5352F6]">{nextLvlName}</span>
-                                   </h3>
-                                   <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
-                                      Te faltan <span className="font-semibold text-white">{unitsNeeded} {unitsNeeded === 1 ? 'unidad' : 'unidades'}</span> <span className="text-white/70 text-xs sm:text-sm">({formatCurrency(amountNeeded)})</span> para desbloquear beneficios exclusivos.
-                                   </p>
-                                </div>
+                      <Card
+                        className="relative overflow-hidden border-none bg-[#1C1C1C] text-white shadow-lg group cursor-pointer"
+                        onClick={() => router.push(targetUrl)}
+                      >
+                        {/* Background Image & Gradient */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-[#0F0F0F] via-[#0F0F0F]/80 to-transparent z-10 pointer-events-none" />
+                        <div
+                          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-60 sm:opacity-100"
+                          style={{ backgroundImage: `url(${bgImage})` }}
+                        />
 
-                                {/* Beneficios */}
-                                {nextLevelProject.levelUp.benefits && nextLevelProject.levelUp.benefits.length > 0 && (
-                                   <div className="flex flex-wrap gap-2 pt-1">
-                                      {nextLevelProject.levelUp.benefits.slice(0, 3).map((benefit, i) => (
-                                         <div key={i} className="flex items-center gap-1.5 text-xs sm:text-sm bg-white/10 px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-sm text-gray-100">
-                                            <Check size={14} className="text-[#5352F6]" />
-                                            {benefit}
-                                         </div>
-                                      ))}
-                                   </div>
-                                )}
-                             </div>
+                        <div className="relative z-20 p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                          <div className="space-y-4 max-w-2xl flex-1">
+                            <div className="flex items-center gap-3">
+                              <Badge className="border border-white/30 text-white bg-white/10 backdrop-blur-md hover:bg-white/20 transition-colors">
+                                {nextLevelProject.name}
+                              </Badge>
+                              <span className="text-xs sm:text-sm text-gray-300">
+                                Nivel actual: {translateLevel(getCurrentLevelFromNextLevelName(nextLevelProject.levelUp.nextLevelName))}
+                              </span>
+                            </div>
 
-                             <div className="flex-shrink-0 w-full md:w-auto">
-                                <Button 
-                                  variant="secondary" 
-                                  size="lg" 
-                                  className="w-full md:w-auto font-semibold shadow-xl hover:bg-gray-100 transition-colors border-none text-[#0F0F0F]"
-                                  onClick={(e) => {
-                                     e.stopPropagation();
-                                     router.push(targetUrl);
-                                  }}
-                                >
-                                   <span>Ver oportunidad</span>
-                                   <ArrowRight size={18} className="ml-2" />
-                                </Button>
-                             </div>
+                            <div>
+                              <h3 className="text-2xl sm:text-3xl font-bold mb-2 text-white">
+                                Sube a nivel <span className="text-[#5352F6]">{nextLvlName}</span>
+                              </h3>
+                              <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
+                                Te faltan <span className="font-semibold text-white">{unitsNeeded} {unitsNeeded === 1 ? 'unidad' : 'unidades'}</span> <span className="text-white/70 text-xs sm:text-sm">({formatCurrency(amountNeeded)})</span> para desbloquear beneficios exclusivos.
+                              </p>
+                            </div>
+
+                            {/* Beneficios */}
+                            {nextLevelProject.levelUp.benefits && nextLevelProject.levelUp.benefits.length > 0 && (
+                              <div className="flex flex-wrap gap-2 pt-1">
+                                {nextLevelProject.levelUp.benefits.slice(0, 3).map((benefit, i) => (
+                                  <div key={i} className="flex items-center gap-1.5 text-xs sm:text-sm bg-white/10 px-3 py-1.5 rounded-full border border-white/10 backdrop-blur-sm text-gray-100">
+                                    <Check size={14} className="text-[#5352F6]" />
+                                    {benefit}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
                           </div>
-                       </Card>
+
+                          <div className="flex-shrink-0 w-full md:w-auto">
+                            <Button
+                              variant="secondary"
+                              size="lg"
+                              className="w-full md:w-auto font-semibold shadow-xl hover:bg-gray-100 transition-colors border-none text-[#0F0F0F]"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                router.push(targetUrl);
+                              }}
+                            >
+                              <span>Ver oportunidad</span>
+                              <ArrowRight size={18} className="ml-2" />
+                            </Button>
+                          </div>
+                        </div>
+                      </Card>
                     </div>
                   );
                 })()}
@@ -956,7 +957,7 @@ export default function DashboardPage() {
                               onClick={handleCopyReferralCode}
                               aria-label="Copiar código de referidos"
                             >
-                              <Copy size={14} />
+                              {copied ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
                             </Button>
                           </span>
                         )}
@@ -1174,9 +1175,9 @@ export default function DashboardPage() {
                 {/* Gestión de cuenta - Nueva Ubicación (Columna Derecha - Final) */}
                 <div className="pt-4">
                   <div className="flex items-center justify-between mb-4">
-                     <H2 variant="card" className="text-base font-semibold text-gray-900">Mi Cuenta</H2>
+                    <H2 variant="card" className="text-base font-semibold text-gray-900">Mi Cuenta</H2>
                   </div>
-                  
+
                   <div className="space-y-2">
                     {[
                       { label: "Editar información básica", icon: UserCog, href: `${urls.DASHBOARD_URL}/dashboard/perfil?open=info` },

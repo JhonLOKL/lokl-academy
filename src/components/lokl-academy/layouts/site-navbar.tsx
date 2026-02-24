@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Navbar } from "@/components/design-system";
+import { Navbar, type NavbarProps } from "@/components/design-system";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuthStore } from "@/store/auth-store";
@@ -39,7 +39,7 @@ export function SiteNavbar() {
     router.push("/dashboard");
   };
 
-  const mobileItems = [
+  const mobileItems: NonNullable<NavbarProps["mobileItems"]> = [
     { label: "Inicio", href: "/" },
     { label: "Mis inversiones", href: `${urls.DASHBOARD_URL}/dashboard/income` },
     { label: "Simulador", href: "/#simulator" },
@@ -59,10 +59,10 @@ export function SiteNavbar() {
   ];
 
   if (!user) {
-    mobileItems.push({ 
-        label: "Únete a LOKL", 
-        href: "/register",
-        active: true // Para destacarlo si el navbar lo soporta, o simplemente como un item más
+    mobileItems.push({
+      label: "Únete a LOKL",
+      href: "/register",
+      active: true // Para destacarlo si el navbar lo soporta, o simplemente como un item más
     });
   }
 
