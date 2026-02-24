@@ -1,9 +1,7 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import {
-    ArrowLeft,
     ExternalLink,
     TrendingUp,
     Layout,
@@ -17,7 +15,6 @@ import {
     Briefcase
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { MarketingFooter } from '@/components/footer/marketing-footer';
 import { ReportJsonLd } from '@/components/reports/ReportJsonLd';
 
 const OrienteAnalytics2025 = () => {

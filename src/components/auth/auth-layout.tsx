@@ -20,10 +20,10 @@ export function AuthLayout({
   subtitle,
   imageSide = "left",
   desktopImages,
-  mobileImages,
+  // mobileImages,
 }: AuthLayoutProps) {
   const [currentDesktopImageIndex, setCurrentDesktopImageIndex] = useState(0);
-  const [currentMobileImageIndex, setCurrentMobileImageIndex] = useState(0);
+  // const [currentMobileImageIndex, setCurrentMobileImageIndex] = useState(0);
   const diagonalCutPercent = 92;
   const clipRadiusPx = 32; // debe coincidir con rounded-[32px]
   const clipPath =
@@ -32,6 +32,7 @@ export function AuthLayout({
       : `polygon(0% 0%, 100% 0%, 100% 100%, ${100 - diagonalCutPercent}% 100% round ${clipRadiusPx}px)`; // diagonal en la izquierda (espejo)
 
   // Rotación automática de imágenes móviles
+  /*
   useEffect(() => {
     if (mobileImages.length === 0) return;
     const interval = setInterval(() => {
@@ -39,6 +40,7 @@ export function AuthLayout({
     }, 5000);
     return () => clearInterval(interval);
   }, [mobileImages.length]);
+  */
 
   // Rotación automática de imágenes desktop
   useEffect(() => {

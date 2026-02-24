@@ -159,7 +159,7 @@ function WebinarsContent() {
     } finally {
       setEnrollingId(null);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, sortWebinarsByDate]);
 
   // Auto-enroll cuando hay parámetro enroll y el usuario está autenticado
   useEffect(() => {

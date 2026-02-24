@@ -2,11 +2,9 @@
 
 import { useEffect, useRef } from "react";
 import { useAuthStore } from "@/store/auth-store";
-import { usePathname } from "next/navigation";
 
 export default function SessionInitializer() {
   const { user, fetchUserProfile, logout } = useAuthStore();
-  const pathname = usePathname();
   const initialized = useRef(false);
 
   useEffect(() => {

@@ -70,11 +70,14 @@ export function MobileBottomNav() {
             <Link
               key={item.label}
               href={item.href}
-              className={"text-black flex flex-col items-center justify-center p-2 rounded-xl min-w-[70px]"}
+              className={cn(
+                "flex flex-col items-center justify-center p-2 rounded-xl min-w-[70px] transition-colors",
+                isActive ? "text-[#5352F6]" : "text-[#6D6C6C]"
+              )}
             >
               <item.icon
-                style={{ width: 33, height: 33 }} // Asegurar tamaño consistente
-                className={"mb-1"}
+                style={{ width: 33, height: 33 }}
+                className="mb-1"
               />
               <span className="text-[10px] font-medium leading-none">
                 {item.label}

@@ -63,6 +63,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
                 },
             ],
             locale: seo.ogLocale || 'es_ES',
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             type: (seo.ogType as any) || 'article',
             publishedTime: blog.publishedAt,
             modifiedTime: blog.updatedAt,
@@ -72,6 +73,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
         // Configuración de Twitter
         twitter: {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             card: (seo.twitterCard as any) || 'summary_large_image',
             title: seo.twitterTitle || seo.title,
             description: seo.twitterDescription || seo.description,
@@ -113,6 +115,7 @@ export default async function BlogLayout({ children, params }: Props) {
     const canonical = getFullUrl(seo.canonicalUrl, blog.slug);
 
     // Procesar el cuerpo del artículo para SEO (convertir bloques a texto plano si es necesario)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const processArticleBody = (body: any): string => {
         if (typeof body === 'string') return body;
         if (Array.isArray(body)) {
@@ -130,6 +133,7 @@ export default async function BlogLayout({ children, params }: Props) {
     };
 
     // Función para limpiar recursivamente URLs y ELIMINAR IDs internos en un objeto de datos estructurados
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const cleanStructuredData = (obj: any): any => {
         if (!obj) return obj;
         if (typeof obj === 'string') {
@@ -143,6 +147,7 @@ export default async function BlogLayout({ children, params }: Props) {
             return obj.map(item => cleanStructuredData(item));
         }
         if (typeof obj === 'object') {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const cleaned: any = {};
             // Lista de propiedades a omitir (IDs internos o sensibles)
             const propertiesToOmit = ['id', '_id', 'uuid', 'internal_id'];

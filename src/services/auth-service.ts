@@ -12,7 +12,6 @@ export const signInService = async ({ email, password }: { email: string, passwo
     }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const signUpService = async ({ email, password, countryPhoneCode, firstName, lastName, phone, leadOrigin, pageOrigin, referralCode, termsAccepted, utmSource, utmMedium, utmCampaign, utmTerm, utmContent }: { email: string, password: string, countryPhoneCode: string, firstName: string, lastName: string, phone: string, leadOrigin: string, pageOrigin: string, referralCode: string, termsAccepted: boolean, utmSource?: string, utmMedium?: string, utmCampaign?: string, utmTerm?: string, utmContent?: string }) => {
     try {
         const url = `/api/auth/signUp`

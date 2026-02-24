@@ -2,8 +2,6 @@
 
 import React from 'react';
 import {
-  Diamond,
-  Leaf,
   TrendingUp,
   Users,
   Globe,
@@ -15,8 +13,6 @@ import {
   Building2,
   Waves,
   Download,
-  FileText,
-  ExternalLink
 } from 'lucide-react';
 
 // Importar los nuevos componentes de gráficas

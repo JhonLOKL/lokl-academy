@@ -28,7 +28,6 @@ import {
   Card,
   CardHeader,
   CardContent,
-  CardFooter,
   CardTitle,
   CardDescription,
   Badge,
@@ -58,8 +57,6 @@ import {
   MessageCircle,
   Linkedin,
   Twitter,
-  ChevronDown,
-  ChevronUp,
   Award,
   Rocket,
   Trophy,
@@ -81,9 +78,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const [copied, setCopied] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
-  const [benefitsOpen, setBenefitsOpen] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 

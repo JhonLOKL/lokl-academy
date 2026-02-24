@@ -1,5 +1,4 @@
 import axios from "axios";
-import { urls } from "@/config/urls";
 import {
   InvestorProfileInput,
   InvestorProfileInputSchema,

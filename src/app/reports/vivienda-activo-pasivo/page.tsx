@@ -18,17 +18,9 @@ import {
 } from 'chart.js';
 import { Line, Bar, Doughnut, Radar } from 'react-chartjs-2';
 import {
-    ArrowRight,
     Download,
-    ExternalLink,
-    TrendingUp,
-    AlertTriangle,
-    Clock,
-    Briefcase,
-    Shield
 } from 'lucide-react';
 import { ReportJsonLd } from '@/components/reports/ReportJsonLd';
-import { MarketingFooter } from '@/components/footer/marketing-footer';
 
 // Register ChartJS components
 ChartJS.register(

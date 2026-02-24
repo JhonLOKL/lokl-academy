@@ -1,24 +1,14 @@
 "use client";
 
 import React from 'react';
-import Link from 'next/link';
 import {
   Download,
   ExternalLink,
-  AlertTriangle,
-  Info,
-  TrendingDown,
-  DollarSign,
-  Calendar,
-  Building2,
-  Waves,
-  ArrowRight
 } from 'lucide-react';
 
 import SupplyShockChart from '@/components/reports/impacto-regulatorio/SupplyShockChart';
 import RegionalBubbleChart from '@/components/reports/impacto-regulatorio/RegionalBubbleChart';
 import EconomicFalloutChart from '@/components/reports/impacto-regulatorio/EconomicFalloutChart';
-import { MarketingFooter } from '@/components/footer/marketing-footer';
 import { ReportJsonLd } from '@/components/reports/ReportJsonLd';
 
 const ImpactoRegulatorioPage = () => {
@@ -121,7 +111,7 @@ const ImpactoRegulatorioPage = () => {
               <div className="bg-white border border-[#E5E5E5] rounded-xl p-8 text-center relative z-10 shadow-sm">
                 <div className="w-10 h-10 rounded-full bg-[#F5F5F5] text-[#6D6C6C] font-bold flex items-center justify-center mx-auto mb-4 border border-[#E5E5E5]">1</div>
                 <h3 className="font-bold text-[#0F0F0F] mb-2">Registro Declarativo</h3>
-                <p className="text-sm text-[#6D6C6C] leading-relaxed">Modelo anterior (Ley 2068). Basado en la "buena fe". Auditorías post-registro.</p>
+                <p className="text-sm text-[#6D6C6C] leading-relaxed">Modelo anterior (Ley 2068). Basado en la &quot;buena fe&quot;. Auditorías post-registro.</p>
               </div>
               <div className="bg-white border border-[#5352F6] ring-1 ring-[#5352F6]/20 rounded-xl p-8 text-center relative z-10 shadow-md">
                 <div className="w-10 h-10 rounded-full bg-[#5352F6] text-white font-bold flex items-center justify-center mx-auto mb-4 shadow-lg shadow-[#5352F6]/30">2</div>
@@ -140,7 +130,7 @@ const ImpactoRegulatorioPage = () => {
         {/* Section 2: Supply Shock Chart */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-4">
-            <h2 className="text-2xl font-bold text-[#0F0F0F] mb-4">Proyección de Oferta: El "Apagón Digital"</h2>
+            <h2 className="text-2xl font-bold text-[#0F0F0F] mb-4">Proyección de Oferta: El &quot;Apagón Digital&quot;</h2>
             <p className="text-[#444444] mb-6 leading-relaxed">Basado en la incapacidad técnica de las bases de datos gubernamentales para manejar consultas en tiempo real, se proyecta una caída drástica en los listados activos.</p>
             <div className="space-y-4">
               <div className="bg-white border border-[#E5E5E5] rounded-xl p-4 flex items-center gap-4 shadow-sm">
@@ -259,7 +249,7 @@ const ImpactoRegulatorioPage = () => {
           </div>
           <div>
             <h2 className="text-2xl font-bold text-[#0F0F0F] mb-4">La Ecuación Económica</h2>
-            <p className="text-[#444444] mb-6 leading-relaxed">El "Efecto Derrame" es vital. Por cada <span className="font-bold text-[#5352F6]">$100</span> gastados en alojamiento, se generan <span className="font-bold text-[#5352F6]">$250</span> en la economía local. El decreto pone en riesgo principalmente a sectores conexos.</p>
+            <p className="text-[#444444] mb-6 leading-relaxed">El &quot;Efecto Derrame&quot; es vital. Por cada <span className="font-bold text-[#5352F6]">$100</span> gastados en alojamiento, se generan <span className="font-bold text-[#5352F6]">$250</span> en la economía local. El decreto pone en riesgo principalmente a sectores conexos.</p>
             <div className="grid grid-cols-1 gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-[#5352F6]/10 flex items-center justify-center text-[#5352F6] font-bold">35%</div>
@@ -300,6 +290,7 @@ const ImpactoRegulatorioPage = () => {
             {/* Card 1: Nido de Agua */}
             <div className="bg-white border border-[#E5E5E5] rounded-xl overflow-hidden group hover:shadow-xl hover:border-[#5352F6] transition-all duration-300">
               <div className="h-80 bg-gray-200 relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="https://lokl-assets.s3.us-east-1.amazonaws.com/nido-de-agua/nido-de-agua.jpg"
                   alt="Nido de Agua"
@@ -323,6 +314,7 @@ const ImpactoRegulatorioPage = () => {
             {/* Card 2: Indie Universe */}
             <div className="bg-white border border-[#E5E5E5] rounded-xl overflow-hidden group hover:shadow-xl hover:border-[#5352F6] transition-all duration-300">
               <div className="h-80 bg-gray-200 relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="https://lokl-assets.s3.us-east-1.amazonaws.com/indie-universe/Indie_Page/Landing_Banner.png"
                   alt="Indie Universe"
