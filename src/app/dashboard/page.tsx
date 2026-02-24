@@ -739,8 +739,7 @@ export default function DashboardPage() {
 
                     return (
                       <Card
-                        className="relative overflow-hidden border-none bg-[#1C1C1C] text-white shadow-lg group cursor-pointer"
-                        onClick={() => router.push(targetUrl)}
+                        className="relative overflow-hidden border-none bg-[#1C1C1C] text-white shadow-lg group"
                       >
                         {/* Background Image & Gradient */}
                         <div className="absolute inset-0 bg-gradient-to-r from-[#0F0F0F] via-[#0F0F0F]/80 to-transparent z-10 pointer-events-none" />
