@@ -50,6 +50,15 @@ export function calculatePrincingForUser(
   isBlocked: boolean;
   appliedRule?: PrincingRule;
 } {
+  // Validar que princing existe
+  if (!princing) {
+    return {
+      price: 0,
+      isFree: true,
+      isBlocked: false
+    };
+  }
+
   // Ordenar reglas por prioridad (mayor primero)
   const sortedRules = [...(princing.rules || [])].sort((a, b) => b.priority - a.priority);
 
@@ -65,9 +74,11 @@ export function calculatePrincingForUser(
     }
 
     if (planMatch && investorMatch) {
+      // Asegurar que rule.price sea un número válido
+      const rulePrice = (typeof rule.price === 'number' && !isNaN(rule.price)) ? rule.price : 0;
       return {
-        price: rule.price,
-        isFree: rule.price === 0,
+        price: rulePrice,
+        isFree: rulePrice === 0,
         isBlocked: !!rule.isBlocked,
         appliedRule: rule
       };
@@ -75,9 +86,13 @@ export function calculatePrincingForUser(
   }
 
   // Si ninguna regla aplica, usar precio base
+  const basePrice = (typeof princing.basePrice === 'number' && !isNaN(princing.basePrice)) 
+    ? princing.basePrice 
+    : 0;
+  
   return {
-    price: princing.basePrice,
-    isFree: princing.basePrice === 0,
+    price: basePrice,
+    isFree: basePrice === 0,
     isBlocked: false
   };
 }
@@ -93,26 +108,77 @@ export function getCourseAccessLabel(
   label: string;
   variant: 'free' | 'premium' | 'investor' | 'paid' | 'blocked';
 } {
-  const result = calculatePrincingForUser(user, princing);
+  // Validar que princing existe y es un objeto válido
+  if (!princing || typeof princing !== 'object') {
+    return { label: 'Precio no disponible', variant: 'blocked' };
+  }
 
-  if (result.isBlocked) {
+  // Validar que user existe
+  if (!user || typeof user !== 'object') {
+    const fallbackPrice = (typeof princing.basePrice === 'number' && !isNaN(princing.basePrice) && isFinite(princing.basePrice)) 
+      ? princing.basePrice 
+      : 0;
+    return {
+      label: `$${fallbackPrice.toLocaleString('es-CO')}`,
+      variant: 'paid'
+    };
+  }
+
+  let result;
+  try {
+    result = calculatePrincingForUser(user, princing);
+  } catch (error) {
+    console.error('Error calculating princing for user:', error);
+    const fallbackPrice = (typeof princing.basePrice === 'number' && !isNaN(princing.basePrice) && isFinite(princing.basePrice)) 
+      ? princing.basePrice 
+      : 0;
+    return {
+      label: `$${fallbackPrice.toLocaleString('es-CO')}`,
+      variant: 'paid'
+    };
+  }
+
+  // Validar que result existe y tiene las propiedades necesarias
+  if (!result || typeof result !== 'object') {
+    const fallbackPrice = (typeof princing.basePrice === 'number' && !isNaN(princing.basePrice)) 
+      ? princing.basePrice 
+      : 0;
+    return {
+      label: `$${fallbackPrice.toLocaleString('es-CO')}`,
+      variant: 'paid'
+    };
+  }
+
+  // Validar propiedades de result
+  if (result.isBlocked === true) {
     return { label: 'No disponible', variant: 'blocked' };
   }
 
-  if (result.isFree) {
+  if (result.isFree === true) {
     // Si es gratis por una regla de plan
     if (result.appliedRule?.plans && result.appliedRule.plans.length > 0) {
       return { label: 'Incluido en Plan', variant: 'premium' };
     }
     // Si es gratis por ser inversionista
-    if (result.appliedRule?.isInvestor) {
+    if (result.appliedRule?.isInvestor === true) {
       return { label: 'Inversionista', variant: 'investor' };
     }
     return { label: 'Gratis', variant: 'free' };
   }
 
+  // Asegurar que el precio sea un número válido
+  let price = 0;
+  if (typeof result.price === 'number' && !isNaN(result.price) && isFinite(result.price)) {
+    price = result.price;
+  } else if (typeof princing.basePrice === 'number' && !isNaN(princing.basePrice) && isFinite(princing.basePrice)) {
+    price = princing.basePrice;
+  }
+  
+  // Asegurar que price es un número válido antes de toLocaleString
+  const finalPrice = typeof price === 'number' && !isNaN(price) && isFinite(price) ? price : 0;
+  
   return {
-    label: `$${result.price.toLocaleString('es-CO')}`,
+    label: `$${finalPrice.toLocaleString('es-CO')}`,
     variant: 'paid'
   };
 }
