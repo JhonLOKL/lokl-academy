@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination } from 'swiper/modules';
+import { Autoplay, Pagination, Navigation, Mousewheel, FreeMode } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 import Image from "next/image";
 import Link from "next/link";
 import { useAuthStore } from "@/store/auth-store";
@@ -603,7 +604,202 @@ export default function DashboardPage() {
                     <Text size="sm" color="muted">Atajos a los módulos principales</Text>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
+                  {/* Swiper para pantallas pequeñas de desktop (sm, md) */}
+                  <div className="sm:block lg:hidden relative px-1 -mx-1 py-2">
+                    <Swiper
+                      modules={[Navigation, Pagination, Mousewheel, FreeMode]}
+                      spaceBetween={24}
+                      slidesPerView={2.2}
+                      slidesPerGroup={2}
+                      navigation={true}
+                      pagination={{
+                        clickable: true,
+                        dynamicBullets: true,
+                      }}
+                      mousewheel={{
+                        forceToAxis: true,
+                        sensitivity: 1,
+                        releaseOnEdges: true,
+                      }}
+                      freeMode={true}
+                      className="accesos-rapidos-swiper"
+                      breakpoints={{
+                        640: {
+                          slidesPerView: 2.2,
+                          slidesPerGroup: 2,
+                          spaceBetween: 24,
+                        },
+                        768: {
+                          slidesPerView: 2.3,
+                          slidesPerGroup: 2,
+                          spaceBetween: 28,
+                        },
+                      }}
+                    >
+                      {[
+                        {
+                          title: "Rentabilidad",
+                          description: "Ingresos, retornos y métricas clave",
+                          href: `${urls.DASHBOARD_URL}/dashboard/income`,
+                          icon: TrendingUp,
+                        },
+                        {
+                          title: "Proyecto-Desempeño",
+                          description: "Estado y avance de tus proyectos",
+                          href: `${urls.DASHBOARD_URL}/dashboard/projects`,
+                          icon: BarChart3,
+                        },
+                        {
+                          title: "Suscripciones",
+                          description: "Planes, pagos y beneficios",
+                          href: `${urls.DASHBOARD_URL}/dashboard/subscriptions`,
+                          icon: CreditCard,
+                        },
+                        {
+                          title: "Documentos",
+                          description: "Contratos, reportes y archivos",
+                          href: `${urls.DASHBOARD_URL}/dashboard/documents`,
+                          icon: FileText,
+                        },
+                      ].map((item) => (
+                        <SwiperSlide key={item.title}>
+                          <Link
+                            href={item.href}
+                            prefetch={false}
+                            className="group block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5352F6] focus-visible:ring-offset-2"
+                            aria-label={`Ir a ${item.title}`}
+                          >
+                            <div className="relative h-full rounded-2xl bg-gradient-to-br from-white to-[#FAFAFF] border border-[#E8E8F0] overflow-hidden transition-all duration-300 group-hover:shadow-xl group-hover:shadow-[#5352F6]/10 group-hover:border-[#5352F6]/20 group-hover:-translate-y-1">
+                              {/* Gradiente de fondo sutil */}
+                              <div className="absolute inset-0 bg-gradient-to-br from-[#5352F6]/0 via-[#5352F6]/0 to-[#5352F6]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                              
+                              {/* Contenido */}
+                              <div className="relative h-full flex flex-col p-6 sm:p-7">
+                                {/* Icono con fondo destacado */}
+                                <div className="mb-4">
+                                  <div className="relative inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-[#5352F6] to-[#4A4AE5] shadow-lg shadow-[#5352F6]/25 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#5352F6]/30 transition-all duration-300">
+                                    <item.icon size={24} className="text-white" strokeWidth={2.5} />
+                                  </div>
+                                </div>
+
+                                {/* Título y descripción */}
+                                <div className="flex-1 flex flex-col">
+                                  <h3 className="text-lg font-bold text-[#1C274C] mb-2 group-hover:text-[#5352F6] transition-colors duration-300 line-clamp-2">
+                                    {item.title}
+                                  </h3>
+                                  <p className="text-sm text-[#6B7280] leading-relaxed line-clamp-2 group-hover:text-[#4B5563] transition-colors duration-300">
+                                    {item.description}
+                                  </p>
+                                </div>
+
+                                {/* Flecha indicadora */}
+                                <div className="mt-4 flex items-center text-[#5352F6] opacity-0 group-hover:opacity-100 translate-x-0 group-hover:translate-x-1 transition-all duration-300">
+                                  <span className="text-sm font-semibold mr-2">Explorar</span>
+                                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
+                                </div>
+                              </div>
+                            </div>
+                          </Link>
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
+                    <style jsx global>{`
+                      .accesos-rapidos-swiper {
+                        padding: 12px 48px 20px 48px;
+                        margin: 0 -48px;
+                        overflow: visible;
+                      }
+                      
+                      .accesos-rapidos-swiper .swiper-wrapper {
+                        align-items: stretch;
+                        padding-bottom: 8px;
+                      }
+                      
+                      .accesos-rapidos-swiper .swiper-slide {
+                        height: auto;
+                        display: flex;
+                        min-height: 250px;
+                        padding: 6px;
+                        box-sizing: border-box;
+                      }
+                      
+                      .accesos-rapidos-swiper .swiper-slide > * {
+                        width: 100%;
+                      }
+                      
+                      .accesos-rapidos-swiper .swiper-button-next,
+                      .accesos-rapidos-swiper .swiper-button-prev {
+                        color: #5352F6;
+                        width: 40px;
+                        height: 40px;
+                        background: white;
+                        border-radius: 50%;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+                        transition: all 0.3s ease;
+                        margin-top: 0;
+                        top: 50%;
+                        transform: translateY(-50%);
+                      }
+                      
+                      .accesos-rapidos-swiper .swiper-button-prev {
+                        left: -12px;
+                      }
+                      
+                      .accesos-rapidos-swiper .swiper-button-next {
+                        right: -12px;
+                      }
+                      
+                      .accesos-rapidos-swiper .swiper-button-next:hover,
+                      .accesos-rapidos-swiper .swiper-button-prev:hover {
+                        background: #5352F6;
+                        color: white;
+                        box-shadow: 0 4px 12px rgba(83, 82, 246, 0.3);
+                      }
+                      
+                      .accesos-rapidos-swiper .swiper-button-next:after,
+                      .accesos-rapidos-swiper .swiper-button-prev:after {
+                        font-size: 14px;
+                        font-weight: bold;
+                      }
+                      
+                      .accesos-rapidos-swiper .swiper-button-disabled {
+                        opacity: 0.3;
+                        cursor: not-allowed;
+                      }
+                      
+                      .accesos-rapidos-swiper .swiper-pagination {
+                        position: relative;
+                        margin-top: 24px;
+                        bottom: 0;
+                        padding-bottom: 8px;
+                      }
+                      
+                      .accesos-rapidos-swiper .swiper-pagination-bullet {
+                        width: 8px;
+                        height: 8px;
+                        background: #D1D5DB;
+                        opacity: 1;
+                        transition: all 0.3s ease;
+                      }
+                      
+                      .accesos-rapidos-swiper .swiper-pagination-bullet-active {
+                        background: #5352F6;
+                        width: 24px;
+                        border-radius: 4px;
+                      }
+                      
+                      .accesos-rapidos-swiper .swiper-wrapper {
+                        cursor: grab;
+                      }
+                      
+                      .accesos-rapidos-swiper .swiper-wrapper:active {
+                        cursor: grabbing;
+                      }
+                    `}</style>
+                  </div>
+
+                  {/* Grid para pantallas grandes (lg, xl) - 2x2 en lg, 4 columnas en xl */}
+                  <div className="hidden lg:grid lg:grid-cols-2 xl:grid-cols-4 gap-5">
                     {[
                       {
                         title: "Rentabilidad",
@@ -634,65 +830,39 @@ export default function DashboardPage() {
                         key={item.title}
                         href={item.href}
                         prefetch={false}
-                        className="group block rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5352F6] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F5F5F5] h-full"
+                        className="group block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5352F6] focus-visible:ring-offset-2"
                         aria-label={`Ir a ${item.title}`}
                       >
-                        <Card className="relative border-none shadow-sm transition-shadow group-hover:shadow-md overflow-hidden aspect-square sm:aspect-auto sm:min-h-[116px] h-full p-0 sm:p-5">
-                          <div
-                            className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#5352F6] to-[#4A4AE5] hidden sm:block"
-                            aria-hidden="true"
-                          />
-                          {/* Mobile: cuadrada premium — centrada */}
-                          <div className="flex h-full flex-col sm:hidden relative overflow-hidden items-center justify-center text-center p-4  via-slate-50 to-slate-100">
-                            {/* Ícono centrado y destacado */}
-                            <div
-                              className="mb-3 rounded-2xl bg-white p-3 ring-1 ring-indigo-50"
-                              aria-hidden="true"
-                            >
-                              <item.icon size={24} className="text-[#5352F6]" />
-                            </div>
-
-                            {/* Título centrado */}
-                            <p className="text-[13px] font-semibold text-[#1C274C] leading-tight line-clamp-2 px-1">
-                              {item.title}
-                            </p>
-                          </div>
-
-                          {/* Desktop: layout original (más ancho, con descripción) */}
-                          <div className="hidden sm:flex items-start gap-4">
-                            <div
-                              className="rounded-xl bg-[#5352F6]/10 p-3 ring-1 ring-[#5352F6]/10 transition-colors group-hover:bg-[#5352F6]/15 flex-none"
-                              aria-hidden="true"
-                            >
-                              <item.icon size={20} className="text-[#5352F6]" />
-                            </div>
-
-                            <div className="min-w-0 flex-1">
-                              <div className="flex items-start justify-between gap-3">
-                                <Text
-                                  weight="semibold"
-                                  className="text-[15px] leading-snug line-clamp-2"
-                                  title={item.title}
-                                >
-                                  {item.title}
-                                </Text>
-                                <div
-                                  className="rounded-full bg-[#F5F5F5] p-1.5 transition-colors group-hover:bg-[#5352F6]/10 flex-none self-center"
-                                  aria-hidden="true"
-                                >
-                                  <ChevronRight
-                                    size={16}
-                                    className="text-[#919090] transition-colors group-hover:text-[#5352F6]"
-                                  />
-                                </div>
+                        <div className="relative h-full rounded-2xl bg-gradient-to-br from-white to-[#FAFAFF] border border-[#E8E8F0] overflow-hidden transition-all duration-300 group-hover:shadow-xl group-hover:shadow-[#5352F6]/10 group-hover:border-[#5352F6]/20 group-hover:-translate-y-1">
+                          {/* Gradiente de fondo sutil */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-[#5352F6]/0 via-[#5352F6]/0 to-[#5352F6]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          
+                          {/* Contenido */}
+                          <div className="relative h-full flex flex-col p-6">
+                            {/* Icono con fondo destacado */}
+                            <div className="mb-4">
+                              <div className="relative inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-[#5352F6] to-[#4A4AE5] shadow-lg shadow-[#5352F6]/25 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-[#5352F6]/30 transition-all duration-300">
+                                <item.icon size={24} className="text-white" strokeWidth={2.5} />
                               </div>
+                            </div>
 
-                              <Text size="sm" color="muted" className="mt-1 line-clamp-2">
+                            {/* Título y descripción */}
+                            <div className="flex-1 flex flex-col">
+                              <h3 className="text-lg font-bold text-[#1C274C] mb-2 group-hover:text-[#5352F6] transition-colors duration-300 line-clamp-2">
+                                {item.title}
+                              </h3>
+                              <p className="text-sm text-[#6B7280] leading-relaxed line-clamp-2 group-hover:text-[#4B5563] transition-colors duration-300">
                                 {item.description}
-                              </Text>
+                              </p>
+                            </div>
+
+                            {/* Flecha indicadora */}
+                            <div className="mt-4 flex items-center text-[#5352F6] opacity-0 group-hover:opacity-100 translate-x-0 group-hover:translate-x-1 transition-all duration-300">
+                              <span className="text-sm font-semibold mr-2">Explorar</span>
+                              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
                             </div>
                           </div>
-                        </Card>
+                        </div>
                       </Link>
                     ))}
                   </div>
