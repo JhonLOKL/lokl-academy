@@ -274,6 +274,33 @@ export default function DashboardPage() {
     }).format(amount);
   }, []);
 
+  const formatPlan = useCallback((plan: string | Record<string, any> | null | undefined): string | null => {
+    if (!plan) return null;
+    
+    // Si es un string, retornarlo directamente
+    if (typeof plan === 'string') {
+      return plan;
+    }
+    
+    // Si es un objeto JSON, intentar extraer un nombre o convertirlo a string
+    if (typeof plan === 'object' && plan !== null) {
+      // Intentar obtener el nombre del plan si existe
+      if ('name' in plan && typeof plan.name === 'string') {
+        return plan.name;
+      }
+      if ('plan' in plan && typeof plan.plan === 'string') {
+        return plan.plan;
+      }
+      if ('type' in plan && typeof plan.type === 'string') {
+        return plan.type;
+      }
+      // Si no hay un campo específico, convertir a string legible
+      return JSON.stringify(plan);
+    }
+    
+    return null;
+  }, []);
+
   // ==========================
   // Niveles por proyecto (UI) - memoizado para evitar recálculos en cada render
   // ==========================
@@ -1236,15 +1263,23 @@ export default function DashboardPage() {
 
                             const investmentsSum = ref.investments?.reduce((s, i) => s + (i.contributionAmount || 0), 0) || 0;
                             const hasInvested = investmentsSum > 0 || ref.status === 'invested';
+                            const planName = formatPlan(ref.plan);
 
                             return (
                               <div key={`${ref.email}-${idx}`} className="px-4 py-3">
                                 <UserCard
                                   name={`${ref.firstName} ${ref.lastName || ''}`.trim() || 'Usuario'}
                                   role={
-                                    <span className="block truncate max-w-[120px] xs:max-w-[160px] sm:max-w-none text-muted-foreground text-xs sm:text-sm">
-                                      {ref.email}
-                                    </span> as unknown as string
+                                    <div className="flex flex-col gap-0.5">
+                                      <span className="block truncate max-w-[120px] xs:max-w-[160px] sm:max-w-none text-muted-foreground text-xs sm:text-sm">
+                                        {ref.email}
+                                      </span>
+                                      {planName && (
+                                        <Badge variant="info" className="w-fit px-2 py-0.5 text-[10px] sm:text-xs mt-0.5">
+                                          {planName}
+                                        </Badge>
+                                      )}
+                                    </div>
                                   }
                                   className="border-none shadow-none bg-transparent rounded-none !p-0 !flex-row items-center gap-3"
                                   avatar={
