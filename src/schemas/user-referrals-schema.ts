@@ -14,7 +14,7 @@ export const ReferralUserSchema = z.object({
   createdAt: z.string(),
   status: z.enum(["referred", "invested"]),
   investments: z.array(ReferralInvestmentSchema),
-  plan: z.union([z.string(), z.record(z.any()), z.null()]).optional().nullable(),
+  plan: z.any().nullable().optional(),
 });
 
 export const UserReferralsResponseSchema = z.object({
