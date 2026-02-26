@@ -151,7 +151,7 @@ export function AldeaV3Hero({
             <button
               type="button"
               onClick={onPrimaryClick}
-              className="inline-flex items-center gap-2 rounded-full bg-[#1a1a1a] px-10 py-2.5 text-[15px] font-medium text-white shadow-xl transition-all duration-300 hover:bg-[#2a2a2a] hover:shadow-2xl md:px-7 md:py-3 lg:px-8 lg:py-3.5"
+              className="inline-flex items-center gap-2 rounded-full bg-[#1a1a1a] px-10 py-2.5 text-[15px] font-medium text-white transition-all duration-300 hover:bg-[#2a2a2a] md:px-7 md:py-3 lg:px-8 lg:py-3.5"
             >
               {primaryButtonLabel}
             </button>
