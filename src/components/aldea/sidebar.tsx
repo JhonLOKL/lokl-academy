@@ -16,7 +16,7 @@ const QUICK_NAV_SECTIONS = [
 
 interface AldeaSidebarProps {
     onListaClick?: () => void;
-    /** "default" = fondo claro (aldea-v2), "purple" = fondo morado (aldea) */
+    /** "default" = fondo claro, "purple" = fondo morado */
     variant?: "default" | "purple";
 }
 

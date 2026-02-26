@@ -9,7 +9,7 @@ interface AldeaContentLayoutProps {
     renderSidebar?: boolean;
     /** Si es false, el sidebar se oculta (p. ej. cuando el hero está en vista). Por defecto true. */
     showSidebar?: boolean;
-    /** "default" = sidebar fondo claro (aldea-v2), "purple" = sidebar morado (aldea) */
+    /** "default" = sidebar fondo claro, "purple" = sidebar morado */
     sidebarVariant?: "default" | "purple";
 }
 

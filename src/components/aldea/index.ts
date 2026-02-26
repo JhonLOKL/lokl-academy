@@ -1,6 +1,3 @@
-export { AldeaHero } from "./hero";
-export { AldeaHeroSplit } from "./hero-split";
-export { AldeaTrustBar } from "./trust-bar";
 export { ListaEsperaModal } from "./lista-espera-modal";
 export { AldeaStickyCtaMobile } from "./sticky-cta-mobile";
 export { AldeaContentLayout } from "./content-layout";
@@ -10,7 +7,6 @@ export {
     AldeaSectionPorQueUnionLugar,
     AldeaSectionPorQueInvertir,
     AldeaSectionGaleria,
-    AldeaSectionBeneficiosUbicacion,
     AldeaSectionModeloNegocio,
     AldeaSectionTestimonios,
     AldeaSectionFaqs,
