@@ -118,7 +118,8 @@ export function AldeaV3Hero({
                sin ángulos duros.
              ══════════════════════════════════════════════════════ */}
           <div
-            className="absolute bottom-0 left-0 z-10 hidden md:flex items-center pl-10 pr-8 py-6 lg:pl-14 lg:pr-10 lg:py-8"
+            /* className="absolute bottom-0 left-0 z-10 hidden md:flex items-center pl-10 pr-8 py-6 lg:pl-14 lg:pr-10 lg:py-8" */
+            className="absolute bottom-0 left-0 z-10 hidden md:flex items-center pl-6 pr-6 py-6 lg:pl-6 lg:pr-6 lg:py-6"
             style={{
               background: BG,
               borderTopRightRadius: R,
@@ -150,7 +151,7 @@ export function AldeaV3Hero({
             <button
               type="button"
               onClick={onPrimaryClick}
-              className="inline-flex items-center gap-2 rounded-full bg-[#1a1a1a] px-6 py-2.5 text-[15px] font-medium text-white shadow-xl transition-all duration-300 hover:bg-[#2a2a2a] hover:shadow-2xl md:px-7 md:py-3 lg:px-8 lg:py-3.5"
+              className="inline-flex items-center gap-2 rounded-full bg-[#1a1a1a] px-10 py-2.5 text-[15px] font-medium text-white shadow-xl transition-all duration-300 hover:bg-[#2a2a2a] hover:shadow-2xl md:px-7 md:py-3 lg:px-8 lg:py-3.5"
             >
               {primaryButtonLabel}
             </button>
