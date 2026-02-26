@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import { Briefcase, HelpCircle, Image as ImageIcon, MapPin, Quote, Sparkles, TrendingUp } from "lucide-react";
 
 const HERO_IMAGE = "/images/home/Hero_Aldea.webp";
 
@@ -26,6 +27,17 @@ export interface AldeaV3HeroProps {
   /** Botón secundario opcional */
   secondaryButton?: { label: string; href: string };
 }
+
+/** Mismas secciones que el sidebar de la página Aldea */
+const QUICK_NAV_SECTIONS = [
+  { id: "inspiracion", label: "La visión detrás de Aldea", icon: Sparkles },
+  { id: "por-que-union-lugar", label: "Qué hace especial La Unión", icon: MapPin },
+  { id: "por-que-invertir", label: "Tu oportunidad de invertir con propósito", icon: TrendingUp },
+  { id: "galeria", label: "Así es La Unión: conoce el entorno", icon: ImageIcon },
+  { id: "modelo-negocio", label: "Cómo generamos valor para todos", icon: Briefcase },
+  { id: "testimonios", label: "Qué dicen de nosotros", icon: Quote },
+  { id: "faqs", label: "Todo lo que necesitas saber", icon: HelpCircle },
+] as const;
 
 export function AldeaV3Hero({
   title = (
@@ -108,6 +120,38 @@ export function AldeaV3Hero({
                   {secondaryButton.label}
                 </a>
               )}
+            </div>
+          </div>
+
+          {/* ── Quick Access Nav (Right Side) ── */}
+          <div className="absolute right-6 sm:right-8 md:right-10 lg:right-14 top-1/2 z-30 -translate-y-1/2 hidden lg:flex items-stretch gap-6 group">
+            
+            {/* Notion-style Menu Items (Oculto hasta hacer hover) */}
+            <div className="flex flex-col justify-between py-4 px-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 pointer-events-none group-hover:pointer-events-auto shadow-2xl">
+              {QUICK_NAV_SECTIONS.map(({ id, label, icon: Icon }) => (
+                <a
+                  key={id}
+                  href={`#${id}`}
+                  className="group/item flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/20 transition-colors"
+                >
+                  <Icon className="h-4 w-4 shrink-0 text-white" aria-hidden />
+                  <span className="text-[14px] font-medium text-white/80 group-hover/item:text-white transition-colors whitespace-nowrap">
+                    {label}
+                  </span>
+                </a>
+              ))}
+            </div>
+
+            {/* Vertical Line Indicator (Visible, se ilumina en hover) */}
+            <div className="flex flex-col items-center py-2 opacity-80 group-hover:opacity-100 transition-opacity duration-500 cursor-pointer">
+              <span className="text-white font-mono text-[11px] font-bold tracking-[0.2em] mb-3 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]">01</span>
+              <div className="w-[3px] flex-1 bg-white/40 relative rounded-full min-h-[220px] shadow-[0_0_16px_rgba(255,255,255,0.3)] group-hover:bg-white/50 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] transition-all duration-500">
+                {/* Active Segment (Top 35% - línea blanca más visible) */}
+                <div className="absolute top-0 left-0 w-full h-[35%] bg-white rounded-full shadow-[0_0_16px_rgba(255,255,255,0.95)]"></div>
+              </div>
+              <span className="text-white font-mono text-[11px] font-bold tracking-[0.2em] mt-3 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]">
+                {QUICK_NAV_SECTIONS.length.toString().padStart(2, "0")}
+              </span>
             </div>
           </div>
 

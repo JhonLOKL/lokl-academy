@@ -19,14 +19,20 @@ import { MarketingFooter } from "@/components/footer/marketing-footer";
 export default function AldeaPage() {
     const [listaModalOpen, setListaModalOpen] = useState(false);
     const [showSidebar, setShowSidebar] = useState(false);
-    const heroSentinelRef = useRef<HTMLDivElement>(null);
+    const inspiracionSentinelRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const sentinel = heroSentinelRef.current;
+        const sentinel = inspiracionSentinelRef.current;
         if (!sentinel) return;
         const io = new IntersectionObserver(
-            ([entry]) => setShowSidebar(entry.isIntersecting),
-            { rootMargin: "-10% 0px 0px 0px", threshold: 0 }
+            ([entry]) => {
+                // Visible: estamos en "La visión detrás de Aldea" o más abajo
+                // No visible + top < 0: scrolleamos hacia abajo, ya pasamos la sección → mantener sidebar
+                // No visible + top > 0: aún no llegamos → ocultar sidebar
+                const visible = entry.isIntersecting || entry.boundingClientRect.top < 0;
+                setShowSidebar(visible);
+            },
+            { rootMargin: "-15% 0px -15% 0px", threshold: 0 }
         );
         io.observe(sentinel);
         return () => io.disconnect();
@@ -47,14 +53,13 @@ export default function AldeaPage() {
                 onPrimaryClick={() => setListaModalOpen(true)}
             />
 
-            {/* Centinela: cuando entra en vista, el hero ya no está visible → se muestra el sidebar */}
-            <div ref={heroSentinelRef} className="h-0 w-full" aria-hidden />
-
             <AldeaContentLayout
                 onListaClick={() => setListaModalOpen(true)}
                 sidebarVariant="purple"
                 showSidebar={showSidebar}
             >
+                {/* Centinela: el sidebar solo se muestra cuando se llega a "La visión detrás de Aldea" */}
+                <div ref={inspiracionSentinelRef} className="h-0 w-full" aria-hidden />
                 <AldeaSectionInspiracion onListaClick={() => setListaModalOpen(true)} />
                 <AldeaSectionPorQueUnionLugar />
                 <AldeaSectionPorQueInvertir onListaClick={() => setListaModalOpen(true)} />
