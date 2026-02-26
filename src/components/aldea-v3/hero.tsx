@@ -119,7 +119,7 @@ export function AldeaV3Hero({
              ══════════════════════════════════════════════════════ */}
           <div
             /* className="absolute bottom-0 left-0 z-10 hidden md:flex items-center pl-10 pr-8 py-6 lg:pl-14 lg:pr-10 lg:py-8" */
-            className="absolute bottom-0 left-0 z-10 hidden md:flex items-center pl-6 pr-6 py-6 lg:pl-6 lg:pr-6 lg:py-6"
+            className="absolute bottom-0 left-0 z-10 hidden md:flex items-center pl-0 pr-6 py-6 lg:pl-0 lg:pr-6 lg:py-6"
             style={{
               background: BG,
               borderTopRightRadius: R,
