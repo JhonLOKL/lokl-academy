@@ -56,16 +56,16 @@ export function AldeaSectionPorQueInvertir({ onListaClick }: AldeaSectionPorQueI
 
     return (
         <section id="por-que-invertir" className="scroll-mt-24 pt-16">
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-6 lg:items-start">
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-6 lg:items-stretch">
                 {/* Columna 1: título, texto e imagen grande */}
                 <div className="flex min-h-0 flex-col gap-6">
-                    <h2 className="text-3xl font-bold tracking-tight text-neutral-900 md:text-4xl">
+                    <h2 className="shrink-0 text-3xl font-bold tracking-tight text-neutral-900 md:text-4xl">
                         Tu oportunidad de invertir con <span className="text-[#5352F6]">propósito</span>
                     </h2>
-                    <p className="text-lg text-neutral-600 leading-relaxed">
+                    <p className="shrink-0 text-lg text-neutral-600 leading-relaxed">
                         Explora por qué La Unión es una oportunidad de inversión con propósito: activo real, sector en crecimiento y un modelo que combina rentabilidad con impacto en la comunidad.
                     </p>
-                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-white">
+                    <div className="relative flex-1 min-h-[200px] w-full overflow-hidden rounded-2xl bg-white">
                         <iframe
                             title="Mapa de La Unión, Valle del Cauca"
                             src={MAPA_LA_UNION_EMBED}
@@ -103,7 +103,7 @@ export function AldeaSectionPorQueInvertir({ onListaClick }: AldeaSectionPorQueI
 
                 {/* Columna 3: imagen más alta + botón CTA */}
                 <div className="flex min-h-0 flex-col gap-4">
-                    <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl">
+                    <div className="relative flex-1 min-h-[200px] w-full overflow-hidden rounded-2xl">
                         <Image
                             key={img2.src}
                             src={img2.src}
