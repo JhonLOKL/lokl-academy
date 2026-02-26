@@ -26,7 +26,7 @@ export interface PieChartProps {
   onActiveIndexChange?: (index: number | undefined) => void;
   title?: string;
   subtitle?: string;
-  legendPosition?: "right" | "bottom";
+  legendPosition?: "right" | "left" | "bottom";
 }
 
 const defaultColors = ["#5352F6", "#7A79F9", "#A1A0FB", "#D1D1FB", "#0F0F0F", "#444444", "#6D6C6C", "#919090"];
@@ -138,10 +138,10 @@ export function PieChart({
   // Renderizar la leyenda manualmente
   const renderLegend = () => {
     return (
-      <div className={cn(
-        "grid gap-2",
-        legendPosition === "right" ? "grid-cols-1" : "grid-cols-2 sm:grid-cols-4"
-      )}>
+        <div className={cn(
+          "grid gap-2",
+          (legendPosition === "right" || legendPosition === "left") ? "grid-cols-1" : "grid-cols-2 sm:grid-cols-4"
+        )}>
         {data.map((entry, index) => (
           <div 
             key={`legend-item-${index}`} 
@@ -176,11 +176,12 @@ export function PieChart({
       )}
       <div className={cn(
         "flex w-full",
-        legendPosition === "right" ? "flex-row items-center gap-6" : "flex-col gap-4"
+        legendPosition === "right" || legendPosition === "left" ? "flex-row items-center gap-6" : "flex-col gap-4",
+        legendPosition === "left" && "flex-row-reverse"
       )}>
         <div className={cn(
           "mx-auto",
-          legendPosition === "right" ? "w-1/2" : "w-full"
+          (legendPosition === "right" || legendPosition === "left") ? "w-1/2" : "w-full"
         )}>
           <ResponsiveContainer width="100%" height={height}>
             <RechartsPieChart>
@@ -209,7 +210,7 @@ export function PieChart({
           </ResponsiveContainer>
         </div>
         <div className={cn(
-          legendPosition === "right" ? "w-1/2" : "w-full mt-2"
+          (legendPosition === "right" || legendPosition === "left") ? "w-1/2" : "w-full mt-2"
         )}>
           {renderLegend()}
         </div>

@@ -121,8 +121,12 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    overflow-x: hidden;
+  }
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
   }
 }
 
@@ -399,4 +403,21 @@
 }
 .dashboard-level-up-swiper .swiper-pagination {
   bottom: 10px !important;
+}
+
+/* Por qué La Unión: escalonado arriba–abajo solo en desktop */
+@media (min-width: 1024px) {
+  .porque-union-swiper-stagger.swiper {
+    height: auto !important;
+  }
+  .porque-union-swiper-stagger .swiper-wrapper {
+    align-items: flex-start !important;
+    height: auto !important;
+    min-height: 0;
+  }
+  .porque-union-swiper-stagger .swiper-slide {
+    height: auto !important;
+    max-height: none !important;
+    align-self: flex-start;
+  }
 }
