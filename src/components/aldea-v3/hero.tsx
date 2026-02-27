@@ -4,7 +4,8 @@ import React from "react";
 import Image from "next/image";
 import { Briefcase, HelpCircle, Image as ImageIcon, MapPin, Quote, Sparkles, TrendingUp } from "lucide-react";
 
-const HERO_IMAGE = "/images/home/Hero_Aldea.webp";
+const HERO_IMAGE_DESKTOP = "/images/home/Hero_Aldea.webp";
+const HERO_IMAGE_MOBILE = "/images/home/Hero_Movil_Aldea.webp";
 
 /* ─────────────────────────────────────────────────────────────
    Color de fondo: DEBE coincidir en la sección, el shelf y los
@@ -63,12 +64,21 @@ export function AldeaV3Hero({
             minHeight: "calc(100dvh - var(--navbar-height, 4rem) - 2.5rem)",
           }}
         >
-          {/* ── Imagen de fondo ── */}
+          {/* ── Imagen de fondo: móvil vs desktop ── */}
           <Image
-            src={HERO_IMAGE}
+            src={HERO_IMAGE_MOBILE}
             alt="Hero background — arquitectura premium"
             fill
-            className="object-cover"
+            className="object-cover md:hidden"
+            priority
+            sizes="100vw"
+            quality={90}
+          />
+          <Image
+            src={HERO_IMAGE_DESKTOP}
+            alt="Hero background — arquitectura premium"
+            fill
+            className="object-cover hidden md:block"
             priority
             sizes="100vw"
             quality={90}

@@ -138,13 +138,13 @@ export function PieChart({
   // Renderizar la leyenda manualmente
   const renderLegend = () => {
     return (
-        <div className={cn(
-          "grid gap-2",
-          (legendPosition === "right" || legendPosition === "left") ? "grid-cols-1" : "grid-cols-2 sm:grid-cols-4"
-        )}>
+      <div className={cn(
+        "grid gap-2",
+        (legendPosition === "right" || legendPosition === "left") ? "grid-cols-2 sm:grid-cols-1" : "grid-cols-2 sm:grid-cols-4"
+      )}>
         {data.map((entry, index) => (
-          <div 
-            key={`legend-item-${index}`} 
+          <div
+            key={`legend-item-${index}`}
             className="flex items-center gap-2"
             onMouseEnter={() => handleMouseEnter(null, index)}
             onMouseLeave={handleMouseLeave}
@@ -176,12 +176,12 @@ export function PieChart({
       )}
       <div className={cn(
         "flex w-full",
-        legendPosition === "right" || legendPosition === "left" ? "flex-row items-center gap-6" : "flex-col gap-4",
-        legendPosition === "left" && "flex-row-reverse"
+        legendPosition === "right" || legendPosition === "left" ? "flex-col md:flex-row items-center gap-6" : "flex-col gap-4",
+        legendPosition === "left" && "md:flex-row-reverse"
       )}>
         <div className={cn(
-          "mx-auto",
-          (legendPosition === "right" || legendPosition === "left") ? "w-1/2" : "w-full"
+          "mx-auto flex justify-center",
+          (legendPosition === "right" || legendPosition === "left") ? "w-full md:w-1/2" : "w-full"
         )}>
           <ResponsiveContainer width="100%" height={height}>
             <RechartsPieChart>
@@ -210,7 +210,7 @@ export function PieChart({
           </ResponsiveContainer>
         </div>
         <div className={cn(
-          (legendPosition === "right" || legendPosition === "left") ? "w-1/2" : "w-full mt-2"
+          (legendPosition === "right" || legendPosition === "left") ? "w-full md:w-1/2" : "w-full mt-2"
         )}>
           {renderLegend()}
         </div>

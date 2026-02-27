@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Dialog, DialogContent, DialogTitle, DialogClose } from "@/components/ui/dialog";
+import { Expand, X } from "lucide-react";
 
 /** Mapa de La Unión, Valle del Cauca (Eje Cafetero). Sin marcador para evitar el punto rojo. */
 const MAPA_LA_UNION_EMBED =
@@ -26,6 +28,7 @@ interface AldeaSectionPorQueInvertirProps {
 
 export function AldeaSectionPorQueInvertir({ onListaClick }: AldeaSectionPorQueInvertirProps) {
     const [rotationIndex, setRotationIndex] = useState(0);
+    const [selectedImage, setSelectedImage] = useState<{ src: string, alt: string } | null>(null);
 
     useEffect(() => {
         const id = setInterval(() => {
@@ -79,45 +82,86 @@ export function AldeaSectionPorQueInvertir({ onListaClick }: AldeaSectionPorQueI
 
                 {/* Columna 2: dos imágenes apiladas (rotan con las 6) */}
                 <div className="flex min-h-0 flex-col gap-4">
-                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl">
+                    <div
+                        className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl group cursor-pointer"
+                        onClick={() => setSelectedImage(img0)}
+                    >
                         <Image
                             key={img0.src}
                             src={img0.src}
                             alt={img0.alt}
                             fill
-                            className="object-cover transition-opacity duration-500"
+                            className="object-cover transition-all duration-500 group-hover:scale-105"
                             sizes="(max-width: 1024px) 100vw, 33vw"
                         />
+                        <div className="absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/20 flex items-center justify-center z-10">
+                            <Expand className="text-white opacity-0 transition-opacity duration-500 group-hover:opacity-100 w-8 h-8 drop-shadow-md" />
+                        </div>
                     </div>
-                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl">
+                    <div
+                        className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl group cursor-pointer"
+                        onClick={() => setSelectedImage(img1)}
+                    >
                         <Image
                             key={img1.src}
                             src={img1.src}
                             alt={img1.alt}
                             fill
-                            className="object-cover transition-opacity duration-500"
+                            className="object-cover transition-all duration-500 group-hover:scale-105"
                             sizes="(max-width: 1024px) 100vw, 33vw"
                         />
+                        <div className="absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/20 flex items-center justify-center z-10">
+                            <Expand className="text-white opacity-0 transition-opacity duration-500 group-hover:opacity-100 w-8 h-8 drop-shadow-md" />
+                        </div>
                     </div>
                 </div>
 
                 {/* Columna 3: imagen más alta + botón CTA */}
                 <div className="flex min-h-0 flex-col gap-4">
-                    <div className="relative flex-1 min-h-[200px] w-full overflow-hidden rounded-2xl">
+                    <div
+                        className="relative flex-1 min-h-[200px] w-full overflow-hidden rounded-2xl group cursor-pointer"
+                        onClick={() => setSelectedImage(img2)}
+                    >
                         <Image
                             key={img2.src}
                             src={img2.src}
                             alt={img2.alt}
                             fill
-                            className="object-cover transition-opacity duration-500"
+                            className="object-cover transition-all duration-500 group-hover:scale-105"
                             sizes="(max-width: 1024px) 100vw, 33vw"
                         />
+                        <div className="absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/20 flex items-center justify-center z-10">
+                            <Expand className="text-white opacity-0 transition-opacity duration-500 group-hover:opacity-100 w-8 h-8 drop-shadow-md" />
+                        </div>
                     </div>
                     <div className="flex shrink-0">
                         {ctaButton}
                     </div>
                 </div>
             </div>
+
+            <Dialog open={!!selectedImage} onOpenChange={(open) => !open && setSelectedImage(null)}>
+                <DialogContent className="max-w-5xl border-none bg-transparent p-0 shadow-none" showCloseButton={false}>
+                    <DialogTitle className="sr-only">{selectedImage?.alt || "Imagen ampliada"}</DialogTitle>
+
+                    <DialogClose className="absolute right-4 top-4 z-50 rounded-full bg-black/50 p-3 text-white backdrop-blur-sm transition-all hover:bg-black/70 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white/50 md:right-0 md:-top-4">
+                        <X className="h-6 w-6" />
+                        <span className="sr-only">Cerrar</span>
+                    </DialogClose>
+
+                    {selectedImage && (
+                        <div className="relative w-full h-[85vh]">
+                            <Image
+                                src={selectedImage.src}
+                                alt={selectedImage.alt}
+                                fill
+                                className="object-contain"
+                                sizes="100vw"
+                            />
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
         </section>
     );
 }

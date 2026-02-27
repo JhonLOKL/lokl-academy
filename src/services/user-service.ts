@@ -15,6 +15,7 @@ export const getUserProfileService = async () => {
 export const upsertLeadService = async (leadData: {
     email: string
     firstName: string
+    lastName?: string
     leadOrigin?: string
     origin?: string
     phone?: string
