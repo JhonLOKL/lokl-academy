@@ -1260,20 +1260,25 @@ interface BlogContentClientProps {
 
 export default function BlogContentClient({ content, tags, keywords, author }: BlogContentClientProps) {
   // Combinar tags existentes con keywords para la visualización (evitando duplicados por slug/name)
-  const allTags: Tag[] = [...(tags || [])];
+  // Filtrar tags inválidos (sin name o sin slug) para evitar errores en toLowerCase
+  const allTags: Tag[] = (tags || []).filter(
+    (t): t is Tag => typeof t?.name === "string" && t.name.trim().length > 0 && typeof t?.slug === "string"
+  );
 
   if (keywords && keywords.length > 0) {
-    keywords.forEach((keyword, index) => {
-      const slug = keyword.toLowerCase().trim().replace(/\s+/g, '-');
-      // Solo agregar si no existe ya un tag con el mismo nombre o slug
-      if (!allTags.some(t => t.name.toLowerCase() === keyword.toLowerCase() || t.slug === slug)) {
-        allTags.push({
-          id: `keyword-${index}`,
-          name: keyword,
-          slug: slug
-        });
-      }
-    });
+    keywords
+      .filter((keyword): keyword is string => typeof keyword === "string" && keyword.trim().length > 0)
+      .forEach((keyword, index) => {
+        const slug = keyword.toLowerCase().trim().replace(/\s+/g, '-');
+        // Solo agregar si no existe ya un tag con el mismo nombre o slug
+        if (!allTags.some(t => (t.name ?? '').toLowerCase() === keyword.toLowerCase() || t.slug === slug)) {
+          allTags.push({
+            id: `keyword-${index}`,
+            name: keyword,
+            slug: slug
+          });
+        }
+      });
   }
   return (
     <div className="mx-auto max-w-3xl">
