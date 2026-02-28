@@ -1,5 +1,6 @@
 import { postApi, getApi, patchApi } from "@/schemas/api-schema"
 import axios from "axios"
+import api from "@/lib/axios-config"
 
 export const enrollPageService = async (body: {
     name: string
@@ -46,7 +47,7 @@ export const sendRewardWebhook = async (body: {
 }) => {
     try {
         const url = 'https://lokl.app.n8n.cloud/webhook/e5e12389-5f17-4207-8fd4-f54515e0a6cf'
-        return await axios.post(url, body)
+        return await api.post(url, body)
     } catch (error) {
         console.error("Error sending reward webhook:", error)
         // No retornamos error para no interrumpir el flujo principal si el webhook falla

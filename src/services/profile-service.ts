@@ -1,4 +1,5 @@
 import axios from "axios";
+import api from "@/lib/axios-config";
 import { urls } from "@/config/urls";
 import { useAuthStore } from "@/store/auth-store";
 
@@ -30,7 +31,7 @@ export const uploadProfilePhotoService = async (file: File): Promise<UploadPhoto
     // Ajustar según convención del proyecto. 
     // api-schema usa urls.URL_BASE_PATH + siteUrl
     console.log()
-    const response = await axios.post(`${urls.URL_BASE_PATH}/api/profile/uploadProfilePhoto`, formData, {
+    const response = await api.post(`${urls.URL_BASE_PATH}/api/profile/uploadProfilePhoto`, formData, {
         headers,
         withCredentials: true,
     });

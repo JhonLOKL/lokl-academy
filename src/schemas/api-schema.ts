@@ -1,5 +1,5 @@
 import { urls } from "@/config/urls";
-import axios from "axios";
+import api from "@/lib/axios-config";
 import { useAuthStore } from "@/store/auth-store";
 
 // Función para validar si el token está activo y no expirado
@@ -33,7 +33,7 @@ const getHeaders = (isNeedToken: boolean) => {
 // de axios-config.ts para evitar llamadas duplicadas a logout().
 // =======================
 export const getApi = async (siteUrl: string, isNeedToken = false) => {
-  const response = await axios.get(urls.URL_BASE_PATH + siteUrl, {
+  const response = await api.get(urls.URL_BASE_PATH + siteUrl, {
     headers: getHeaders(isNeedToken),
     withCredentials: true,
   });
@@ -49,7 +49,7 @@ export const postApi = async (
   body: any = {},
   isNeedToken = false
 ) => {
-  const response = await axios.post(urls.URL_BASE_PATH + siteUrl, body, {
+  const response = await api.post(urls.URL_BASE_PATH + siteUrl, body, {
     headers: getHeaders(isNeedToken),
     withCredentials: true,
   });
@@ -65,7 +65,7 @@ export const putApi = async (
   body: any = {},
   isNeedToken = false
 ) => {
-  const response = await axios.put(urls.URL_BASE_PATH + siteUrl, body, {
+  const response = await api.put(urls.URL_BASE_PATH + siteUrl, body, {
     headers: getHeaders(isNeedToken),
     withCredentials: true,
   });
@@ -81,7 +81,7 @@ export const patchApi = async (
   body: any = {},
   isNeedToken = false
 ) => {
-  const response = await axios.patch(urls.URL_BASE_PATH + siteUrl, body, {
+  const response = await api.patch(urls.URL_BASE_PATH + siteUrl, body, {
     headers: getHeaders(isNeedToken),
     withCredentials: true,
   });

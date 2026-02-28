@@ -10,11 +10,7 @@ let _isHandling401 = false;
 
 // Crear una instancia de axios
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || '/api',
   withCredentials: true, // Habilitar envío de cookies
-  headers: {
-    'Content-Type': 'application/json',
-  },
 });
 
 // Interceptor de solicitud

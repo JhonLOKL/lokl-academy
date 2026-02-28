@@ -1,4 +1,5 @@
 import axios from "axios";
+import api from "@/lib/axios-config";
 import {
   InvestorProfileInput,
   InvestorProfileInputSchema,
@@ -46,7 +47,7 @@ export const createInvestorProfileService = async (
     };
 
     // Hacer la petición a la API
-    const response = await axios.post(
+    const response = await api.post(
       `/api/lead/investorProfile`,
       payload,
       {
@@ -121,7 +122,7 @@ export const generateLeadInCRMService = async (
     };
 
     // Hacer la petición a la API
-    const response = await axios.post(
+    const response = await api.post(
       `/api/sheets/upsertLead`,
       payload
     );
@@ -173,7 +174,7 @@ export const createContactInFormQuiivenService = async (
     };
 
     // Hacer la petición al webhook de n8n
-    const response = await axios.post(
+    const response = await api.post(
       "https://lokl.app.n8n.cloud/webhook/loklnidodeagua",
       payload
     );

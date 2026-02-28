@@ -1,4 +1,5 @@
 import axios from "axios";
+import api from "@/lib/axios-config";
 import { postApi } from "@/schemas/api-schema";
 import {
   SimulationInput,
@@ -110,7 +111,7 @@ export const createQuiivenContactService = async (
     };
 
     // Hacer la petición al webhook de n8n
-    const response = await axios.post(
+    const response = await api.post(
       "https://lokl.app.n8n.cloud/webhook/loklnidodeagua",
       payload
     );
@@ -153,7 +154,7 @@ export const sendFirstMessageService = async (
     };
 
     // Hacer la petición a la API de chat
-    const response = await axios.post(
+    const response = await api.post(
       `${urls.NEW_API_URL}chat/sendMessageWithImage`,
       payload
     );
