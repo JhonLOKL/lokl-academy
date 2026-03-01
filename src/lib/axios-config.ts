@@ -47,13 +47,9 @@ api.interceptors.response.use(
     ) {
       _isHandling401 = true;
 
-      // Cerrar sesión y redirigir
+      // Cerrar sesión
       useAuthStore.getState().logout().finally(() => {
         _isHandling401 = false;
-
-        if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
-          window.location.href = '/login';
-        }
       });
     }
 
